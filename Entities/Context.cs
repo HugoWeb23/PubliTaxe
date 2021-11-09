@@ -2,11 +2,13 @@
 
 namespace Taxes.Entities
 {
-    public class MyContext : DbContext
+    public class Context : DbContext
     {
-        public MyContext(DbContextOptions<MyContext> options) : base(options)
+        public Context(DbContextOptions<Context> options) : base(options)
         {
         }
+
+        public DbSet<Test> test { get; set; }
 
     }
 }

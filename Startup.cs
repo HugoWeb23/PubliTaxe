@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Taxes.Entities;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation.AspNetCore;
 
@@ -22,8 +23,15 @@ namespace Taxes
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-            services.AddControllersWithViews();
+            services.AddDbContext<Context>(options =>
+               options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddControllers()
+                .ConfigureApiBehaviorOptions(options =>
+                {
+                    options.SuppressModelStateInvalidFilter = true;
+                })
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>())
+                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore); ;
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
