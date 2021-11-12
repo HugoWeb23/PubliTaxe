@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Taxes.Entities;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation.AspNetCore;
+using MediatR;
 
 namespace Taxes
 {
@@ -25,12 +26,12 @@ namespace Taxes
         {
             services.AddDbContext<Context>(options =>
                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddMediatR(typeof(Startup).Assembly);
             services.AddControllers()
                 .ConfigureApiBehaviorOptions(options =>
                 {
                     options.SuppressModelStateInvalidFilter = true;
                 })
-                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>())
                 .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore); ;
 
             // In production, the React files will be served from this directory

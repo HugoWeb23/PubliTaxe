@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,11 +8,12 @@ namespace Taxes.Entities
 {
     public class Code_postal
     {
-        public int numero_localite { get; set; }
-        public int code_pays { get; set; }
-        public int code_postal { get; set; }
-        public string localite { get; set; }
-        public string pays { get; set; }
+        [Key]
+        public int Numero_localite { get; set; }
+        public int Code_pays { get; set; }
+        public int CP { get; set; }
+        public string Localite { get; set; }
+        public string Pays { get; set; }
 
     }
 }
