@@ -73,7 +73,8 @@ namespace Taxes.Controllers
         public async Task<IActionResult> Test2()
         {
             List<Entreprise> entreprises = await _mediator.Send(new GetEntreprisesQuery());
-            return Ok(entreprises);
+            var filtered = entreprises.Select(x => new { x.Nom }).ToList();
+            return Ok(filtered);
         }
     }
 }
