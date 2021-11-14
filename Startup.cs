@@ -32,6 +32,7 @@ namespace Taxes
                 {
                     options.SuppressModelStateInvalidFilter = true;
                 })
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>())
                 .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore); ;
 
             // In production, the React files will be served from this directory
@@ -60,6 +61,10 @@ namespace Taxes
             app.UseSpaStaticFiles();
 
             app.UseRouting();
+            app.UseCors(options => options.WithOrigins("http://localhost:3000")
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+
 
             app.UseEndpoints(endpoints =>
             {

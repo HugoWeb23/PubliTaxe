@@ -9,10 +9,12 @@ using Taxes.Entities;
 using MediatR;
 using Taxes.Queries;
 using Taxes.Commands;
+using Taxes.Filters;
 
 namespace Taxes.Controllers
 {
     [ApiController]
+    [ErrorFormatter]
     [Route("/test")]
     public class TestController : ControllerBase
     {
@@ -39,20 +41,6 @@ namespace Taxes.Controllers
                 return BadRequest(new {error = "Une erreur est survenue !"});
             }
             
-        }
-
-        [HttpPost("newentreprise")]
-        public async Task<IActionResult> NewEntreprise(Entreprise entreprise)
-        {
-            try
-            {
-                Entreprise entr = await _mediator.Send(new InsertEntrepriseCommand(entreprise));
-                return Ok(entr);
-            } catch(Exception ex)
-            {
-                return BadRequest(new { erreur = ex });
-            }
-           
         }
 
         [HttpPost("newpostalcode")]

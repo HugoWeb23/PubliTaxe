@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentValidation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -38,5 +39,36 @@ namespace Taxes.Entities
         public string Commentaire_taxation { get; set; }
         public int Role_linguistique { get; set; }
 
+    }
+
+    public class EntrepriseValidator : AbstractValidator<Entreprise>
+    {
+        public EntrepriseValidator()
+        {
+            RuleFor(entreprise => entreprise.Matricule_ciger).NotEmpty().WithMessage("Veuillez saisir un matricule Ciger");
+            RuleFor(entreprise => entreprise.Numero_localite).NotEmpty().WithMessage("Veuillez saisir un numéro de localité");
+            RuleFor(entreprise => entreprise.Code_rue).NotEmpty().WithMessage("Veuillez saisir un code rue");
+            RuleFor(entreprise => entreprise.Adresse_rue).NotEmpty().WithMessage("Veuillez saisir une adresse");
+            RuleFor(entreprise => entreprise.Adresse_numero).NotEmpty().WithMessage("Veuillez saisir un numéro");
+            RuleFor(entreprise => entreprise.Adresse_boite).NotEmpty().WithMessage("Veuillez saisir une boite");
+            RuleFor(entreprise => entreprise.Adresse_index).NotEmpty().WithMessage("Veuillez saisir un index");
+            RuleFor(entreprise => entreprise.Numero_telephone).NotEmpty().WithMessage("Veuillez saisir un numéro de téléphone");
+            RuleFor(entreprise => entreprise.Numero_fax).NotEmpty().WithMessage("Veuillez saisir un numéro de fax");
+            RuleFor(entreprise => entreprise.Recu).NotEmpty().WithMessage("La propriété 'reçu' est manquante");
+            RuleFor(entreprise => entreprise.Province).NotEmpty().WithMessage("La propriété 'province' est manquante");
+            RuleFor(entreprise => entreprise.Personne_contact).NotEmpty().WithMessage("Veuillez définir une personne de contact");
+            RuleFor(entreprise => entreprise.Telephone_contact).NotEmpty().WithMessage("Veuillez saisir le numéro téléphone de la personne de contact");
+            RuleFor(entreprise => entreprise.Mail_contact).NotEmpty().WithMessage("Veuillez saisir une adresse e-mail pour la personne de contact");
+            RuleFor(entreprise => entreprise.Pourcentage_majoration).NotEmpty().WithMessage("Veuillez définir un pourcentage de majoration");
+            RuleFor(entreprise => entreprise.Motif_majoration).NotEmpty().WithMessage("Veuillez saisir un motif de majoration");
+            RuleFor(entreprise => entreprise.Code_rue_taxation).NotEmpty().WithMessage("Veuillez saisir un code de rue pour la taxation");
+            RuleFor(entreprise => entreprise.Adresse_taxation).NotEmpty().WithMessage("Veuillez saisir une adresse de taxation");
+            RuleFor(entreprise => entreprise.Adresse_numero_taxation).NotEmpty().WithMessage("Veuillez saisir un numéro de rue pour la taxation");
+            RuleFor(entreprise => entreprise.Adresse_boite_taxation).NotEmpty().WithMessage("Veuillez saisir un numéro de boite pour la taxation");
+            RuleFor(entreprise => entreprise.Adresse_index_taxation).NotEmpty().WithMessage("Veuillez saisir un index pour la taxation");
+            RuleFor(entreprise => entreprise.Adresse_code_postal_taxation).NotEmpty().WithMessage("Veuillez saisir un code postal pour la taxation");
+            RuleFor(entreprise => entreprise.Adresse_localite_taxation).NotEmpty().WithMessage("Veuillez saisir une localité pour la taxation");
+            RuleFor(entreprise => entreprise.Role_linguistique).NotEmpty().WithMessage("Veuillez choisir une langue");
+        }
     }
 }

@@ -5,19 +5,21 @@ using System.Threading.Tasks;
 using Taxes.Entities;
 using MediatR;
 using Taxes.Queries;
-
+using Taxes.Commands;
+using System;
+using Taxes.Filters;
 
 namespace Taxes.Controllers
 {
-    [Route("api/entreprises")]
     [ApiController]
+    [ErrorFormatter]
+    [Route("api/entreprises")]
+
     public class EntrepriseController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private Context _context;
-        public EntrepriseController(Context context, IMediator mediator)
+        public EntrepriseController(IMediator mediator)
         {
-            _context = context;
             _mediator = mediator;
         }
 
@@ -27,6 +29,21 @@ namespace Taxes.Controllers
             List<Entreprise> entreprises = await _mediator.Send(new GetEntreprisesQuery());
             var filtered = entreprises.Select(x => new { x.Matricule_ciger, x.Nom }).ToList();
             return Ok(filtered);
+        }
+
+        [HttpPost("newentreprise")]
+        public async Task<IActionResult> NewEntreprise(Entreprise entreprise)
+        {
+            try
+            {
+                Entreprise entr = await _mediator.Send(new InsertEntrepriseCommand(entreprise));
+                return Ok(entr);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { erreur = ex });
+            }
+
         }
 
     }
