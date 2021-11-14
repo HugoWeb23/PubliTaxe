@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Taxes.Entities;
 using MediatR;
 using Taxes.Queries;
+using Taxes.Commands;
 
 namespace Taxes.Controllers
 {
@@ -41,24 +42,17 @@ namespace Taxes.Controllers
         }
 
         [HttpPost("newentreprise")]
-        public IActionResult NewEntreprise(Entreprise entreprise)
+        public async Task<IActionResult> NewEntreprise(Entreprise entreprise)
         {
             try
             {
-                _context.entreprises.Add(entreprise);
-                _context.SaveChanges();
-                return Ok(new { type = "success" });
+                Entreprise entr = await _mediator.Send(new InsertEntrepriseCommand(entreprise));
+                return Ok(entr);
             } catch(Exception ex)
             {
                 return BadRequest(new { erreur = ex });
             }
            
-        }
-
-        [HttpPost("testpost")]
-        public IActionResult TestPost(Test entreprise)
-        {
-            return Ok(new { type = "success", test = entreprise });
         }
 
         [HttpPost("newpostalcode")]

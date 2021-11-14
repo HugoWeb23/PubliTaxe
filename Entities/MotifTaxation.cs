@@ -9,7 +9,7 @@ namespace Taxes.Entities
     public class MotifTaxation
     {
         [Key]
-        public decimal Id_motif { get; set; }
+        public int Id_motif { get; set; }
         public string Libelle { get; set; }
 
     }

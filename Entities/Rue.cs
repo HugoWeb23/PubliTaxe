@@ -8,9 +8,9 @@ namespace Taxes.Entities
 {
     public class Rue
     {
-        public decimal Code_postal {get; set; }
+        public int Code_postal {get; set; }
         [Key]
-        public decimal Numero_rue {get; set; }
+        public int Numero_rue {get; set; }
         public string Langue {get; set; }
         public string Nom_rue {get; set; }
 
