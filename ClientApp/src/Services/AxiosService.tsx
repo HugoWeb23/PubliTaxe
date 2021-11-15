@@ -45,6 +45,9 @@ export const AxiosService = async (endpoint: string, options = {} as any) => {
     }
 
     const response = await axios({url: `https://localhost:5001/${endpoint}`, ...options})
+    if(response.status == 200) {
+        return response
+    }
     if (response.status == 204) {
         return null;
     }

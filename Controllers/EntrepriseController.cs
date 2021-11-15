@@ -23,7 +23,7 @@ namespace Taxes.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("getnames")]
+        [HttpGet("names")]
         public async Task<IActionResult> GetNames()
         {
             List<Entreprise> entreprises = await _mediator.Send(new GetEntreprisesQuery());
@@ -31,7 +31,25 @@ namespace Taxes.Controllers
             return Ok(filtered);
         }
 
-        [HttpPost("newentreprise")]
+        [HttpGet("id/{matricule}")]
+        public async Task<IActionResult> GetById(int matricule)
+        {
+            try
+            {
+                Entreprise entreprise = await _mediator.Send(new GetEntrepriseById(matricule));
+                if (entreprise == null)
+                {
+                    return BadRequest(new { error = "Aucun enregistrement ne correspond à ce matricule" });
+                }
+                return Ok(entreprise);
+            } catch(Exception ex)
+            {
+                return BadRequest(new { error = ex });
+            }
+            
+        }
+
+        [HttpPost("new")]
         public async Task<IActionResult> NewEntreprise(Entreprise entreprise)
         {
             try
@@ -41,7 +59,7 @@ namespace Taxes.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { erreur = ex });
+                return BadRequest(new { error = ex });
             }
 
         }
