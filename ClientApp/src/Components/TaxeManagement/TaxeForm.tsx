@@ -9,9 +9,14 @@ import {
     FloatingLabel
 } from 'react-bootstrap'
 import { Typeahead } from 'react-bootstrap-typeahead'
+import {Entreprise} from '../../Types/IEntreprise'
 
-export const TaxeForm = () => {
-    const { register, control, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm();
+interface TaxeForm {
+    data: any
+}
+
+export const TaxeForm = ({data}: TaxeForm) => {
+    const { register, control, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({defaultValues: data});
     return <>
         <Row className="mb-3">
             <Col>
@@ -33,9 +38,15 @@ export const TaxeForm = () => {
                 </Form.Group>
             </Col>
             <Col>
+                <Form.Group controlId="recu">
+                    <Form.Label>Reçu</Form.Label>
+                    <Form.Check type="checkbox" {...register('recu')} />
+                </Form.Group>
+            </Col>
+            <Col>
                 <Form.Group controlId="langue">
                     <Form.Label>Langue</Form.Label>
-                    <Form.Select {...register('langue')}>
+                    <Form.Select {...register('role_linguistique')}>
                         <option value="1">Français</option>
                         <option value="2">Néerlandais</option>
                     </Form.Select>
@@ -77,25 +88,25 @@ export const TaxeForm = () => {
             <Col>
                 <Form.Group controlId="adresse">
                     <Form.Label>Adresse</Form.Label>
-                    <Form.Control type="text" placeholder="adresse" {...register('adresse')} />
+                    <Form.Control type="text" placeholder="adresse" {...register('adresse_rue')} />
                 </Form.Group>
             </Col>
             <Col>
                 <Form.Group controlId="numero">
                     <Form.Label>Numéro</Form.Label>
-                    <Form.Control type="text" placeholder="Numéro" {...register('numero')} />
+                    <Form.Control type="text" placeholder="Numéro" {...register('adresse_numero')} />
                 </Form.Group>
             </Col>
             <Col>
                 <Form.Group controlId="index">
                     <Form.Label>Index</Form.Label>
-                    <Form.Control type="text" placeholder="Index" {...register('index')} />
+                    <Form.Control type="text" placeholder="Index" {...register('adresse_index')} />
                 </Form.Group>
             </Col>
             <Col>
                 <Form.Group controlId="boite">
                     <Form.Label>Boite</Form.Label>
-                    <Form.Control type="text" placeholder="Boite" {...register('boite')} />
+                    <Form.Control type="text" placeholder="Boite" {...register('adresse_boite')} />
                 </Form.Group>
             </Col>
         </Row>
@@ -103,7 +114,7 @@ export const TaxeForm = () => {
             <Col>
                 <Form.Group controlId="code_postal">
                     <Form.Label>Code postal</Form.Label>
-                    <Form.Control type="text" placeholder="Code postal" {...register('code_postal')} />
+                    <Form.Control type="text" placeholder="Code postal" {...register('adresse_code_postal')} />
                 </Form.Group>
             </Col>
             <Col>
@@ -175,7 +186,7 @@ export const TaxeForm = () => {
                     <Form.Label>% majoration</Form.Label>
                     <Form.Select {...register('pourcentage_majoration')}>
                         <option value="0">Aucune</option>
-                        <option value="1">10 %</option>
+                        <option value="10">10 %</option>
                         <option value="2">20 %</option>
                         <option value="5">50 %</option>
                     </Form.Select>
@@ -267,7 +278,7 @@ export const TaxeForm = () => {
             <Col>
             <Form.Group controlId="commentaire">
             <Form.Label>Commentaire</Form.Label>
-                    <Form.Control as="textarea" placeholder="Commentaire" {...register('commentaire')} />
+                    <Form.Control as="textarea" placeholder="Commentaire" {...register('commentaire_taxation')} />
                 </Form.Group>
             </Col>
         </Row>

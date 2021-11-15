@@ -5,6 +5,7 @@ using Taxes.Queries;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Taxes.Handlers
 {
@@ -18,7 +19,8 @@ namespace Taxes.Handlers
         }
         public Task<Entreprise> Handle(GetEntrepriseById request, CancellationToken cancellationToken)
         {
-            Entreprise entreprise = _context.entreprises.FirstOrDefault(ent => ent.Matricule_ciger == request.matricule);
+            Entreprise entreprise = _context.entreprises
+                .FirstOrDefault(ent => ent.Matricule_ciger == request.matricule);
             return Task.FromResult(entreprise);
         }
     }

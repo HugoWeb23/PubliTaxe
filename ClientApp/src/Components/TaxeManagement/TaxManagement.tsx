@@ -7,26 +7,30 @@ import {
     Col
 } from 'react-bootstrap'
 import { AxiosService } from '../../Services/AxiosService'
-import { IEntreprise } from '../../Types/IEntreprise'
+import { ENames, Entreprise } from '../../Types/IEntreprise'
 import { Loader } from '../UI/Loader'
 import { EditTax } from './EditTax'
 
 export const TaxManagement = () => {
 
-    const [entreprises, setEntreprises] = useState<IEntreprise[]>([])
+    const [entreprises, setEntreprises] = useState<ENames[]>([])
     const [loader, setLoader] = useState<boolean>(true)
+    const [showEntrepriseLoader, setShowEntrepriseLoader] = useState<boolean>(false)
+    const [entreprise, setEntreprise] = useState<any>({})
 
     useEffect(() => {
         (async() => {
-            const fetchEntreprises = await axios.get<IEntreprise[]>('https://localhost:5001/api/entreprises/names')
+            const fetchEntreprises = await axios.get<ENames[]>('https://localhost:5001/api/entreprises/names')
             setEntreprises(fetchEntreprises.data)
             setLoader(false)
         })()
     }, [])
 
-    const ShowEntreprise = async(entreprise: IEntreprise) => {
-        const fetchEntreprise = await axios.get<any>(`https://localhost:5001/api/entreprises/id/${entreprise.matricule_ciger}`)
-        console.log(fetchEntreprise.data);
+    const ShowEntreprise = async(entreprise: ENames) => {
+        setShowEntrepriseLoader(true)
+        const fetchEntreprise = await axios.get<Entreprise>(`https://localhost:5001/api/entreprises/id/${entreprise.matricule_ciger}`)
+        setEntreprise(fetchEntreprise.data)
+        setShowEntrepriseLoader(false)
     }
 
     return <>
@@ -36,7 +40,7 @@ export const TaxManagement = () => {
                 <Card>
                     <ListGroup variant="flush">
                         {loader == true && <Loader variant="primary"/>}
-                        {loader == false && entreprises.map((entreprise: IEntreprise, index: number) => {
+                        {loader == false && entreprises.map((entreprise: ENames, index: number) => {
                             return <ListGroup.Item action onClick={() => ShowEntreprise(entreprise)}>#{entreprise.matricule_ciger} {entreprise.nom}</ListGroup.Item>
                         })}
                     </ListGroup>
@@ -44,7 +48,7 @@ export const TaxManagement = () => {
             </div>
             </Col>
             <Col xs="9">
-            <EditTax/>
+            <EditTax entreprise={entreprise} isLoading={showEntrepriseLoader}/>
             </Col>
         </Row>
     </>

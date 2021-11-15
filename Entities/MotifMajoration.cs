@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Taxes.Entities
 {
-    public class MotifTaxation
+    public class MotifMajoration
     {
         [Key]
         public int Id_motif { get; set; }

@@ -1,7 +1,15 @@
+import { Entreprise } from '../../Types/IEntreprise'
+import { Loader } from '../UI/Loader'
 import {TaxeForm} from './TaxeForm'
 
-export const EditTax = () => {
+interface EditTax {
+    entreprise: Entreprise,
+    isLoading: boolean
+}
+
+export const EditTax = ({entreprise, isLoading}: EditTax) => {
 return <>
-<TaxeForm/>
+{isLoading && <Loader variant="primary"/>}
+{Object.keys(entreprise).length > 0 && isLoading != true ? <TaxeForm data={entreprise}/> : 'Aucune entreprise' }
 </>
 }
