@@ -9,7 +9,7 @@ namespace Taxes.Entities
         }
 
         public DbSet<Bourgmestre> bourgmestre { get; set; }
-        public DbSet<Code_postal> code_postal { get; set;}
+        public DbSet<Code_postal> codes_postaux { get; set;}
         public DbSet<Publicite> enseignes_publicitaires { get; set; }
         public DbSet<Entreprise> entreprises { get; set; }
         public DbSet<Exercice> exercices { get; set; }

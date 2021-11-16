@@ -9,17 +9,18 @@ using Taxes.Queries;
 
 namespace Taxes.Handlers
 {
-    public class GetAllSreetsHandler : IRequestHandler<GetAllStreetsQuery, List<Rue>>
+    public class GetSreetsByCodeHandler : IRequestHandler<GetStreetsByCodeQuery, List<Rue>>
     {
         public Context _context;
 
-        public GetAllSreetsHandler(Context context)
+        public GetSreetsByCodeHandler(Context context)
         {
             _context = context;
         }
-        public Task<List<Rue>> Handle(GetAllStreetsQuery request, CancellationToken cancellationToken)
+        public Task<List<Rue>> Handle(GetStreetsByCodeQuery request, CancellationToken cancellationToken)
         {
             List<Rue> Rues = _context.rues
+                .Where(rue => rue.Code_rue == request.Code_rue)
                 .Include(rue => rue.Code_postal)
                 .ToList();
             return Task.FromResult(Rues);

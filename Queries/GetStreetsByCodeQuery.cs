@@ -4,6 +4,6 @@ using Taxes.Entities;
 
 namespace Taxes.Queries
 {
-    public record GetAllStreetsQuery : IRequest<List<Rue>>;
+    public record GetStreetsByCodeQuery(string Code_rue) : IRequest<List<Rue>>;
 
 }

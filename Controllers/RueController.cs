@@ -18,10 +18,10 @@ namespace Taxes.Controllers
             _mediator = mediator;
         }
 
-    [HttpGet("getall")]
-    public async Task<IActionResult> GetAll()
+    [HttpGet("getbycode/{CodeRue}")]
+    public async Task<IActionResult> GetAll(string CodeRue)
         {
-            List<Rue> rues = await _mediator.Send(new GetAllStreetsQuery());
+            List<Rue> rues = await _mediator.Send(new GetStreetsByCodeQuery(CodeRue));
             return Ok(rues);
         }
 

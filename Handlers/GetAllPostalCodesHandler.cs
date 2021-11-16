@@ -19,7 +19,9 @@ namespace Taxes.Handlers
         }
         public Task<List<Code_postal>> Handle(GetAllPostalCodesQuery request, CancellationToken cancellationToken)
         {
-            List<Code_postal> codes_postaux = _context.code_postal.ToList();
+            List<Code_postal> codes_postaux = _context.codes_postaux
+                .Include(code => code.Pays)
+                .ToList();
             return Task.FromResult(codes_postaux);
         }
     }
