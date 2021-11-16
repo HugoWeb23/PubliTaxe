@@ -20,7 +20,9 @@ namespace Taxes.Handlers
         public Task<Entreprise> Handle(GetEntrepriseById request, CancellationToken cancellationToken)
         {
             Entreprise entreprise = _context.entreprises
+                .Include(ent => ent.Code_postal)
                 .FirstOrDefault(ent => ent.Matricule_ciger == request.matricule);
+               
             return Task.FromResult(entreprise);
         }
     }

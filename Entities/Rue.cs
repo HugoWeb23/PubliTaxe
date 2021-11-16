@@ -10,12 +10,12 @@ namespace Taxes.Entities
     public class Rue
     {
         [Key]
-        [Column("id_rue")]
-        public int Id_rue { get; set; }
-        public int Code_postal {get; set; }
-        public int Numero_rue {get; set; }
+        public int RueId { get; set; }
+        public int Code_postalId {get; set; }
+        public string Code_rue {get; set; }
         public string Langue {get; set; }
         public string Nom_rue {get; set; }
+        public Code_postal Code_postal { get; set; }
 
     }
 }

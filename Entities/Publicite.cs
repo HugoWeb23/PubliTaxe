@@ -15,7 +15,7 @@ namespace Taxes.Entities
         public int Id_rue { get; set; }
         public short Exercice_courant { get; set; }
         public short Type_publicite { get; set; }
-        public string Adresse_numero_pub { get; set; }
+        public string Adresse_numero { get; set; }
         public string Situation { get; set; }
         public short Quantite { get; set; }
         public short Face { get; set; }

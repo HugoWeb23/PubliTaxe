@@ -6,23 +6,29 @@ import {
     Button,
     Row,
     Col,
-    FloatingLabel
+    Table
 } from 'react-bootstrap'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import {Entreprise} from '../../Types/IEntreprise'
+import { StreetCodeModal } from "./StreetCodeModal";
 
 interface TaxeForm {
     data: any
 }
 
 export const TaxeForm = ({data}: TaxeForm) => {
+    const [streetCodeModal, setStreetCodeModal] = useState<boolean>(false)
     const { register, control, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({defaultValues: data});
+    const OnSubmit = (data: TaxeForm) => {
+        console.log(data)
+    }
     return <>
+    <Form onSubmit={handleSubmit(OnSubmit)}>
         <Row className="mb-3">
             <Col>
                 <Form.Group controlId="matricule_ciger">
                     <Form.Label>Matricule Ciger</Form.Label>
-                    <Form.Control type="text" placeholder="Matricule Ciger" {...register('matricule_ciger')} />
+                    <Form.Control type="text" placeholder="Matricule Ciger" disabled {...register('matricule_ciger')} />
                 </Form.Group>
             </Col>
             <Col>
@@ -63,32 +69,16 @@ export const TaxeForm = ({data}: TaxeForm) => {
         </Row>
         <Row className="mb-3">
             <Col>
+            <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)}/>
             <Form.Group controlId="code_rue">
                 <Form.Label>Code rue</Form.Label>
-                <Controller
-                control={control}
-                name="code_rue"
-                render={({
-                    field: { onChange, onBlur, value, name, ref }
-                }) => (
-                <Typeahead
-                    id="code_rue"
-                    placeholder="Code rue"
-                    options={[
-                        "Mouscron",
-                        "Tournai",
-                        "Mons",
-                        "Namur"
-                    ]}
-                    emptyLabel='Aucun résultat'
-                />
-                )}/>
+                <Form.Control type="text" placeholder="Code rue" onClick={() => setStreetCodeModal(true)} {...register('code_rue')} />
                 </Form.Group>
             </Col>
             <Col>
-                <Form.Group controlId="adresse">
-                    <Form.Label>Adresse</Form.Label>
-                    <Form.Control type="text" placeholder="adresse" {...register('adresse_rue')} />
+                <Form.Group controlId="rue">
+                    <Form.Label>Rue</Form.Label>
+                    <Form.Control type="text" placeholder="Rue" {...register('adresse_rue')} />
                 </Form.Group>
             </Col>
             <Col>
@@ -114,7 +104,7 @@ export const TaxeForm = ({data}: TaxeForm) => {
             <Col>
                 <Form.Group controlId="code_postal">
                     <Form.Label>Code postal</Form.Label>
-                    <Form.Control type="text" placeholder="Code postal" {...register('adresse_code_postal')} />
+                    <Form.Control type="text" placeholder="Code postal" {...register('code_postal.cp')} />
                 </Form.Group>
             </Col>
             <Col>
@@ -122,7 +112,7 @@ export const TaxeForm = ({data}: TaxeForm) => {
                     <Form.Label>Localité</Form.Label>
                     <Controller
                 control={control}
-                name="localite"
+                name="code_postal.localite"
                 render={({
                     field: { onChange, onBlur, value, name, ref }
                 }) => (
@@ -134,7 +124,9 @@ export const TaxeForm = ({data}: TaxeForm) => {
                             "Mons",
                             "Namur"
                         ]}
+                        onChange={(value) => onChange(...value)}
                         emptyLabel='Aucun résultat'
+                        selected={value != undefined ? [value] : []}
                     />
                 )}/>
                 </Form.Group>
@@ -142,13 +134,13 @@ export const TaxeForm = ({data}: TaxeForm) => {
             <Col>
                 <Form.Group controlId="telephone">
                     <Form.Label>Téléphone</Form.Label>
-                    <Form.Control type="text" placeholder="Téléphone" {...register('telephone')} />
+                    <Form.Control type="text" placeholder="Téléphone" {...register('numero_telephone')} />
                 </Form.Group>
             </Col>
             <Col>
                 <Form.Group controlId="fax">
                     <Form.Label>Fax</Form.Label>
-                    <Form.Control type="text" placeholder="Fax" {...register('fax')} />
+                    <Form.Control type="text" placeholder="Fax" {...register('numero_fax')} />
                 </Form.Group>
             </Col>
         </Row>
@@ -282,5 +274,7 @@ export const TaxeForm = ({data}: TaxeForm) => {
                 </Form.Group>
             </Col>
         </Row>
+        <Button variant="success" type="submit">Modifier</Button>
+        </Form>
     </>
 }

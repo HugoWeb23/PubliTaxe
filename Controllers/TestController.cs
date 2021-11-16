@@ -32,7 +32,7 @@ namespace Taxes.Controllers
             try
             {
                 List<Entreprise> list = _context.entreprises.ToList();
-                Rue rue = new() { Numero_rue = 2, Code_postal = 7701, Langue = "2", Nom_rue = "Rue de test" };
+                Rue rue = new() { Code_rue = "2", Code_postalId = 1, Langue = "2", Nom_rue = "Rue de test" };
                 _context.rues.Add(rue);
                 _context.SaveChanges();
                 return Ok(new { type = "success" });

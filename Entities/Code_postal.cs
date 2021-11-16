@@ -10,7 +10,7 @@ namespace Taxes.Entities
     public class Code_postal
     {
         [Key]
-        public int Id { get; set; }
+        public int Code_postalId { get; set; }
         public int Numero_localite { get; set; }
         public int Code_pays { get; set; }
         [Column("code_postal")]

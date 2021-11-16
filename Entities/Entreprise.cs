@@ -12,9 +12,9 @@ namespace Taxes.Entities
     {
         [Key]
         public long Matricule_ciger { get; set; }
-        public int Code_postal_id { get; set; }
+        public int Code_postalId { get; set; }
         public string Nom { get; set; }
-        public int Id_rue { get; set; }
+        public int? Code_rue { get; set; }
         public string Adresse_rue { get; set; }
         public string Adresse_numero { get; set; }
         public int Adresse_boite { get; set; }
@@ -38,7 +38,6 @@ namespace Taxes.Entities
         public string Adresse_localite_taxation { get; set; }
         public string Commentaire_taxation { get; set; }
         public int Role_linguistique { get; set; }
-
         public Code_postal Code_postal { get; set; }
         public ICollection<Publicite> Publicites { get; set; }
 
@@ -49,9 +48,8 @@ namespace Taxes.Entities
         public EntrepriseValidator()
         {
             RuleFor(entreprise => entreprise.Matricule_ciger).NotEmpty().WithMessage("Veuillez saisir un matricule Ciger");
-            RuleFor(entreprise => entreprise.Code_postal_id).NotEmpty().WithMessage("Veuillez saisir un code postal");
+            RuleFor(entreprise => entreprise.Code_postalId).NotEmpty().WithMessage("Veuillez saisir un code postal");
             RuleFor(entreprise => entreprise.Nom).NotEmpty().WithMessage("Veuillez saisir un nom");
-            RuleFor(entreprise => entreprise.Id_rue).NotEmpty().WithMessage("Veuillez saisir une rue");
             RuleFor(entreprise => entreprise.Adresse_rue).NotEmpty().WithMessage("Veuillez saisir une adresse");
             RuleFor(entreprise => entreprise.Adresse_numero).NotEmpty().WithMessage("Veuillez saisir un numéro");
             RuleFor(entreprise => entreprise.Adresse_boite).NotEmpty().WithMessage("Veuillez saisir une boite");
