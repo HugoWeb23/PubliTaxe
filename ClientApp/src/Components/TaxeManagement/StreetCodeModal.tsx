@@ -9,7 +9,7 @@ import {
 } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { IRue } from '../../Types/IRue';
-import { AxiosService } from '../../Services/AxiosService';
+import { apiFetch } from '../../Services/apiFetch';
 import { ErrorAlert } from '../UI/ErrorAlert';
 import { IErreur } from '../../Types/IErreur';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -31,7 +31,7 @@ export const StreetCodeModal = ({ isOpen, handleClose, onSelect }: StreetCodeMod
         setLoading(true)
         setProblem(null)
         try {
-            const rues = await AxiosService(`/rues/getbycode/${data.code_rue}`)
+            const rues = await apiFetch(`/rues/getbycode/${data.code_rue}`)
             setRues(rues.length > 0 ? rues : null)
         } catch(e: any) {
             setProblem(e)

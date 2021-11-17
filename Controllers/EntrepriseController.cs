@@ -64,5 +64,19 @@ namespace Taxes.Controllers
 
         }
 
+        [HttpPut("edit/{matricule_ciger}")]
+        public async Task<IActionResult> EditEntreprise(Entreprise entreprise)
+        {
+            try
+            {
+                Entreprise entr = await _mediator.Send(new UpdateEntrepriseCommand(entreprise));
+                return Ok(entreprise);
+            } catch(Exception e)
+            {
+                return BadRequest(new ErreurSimple { Erreur = "Une erreur est survenue lors de la modification de l'entreprise", Details = e.ToString() });
+            }
+            
+        }
+
     }
 }
