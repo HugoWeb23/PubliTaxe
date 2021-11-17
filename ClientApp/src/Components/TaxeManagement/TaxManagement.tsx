@@ -20,16 +20,16 @@ export const TaxManagement = () => {
 
     useEffect(() => {
         (async() => {
-            const fetchEntreprises = await axios.get<ENames[]>('https://localhost:5001/api/entreprises/names')
-            setEntreprises(fetchEntreprises.data)
+            const fetchEntreprises = await AxiosService('/entreprises/names')
+            setEntreprises(fetchEntreprises)
             setLoader(false)
         })()
     }, [])
 
     const ShowEntreprise = async(entreprise: ENames) => {
         setShowEntrepriseLoader(true)
-        const fetchEntreprise = await axios.get<Entreprise>(`https://localhost:5001/api/entreprises/id/${entreprise.matricule_ciger}`)
-        setEntreprise(fetchEntreprise.data)
+        const fetchEntreprise = await AxiosService(`/entreprises/id/${entreprise.matricule_ciger}`)
+        setEntreprise(fetchEntreprise)
         setShowEntrepriseLoader(false)
     }
 
@@ -41,7 +41,7 @@ export const TaxManagement = () => {
                     <ListGroup variant="flush">
                         {loader == true && <Loader variant="primary"/>}
                         {loader == false && entreprises.map((entreprise: ENames, index: number) => {
-                            return <ListGroup.Item action onClick={() => ShowEntreprise(entreprise)}>#{entreprise.matricule_ciger} {entreprise.nom}</ListGroup.Item>
+                            return <ListGroup.Item key={index} action onClick={() => ShowEntreprise(entreprise)}>#{entreprise.matricule_ciger} {entreprise.nom}</ListGroup.Item>
                         })}
                     </ListGroup>
                 </Card>

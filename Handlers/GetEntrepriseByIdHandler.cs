@@ -21,6 +21,7 @@ namespace Taxes.Handlers
         {
             Entreprise entreprise = _context.entreprises
                 .Include(ent => ent.Code_postal)
+                .ThenInclude(cp => cp.Pays)
                 .FirstOrDefault(ent => ent.Matricule_ciger == request.matricule);
                
             return Task.FromResult(entreprise);

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Taxes.Entities;
@@ -21,8 +22,15 @@ namespace Taxes.Controllers
     [HttpGet("getbycode/{CodeRue}")]
     public async Task<IActionResult> GetAll(string CodeRue)
         {
-            List<Rue> rues = await _mediator.Send(new GetStreetsByCodeQuery(CodeRue));
-            return Ok(rues);
+            try
+            {
+                List<Rue> rues = await _mediator.Send(new GetStreetsByCodeQuery(CodeRue));
+                return Ok(rues);
+            } catch(Exception e)
+            {
+                return BadRequest(new ErreurSimple { Erreur = "Une erreur est survenue", Details = e.ToString()});
+            }
+            
         }
 
     }

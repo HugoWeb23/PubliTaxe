@@ -22,6 +22,7 @@ namespace Taxes.Handlers
             List<Rue> Rues = _context.rues
                 .Where(rue => rue.Code_rue == request.Code_rue)
                 .Include(rue => rue.Code_postal)
+                .ThenInclude(cp => cp.Pays)
                 .ToList();
             return Task.FromResult(Rues);
         }

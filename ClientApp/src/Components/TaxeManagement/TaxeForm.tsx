@@ -11,6 +11,7 @@ import {
 import { Typeahead } from 'react-bootstrap-typeahead'
 import {Entreprise} from '../../Types/IEntreprise'
 import { StreetCodeModal } from "./StreetCodeModal";
+import { IRue } from "../../Types/IRue";
 
 interface TaxeForm {
     data: any
@@ -19,8 +20,13 @@ interface TaxeForm {
 export const TaxeForm = ({data}: TaxeForm) => {
     const [streetCodeModal, setStreetCodeModal] = useState<boolean>(false)
     const { register, control, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({defaultValues: data});
+    
     const OnSubmit = (data: TaxeForm) => {
         console.log(data)
+    }
+
+    const handleSelectStreet = (street: IRue) => {
+        setValue('code_postal', street.code_postal)
     }
     return <>
     <Form onSubmit={handleSubmit(OnSubmit)}>
@@ -69,7 +75,7 @@ export const TaxeForm = ({data}: TaxeForm) => {
         </Row>
         <Row className="mb-3">
             <Col>
-            <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)}/>
+            <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet}/>
             <Form.Group controlId="code_rue">
                 <Form.Label>Code rue</Form.Label>
                 <Form.Control type="text" placeholder="Code rue" onClick={() => setStreetCodeModal(true)} {...register('code_rue')} />
