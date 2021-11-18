@@ -8,7 +8,7 @@ import {
     Col,
     Table
 } from 'react-bootstrap'
-import { Typeahead } from 'react-bootstrap-typeahead'
+import { Typeahead, AsyncTypeahead } from 'react-bootstrap-typeahead'
 import { Entreprise } from '../../Types/IEntreprise'
 import { StreetCodeModal } from "./StreetCodeModal";
 import { IRue } from "../../Types/IRue";
@@ -21,12 +21,13 @@ import { toast } from 'react-toastify';
 interface TaxeForm {
     data?: any,
     type: 'create' | 'edit',
-    onFormSubmit: (data: any) => void
+    onFormSubmit: (data: any) => Promise<void>
 }
 
 export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
     const [streetCodeModal, setStreetCodeModal] = useState<boolean>(false)
     const [markUpReasons, setMarkUpReasons] = useState<IMotif_majoration[]>([])
+    const [postCodes, setPostCodes] = useState<any>([])
     const { register, control, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm(data ? {defaultValues: data} : {});
 
     useEffect(() => {
@@ -39,7 +40,7 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
     const OnSubmit = async(data: any) => {
         delete data.publicites
         try {
-            await onFormSubmit(data)
+            const test = await onFormSubmit(data)
             toast.success('Modifications sauvegardées')
         } catch(e: any) {
             toast.error('Une erreur est survenue')
@@ -50,6 +51,12 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
         setValue('code_rue', street.code_rue)
         setValue('adresse_rue', street.nom_rue)
         setValue('code_postal', street.code_postal)
+    }
+
+    const PostCodeSearch = async(query: any) => {
+        const codes = await apiFetch(`/codes_postaux/getbycode/${query}`)
+        setPostCodes(codes)
+
     }
     return <>
         <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet} />
@@ -136,7 +143,32 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                 <Col>
                     <Form.Group controlId="code_postal">
                         <Form.Label>Code postal</Form.Label>
-                        <Form.Control type="text" placeholder="Code postal" {...register('code_postal.cp')} />
+                       <Controller
+                            control={control}
+                            name="code_postal.cp"
+                            render={({
+                                field: { onChange, onBlur, value, name, ref }
+                            }) => (
+                                <AsyncTypeahead
+                                    filterBy={() => true}
+                                    id="localite"
+                                    isLoading={false}
+                                    labelKey="cp"
+                                    onSearch={PostCodeSearch}
+                                    options={postCodes}
+                                    onChange={(value) => onChange(...value)}
+                                    emptyLabel='Aucun résultat'
+                                    selected={value != undefined ? [value] : []}
+                                    renderMenuItemChildren={(option, props) => (
+                                        <div>
+                                          {option.cp}
+                                          <div>
+                                          <small>{option.localite}</small>
+                                          </div>
+                                        </div>
+                                      )}
+                                />
+                            )} />
                     </Form.Group>
                 </Col>
                 <Col>
@@ -248,6 +280,7 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                                         "Mons",
                                         "Namur"
                                     ]}
+                                    onChange={(value) => onChange(...value)}
                                     emptyLabel='Aucun résultat'
                                 />
                             )} />

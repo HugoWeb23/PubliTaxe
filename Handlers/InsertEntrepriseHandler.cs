@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Taxes.Commands;
@@ -17,6 +19,7 @@ namespace Taxes.Handlers
         public Task<Entreprise> Handle(InsertEntrepriseCommand request, CancellationToken cancellationToken)
         {
             _context.entreprises.Add(request.Entreprise);
+            _context.Entry(request.Entreprise).State = EntityState.Added;
             _context.SaveChanges();
             return Task.FromResult(request.Entreprise);
         }

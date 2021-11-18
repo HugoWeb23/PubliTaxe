@@ -8,6 +8,7 @@ import { Navigation } from './Components/Navigation/Navigation';
 import { TaxManagement } from './Components/TaxeManagement/TaxManagement';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './styles.css';
 
 export const App = () => {
   return <>

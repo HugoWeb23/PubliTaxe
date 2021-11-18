@@ -12,6 +12,7 @@ import { ENames, Entreprise } from '../../Types/IEntreprise'
 import { Loader } from '../UI/Loader'
 import { EditTax } from './EditTax'
 import {CreateTax} from './CreateTax'
+import { useHistory } from 'react-router'
 
 export const TaxManagement = () => {
 
@@ -20,6 +21,7 @@ export const TaxManagement = () => {
     const [mode, setMode] = useState<number>(2)
     const [showEntrepriseLoader, setShowEntrepriseLoader] = useState<boolean>(false)
     const [entreprise, setEntreprise] = useState<any>({})
+    const history = useHistory()
 
     useEffect(() => {
         (async() => {
@@ -48,7 +50,7 @@ export const TaxManagement = () => {
                     <ListGroup variant="flush">
                         {loader == true && <Loader variant="primary"/>}
                         {loader == false && entreprises.map((ent: ENames, index: number) => {
-                            return <ListGroup.Item key={index} action active={mode == 2 && (entreprise.matricule_ciger == ent.matricule_ciger)} onClick={() => ShowEntreprise(ent)}>#{entreprise.matricule_ciger} {ent.nom}</ListGroup.Item>
+                            return <ListGroup.Item key={index} action onClick={() => ShowEntreprise(ent)}>#{ent.matricule_ciger} {ent.nom}</ListGroup.Item>
                         })}
                     </ListGroup>
                 </Card>

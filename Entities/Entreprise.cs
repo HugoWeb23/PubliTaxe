@@ -29,9 +29,9 @@ namespace Taxes.Entities
         public string Mail_contact { get; set; }
         public int Pourcentage_majoration { get; set; }
         public int? Motif_majorationId { get; set; }
-        public int Code_rue_taxation { get; set; }
+        public string Code_rue_taxation { get; set; }
         public string Adresse_taxation { get; set; }
-        public int Adresse_numero_taxation { get; set; }
+        public string Adresse_numero_taxation { get; set; }
         public int Adresse_boite_taxation { get; set; }
         public string Adresse_index_taxation { get; set; }
         public int Adresse_code_postal_taxation { get; set; }
@@ -50,7 +50,6 @@ namespace Taxes.Entities
         public EntrepriseValidator()
         {
             RuleFor(entreprise => entreprise.Matricule_ciger).NotEmpty().WithMessage("Veuillez saisir un matricule Ciger");
-            RuleFor(entreprise => entreprise.Code_postalId).NotEmpty().WithMessage("Veuillez saisir un code postal");
             RuleFor(entreprise => entreprise.Nom).NotEmpty().WithMessage("Veuillez saisir un nom");
             RuleFor(entreprise => entreprise.Adresse_rue).NotEmpty().WithMessage("Veuillez saisir une adresse");
             RuleFor(entreprise => entreprise.Adresse_numero).NotEmpty().WithMessage("Veuillez saisir un numéro");

@@ -16,6 +16,7 @@ namespace Taxes.Entities
         [Column("code_postal")]
         public string CP { get; set; }
         public string Localite { get; set; }
+        [ForeignKey("PaysId")]
         public Pays Pays { get; set; }
 
     }
