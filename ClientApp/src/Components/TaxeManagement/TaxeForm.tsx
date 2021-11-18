@@ -8,7 +8,7 @@ import {
     Col,
     Table
 } from 'react-bootstrap'
-import { Typeahead, AsyncTypeahead } from 'react-bootstrap-typeahead'
+import { Typeahead, AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead'
 import { Entreprise } from '../../Types/IEntreprise'
 import { StreetCodeModal } from "./StreetCodeModal";
 import { IRue } from "../../Types/IRue";
@@ -17,6 +17,8 @@ import { apiFetch } from "../../Services/apiFetch";
 import { Loader } from "../UI/Loader";
 import { ErrorAlert } from "../UI/ErrorAlert";
 import { toast } from 'react-toastify';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { TaxeFormSchema } from "../../Validation/Streets/TaxeFormSchema";
 
 interface TaxeForm {
     data?: any,
@@ -25,10 +27,13 @@ interface TaxeForm {
 }
 
 export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
+    const defaultValues = data ? data : {}
     const [streetCodeModal, setStreetCodeModal] = useState<boolean>(false)
     const [markUpReasons, setMarkUpReasons] = useState<IMotif_majoration[]>([])
     const [postCodes, setPostCodes] = useState<any>([])
-    const { register, control, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm(data ? {defaultValues: data} : {});
+    const [codePostal, setCodePostal] = useState<any>(null)
+    const [postCodeText, changePostCodeText] = useState<string>("")
+    const { register, control, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({resolver: yupResolver(TaxeFormSchema), defaultValues: defaultValues});
 
     useEffect(() => {
         (async () => {
@@ -38,8 +43,11 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
     }, [])
 
     const OnSubmit = async(data: any) => {
-        delete data.publicites
         try {
+            delete data.publicites
+            if(codePostal) {
+                data.code_postalId = codePostal
+            }
             const test = await onFormSubmit(data)
             toast.success('Modifications sauvegardées')
         } catch(e: any) {
@@ -56,7 +64,13 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
     const PostCodeSearch = async(query: any) => {
         const codes = await apiFetch(`/codes_postaux/getbycode/${query}`)
         setPostCodes(codes)
+    }
 
+    const HandleCodePostalChange = (data: any) => {
+        console.log(data.cp)
+        setCodePostal(data.code_postalId)
+        setValue('code_postal.cp', data.cp)
+        setValue('code_postal.localite', data.localite)
     }
     return <>
         <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet} />
@@ -68,7 +82,8 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                 <Col>
                     <Form.Group controlId="matricule_ciger">
                         <Form.Label>Matricule Ciger</Form.Label>
-                        <Form.Control type="text" placeholder="Matricule Ciger" disabled={type == 'edit'} {...register('matricule_ciger')} />
+                        <Form.Control type="text" placeholder="Matricule Ciger" isInvalid={errors.matricule_ciger} disabled={type == 'edit'} {...register('matricule_ciger')} />
+                        {errors.matricule_ciger && <Form.Control.Feedback type="invalid">{errors.matricule_ciger.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
@@ -103,47 +118,56 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                 <Col>
                     <Form.Group controlId="nom">
                         <Form.Label>Nom entreprise</Form.Label>
-                        <Form.Control type="text" placeholder="Nom entreprise" {...register('nom')} />
+                        <Form.Control type="text" placeholder="Nom entreprise" isInvalid={errors.nom} {...register('nom')} />
+                        {errors.nom && <Form.Control.Feedback type="invalid">{errors.nom.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
             </Row>
-            <Row className="mb-3">
+            <Row>
                 <Col>
                     <Form.Group controlId="code_rue">
                         <Form.Label>Code rue</Form.Label>
-                        <Form.Control type="text" placeholder="Code rue" onClick={() => setStreetCodeModal(true)} {...register('code_rue')} />
+                        <Form.Control type="text" placeholder="Code rue" disabled isInvalid={errors.code_rue} {...register('code_rue')} />
+                        {errors.code_rue && <Form.Control.Feedback type="invalid">{errors.code_rue.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group controlId="rue">
                         <Form.Label>Rue</Form.Label>
-                        <Form.Control type="text" placeholder="Rue" {...register('adresse_rue')} />
+                        <Form.Control type="text" placeholder="Rue" isInvalid={errors.adresse_rue} {...register('adresse_rue')} />
+                        {errors.adresse_rue && <Form.Control.Feedback type="invalid">{errors.adresse_rue.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group controlId="numero">
                         <Form.Label>Numéro</Form.Label>
-                        <Form.Control type="text" placeholder="Numéro" {...register('adresse_numero')} />
+                        <Form.Control type="text" placeholder="Numéro" isInvalid={errors.adresse_numero} {...register('adresse_numero')} />
+                        {errors.adresse_numero && <Form.Control.Feedback type="invalid">{errors.adresse_numero.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group controlId="index">
                         <Form.Label>Index</Form.Label>
-                        <Form.Control type="text" placeholder="Index" {...register('adresse_index')} />
+                        <Form.Control type="text" placeholder="Index" isInvalid={errors.adresse_index} {...register('adresse_index')} />
+                        {errors.adresse_index && <Form.Control.Feedback type="invalid">{errors.adresse_index.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group controlId="boite">
                         <Form.Label>Boite</Form.Label>
-                        <Form.Control type="text" placeholder="Boite" {...register('adresse_boite')} />
+                        <Form.Control type="text" placeholder="Boite" isInvalid={errors.adresse_boite} {...register('adresse_boite')} />
+                        {errors.adresse_boite && <Form.Control.Feedback type="invalid">{errors.adresse_boite.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
             </Row>
             <Row className="mb-3">
+                <Col><Button variant="link" onClick={() => setStreetCodeModal(true)}>Recherche par code rue</Button></Col>
+            </Row>
+            <Row>
                 <Col>
                     <Form.Group controlId="code_postal">
                         <Form.Label>Code postal</Form.Label>
-                       <Controller
+                        <Controller
                             control={control}
                             name="code_postal.cp"
                             render={({
@@ -154,18 +178,26 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                                     id="localite"
                                     isLoading={false}
                                     labelKey="cp"
-                                    onSearch={PostCodeSearch}
+                                    onSearch={(query) => PostCodeSearch(query)}
                                     options={postCodes}
                                     onChange={(value) => onChange(...value)}
                                     emptyLabel='Aucun résultat'
                                     selected={value != undefined ? [value] : []}
-                                    renderMenuItemChildren={(option, props) => (
-                                        <div>
-                                          {option.cp}
-                                          <div>
-                                          <small>{option.localite}</small>
-                                          </div>
-                                        </div>
+                                    renderMenu={(results, menuProps) => (
+                                        <Menu {...menuProps}>
+                                          {results.map((result, index) => (
+                                            <MenuItem
+                                            key={index}
+                                              onClick={() => HandleCodePostalChange(result)}
+                                              option={result}
+                                              position={index}>
+                                              <div>{result.cp}</div>
+                                              <div>
+                                                  <small>{result.localite}</small>
+                                              </div>
+                                            </MenuItem>
+                                          ))}
+                                        </Menu>
                                       )}
                                 />
                             )} />
@@ -174,25 +206,7 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                 <Col>
                     <Form.Group controlId="localite">
                         <Form.Label>Localité</Form.Label>
-                        <Controller
-                            control={control}
-                            name="code_postal.localite"
-                            render={({
-                                field: { onChange, onBlur, value, name, ref }
-                            }) => (
-                                <Typeahead
-                                    id="localite"
-                                    options={[
-                                        "Mouscron",
-                                        "Tournai",
-                                        "Mons",
-                                        "Namur"
-                                    ]}
-                                    onChange={(value) => onChange(...value)}
-                                    emptyLabel='Aucun résultat'
-                                    selected={value != undefined ? [value] : []}
-                                />
-                            )} />
+                        <Form.Control type="text" placeholder="Code postal" {...register('code_postal.localite')} />
                     </Form.Group>
                 </Col>
                 <Col>
@@ -207,6 +221,9 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                         <Form.Control type="text" placeholder="Fax" {...register('numero_fax')} />
                     </Form.Group>
                 </Col>
+            </Row>
+            <Row className="mb-3">
+            <Col><Button variant="link">Recherche par code postal ou localité</Button></Col>
             </Row>
             <Row className="mb-3">
                 <Col>

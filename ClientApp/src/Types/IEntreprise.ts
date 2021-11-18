@@ -1,3 +1,5 @@
+import { ICode_postal } from "./ICode_postal";
+
 export interface ENames {
     matricule_ciger: number,
     nom: string
@@ -31,4 +33,5 @@ export interface Entreprise {
         adresse_localite_taxation: string,
         commentaire_taxation: string,
         role_linguistique: number
+        code_postal: ICode_postal
 }
