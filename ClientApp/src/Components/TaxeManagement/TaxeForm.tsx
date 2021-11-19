@@ -30,10 +30,10 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
     const defaultValues = data ? data : {}
     const [streetCodeModal, setStreetCodeModal] = useState<boolean>(false)
     const [markUpReasons, setMarkUpReasons] = useState<IMotif_majoration[]>([])
-    const [postCodes, setPostCodes] = useState<any>([])
+    const [postCodes, setPostCodes] = useState<any>(data.code_postal ? [data.code_postal] : [])
     const [codePostal, setCodePostal] = useState<any>(null)
     const [postCodeText, changePostCodeText] = useState<string>("")
-    const { register, control, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({resolver: yupResolver(TaxeFormSchema), defaultValues: defaultValues});
+    const { register, control, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(TaxeFormSchema), defaultValues: defaultValues });
 
     useEffect(() => {
         (async () => {
@@ -42,15 +42,15 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
         })()
     }, [])
 
-    const OnSubmit = async(data: any) => {
+    const OnSubmit = async (data: any) => {
         try {
             delete data.publicites
-            if(codePostal) {
+            if (codePostal) {
                 data.code_postalId = codePostal
             }
             const test = await onFormSubmit(data)
             toast.success('Modifications sauvegardées')
-        } catch(e: any) {
+        } catch (e: any) {
             toast.error('Une erreur est survenue')
         }
     }
@@ -59,25 +59,41 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
         setValue('code_rue', street.code_rue)
         setValue('adresse_rue', street.nom_rue)
         setValue('code_postal', street.code_postal)
+        setPostCodes([street.code_postal])
     }
 
-    const PostCodeSearch = async(query: any) => {
+    const PostCodeSearch = async (query: any) => {
         const codes = await apiFetch(`/codes_postaux/getbycode/${query}`)
         setPostCodes(codes)
     }
 
-    const HandleCodePostalChange = (data: any) => {
-        console.log(data.cp)
-        setCodePostal(data.code_postalId)
-        setValue('code_postal.cp', data.cp)
-        setValue('code_postal.localite', data.localite)
+    const LocalitySearch = async (query: any) => {
+        const codes = await apiFetch(`/codes_postaux/getbylocality/${query}`)
+        setPostCodes(codes)
     }
+
+    const SetValueOnChange = (type: 'cp' | 'localite', data: any) => {
+        const test = {...data[0]}
+        const test2 = {...data}
+       if(Object.keys(test).length > 0) {
+            setCodePostal(test.code_postalId)
+            setValue('code_postal.cp', test.cp)
+            setValue('code_postal.localite', test.localite)
+       } else {
+           if(type == 'cp') {
+            setValue('code_postal.cp', test2.cp)
+           } else if(type == 'localite') {
+            setValue('code_postal.localite', test2.localite)
+           }
+       }
+    }
+
     return <>
         <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet} />
         <Form onSubmit={handleSubmit(OnSubmit)} className="mb-3">
-        <div className="d-flex justify-content-start">
-        <Button variant="success" type="submit" className="mt-3" disabled={isSubmitting}>{type == "create" ? "Créer l'entreprise" : "Modifier l'entreprise"}</Button>
-        </div>
+            <div className="d-flex justify-content-start">
+                <Button variant="success" type="submit" className="mt-3" disabled={isSubmitting}>{type == "create" ? "Créer l'entreprise" : "Modifier l'entreprise"}</Button>
+            </div>
             <Row className="mb-3">
                 <Col>
                     <Form.Group controlId="matricule_ciger">
@@ -163,7 +179,7 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
             <Row className="mb-3">
                 <Col><Button variant="link" onClick={() => setStreetCodeModal(true)}>Recherche par code rue</Button></Col>
             </Row>
-            <Row>
+            <Row className="mb-3">
                 <Col>
                     <Form.Group controlId="code_postal">
                         <Form.Label>Code postal</Form.Label>
@@ -178,27 +194,28 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                                     id="localite"
                                     isLoading={false}
                                     labelKey="cp"
+                                    placeholder="Code postal"
+                                    isInvalid={errors.code_postal && errors.code_postal.cp}
                                     onSearch={(query) => PostCodeSearch(query)}
                                     options={postCodes}
-                                    onChange={(value) => onChange(...value)}
+                                    onChange={(value) => SetValueOnChange('cp', value)}
                                     emptyLabel='Aucun résultat'
                                     selected={value != undefined ? [value] : []}
                                     renderMenu={(results, menuProps) => (
                                         <Menu {...menuProps}>
-                                          {results.map((result, index) => (
-                                            <MenuItem
-                                            key={index}
-                                              onClick={() => HandleCodePostalChange(result)}
-                                              option={result}
-                                              position={index}>
-                                              <div>{result.cp}</div>
-                                              <div>
-                                                  <small>{result.localite}</small>
-                                              </div>
-                                            </MenuItem>
-                                          ))}
+                                            {results.map((result, index) => (
+                                                <MenuItem
+                                                    key={index}
+                                                    option={result}
+                                                    position={index}>
+                                                    <div>{result.cp}</div>
+                                                    <div>
+                                                        <small>{result.localite}</small>
+                                                    </div>
+                                                </MenuItem>
+                                            ))}
                                         </Menu>
-                                      )}
+                                    )}
                                 />
                             )} />
                     </Form.Group>
@@ -206,7 +223,41 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                 <Col>
                     <Form.Group controlId="localite">
                         <Form.Label>Localité</Form.Label>
-                        <Form.Control type="text" placeholder="Code postal" {...register('code_postal.localite')} />
+                        <Controller
+                            control={control}
+                            name="code_postal.localite"
+                            render={({
+                                field: { onChange, onBlur, value, name, ref }
+                            }) => (
+                                <AsyncTypeahead
+                                    filterBy={() => true}
+                                    id="localite"
+                                    isLoading={false}
+                                    labelKey="localite"
+                                    placeholder="Localité"
+                                    isInvalid={errors.code_postal && errors.code_postal.localite}
+                                    onSearch={(query) => LocalitySearch(query)}
+                                    options={postCodes}
+                                    onChange={(value: any) => SetValueOnChange('localite', value)}
+                                    emptyLabel='Aucun résultat'
+                                    selected={value != undefined ? [value] : []}
+                                    renderMenu={(results, menuProps) => (
+                                        <Menu {...menuProps}>
+                                            {results.map((result, index) => (
+                                                <MenuItem
+                                                    key={index}
+                                                    option={result}
+                                                    position={index}>
+                                                    <div>{result.cp}</div>
+                                                    <div>
+                                                        <small>{result.localite}</small>
+                                                    </div>
+                                                </MenuItem>
+                                            ))}
+                                        </Menu>
+                                    )}
+                                />
+                            )} />
                     </Form.Group>
                 </Col>
                 <Col>
@@ -221,9 +272,6 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                         <Form.Control type="text" placeholder="Fax" {...register('numero_fax')} />
                     </Form.Group>
                 </Col>
-            </Row>
-            <Row className="mb-3">
-            <Col><Button variant="link">Recherche par code postal ou localité</Button></Col>
             </Row>
             <Row className="mb-3">
                 <Col>
@@ -269,13 +317,13 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                     <Form.Group controlId="motif_majoration">
                         <Form.Label>Motif de la majoration</Form.Label>
                         {markUpReasons.length > 0 ?
-                        <Form.Select {...register('motif_majorationId')}>
-                                    <option value=""></option>
-                                    {markUpReasons.map((reason: IMotif_majoration, index: number) => {
-                                        return <option key={index} value={reason.id_motif}>{reason.libelle}</option>
-                                    })}
-                        </Form.Select>
-                            : <Loader/>}
+                            <Form.Select {...register('motif_majorationId')}>
+                                <option value=""></option>
+                                {markUpReasons.map((reason: IMotif_majoration, index: number) => {
+                                    return <option key={index} value={reason.id_motif}>{reason.libelle}</option>
+                                })}
+                            </Form.Select>
+                            : <Loader />}
                     </Form.Group>
                 </Col>
             </Row>

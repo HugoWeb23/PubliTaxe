@@ -30,5 +30,12 @@ namespace Taxes.Controllers
             List<Code_postal> codes_postaux = await _mediator.Send(new GetPostalCodesByCodesQuery(code));
             return Ok(codes_postaux);
         }
+
+        [HttpGet("getbylocality/{locality}")]
+        public async Task<IActionResult> GetByLocality(string locality)
+        {
+            List<Code_postal> codes_postaux = await _mediator.Send(new GetPostalCodesByLocalityQuery(locality));
+            return Ok(codes_postaux);
+        }
     }
 }
