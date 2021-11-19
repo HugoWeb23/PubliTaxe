@@ -2,3 +2,13 @@
     --toastify-color-success: #198754;
     --toastify-color-error: #dc3545;
 }
+
+.code-rue-style {
+    display: inline;
+    color: #0d6efd;
+    cursor: pointer;
+}
+
+.code-rue-style:hover {
+    text-decoration: underline
+}

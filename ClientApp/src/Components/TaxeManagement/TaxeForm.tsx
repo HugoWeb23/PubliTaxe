@@ -60,6 +60,7 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
         setValue('adresse_rue', street.nom_rue)
         setValue('code_postal', street.code_postal)
         setPostCodes([street.code_postal])
+        clearErrors(['code_postal.cp', 'code_postal.localite', 'adresse_rue'])
     }
 
     const PostCodeSearch = async (query: any) => {
@@ -73,57 +74,58 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
     }
 
     const SetValueOnChange = (type: 'cp' | 'localite', data: any) => {
-        const test = {...data[0]}
-        const test2 = {...data}
-       if(Object.keys(test).length > 0) {
-            setCodePostal(test.code_postalId)
-            setValue('code_postal.cp', test.cp)
-            setValue('code_postal.localite', test.localite)
-       } else {
-           if(type == 'cp') {
-            setValue('code_postal.cp', test2.cp)
-           } else if(type == 'localite') {
-            setValue('code_postal.localite', test2.localite)
-           }
-       }
+        const code_postal = { ...data[0] }
+        const inputvalue = { ...data }
+        if (Object.keys(code_postal).length > 0) {
+            setCodePostal(code_postal.code_postalId)
+            setValue('code_postal.cp', code_postal.cp)
+            setValue('code_postal.localite', code_postal.localite)
+            clearErrors(['code_postal.cp', 'code_postal.localite'])
+        } else {
+            if (type == 'cp') {
+                setValue('code_postal.cp', inputvalue.cp)
+            } else if (type == 'localite') {
+                setValue('code_postal.localite', inputvalue.localite)
+            }
+        }
     }
 
     return <>
         <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet} />
         <Form onSubmit={handleSubmit(OnSubmit)} className="mb-3">
             <div className="d-flex justify-content-start">
-                <Button variant="success" type="submit" className="mt-3" disabled={isSubmitting}>{type == "create" ? "Créer l'entreprise" : "Modifier l'entreprise"}</Button>
+                <Button variant="success" size="sm" type="submit" className="mt-3 mb-3" disabled={isSubmitting}>{type == "create" ? "Créer l'entreprise" : "Modifier l'entreprise"}</Button>
             </div>
             <Row className="mb-3">
                 <Col>
                     <Form.Group controlId="matricule_ciger">
-                        <Form.Label>Matricule Ciger</Form.Label>
-                        <Form.Control type="text" placeholder="Matricule Ciger" isInvalid={errors.matricule_ciger} disabled={type == 'edit'} {...register('matricule_ciger')} />
+                        <Form.Label column="sm">Matricule Ciger</Form.Label>
+                        <Form.Control type="text" placeholder="Matricule Ciger" isInvalid={errors.matricule_ciger} disabled={type == 'edit'} size="sm" {...register('matricule_ciger')} />
                         {errors.matricule_ciger && <Form.Control.Feedback type="invalid">{errors.matricule_ciger.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group controlId="proces_verbal">
-                        <Form.Label>Procès verbal</Form.Label>
+                        <Form.Label column="sm">Procès verbal</Form.Label>
                         <Form.Check type="checkbox" {...register('proces_verbal')} />
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group controlId="province">
-                        <Form.Label>Province</Form.Label>
+                        <Form.Label column="sm">Province</Form.Label>
                         <Form.Check type="checkbox" {...register('province')} />
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group controlId="recu">
-                        <Form.Label>Reçu</Form.Label>
+                        <Form.Label column="sm">Reçu</Form.Label>
                         <Form.Check type="checkbox" {...register('recu')} />
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group controlId="langue">
-                        <Form.Label>Langue</Form.Label>
-                        <Form.Select {...register('role_linguistique')}>
+                        <Form.Label column="sm">Langue</Form.Label>
+                        <Form.Select size="sm" {...register('role_linguistique')}>
                             <option value="1">Français</option>
                             <option value="2">Néerlandais</option>
                         </Form.Select>
@@ -133,8 +135,8 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
             <Row className="mb-3">
                 <Col>
                     <Form.Group controlId="nom">
-                        <Form.Label>Nom entreprise</Form.Label>
-                        <Form.Control type="text" placeholder="Nom entreprise" isInvalid={errors.nom} {...register('nom')} />
+                        <Form.Label column="sm">Nom entreprise</Form.Label>
+                        <Form.Control type="text" placeholder="Nom entreprise" isInvalid={errors.nom} {...register('nom')} size="sm" />
                         {errors.nom && <Form.Control.Feedback type="invalid">{errors.nom.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
@@ -142,47 +144,47 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
             <Row>
                 <Col>
                     <Form.Group controlId="code_rue">
-                        <Form.Label>Code rue</Form.Label>
-                        <Form.Control type="text" placeholder="Code rue" disabled isInvalid={errors.code_rue} {...register('code_rue')} />
+                        <Form.Label column="sm">Code rue</Form.Label>
+                        <Form.Control type="text" placeholder="Code rue" disabled isInvalid={errors.code_rue} {...register('code_rue')} size="sm" />
                         {errors.code_rue && <Form.Control.Feedback type="invalid">{errors.code_rue.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group controlId="rue">
-                        <Form.Label>Rue</Form.Label>
-                        <Form.Control type="text" placeholder="Rue" isInvalid={errors.adresse_rue} {...register('adresse_rue')} />
+                        <Form.Label column="sm">Rue</Form.Label>
+                        <Form.Control type="text" placeholder="Rue" isInvalid={errors.adresse_rue} {...register('adresse_rue')} size="sm" />
                         {errors.adresse_rue && <Form.Control.Feedback type="invalid">{errors.adresse_rue.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group controlId="numero">
-                        <Form.Label>Numéro</Form.Label>
-                        <Form.Control type="text" placeholder="Numéro" isInvalid={errors.adresse_numero} {...register('adresse_numero')} />
+                        <Form.Label column="sm">Numéro</Form.Label>
+                        <Form.Control type="text" placeholder="Numéro" isInvalid={errors.adresse_numero} {...register('adresse_numero')} size="sm" />
                         {errors.adresse_numero && <Form.Control.Feedback type="invalid">{errors.adresse_numero.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group controlId="index">
-                        <Form.Label>Index</Form.Label>
-                        <Form.Control type="text" placeholder="Index" isInvalid={errors.adresse_index} {...register('adresse_index')} />
+                        <Form.Label column="sm">Index</Form.Label>
+                        <Form.Control type="text" placeholder="Index" isInvalid={errors.adresse_index} {...register('adresse_index')} size="sm" />
                         {errors.adresse_index && <Form.Control.Feedback type="invalid">{errors.adresse_index.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group controlId="boite">
-                        <Form.Label>Boite</Form.Label>
-                        <Form.Control type="text" placeholder="Boite" isInvalid={errors.adresse_boite} {...register('adresse_boite')} />
+                        <Form.Label column="sm">Boite</Form.Label>
+                        <Form.Control type="text" placeholder="Boite" isInvalid={errors.adresse_boite} {...register('adresse_boite')} size="sm" />
                         {errors.adresse_boite && <Form.Control.Feedback type="invalid">{errors.adresse_boite.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
             </Row>
             <Row className="mb-3">
-                <Col><Button variant="link" onClick={() => setStreetCodeModal(true)}>Recherche par code rue</Button></Col>
+                <Col><div className="code-rue-style" onClick={() => setStreetCodeModal(true)}>Recherche par code rue</div></Col>
             </Row>
             <Row className="mb-3">
                 <Col>
                     <Form.Group controlId="code_postal">
-                        <Form.Label>Code postal</Form.Label>
+                        <Form.Label column="sm">Code postal</Form.Label>
                         <Controller
                             control={control}
                             name="code_postal.cp"
@@ -201,6 +203,7 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                                     onChange={(value) => SetValueOnChange('cp', value)}
                                     emptyLabel='Aucun résultat'
                                     selected={value != undefined ? [value] : []}
+                                    size="sm"
                                     renderMenu={(results, menuProps) => (
                                         <Menu {...menuProps}>
                                             {results.map((result, index) => (
@@ -222,7 +225,7 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                 </Col>
                 <Col>
                     <Form.Group controlId="localite">
-                        <Form.Label>Localité</Form.Label>
+                        <Form.Label column="sm">Localité</Form.Label>
                         <Controller
                             control={control}
                             name="code_postal.localite"
@@ -241,6 +244,7 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                                     onChange={(value: any) => SetValueOnChange('localite', value)}
                                     emptyLabel='Aucun résultat'
                                     selected={value != undefined ? [value] : []}
+                                    size="sm"
                                     renderMenu={(results, menuProps) => (
                                         <Menu {...menuProps}>
                                             {results.map((result, index) => (
@@ -262,67 +266,77 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                 </Col>
                 <Col>
                     <Form.Group controlId="telephone">
-                        <Form.Label>Téléphone</Form.Label>
-                        <Form.Control type="text" placeholder="Téléphone" {...register('numero_telephone')} />
+                        <Form.Label column="sm">Téléphone</Form.Label>
+                        <Form.Control type="text" placeholder="Téléphone" isInvalid={errors.numero_telephone} {...register('numero_telephone')} size="sm" />
+                        {errors.numero_telephone && <Form.Control.Feedback type="invalid">{errors.numero_telephone.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group controlId="fax">
-                        <Form.Label>Fax</Form.Label>
-                        <Form.Control type="text" placeholder="Fax" {...register('numero_fax')} />
+                        <Form.Label column="sm">Fax</Form.Label>
+                        <Form.Control type="text" placeholder="Fax" isInvalid={errors.numero_fax} {...register('numero_fax')} size="sm" />
+                        {errors.numero_fax && <Form.Control.Feedback type="invalid">{errors.numero_fax.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
             </Row>
             <Row className="mb-3">
                 <Col>
                     <Form.Group controlId="personne_contact">
-                        <Form.Label>Personne de contact</Form.Label>
-                        <Form.Control type="text" placeholder="Personne de contact" {...register('personne_contact')} />
+                        <Form.Label column="sm">Personne de contact</Form.Label>
+                        <Form.Control type="text" placeholder="Personne de contact" isInvalid={errors.personne_contact} {...register('personne_contact')} size="sm" />
+                        {errors.personne_contact && <Form.Control.Feedback type="invalid">{errors.personne_contact.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group controlId="telephone_contact">
-                        <Form.Label>Téléphone</Form.Label>
-                        <Form.Control type="text" placeholder="Téléphone" {...register('telephone_contact')} />
+                        <Form.Label column="sm">Téléphone</Form.Label>
+                        <Form.Control type="text" placeholder="Téléphone" isInvalid={errors.telephone_contact} {...register('telephone_contact')} size="sm" />
+                        {errors.telephone_contact && <Form.Control.Feedback type="invalid">{errors.telephone_contact.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group controlId="mail_contact">
-                        <Form.Label>Adresse e-mail</Form.Label>
-                        <Form.Control type="text" placeholder="Adresse e-mail" {...register('mail_contact')} />
+                        <Form.Label column="sm">Adresse e-mail</Form.Label>
+                        <Form.Control type="text" placeholder="Adresse e-mail" isInvalid={errors.mail_contact} {...register('mail_contact')} size="sm" />
+                        {errors.mail_contact && <Form.Control.Feedback type="invalid">{errors.mail_contact.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
             </Row>
             <Row className="mb-3">
                 <Col>
                     <Form.Group controlId="numero_tva">
-                        <Form.Label>Numéro de TVA</Form.Label>
-                        <Form.Control type="text" placeholder="Numéro de TVA" {...register('numero_tva')} />
+                        <Form.Label column="sm">Numéro de TVA</Form.Label>
+                        <Form.Control type="text" placeholder="Numéro de TVA" isInvalid={errors.numero_tva} {...register('numero_tva')} size="sm" />
+                        {errors.numero_tva && <Form.Control.Feedback type="invalid">{errors.numero_tva.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
             </Row>
             <Row className="mb-3">
                 <Col>
                     <Form.Group controlId="pourcentage_majoration">
-                        <Form.Label>% majoration</Form.Label>
-                        <Form.Select {...register('pourcentage_majoration')}>
+                        <Form.Label column="sm">% majoration</Form.Label>
+                        <Form.Select {...register('pourcentage_majoration')} isInvalid={errors.pourcentage_majoration} size="sm">
                             <option value="0">Aucune</option>
                             <option value="10">10 %</option>
                             <option value="2">20 %</option>
                             <option value="5">50 %</option>
                         </Form.Select>
+                        {errors.pourcentage_majoration && <Form.Control.Feedback type="invalid">{errors.pourcentage_majoration.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group controlId="motif_majoration">
-                        <Form.Label>Motif de la majoration</Form.Label>
+                        <Form.Label column="sm">Motif de la majoration</Form.Label>
                         {markUpReasons.length > 0 ?
-                            <Form.Select {...register('motif_majorationId')}>
-                                <option value=""></option>
-                                {markUpReasons.map((reason: IMotif_majoration, index: number) => {
-                                    return <option key={index} value={reason.id_motif}>{reason.libelle}</option>
-                                })}
-                            </Form.Select>
+                            <>
+                                <Form.Select {...register('motif_majorationId')} size="sm">
+                                    <option value=""></option>
+                                    {markUpReasons.map((reason: IMotif_majoration, index: number) => {
+                                        return <option key={index} value={reason.id_motif}>{reason.libelle}</option>
+                                    })}
+                                </Form.Select>
+                                {errors.motif_majoration && <Form.Control.Feedback type="invalid">{errors.motif_majoration.message}</Form.Control.Feedback>}
+                            </>
                             : <Loader />}
                     </Form.Group>
                 </Col>
@@ -330,79 +344,62 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
             <Row className="mb-3">
                 <Col>
                     <Form.Group controlId="code_rue_taxation">
-                        <Form.Label>Code rue taxation</Form.Label>
-                        <Controller
-                            control={control}
-                            name="code_rue_taxation"
-                            render={({
-                                field: { onChange, onBlur, value, name, ref }
-                            }) => (
-                                <Typeahead
-                                    id="code_rue_taxation"
-                                    options={[
-                                        "Mouscron",
-                                        "Tournai",
-                                        "Mons",
-                                        "Namur"
-                                    ]}
-                                    onChange={(value) => onChange(...value)}
-                                    emptyLabel='Aucun résultat'
-                                />
-                            )} />
+                        <Form.Label column="sm">Code rue taxation</Form.Label>
+                        <Form.Control type="text" disabled {...register('code_rue_taxation')} size="sm" />
+                        {errors.code_rue_taxation && <Form.Control.Feedback type="invalid">{errors.code_rue_taxation.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group controlId="adresse_taxation">
-                        <Form.Label>Adresse taxation</Form.Label>
-                        <Form.Control type="text" placeholder="Adresse taxation" {...register('adresse_taxation')} />
+                        <Form.Label column="sm">Adresse taxation</Form.Label>
+                        <Form.Control type="text" placeholder="Adresse taxation" isInvalid={errors.adresse_taxation} {...register('adresse_taxation')} size="sm" />
+                        {errors.adresse_taxation && <Form.Control.Feedback type="invalid">{errors.adresse_taxation.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group controlId="adresse_numero_taxation">
-                        <Form.Label>Numéro</Form.Label>
-                        <Form.Control type="text" placeholder="Numéro" {...register('adresse_numero_taxation')} />
+                        <Form.Label column="sm">Numéro</Form.Label>
+                        <Form.Control type="text" placeholder="Numéro" isInvalid={errors.adresse_numero_taxation} {...register('adresse_numero_taxation')} size="sm" />
+                        {errors.adresse_numero_taxation && <Form.Control.Feedback type="invalid">{errors.adresse_numero_taxation.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group controlId="adresse_index_taxation">
-                        <Form.Label>Index</Form.Label>
-                        <Form.Control type="text" placeholder="Index" {...register('adresse_index_taxation')} />
+                        <Form.Label column="sm">Index</Form.Label>
+                        <Form.Control type="text" placeholder="Index" isInvalid={errors.adresse_index_taxation} {...register('adresse_index_taxation')} size="sm" />
+                        {errors.adresse_index_taxation && <Form.Control.Feedback type="invalid">{errors.adresse_index_taxation.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group controlId="adresse_boite_taxation">
-                        <Form.Label>Boite</Form.Label>
-                        <Form.Control type="text" placeholder="Boite" {...register('adresse_boite_taxation')} />
-                    </Form.Group>
-                </Col>
-            </Row>
-            <Row className="mb-3">
-                <Col>
-                    <Form.Group controlId="adresse_boite_taxation">
-                        <Form.Label>Boite</Form.Label>
-                        <Form.Control type="text" placeholder="Boite" {...register('adresse_boite_taxation')} />
+                        <Form.Label column="sm">Boite</Form.Label>
+                        <Form.Control type="text" placeholder="Boite" isInvalid={errors.adresse_boite_taxation} {...register('adresse_boite_taxation')} size="sm" />
+                        {errors.adresse_boite_taxation && <Form.Control.Feedback type="invalid">{errors.adresse_boite_taxation.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
             </Row>
             <Row className="mb-3">
                 <Col>
                     <Form.Group controlId="adresse_code_postal_taxation">
-                        <Form.Label>Code postal</Form.Label>
-                        <Form.Control type="text" placeholder="Code postal" {...register('adresse_code_postal_taxation')} />
+                        <Form.Label column="sm">Code postal</Form.Label>
+                        <Form.Control type="text" placeholder="Code postal" isInvalid={errors.adresse_code_postal_taxation} {...register('adresse_code_postal_taxation')} size="sm" />
+                        {errors.adresse_code_postal_taxation && <Form.Control.Feedback type="invalid">{errors.adresse_code_postal_taxation.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group controlId="adresse_localite_taxation">
-                        <Form.Label>Localité</Form.Label>
-                        <Form.Control type="text" placeholder="Localité" {...register('adresse_localite_taxation')} />
+                        <Form.Label column="sm">Localité</Form.Label>
+                        <Form.Control type="text" placeholder="Localité" isInvalid={errors.adresse_localite_taxation} {...register('adresse_localite_taxation')} size="sm" />
+                        {errors.adresse_localite_taxation && <Form.Control.Feedback type="invalid">{errors.adresse_localite_taxation.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
             </Row>
             <Row>
                 <Col>
                     <Form.Group controlId="commentaire">
-                        <Form.Label>Commentaire</Form.Label>
-                        <Form.Control as="textarea" placeholder="Commentaire" {...register('commentaire_taxation')} />
+                        <Form.Label column="sm">Commentaire</Form.Label>
+                        <Form.Control as="textarea" placeholder="Commentaire" isInvalid={errors.commentaire_taxation} {...register('commentaire_taxation')} size="sm" />
+                        {errors.commentaire_taxation && <Form.Control.Feedback type="invalid">{errors.commentaire_taxation.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
             </Row>
