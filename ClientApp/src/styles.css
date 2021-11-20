@@ -3,12 +3,13 @@
     --toastify-color-error: #dc3545;
 }
 
-.code-rue-style {
+.link {
     display: inline;
     color: #0d6efd;
     cursor: pointer;
+    text-decoration: none;
 }
 
-.code-rue-style:hover {
+.link:hover {
     text-decoration: underline
 }

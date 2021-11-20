@@ -25,6 +25,8 @@ namespace Taxes.Entities
         public short Code_recu { get; set; }
         public short Exoneration { get; set; }
         public short Pv { get; set; }
+        [ForeignKey("Matricule_ciger")]
+        public Entreprise Entreprise { get; set; }
 
     }
 }

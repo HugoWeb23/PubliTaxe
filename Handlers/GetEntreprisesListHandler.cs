@@ -5,6 +5,7 @@ using Taxes.Queries;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Taxes.Handlers
 {
@@ -18,7 +19,9 @@ namespace Taxes.Handlers
         }
         public Task<List<Entreprise>> Handle(GetEntreprisesQuery request, CancellationToken cancellationToken)
         {
-            List<Entreprise> entreprises = _context.entreprises.ToList();
+            List<Entreprise> entreprises = _context.entreprises
+                .Include(ent => ent.Publicites)
+                .ToList();
             return Task.FromResult(entreprises);
         }
     }

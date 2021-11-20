@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form"
 import {
-    FormControl,
     Form,
     Button,
     Row,
     Col,
-    Table
+    Container
 } from 'react-bootstrap'
 import { Typeahead, AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead'
 import { Entreprise } from '../../Types/IEntreprise'
@@ -19,6 +18,8 @@ import { ErrorAlert } from "../UI/ErrorAlert";
 import { toast } from 'react-toastify';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { TaxeFormSchema } from "../../Validation/Streets/TaxeFormSchema";
+import { Link } from "react-router-dom";
+import {LeftArrow} from '../UI/LeftArroy'
 
 interface TaxeForm {
     data?: any,
@@ -56,9 +57,11 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
     }
 
     const handleSelectStreet = (street: IRue) => {
+        setCodePostal(street.code_postal.code_postalId)
         setValue('code_rue', street.code_rue)
         setValue('adresse_rue', street.nom_rue)
-        setValue('code_postal', street.code_postal)
+        setValue('code_postal.cp', street.code_postal.cp)
+        setValue('code_postal.localite', street.code_postal.localite)
         setPostCodes([street.code_postal])
         clearErrors(['code_postal.cp', 'code_postal.localite', 'adresse_rue'])
     }
@@ -93,7 +96,9 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
     return <>
         <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet} />
         <Form onSubmit={handleSubmit(OnSubmit)} className="mb-3">
-            <div className="d-flex justify-content-start">
+            <Container fluid="xl">
+            <div className="d-flex justify-content-between align-items-center">
+                <Link to="/" className="link"><LeftArrow/> Retour à la liste des entreprises</Link>
                 <Button variant="success" size="sm" type="submit" className="mt-3 mb-3" disabled={isSubmitting}>{type == "create" ? "Créer l'entreprise" : "Modifier l'entreprise"}</Button>
             </div>
             <Row className="mb-3">
@@ -107,19 +112,22 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                 <Col>
                     <Form.Group controlId="proces_verbal">
                         <Form.Label column="sm">Procès verbal</Form.Label>
-                        <Form.Check type="checkbox" {...register('proces_verbal')} />
+                        <Form.Check type="checkbox" isInvalid={errors.proces_verbal} {...register('proces_verbal')} />
+                        {errors.proces_verbal && <Form.Control.Feedback type="invalid">{errors.proces_verbal.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group controlId="province">
                         <Form.Label column="sm">Province</Form.Label>
-                        <Form.Check type="checkbox" {...register('province')} />
+                        <Form.Check type="checkbox" isInvalid={errors.province} {...register('province')} />
+                        {errors.province && <Form.Control.Feedback type="invalid">{errors.province.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group controlId="recu">
                         <Form.Label column="sm">Reçu</Form.Label>
-                        <Form.Check type="checkbox" {...register('recu')} />
+                        <Form.Check type="checkbox" isInvalid={errors.recu} {...register('recu')} />
+                        {errors.recu && <Form.Control.Feedback type="invalid">{errors.recu.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
@@ -179,7 +187,7 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                 </Col>
             </Row>
             <Row className="mb-3">
-                <Col><div className="code-rue-style" onClick={() => setStreetCodeModal(true)}>Recherche par code rue</div></Col>
+                <Col><div className="link" onClick={() => setStreetCodeModal(true)}>Recherche par code rue</div></Col>
             </Row>
             <Row className="mb-3">
                 <Col>
@@ -325,17 +333,17 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                     </Form.Group>
                 </Col>
                 <Col>
-                    <Form.Group controlId="motif_majoration">
+                    <Form.Group controlId="motif_majorationId">
                         <Form.Label column="sm">Motif de la majoration</Form.Label>
                         {markUpReasons.length > 0 ?
                             <>
-                                <Form.Select {...register('motif_majorationId')} size="sm">
-                                    <option value=""></option>
+                                <Form.Select {...register('motif_majorationId')} isInvalid={errors.motif_majorationId} size="sm">
+                                    <option value="">Aucun motif</option>
                                     {markUpReasons.map((reason: IMotif_majoration, index: number) => {
                                         return <option key={index} value={reason.id_motif}>{reason.libelle}</option>
                                     })}
                                 </Form.Select>
-                                {errors.motif_majoration && <Form.Control.Feedback type="invalid">{errors.motif_majoration.message}</Form.Control.Feedback>}
+                                {errors.motif_majorationId && <Form.Control.Feedback type="invalid">{errors.motif_majorationId.message}</Form.Control.Feedback>}
                             </>
                             : <Loader />}
                     </Form.Group>
@@ -345,7 +353,7 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                 <Col>
                     <Form.Group controlId="code_rue_taxation">
                         <Form.Label column="sm">Code rue taxation</Form.Label>
-                        <Form.Control type="text" disabled {...register('code_rue_taxation')} size="sm" />
+                        <Form.Control type="text" isInvalid={errors.code_rue_taxation} {...register('code_rue_taxation')} size="sm" />
                         {errors.code_rue_taxation && <Form.Control.Feedback type="invalid">{errors.code_rue_taxation.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
@@ -403,6 +411,7 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                     </Form.Group>
                 </Col>
             </Row>
+            </Container>
         </Form>
     </>
 }

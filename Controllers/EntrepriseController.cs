@@ -27,7 +27,7 @@ namespace Taxes.Controllers
         public async Task<IActionResult> GetNames()
         {
             List<Entreprise> entreprises = await _mediator.Send(new GetEntreprisesQuery());
-            var filtered = entreprises.Select(x => new { x.Matricule_ciger, x.Nom }).ToList();
+            var filtered = entreprises.Select(x => new { x.Matricule_ciger, x.Nom, nombre_panneaux = x.Publicites.Count, recu = x.Recu }).ToList();
             return Ok(filtered);
         }
 

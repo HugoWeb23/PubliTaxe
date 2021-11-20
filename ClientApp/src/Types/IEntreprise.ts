@@ -1,10 +1,5 @@
 import { ICode_postal } from "./ICode_postal";
 
-export interface ENames {
-    matricule_ciger: number,
-    nom: string
-}
-
 export interface Entreprise {
         matricule_ciger: number,
         numero_localite: number,

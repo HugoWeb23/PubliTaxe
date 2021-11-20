@@ -1,64 +1,78 @@
-import axios from 'axios'
 import { useEffect, useState } from 'react'
 import {
     Card,
-    ListGroup,
     Row,
     Col,
-    Button
+    Table,
+    DropdownButton,
+    Dropdown,
+    Container
 } from 'react-bootstrap'
 import { apiFetch } from '../../Services/apiFetch'
-import { ENames, Entreprise } from '../../Types/IEntreprise'
 import { Loader } from '../UI/Loader'
-import { EditTax } from './EditTax'
-import {CreateTax} from './CreateTax'
-import { useHistory } from 'react-router'
+import { useHistory } from 'react-router-dom'
+import { IApercu_entreprise } from '../../Types/IApercu_entreprise'
 
 export const TaxManagement = () => {
 
-    const [entreprises, setEntreprises] = useState<ENames[]>([])
+    const [entreprises, setEntreprises] = useState<IApercu_entreprise[]>([])
     const [loader, setLoader] = useState<boolean>(true)
-    const [mode, setMode] = useState<number>(2)
-    const [showEntrepriseLoader, setShowEntrepriseLoader] = useState<boolean>(false)
-    const [entreprise, setEntreprise] = useState<any>({})
-    const history = useHistory()
 
     useEffect(() => {
-        (async() => {
+        (async () => {
             const fetchEntreprises = await apiFetch('/entreprises/names')
             setEntreprises(fetchEntreprises)
-            setLoader(false)
+            setTimeout(() => setLoader(false), 300)
         })()
     }, [])
 
-    const ShowEntreprise = async(entreprise: ENames) => {
-        setMode(2)
-        setShowEntrepriseLoader(true)
-        const fetchEntreprise = await apiFetch(`/entreprises/id/${entreprise.matricule_ciger}`)
-        setEntreprise(fetchEntreprise)
-        setShowEntrepriseLoader(false)
-    }
-
     return <>
-        <Row className="me-0 mt-0">
-            <Col xs="3">
-            <div style={{ width: '100%', height: 'calc(100vh - 58px)', overflow: 'hidden', overflowY: 'scroll' }}>
-            <div className="d-grid gap-2 mt-2 mb-2">
-            <Button variant="primary" size="sm" onClick={() => setMode(1)}>Nouvel enregistrement</Button>
-            </div>
+        <Container fluid={true}>
+        <Row className="me-0 mt-0 mt-3">
+            <Col md="3" xs="12">
                 <Card>
-                    <ListGroup variant="flush">
-                        {loader == true && <Loader variant="primary"/>}
-                        {loader == false && entreprises.map((ent: ENames, index: number) => {
-                            return <ListGroup.Item key={index} action onClick={() => ShowEntreprise(ent)}>#{ent.matricule_ciger} {ent.nom}</ListGroup.Item>
-                        })}
-                    </ListGroup>
+                    <Card.Body>This is some text within a card body.</Card.Body>
                 </Card>
-            </div>
             </Col>
-            <Col xs="9">
-            {mode == 1 ? <CreateTax/> : <EditTax entreprise={entreprise} isLoading={showEntrepriseLoader}/>}
+            <Col md="9" xs="1">
+                <Table striped bordered hover size="sm">
+                    <thead>
+                        <tr>
+                            <th>Matricule</th>
+                            <th>Nom entreprise</th>
+                            <th>Panneaux</th>
+                            <th>Recu</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {loader == false && entreprises.map((entreprise: IApercu_entreprise, index: number) => <Tax apercu_entreprise={entreprise} index={index}/>)}
+                    </tbody>
+                </Table>
             </Col>
         </Row>
+        </Container>
+    </>
+}
+
+interface ITax {
+    apercu_entreprise: IApercu_entreprise,
+    index: number
+}
+
+
+const Tax = ({ apercu_entreprise, index }: ITax) => {
+    const history = useHistory();
+    return <>
+        <tr key={index}>
+            <td>{apercu_entreprise.matricule_ciger}</td>
+            <td>{apercu_entreprise.nom}</td>
+            <td>{apercu_entreprise.nombre_panneaux}</td>
+            <td className={apercu_entreprise.recu ? "table-success" : "table-danger"}>{apercu_entreprise.recu ? "Oui" : "Non"}</td>
+            <td><DropdownButton title="Actions" variant="warning" size="sm">
+                <Dropdown.Item eventKey="1" onClick={() => history.push(`/entreprise/edit/${apercu_entreprise.matricule_ciger}`)}>Éditer</Dropdown.Item>
+                <Dropdown.Item eventKey="2">Supprimer</Dropdown.Item>
+            </DropdownButton></td>
+        </tr>
     </>
 }

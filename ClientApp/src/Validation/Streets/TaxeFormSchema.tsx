@@ -3,10 +3,13 @@ import * as yup from 'yup'
 export const TaxeFormSchema = yup.object().shape({
     matricule_ciger: yup.string().required('Veuillez saisir un matricule'),
     nom: yup.string().required('Veuillez saisir un nom'),
+    proces_verbal: yup.boolean().typeError('Valeur invalide'),
+    province: yup.boolean().typeError('Valeur invalide'),
+    recu: yup.boolean().typeError('Valeur invalide'),
     adresse_rue: yup.string().required('Veuillez saisir une adresse'),
     adresse_numero: yup.string().required('Veuillez saisir un numéro'),
-    adresse_boite: yup.string().required('Veuillez saisir une boite'),
-    adresse_index: yup.string().required('Veuillez saisir un index'),
+    adresse_boite: yup.string().max(9, 'Le numéro de boite est trop long'),
+    adresse_index: yup.string().max(9, "L'index est trop long"),
     code_postal: yup.object().shape({
         cp: yup.string().required('Veuillez saisir un code postal'),
         localite: yup.string().required('Veuillez saisir une localité')
@@ -18,15 +21,15 @@ export const TaxeFormSchema = yup.object().shape({
     mail_contact: yup.string().required('Veuillez saisir une adresse email').email("L'adresse email n'est pas valide"),
     numero_tva: yup.string().required('Veuillez saisir un numéro de TVA'),
     pourcentage_majoration: yup.string().typeError("Le pourcentage de majoration n'est pas correct"),
-    motif_majoration: yup.string().when('Une value est saisie', {
-        is: true,
-        then: yup.string().min(3, "Le motif doit contenir au moins 3 caractères")
+    motif_majorationId: yup.mixed().when('pourcentage_majoration', {
+        is: (value: string) => value != "0",
+        then: yup.string().required('Vous avez sélectionné un % de majoration, veuillez saisir un motif')
     }),
     code_rue_taxation: yup.string().required("Veuillez saisir un code de rue"),
     adresse_taxation: yup.string().required('Veuillez saisir une adresse de taxation'),
-    adresse_numero_taxation: yup.string().required('Veuillez saisir un numéro de rue'),
-    adresse_index_taxation: yup.string().required('Veuillez saisir un index'),
-    adresse_boite_taxation: yup.string().required('Veuillez saisir une boite'),
+    adresse_numero_taxation: yup.string().required("Veuillez saisir un numéro"),
+    adresse_index_taxation: yup.string().max(9, "L'index est trop long"),
+    adresse_boite_taxation: yup.string().max(9, 'Le numéro de boite est trop long'),
     adresse_code_postal_taxation: yup.string().required('Veuillez saisir un code postal'),
     adresse_localite_taxation: yup.string().required('Veuillez saisir une localité'),
     commentaire_taxation: yup.string().typeError("Le format du commentaire n'est pas valide")
