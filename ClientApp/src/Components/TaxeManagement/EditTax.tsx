@@ -23,9 +23,7 @@ export const EditTax = ({match}: any) => {
     }, [])
 
     const handleEditTax = async(data: any) => {
-        if(data.code_postal.localite != entreprise.code_postal.localite) {
             delete data.code_postal
-        }
             const editTax = await apiFetch(`/entreprises/edit/${data.matricule_ciger}`, {
                 method: 'PUT',
                 body: JSON.stringify(data)

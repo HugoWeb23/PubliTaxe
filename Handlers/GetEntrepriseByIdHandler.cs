@@ -20,6 +20,10 @@ namespace Taxes.Handlers
         public Task<Entreprise> Handle(GetEntrepriseById request, CancellationToken cancellationToken)
         {
             Entreprise entreprise = _context.entreprises
+                .Include(ent => ent.Publicites)
+                .ThenInclude(rue => rue.Rue)
+                .ThenInclude(rue => rue.Code_postal)
+                .ThenInclude(rue => rue.Pays)
                 .Include(ent => ent.Code_postal)
                 .ThenInclude(cp => cp.Pays)
                 .FirstOrDefault(ent => ent.Matricule_ciger == request.matricule);

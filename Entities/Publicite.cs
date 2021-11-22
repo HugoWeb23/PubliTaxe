@@ -27,6 +27,8 @@ namespace Taxes.Entities
         public short Pv { get; set; }
         [ForeignKey("Matricule_ciger")]
         public Entreprise Entreprise { get; set; }
+        [ForeignKey("id_rue")]
+        public Rue Rue { get; set; }
 
     }
 }

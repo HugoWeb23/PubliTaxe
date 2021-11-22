@@ -11,6 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import './styles.css';
 import { EditTax } from './Components/TaxeManagement/EditTax';
 import { CreateTax } from './Components/TaxeManagement/CreateTax';
+import { ViewTax } from './Components/TaxeManagement/ViewTax';
 
 export const App = () => {
   return <>
@@ -20,6 +21,7 @@ export const App = () => {
       <Route path="/" exact component={TaxManagement}/>
       <Route path="/entreprise/edit/:id" exact component={EditTax}/>
       <Route path="/entreprise/create/" exact component={CreateTax}/>
+      <Route path="/entreprise/view/:id" exact component={ViewTax}/>
       </Router>
   </>
 }

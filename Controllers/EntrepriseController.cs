@@ -8,6 +8,7 @@ using Taxes.Queries;
 using Taxes.Commands;
 using System;
 using Taxes.Filters;
+using System.IO;
 
 namespace Taxes.Controllers
 {
@@ -42,11 +43,11 @@ namespace Taxes.Controllers
                     return BadRequest(new { error = "Aucun enregistrement ne correspond à ce matricule" });
                 }
                 return Ok(entreprise);
-            } catch(Exception ex)
+            } catch (Exception ex)
             {
                 return BadRequest(new { error = ex });
             }
-            
+
         }
 
         [HttpPost("new")]
@@ -71,11 +72,26 @@ namespace Taxes.Controllers
             {
                 Entreprise entr = await _mediator.Send(new UpdateEntrepriseCommand(entreprise));
                 return Ok(entreprise);
-            } catch(Exception e)
+            } catch (Exception e)
             {
                 return BadRequest(new ErreurSimple { Erreur = "Une erreur est survenue lors de la modification de l'entreprise", Details = e.ToString() });
             }
-            
+
+        }
+
+        [HttpPut("editpub")]
+        public async Task<IActionResult> EditEntreprise(Publicite publicite)
+        {
+            try
+            {
+                Publicite entr = await _mediator.Send(new UpdatePubliciteCommand(publicite));
+                return Ok(publicite);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ErreurSimple { Erreur = "Une erreur est survenue lors de la modification de la publicité", Details = e.ToString() });
+            }
+
         }
 
     }

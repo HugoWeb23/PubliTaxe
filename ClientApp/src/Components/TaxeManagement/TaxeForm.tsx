@@ -5,9 +5,11 @@ import {
     Button,
     Row,
     Col,
-    Container
+    Container,
+    Table
 } from 'react-bootstrap'
-import { Typeahead, AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead'
+import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead'
+import "react-bootstrap-typeahead/css/Typeahead.css";
 import { Entreprise } from '../../Types/IEntreprise'
 import { StreetCodeModal } from "./StreetCodeModal";
 import { IRue } from "../../Types/IRue";
@@ -17,9 +19,10 @@ import { Loader } from "../UI/Loader";
 import { ErrorAlert } from "../UI/ErrorAlert";
 import { toast } from 'react-toastify';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { TaxeFormSchema } from "../../Validation/Streets/TaxeFormSchema";
+import { TaxeFormSchema } from "../../Validation/Tax/TaxFormSchema";
 import { Link } from "react-router-dom";
-import {LeftArrow} from '../UI/LeftArroy'
+import { LeftArrow } from '../UI/LeftArroy'
+import { ManageAdvertising } from './ManageAdvertising'
 
 interface TaxeForm {
     data?: any,
@@ -95,8 +98,8 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
 
     return <>
         <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet} />
+        <Container fluid="xl">
         <Form onSubmit={handleSubmit(OnSubmit)} className="mb-3">
-            <Container fluid="xl">
             <div className="d-flex justify-content-between align-items-center">
                 <Link to="/" className="link"><LeftArrow/> Retour à la liste des entreprises</Link>
                 <Button variant="success" size="sm" type="submit" className="mt-3 mb-3" disabled={isSubmitting}>{type == "create" ? "Créer l'entreprise" : "Modifier l'entreprise"}</Button>
@@ -212,6 +215,7 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                                     emptyLabel='Aucun résultat'
                                     selected={value != undefined ? [value] : []}
                                     size="sm"
+                                    className="is-invalid"
                                     renderMenu={(results, menuProps) => (
                                         <Menu {...menuProps}>
                                             {results.map((result, index) => (
@@ -229,6 +233,7 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                                     )}
                                 />
                             )} />
+                             {errors.code_postal && errors.code_postal.cp && <Form.Control.Feedback type="invalid">{errors.code_postal.cp.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
@@ -253,6 +258,7 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                                     emptyLabel='Aucun résultat'
                                     selected={value != undefined ? [value] : []}
                                     size="sm"
+                                    className="is-invalid"
                                     renderMenu={(results, menuProps) => (
                                         <Menu {...menuProps}>
                                             {results.map((result, index) => (
@@ -270,6 +276,7 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                                     )}
                                 />
                             )} />
+                            {errors.code_postal && errors.code_postal.localite && <Form.Control.Feedback type="invalid">{errors.code_postal.localite.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Col>
                 <Col>
@@ -411,7 +418,8 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                     </Form.Group>
                 </Col>
             </Row>
-            </Container>
         </Form>
+        <ManageAdvertising pubs={data.publicites} handleCreate={() => alert('create')}/>
+        </Container>
     </>
 }
