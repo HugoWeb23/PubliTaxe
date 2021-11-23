@@ -71,7 +71,7 @@ namespace Taxes.Controllers
             try
             {
                 Entreprise entr = await _mediator.Send(new UpdateEntrepriseCommand(entreprise));
-                return Ok(entreprise);
+                return Ok("OK");
             } catch (Exception e)
             {
                 return BadRequest(new ErreurSimple { Erreur = "Une erreur est survenue lors de la modification de l'entreprise", Details = e.ToString() });

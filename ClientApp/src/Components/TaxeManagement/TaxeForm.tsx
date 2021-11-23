@@ -23,6 +23,7 @@ import { TaxeFormSchema } from "../../Validation/Tax/TaxFormSchema";
 import { Link } from "react-router-dom";
 import { LeftArrow } from '../UI/LeftArroy'
 import { ManageAdvertising } from './ManageAdvertising'
+import { IPublicite } from "../../Types/IPublicite";
 
 interface TaxeForm {
     data?: any,
@@ -32,6 +33,7 @@ interface TaxeForm {
 
 export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
     const defaultValues = data ? data : {}
+   const [publicites, setPublicites] = useState(data.publicites ? data.publicites : [])
     const [streetCodeModal, setStreetCodeModal] = useState<boolean>(false)
     const [markUpReasons, setMarkUpReasons] = useState<IMotif_majoration[]>([])
     const [postCodes, setPostCodes] = useState<any>(data.code_postal ? [data.code_postal] : [])
@@ -46,13 +48,12 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
         })()
     }, [])
 
-    const OnSubmit = async (data: any) => {
+    const OnSubmit = async (form: any) => {
         try {
-            delete data.publicites
             if (codePostal) {
-                data.code_postalId = codePostal
+                form.code_postalId = codePostal
             }
-            const test = await onFormSubmit(data)
+            const test = await onFormSubmit(form)
             toast.success('Modifications sauvegardées')
         } catch (e: any) {
             toast.error('Une erreur est survenue')
@@ -96,10 +97,14 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
         }
     }
 
+    const UpdatePubs = (pubs: IPublicite[]) => {
+        setPublicites(pubs)
+    }
+
     return <>
         <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet} />
         <Container fluid="xl">
-        <Form onSubmit={handleSubmit(OnSubmit)} className="mb-3">
+        <Form onSubmit={handleSubmit(OnSubmit)} className="mb-2">
             <div className="d-flex justify-content-between align-items-center">
                 <Link to="/" className="link"><LeftArrow/> Retour à la liste des entreprises</Link>
                 <Button variant="success" size="sm" type="submit" className="mt-3 mb-3" disabled={isSubmitting}>{type == "create" ? "Créer l'entreprise" : "Modifier l'entreprise"}</Button>
@@ -419,7 +424,7 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                 </Col>
             </Row>
         </Form>
-        <ManageAdvertising pubs={data.publicites} handleCreate={() => alert('create')}/>
+            <ManageAdvertising pubs={publicites} onSubmit={UpdatePubs}/>
         </Container>
     </>
 }

@@ -12,25 +12,27 @@ import { useForm, Controller } from "react-hook-form"
 import { AdvertisingFormSchema } from '../../Validation/Tax/AdvertisingFormSchema';
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead'
 import { apiFetch } from "../../Services/apiFetch";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IRue } from '../../Types/IRue';
+import { resourceUsage } from 'process';
 
-interface IEditAdvertising {
+interface IAdvertisingModal {
+    type: 'create' | 'edit',
     show: boolean,
-    publicite: IPublicite,
+    publicite: IPublicite | null,
     handleClose: () => void,
-    onValidate: (daya: any) => void
+    onValidate: (daya: any, type: 'create' | 'edit') => void
 }
 
-export const EditAdvertising = ({ show, publicite, handleClose, onValidate }: IEditAdvertising) => {
-    const [streets, setStreets] = useState<IRue[]>([])
+export const AdvertisingModal = ({ type, show, publicite, handleClose, onValidate }: IAdvertisingModal) => {
+    const [streets, setStreets] = useState<IRue[]>(publicite?.rue ? [publicite.rue] : [])
     const [streetId, setStreetId] = useState<number>()
     const { register, control, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(AdvertisingFormSchema), defaultValues: publicite ? publicite : {} });
 
     const StreetSearch = async (query: string) => {
         const streets = await apiFetch(`/rues/getbyname`, {
             method: 'POST',
-            body: JSON.stringify({nom_rue: query})
+            body: JSON.stringify({ nom_rue: query })
         })
         setStreets(streets)
     }
@@ -43,22 +45,22 @@ export const EditAdvertising = ({ show, publicite, handleClose, onValidate }: IE
             setValue('rue', rue)
             clearErrors('rue.nom_rue')
         } else {
-                setValue('rue.nom_rue', inputvalue.nom_rue)
+            setValue('rue.nom_rue', inputvalue.nom_rue)
         }
     }
 
     const onSubmit = (data: any) => {
-        if(streetId != undefined) {
+        if (streetId != undefined) {
             data.id_rue = streetId
         }
-        onValidate(data)
+        onValidate(data, type)
         handleClose()
     }
 
     return <>
         <Modal show={show} onHide={handleClose} size="lg">
             <Modal.Header closeButton>
-                <Modal.Title>Éditer le panneau {publicite.numero_panneau}</Modal.Title>
+                <Modal.Title>{type == 'edit' ? `Éditer le panneau ${publicite?.numero_panneau}` : 'Créer un panneau'}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form onSubmit={handleSubmit(onSubmit)}>
@@ -81,42 +83,42 @@ export const EditAdvertising = ({ show, publicite, handleClose, onValidate }: IE
                             <Form.Group className="mb-3" controlId="adresse_rue">
                                 <Form.Label column="sm">Adresse</Form.Label>
                                 <Controller
-                            control={control}
-                            name="rue.nom_rue"
-                            render={({
-                                field: { onChange, onBlur, value, name, ref }
-                            }) => (
-                                <AsyncTypeahead
-                                    filterBy={() => true}
-                                    id="rue"
-                                    isLoading={false}
-                                    labelKey="nom_rue"
-                                    placeholder="Rue"
-                                    isInvalid={false}
-                                    onSearch={(query) => StreetSearch(query)}
-                                    options={streets}
-                                    onChange={(value: any[]) => SetValueOnChange(value)}
-                                    emptyLabel='Aucun résultat'
-                                   
-                                    size="sm"
-                                    className="is-invalid"
-                                    renderMenu={(results, menuProps) => (
-                                        <Menu {...menuProps}>
-                                            {results.map((result, index) => (
-                                                <MenuItem
-                                                    key={index}
-                                                    option={result}
-                                                    position={index}>
-                                                    <div>{result.nom_rue}</div>
-                                                    <div>
-                                                        <small>{result.code_postal.localite}</small>
-                                                    </div>
-                                                </MenuItem>
-                                            ))}
-                                        </Menu>
-                                    )}
-                                />
-                            )} />
+                                    control={control}
+                                    name="rue.nom_rue"
+                                    render={({
+                                        field: { onChange, onBlur, value, name, ref }
+                                    }) => (
+                                        <AsyncTypeahead
+                                            filterBy={() => true}
+                                            id="rue"
+                                            isLoading={false}
+                                            labelKey="nom_rue"
+                                            placeholder="Rue"
+                                            isInvalid={false}
+                                            onSearch={(query) => StreetSearch(query)}
+                                            options={streets}
+                                            onChange={(value: any[]) => SetValueOnChange(value)}
+                                            emptyLabel='Aucun résultat'
+                                            defaultInputValue={value}
+                                            size="sm"
+                                            className="is-invalid"
+                                            renderMenu={(results, menuProps) => (
+                                                <Menu {...menuProps}>
+                                                    {results.map((result, index) => (
+                                                        <MenuItem
+                                                            key={index}
+                                                            option={result}
+                                                            position={index}>
+                                                            <div>{result.nom_rue}</div>
+                                                            <div>
+                                                                <small>{result.code_postal.localite}</small>
+                                                            </div>
+                                                        </MenuItem>
+                                                    ))}
+                                                </Menu>
+                                            )}
+                                        />
+                                    )} />
                             </Form.Group>
                         </Col>
                         <Col>

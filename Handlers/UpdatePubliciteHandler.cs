@@ -20,6 +20,7 @@ namespace Taxes.Handlers
             _context.Entry(request.Publicite).State = EntityState.Modified;
             _context.enseignes_publicitaires.Update(request.Publicite);
             _context.SaveChanges();
+
             return Task.FromResult(request.Publicite);
         }
     }

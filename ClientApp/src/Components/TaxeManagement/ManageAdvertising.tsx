@@ -1,38 +1,62 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
-    Table
+    Table,
+    Button
 } from 'react-bootstrap'
 import { apiFetch } from '../../Services/apiFetch'
 import { IPublicite } from '../../Types/IPublicite'
-import { EditAdvertising } from './EditAdvertising'
+import { AdvertisingModal } from './AdvertisingModal'
 
 interface IManageAdvertising {
     pubs: IPublicite[],
-    handleCreate: () => void
+    onSubmit: (publicites: IPublicite[]) => void
 }
 
-export const ManageAdvertising = ({ pubs = [], handleCreate }: IManageAdvertising) => {
+export const ManageAdvertising = ({ pubs = [], onSubmit }: IManageAdvertising) => {
+    const isMounted = useRef(false)
     const [showEdit, setShowEdit] = useState<boolean>(false)
+    const [type, setType] = useState<'edit' | 'create'>('edit')
     const [publicites, setPublicites] = useState<IPublicite[]>(pubs)
     const [publicite, setPublicite] = useState<IPublicite | null>(null)
 
+
+    useEffect(() => {
+        if(isMounted.current == false) {
+            isMounted.current = true
+        } else if(isMounted.current == true) {
+           onSubmit(publicites)
+        }
+    }, [publicites])
+
     const handleSelectPub = (pub: IPublicite) => {
         setPublicite(pub)
+        setType('edit')
         setShowEdit(true)
     }
 
     const handleUnSelectPub = () => {
         setPublicite(null)
         setShowEdit(false)
+        setType('edit')
     }
 
-    const handleSubmit = async(data: any) => {
-        console.log(data)
-       setPublicites(publicites => publicites.map((pub: IPublicite) => publicite?.matricule_ciger == pub.matricule_ciger ? data : publicite))
+    const setCreateMode = () => {
+        setPublicite(null)
+        setType('create')
+        setShowEdit(true)
+    }
+
+    const handleSubmit = async(data: any, type: 'create' | 'edit') => {
+        if(type == 'edit') {
+            setPublicites(publicites => publicites.map((pub: IPublicite) => publicite?.numero_panneau == pub.numero_panneau ? data : pub))
+        } else {
+            setPublicites(publicites => [...publicites, data])
+        }
     }
 
     return <>
-        {publicite != null && <EditAdvertising show={showEdit} publicite={publicite} handleClose={handleUnSelectPub} onValidate={handleSubmit}/>}
+        {((type == 'edit' && publicite != null) || (type == 'create' && publicite == null)) && <AdvertisingModal type={type} show={showEdit} publicite={publicite} handleClose={handleUnSelectPub} onValidate={handleSubmit}/>}
+        <div className="d-flex justify-content-start mb-2"><Button variant="primary" onClick={setCreateMode}>Créer un panneau</Button></div>
         <Table striped bordered hover>
             <thead>
                 <tr>
