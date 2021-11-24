@@ -11,6 +11,7 @@ namespace Taxes.Entities
     {
         [Key]
         public int RueId { get; set; }
+        [ForeignKey("Code_postal")]
         public int Code_postalId {get; set; }
         public string Code_rue {get; set; }
         public string Langue {get; set; }

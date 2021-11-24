@@ -50,6 +50,7 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
 
     const OnSubmit = async (form: any) => {
         try {
+            form.publicites = publicites
             if (codePostal) {
                 form.code_postalId = codePostal
             }

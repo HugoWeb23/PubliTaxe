@@ -24,8 +24,8 @@ export const EditTax = ({match}: any) => {
 
     const handleEditTax = async(data: any) => {
             delete data.code_postal
-           delete data.publicites[0].rue
-           delete data.publicites[1].rue
+            delete data.publicites[0].rue
+            delete data.publicites[1].rue
             const editTax = await apiFetch(`/entreprises/edit/${data.matricule_ciger}`, {
                 method: 'PUT',
                 body: JSON.stringify(data)

@@ -12,11 +12,11 @@ namespace Taxes.Entities
         [Key]
         public int Code_postalId { get; set; }
         public int Numero_localite { get; set; }
-        public int PaysId { get; set; }
+        [ForeignKey("Pays")]
+        public int Id_pays { get; set; }
         [Column("code_postal")]
         public string CP { get; set; }
         public string Localite { get; set; }
-        [ForeignKey("PaysId")]
         public Pays Pays { get; set; }
 
     }

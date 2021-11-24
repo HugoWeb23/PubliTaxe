@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,6 +13,7 @@ namespace Taxes.Entities
         [Key]
         public long Numero_panneau { get; set; }
         public long Matricule_ciger { get; set; }
+        [ForeignKey("Rue")]
         public int Id_rue { get; set; }
         public short Exercice_courant { get; set; }
         public short Type_publicite { get; set; }
@@ -27,7 +29,6 @@ namespace Taxes.Entities
         public short Pv { get; set; }
         [ForeignKey("Matricule_ciger")]
         public Entreprise Entreprise { get; set; }
-        [ForeignKey("id_rue")]
         public Rue Rue { get; set; }
 
     }
