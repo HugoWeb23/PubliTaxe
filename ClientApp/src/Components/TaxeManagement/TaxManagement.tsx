@@ -90,7 +90,7 @@ const Tax = ({ apercu_entreprise, index }: ITax) => {
                             </Tooltip>
                         }
                     >
-                        <Button size="sm" variant="secondary" className="mx-1" onClick={() => history.push(`/entreprise/edit/${apercu_entreprise.matricule_ciger}`)}><Pencil /></Button>
+                        <Button size="sm" variant="secondary" className="me-1" onClick={() => history.push(`/entreprise/edit/${apercu_entreprise.matricule_ciger}`)}><Pencil /></Button>
                     </OverlayTrigger>
                     <OverlayTrigger
                         placement="top"
@@ -100,7 +100,7 @@ const Tax = ({ apercu_entreprise, index }: ITax) => {
                             </Tooltip>
                         }
                     >
-                    <Button size="sm" className="mx-1" variant="info" onClick={() => history.push(`/entreprise/view/${apercu_entreprise.matricule_ciger}`)}><Eye /></Button>
+                    <Button size="sm" className="me-1" variant="info" onClick={() => history.push(`/entreprise/view/${apercu_entreprise.matricule_ciger}`)}><Eye /></Button>
                     </OverlayTrigger>
                     <OverlayTrigger
                         placement="top"

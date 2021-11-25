@@ -25,7 +25,7 @@ namespace Taxes.Entities
         [Column(TypeName = "decimal(9,2)")]
         public decimal Surface { get; set; }
         public short Code_recu { get; set; }
-        public short Exoneration { get; set; }
+        public bool Exoneration { get; set; }
         public short Pv { get; set; }
         [ForeignKey("Matricule_ciger")]
         public Entreprise Entreprise { get; set; }

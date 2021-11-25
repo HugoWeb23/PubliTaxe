@@ -50,10 +50,6 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
 
     const OnSubmit = async (form: any) => {
         try {
-            form.publicites = publicites
-            if (codePostal) {
-                form.code_postalId = codePostal
-            }
             const test = await onFormSubmit(form)
             toast.success('Modifications sauvegardées')
         } catch (e: any) {
@@ -99,6 +95,7 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
     }
 
     const UpdatePubs = (pubs: IPublicite[]) => {
+        setValue('publicites', pubs)
         setPublicites(pubs)
     }
 
@@ -425,7 +422,7 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                 </Col>
             </Row>
         </Form>
-            <ManageAdvertising pubs={publicites} onSubmit={UpdatePubs}/>
+            <ManageAdvertising pubs={publicites} matricule={defaultValues.matricule_ciger} onSubmit={UpdatePubs}/>
         </Container>
     </>
 }

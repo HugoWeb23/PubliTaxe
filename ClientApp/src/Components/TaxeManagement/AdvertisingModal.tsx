@@ -20,11 +20,12 @@ interface IAdvertisingModal {
     type: 'create' | 'edit',
     show: boolean,
     publicite: IPublicite | null,
+    matricule: number,
     handleClose: () => void,
     onValidate: (daya: any, type: 'create' | 'edit') => void
 }
 
-export const AdvertisingModal = ({ type, show, publicite, handleClose, onValidate }: IAdvertisingModal) => {
+export const AdvertisingModal = ({ type, show, publicite, matricule, handleClose, onValidate }: IAdvertisingModal) => {
     const [streets, setStreets] = useState<IRue[]>(publicite?.rue ? [publicite.rue] : [])
     const [streetId, setStreetId] = useState<number>()
     const { register, control, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(AdvertisingFormSchema), defaultValues: publicite ? publicite : {} });
@@ -52,6 +53,10 @@ export const AdvertisingModal = ({ type, show, publicite, handleClose, onValidat
     const onSubmit = (data: any) => {
         if (streetId != undefined) {
             data.id_rue = streetId
+        }
+        if(type == 'create') {
+            data.matricule_ciger = matricule
+            data.exercice_courant = 2021
         }
         onValidate(data, type)
         handleClose()
