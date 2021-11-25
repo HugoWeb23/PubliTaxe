@@ -27,8 +27,12 @@ export const TaxManagement = () => {
 
     useEffect(() => {
         (async () => {
-            const fetchEntreprises = await apiFetch('/entreprises/names')
-            setEntreprises(fetchEntreprises)
+            try {
+                const fetchEntreprises = await apiFetch('/entreprises/names')
+                setEntreprises(fetchEntreprises)
+            } catch(e) {
+                alert('error')
+            }
             setTimeout(() => setLoader(false), 300)
         })()
     }, [])
@@ -57,6 +61,7 @@ export const TaxManagement = () => {
                             </tr>
                         </thead>
                         <tbody>
+                            {loader && <div>Chargement...</div>}
                             {loader == false && entreprises.map((entreprise: IApercu_entreprise, index: number) => <Tax apercu_entreprise={entreprise} index={index} />)}
                         </tbody>
                     </Table>
