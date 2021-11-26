@@ -10,6 +10,49 @@ namespace Taxes.Entities
 {
     public class Publicite
     {
+
+        public bool Equals(Publicite other)
+        {
+            if (other is null)
+                return false;
+
+            return this.Numero_panneau == other.Numero_panneau &&
+                   this.Matricule_ciger == other.Matricule_ciger &&
+                   this.Id_rue == other.Id_rue &&
+                   this.Exercice_courant == other.Exercice_courant &&
+                   this.Type_publicite == other.Type_publicite &&
+                   this.Adresse_numero == other.Adresse_numero &&
+                   this.Situation == other.Situation &&
+                   this.Quantite == other.Quantite &&
+                   this.Face == other.Face &&
+                   this.Mesure == other.Mesure &&
+                   this.Surface == other.Surface &&
+                   this.Code_recu == other.Code_recu &&
+                   this.Exoneration == other.Exoneration &&
+                   this.Pv == other.Pv &&
+                   this.Entreprise == other.Entreprise &&
+                   this.Rue == other.Rue;
+        }
+
+        public override bool Equals(object obj) => Equals(obj as Publicite);
+        public override int GetHashCode() => (Numero_panneau,
+                                              Matricule_ciger,
+                                              Id_rue,
+                                              Exercice_courant,
+                                              Type_publicite,
+                                              Adresse_numero,
+                                              Situation,
+                                              Quantite,
+                                              Face,
+                                              Mesure,
+                                              Surface,
+                                              Code_recu,
+                                              Exoneration,
+                                              Pv,
+                                              Entreprise,
+                                              Rue)
+                                              .GetHashCode();
+
         [Key]
         public long Numero_panneau { get; set; }
         public long Matricule_ciger { get; set; }

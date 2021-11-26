@@ -19,7 +19,7 @@ import { resourceUsage } from 'process';
 interface IAdvertisingModal {
     type: 'create' | 'edit',
     show: boolean,
-    publicite: IPublicite | null,
+    publicite: any,
     matricule: number,
     handleClose: () => void,
     onValidate: (daya: any, type: 'create' | 'edit') => void
@@ -65,7 +65,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, handleClose
     return <>
         <Modal show={show} onHide={handleClose} size="lg">
             <Modal.Header closeButton>
-                <Modal.Title>{type == 'edit' ? `Éditer le panneau ${publicite?.numero_panneau}` : 'Créer un panneau'}</Modal.Title>
+                <Modal.Title>{type == 'edit' ? `Éditer un panneau` : 'Créer un panneau'}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form onSubmit={handleSubmit(onSubmit)}>
@@ -73,13 +73,15 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, handleClose
                         <Col>
                             <Form.Group className="mb-3" controlId="code_postal">
                                 <Form.Label column="sm">Code postal</Form.Label>
-                                <Form.Control type="text" placeholder="Code postal" disabled size="sm" {...register('rue.code_postal.cp')} />
+                                <Form.Control type="text" placeholder="Code postal" isInvalid={errors.rue && errors.rue.code_postal?.cp} disabled size="sm" {...register('rue.code_postal.cp')} />
+                                {errors.rue && errors.rue.code_postal && errors.rue.code_postal.cp && <Form.Control.Feedback type="invalid">{errors.rue.code_postal.cp.message}</Form.Control.Feedback>}
                             </Form.Group>
                         </Col>
                         <Col>
                             <Form.Group className="mb-3" controlId="code_rue">
                                 <Form.Label column="sm">Code rue</Form.Label>
-                                <Form.Control type="text" placeholder="Code rue" disabled size="sm" {...register('rue.code_rue')} />
+                                <Form.Control type="text" placeholder="Code rue" isInvalid={errors.rue && errors.rue.code_rue} disabled size="sm" {...register('rue.code_rue')} />
+                                {errors.rue && errors.rue.code_rue && <Form.Control.Feedback type="invalid">{errors.rue.code_rue.message}</Form.Control.Feedback>}
                             </Form.Group>
                         </Col>
                     </Row>

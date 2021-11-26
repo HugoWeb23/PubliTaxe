@@ -4,22 +4,30 @@ using System.Threading;
 using System.Threading.Tasks;
 using Taxes.Commands;
 using Taxes.Entities;
+using System.Collections.Generic;
+using Taxes.Queries;
+using System.Linq;
 
 namespace Taxes.Handlers
 {
     public class UpdateEntrepriseHandler : IRequestHandler<UpdateEntrepriseCommand, Entreprise>
     {
         private Context _context;
-        public UpdateEntrepriseHandler(Context context)
+        private IMediator _mediator;
+        public UpdateEntrepriseHandler(Context context, IMediator mediator)
         {
             _context = context;
+            _mediator = mediator;
         }
 
-        public Task<Entreprise> Handle(UpdateEntrepriseCommand request, CancellationToken cancellationToken)
+        public async Task<Entreprise> Handle(UpdateEntrepriseCommand request, CancellationToken cancellationToken)
         {
+            IEnumerable<Publicite> pubs = await _mediator.Send(new GetAdvertisingListByMatriculeQuery(request.Entreprise.Matricule_ciger));
+            IEnumerable<Publicite> test = pubs.Except(request.Entreprise.Publicites).ToList();
+            _context.enseignes_publicitaires.RemoveRange(test);
             _context.entreprises.Update(request.Entreprise);
             _context.SaveChanges();
-            return Task.FromResult(request.Entreprise);
+            return request.Entreprise;
         }
     }
 }

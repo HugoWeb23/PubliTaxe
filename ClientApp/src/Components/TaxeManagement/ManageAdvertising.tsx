@@ -8,6 +8,7 @@ import {
 import { boolean } from 'yup/lib/locale'
 import { apiFetch } from '../../Services/apiFetch'
 import { IPublicite } from '../../Types/IPublicite'
+import { ConfirmModal } from '../UI/ConfirmModal'
 import { Eye } from '../UI/Eye'
 import { Pencil } from '../UI/Pencil'
 import { Trash } from '../UI/Trash'
@@ -62,9 +63,25 @@ export const ManageAdvertising = ({ pubs = [], matricule, onSubmit }: IManageAdv
         }
     }
 
+    const closeConfirmModal = () => {
+        setDeleteModal({show: false, element: null})
+    }
+
+    const deletePub = (pub: IPublicite) => {
+        setPublicites(publicites => publicites.filter((publicite: IPublicite) => publicite != pub))
+        setDeleteModal({show: false, element: null})
+    }
+
     return <>
         {((type == 'edit' && publicite != null) || (type == 'create' && publicite == null)) && <AdvertisingModal type={type} show={showEdit} publicite={publicite} matricule={matricule} handleClose={handleUnSelectPub} onValidate={handleSubmit}/>}
         <div className="d-flex justify-content-start mb-2"><Button variant="primary" onClick={setCreateMode}>Créer un panneau</Button></div>
+        <ConfirmModal 
+            show={deleteModal.show} 
+            element={deleteModal.element} 
+            onClose={closeConfirmModal} 
+            onConfirm={deletePub} 
+            bodyText="Voulez-vous vraiment supprimer ce panneau ?"
+        />
         <Table striped bordered hover>
             <thead>
                 <tr>

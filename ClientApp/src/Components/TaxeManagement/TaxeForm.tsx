@@ -39,7 +39,7 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
     const [postCodes, setPostCodes] = useState<any>(data.code_postal ? [data.code_postal] : [])
     const [codePostal, setCodePostal] = useState<any>(null)
     const [postCodeText, changePostCodeText] = useState<string>("")
-    const { register, control, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(TaxeFormSchema), defaultValues: defaultValues });
+    const { register, unregister, control, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(TaxeFormSchema), defaultValues: defaultValues });
 
     useEffect(() => {
         (async () => {
@@ -50,6 +50,8 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
 
     const OnSubmit = async (form: any) => {
         try {
+            const newArray = form.publicites.map(({rue, ...rest}: any) => rest)
+            form.publicites = newArray
             const test = await onFormSubmit(form)
             toast.success('Modifications sauvegardées')
         } catch (e: any) {
