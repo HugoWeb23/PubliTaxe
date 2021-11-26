@@ -10,7 +10,7 @@ namespace Taxes.Entities
     public class Tarif
     {
         [Key]
-        public int Exercice { get; set; }
+        public short Exercice { get; set; }
         [Column(TypeName = "decimal(5,3)")]
         public decimal Prix_unitaire_enseigne_non_lumineuse { get; set; }
         [Column(TypeName = "decimal(5,3)")]
