@@ -21,14 +21,14 @@ interface IAdvertisingModal {
     show: boolean,
     publicite: any,
     matricule: number,
+    tarifs: any,
     handleClose: () => void,
     onValidate: (daya: any, type: 'create' | 'edit') => void
 }
 
-export const AdvertisingModal = ({ type, show, publicite, matricule, handleClose, onValidate }: IAdvertisingModal) => {
+export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, handleClose, onValidate }: IAdvertisingModal) => {
     const [streets, setStreets] = useState<IRue[]>(publicite?.rue ? [publicite.rue] : [])
     const [streetId, setStreetId] = useState<number>()
-    const [prices, setPrices] = useState<any>(null)
     const { register, control, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(AdvertisingFormSchema), defaultValues: publicite ? publicite : {} });
     const pricesByTypes: any[] = [
         { type: 1, value: "prix_unitaire_enseigne_non_lumineuse" },
@@ -39,36 +39,34 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, handleClose
         { type: 6, value: "prix_unitaire_panneau_a_defilement" }
     ]
 
-    useEffect(() => {
-        (async () => {
-            const tarifs = await apiFetch('/prices/getall')
-            setTimeout(() => setPrices(tarifs), 300)
-        })()
-    }, [])
-
     const quantite = useWatch({
         control,
-        name: "quantite"
+        name: "quantite",
+        defaultValue: 0
     })
 
     const surface = useWatch({
         control,
-        name: "surface"
+        name: "surface",
+        defaultValue: 0
     })
 
     const face = useWatch({
         control,
-        name: "face"
+        name: "face",
+        defaultValue: 1
     })
 
     const typePub = useWatch({
         control,
-        name: "type_publicite"
+        name: "type_publicite",
+        defaultValue: 1
     })
 
     const SumTax = () => {
-        const price = (surface * prices[0])
-        return price
+        const data = pricesByTypes.find((element: any) => element.type == typePub).value
+        const price = (surface * tarifs[0][data]) * quantite * face
+        return price.toFixed(2)
     }
 
     const StreetSearch = async (query: string) => {
@@ -109,10 +107,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, handleClose
                 <Modal.Title>{type == 'edit' ? `Éditer un panneau` : 'Créer un panneau'}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                {prices != null ?
                     <Form onSubmit={handleSubmit(onSubmit)}>
-                        {JSON.stringify(typePub)}
-                        {JSON.stringify(face)}
                         <Row>
                             <Col>
                                 <Form.Group className="mb-3" controlId="code_postal">
@@ -218,8 +213,9 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, handleClose
                                 <Form.Group controlId="face">
                                     <Form.Label column="sm">Face</Form.Label>
                                     <Form.Select size="sm" isInvalid={errors.face} {...register('face')}>
-                                        <option value="1">Simple</option>
-                                        <option value="2">Double</option>
+                                        <option value={1}>Simple</option>
+                                        <option value={2}>Double</option>
+                                        <option value={3}>Triple</option>
                                     </Form.Select>
                                     {errors.face && <Form.Control.Feedback type="invalid">{errors.face.message}</Form.Control.Feedback>}
                                 </Form.Group>
@@ -266,7 +262,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, handleClose
                                 <Form.Group className="mb-3" controlId="taxe_totale">
                                     <Form.Label column="sm">Taxe totale</Form.Label>
                                     <InputGroup className="mb-2" size="sm">
-                                        <Form.Control type="text" disabled placeholder="Taxe totale" size="sm" isInvalid={errors.taxe_totale} value={quantite} />
+                                        <Form.Control type="text" disabled placeholder="Taxe totale" size="sm" isInvalid={errors.taxe_totale} value={SumTax()} />
                                         <InputGroup.Text>€</InputGroup.Text>
                                         {errors.taxe_totale && <Form.Control.Feedback type="invalid">{errors.taxe_totale.message}</Form.Control.Feedback>}
                                     </InputGroup>
@@ -274,14 +270,13 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, handleClose
                             </Col>
                         </Row>
                     </Form>
-                    : 'Chargement des tarifs...'}
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>
                     Annuler
                 </Button>
                 <Button variant="success" onClick={handleSubmit(onSubmit)}>
-                    Modifier
+                    {type == 'create' ? 'Créer' : 'Modifier'}
                 </Button>
             </Modal.Footer>
         </Modal>

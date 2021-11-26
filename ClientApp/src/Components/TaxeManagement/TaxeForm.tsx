@@ -28,30 +28,26 @@ import { IPublicite } from "../../Types/IPublicite";
 interface TaxeForm {
     data?: any,
     type: 'create' | 'edit',
+    motifs: IMotif_majoration[],
+    tarifs: any,
     onFormSubmit: (data: any) => Promise<void>
 }
 
-export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
+export const TaxeForm = ({ data = {}, type, motifs, tarifs, onFormSubmit }: TaxeForm) => {
     const defaultValues = data ? data : {}
    const [publicites, setPublicites] = useState(data.publicites ? data.publicites : [])
     const [streetCodeModal, setStreetCodeModal] = useState<boolean>(false)
-    const [markUpReasons, setMarkUpReasons] = useState<IMotif_majoration[]>([])
     const [postCodes, setPostCodes] = useState<any>(data.code_postal ? [data.code_postal] : [])
     const [codePostal, setCodePostal] = useState<any>(null)
-    const [postCodeText, changePostCodeText] = useState<string>("")
     const { register, unregister, control, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(TaxeFormSchema), defaultValues: defaultValues });
-
-    useEffect(() => {
-        (async () => {
-            const reasons = await apiFetch('/motifs_majoration/getall')
-            setMarkUpReasons(reasons)
-        })()
-    }, [])
 
     const OnSubmit = async (form: any) => {
         try {
             const newArray = form.publicites.map(({rue, ...rest}: any) => rest)
             form.publicites = newArray
+            if(codePostal != null) {
+                form.code_postalId = codePostal
+            }
             const test = await onFormSubmit(form)
             toast.success('Modifications sauvegardées')
         } catch (e: any) {
@@ -347,17 +343,13 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                 <Col>
                     <Form.Group controlId="motif_majorationId">
                         <Form.Label column="sm">Motif de la majoration</Form.Label>
-                        {markUpReasons.length > 0 ?
-                            <>
                                 <Form.Select {...register('motif_majorationId')} isInvalid={errors.motif_majorationId} size="sm">
                                     <option value="">Aucun motif</option>
-                                    {markUpReasons.map((reason: IMotif_majoration, index: number) => {
+                                    {motifs.map((reason: IMotif_majoration, index: number) => {
                                         return <option key={index} value={reason.id_motif}>{reason.libelle}</option>
                                     })}
                                 </Form.Select>
                                 {errors.motif_majorationId && <Form.Control.Feedback type="invalid">{errors.motif_majorationId.message}</Form.Control.Feedback>}
-                            </>
-                            : <Loader />}
                     </Form.Group>
                 </Col>
             </Row>
@@ -424,7 +416,7 @@ export const TaxeForm = ({ data = {}, type, onFormSubmit }: TaxeForm) => {
                 </Col>
             </Row>
         </Form>
-            <ManageAdvertising pubs={publicites} matricule={defaultValues.matricule_ciger} onSubmit={UpdatePubs}/>
+            <ManageAdvertising pubs={publicites} matricule={defaultValues.matricule_ciger} tarifs={tarifs} onSubmit={UpdatePubs}/>
         </Container>
     </>
 }

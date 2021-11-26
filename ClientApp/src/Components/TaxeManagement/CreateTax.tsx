@@ -1,7 +1,8 @@
 import { apiFetch } from "../../Services/apiFetch"
+import { Loader } from "../UI/Loader"
 import { TaxeForm } from "./TaxeForm"
 
-export const CreateTax = () => {
+export const CreateTax = ({motifs, tarifs}: any) => {
     const handleCreate = async(data: any) => {
        data.matricule_ciger = Number.parseInt(data.matricule_ciger)
        delete data.code_postal
@@ -10,5 +11,7 @@ export const CreateTax = () => {
            body: JSON.stringify(data)
        })
     }
-    return <TaxeForm type="create" onFormSubmit={handleCreate}/>
+    return <>
+    {(motifs != null && tarifs != null) ? <TaxeForm type="create" motifs={motifs} tarifs={tarifs} onFormSubmit={handleCreate}/> : <Loader/>}
+    </>
 }

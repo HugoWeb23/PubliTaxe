@@ -17,10 +17,11 @@ import { AdvertisingModal } from './AdvertisingModal'
 interface IManageAdvertising {
     pubs: IPublicite[],
     matricule: number,
+    tarifs: any,
     onSubmit: (publicites: IPublicite[]) => void
 }
 
-export const ManageAdvertising = ({ pubs = [], matricule, onSubmit }: IManageAdvertising) => {
+export const ManageAdvertising = ({ pubs = [], matricule, tarifs, onSubmit }: IManageAdvertising) => {
     const isMounted = useRef(false)
     const [showEdit, setShowEdit] = useState<boolean>(false)
     const [type, setType] = useState<'edit' | 'create'>('edit')
@@ -73,7 +74,7 @@ export const ManageAdvertising = ({ pubs = [], matricule, onSubmit }: IManageAdv
     }
 
     return <>
-        {((type == 'edit' && publicite != null) || (type == 'create' && publicite == null)) && <AdvertisingModal type={type} show={showEdit} publicite={publicite} matricule={matricule} handleClose={handleUnSelectPub} onValidate={handleSubmit}/>}
+        {((type == 'edit' && publicite != null) || (type == 'create' && publicite == null)) && <AdvertisingModal type={type} show={showEdit} publicite={publicite} matricule={matricule} tarifs={tarifs} handleClose={handleUnSelectPub} onValidate={handleSubmit}/>}
         <div className="d-flex justify-content-start mb-2"><Button variant="primary" onClick={setCreateMode}>Créer un panneau</Button></div>
         <ConfirmModal 
             show={deleteModal.show} 
