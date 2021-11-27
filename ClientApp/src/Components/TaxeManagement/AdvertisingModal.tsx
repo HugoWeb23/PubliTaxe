@@ -29,7 +29,7 @@ interface IAdvertisingModal {
 export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, handleClose, onValidate }: IAdvertisingModal) => {
     const [streets, setStreets] = useState<IRue[]>(publicite?.rue ? [publicite.rue] : [])
     const [streetId, setStreetId] = useState<number>()
-    const { register, control, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(AdvertisingFormSchema), defaultValues: publicite ? publicite : {} });
+    const { register, control, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(AdvertisingFormSchema), defaultValues: publicite ? publicite : {type_publicite: 1, face: 1} });
     const pricesByTypes: any[] = [
         { type: 1, value: "prix_unitaire_enseigne_non_lumineuse" },
         { type: 2, value: "prix_unitaire_enseigne_lumineuse" },
@@ -41,32 +41,28 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, han
 
     const quantite = useWatch({
         control,
-        name: "quantite",
-        defaultValue: 0
+        name: "quantite"
     })
 
     const surface = useWatch({
         control,
-        name: "surface",
-        defaultValue: 0
+        name: "surface"
     })
 
     const face = useWatch({
         control,
-        name: "face",
-        defaultValue: 1
+        name: "face"
     })
 
     const typePub = useWatch({
         control,
-        name: "type_publicite",
-        defaultValue: 1
+        name: "type_publicite"
     })
 
     const SumTax = () => {
         const data = pricesByTypes.find((element: any) => element.type == typePub).value
         const price = (surface * tarifs[0][data]) * quantite * face
-        return price.toFixed(2)
+        return !isNaN(price) ? price.toFixed(2) : 0
     }
 
     const StreetSearch = async (query: string) => {

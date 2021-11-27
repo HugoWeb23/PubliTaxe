@@ -11,6 +11,7 @@ import { IPublicite } from '../../Types/IPublicite'
 import { ConfirmModal } from '../UI/ConfirmModal'
 import { Eye } from '../UI/Eye'
 import { Pencil } from '../UI/Pencil'
+import { PlusIcon } from '../UI/PlusIcon'
 import { Trash } from '../UI/Trash'
 import { AdvertisingModal } from './AdvertisingModal'
 
@@ -75,12 +76,12 @@ export const ManageAdvertising = ({ pubs = [], matricule, tarifs, onSubmit }: IM
 
     return <>
         {((type == 'edit' && publicite != null) || (type == 'create' && publicite == null)) && <AdvertisingModal type={type} show={showEdit} publicite={publicite} matricule={matricule} tarifs={tarifs} handleClose={handleUnSelectPub} onValidate={handleSubmit}/>}
-        <div className="d-flex justify-content-start mb-2"><Button variant="primary" onClick={setCreateMode}>Créer un panneau</Button></div>
+        <div className="d-flex justify-content-start align-items-center mb-2 link" onClick={setCreateMode}><PlusIcon/> Créer un panneau</div>
         <ConfirmModal 
             show={deleteModal.show} 
             element={deleteModal.element} 
             onClose={closeConfirmModal} 
-            onConfirm={deletePub} 
+            onConfirm={deletePub}
             bodyText="Voulez-vous vraiment supprimer ce panneau ?"
         />
         <Table striped bordered hover>
