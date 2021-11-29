@@ -26,6 +26,8 @@ namespace Taxes.Handlers
                 .ThenInclude(rue => rue.Code_postal)
                 .Include(ent => ent.Code_postal)
                 .ThenInclude(cp => cp.Pays)
+                .Include(ent => ent.Publicites)
+                .ThenInclude(pub => pub.Photos)
                 .FirstOrDefault(ent => ent.Matricule_ciger == request.matricule);
                
             return Task.FromResult(entreprise);

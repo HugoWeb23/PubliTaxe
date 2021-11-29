@@ -9,6 +9,8 @@ using Taxes.Entities;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation.AspNetCore;
 using MediatR;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace Taxes
 {
@@ -57,7 +59,11 @@ namespace Taxes
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Uploads/images")),
+                RequestPath = "/api/images"
+            });
             app.UseSpaStaticFiles();
 
             app.UseRouting();

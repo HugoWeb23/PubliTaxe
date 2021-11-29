@@ -9,6 +9,9 @@ using Taxes.Commands;
 using System;
 using Taxes.Filters;
 using System.IO;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+using Taxes.Services;
 
 namespace Taxes.Controllers
 {
@@ -19,9 +22,12 @@ namespace Taxes.Controllers
     public class EntrepriseController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public EntrepriseController(IMediator mediator)
+        private readonly IWebHostEnvironment _environment;
+
+        public EntrepriseController(IMediator mediator, IWebHostEnvironment environment)
         {
             _mediator = mediator;
+            _environment = environment;
         }
 
         [HttpGet("names")]
@@ -91,6 +97,19 @@ namespace Taxes.Controllers
             {
                 return BadRequest(new ErreurSimple { Erreur = "Une erreur est survenue lors de la modification de la publicité", Details = e.ToString() });
             }
+
+        }
+
+        [HttpPost("publicite/uploadimage")]
+        public async Task<IActionResult> UploadImageAsync([FromForm] List<IFormFile> images)
+        {
+            if(images == null || images.Count == 0)
+            {
+                return BadRequest("Erreur");
+            }
+            UploadImage UploadImage = new UploadImage(_environment);
+            List<string> filesNames = await UploadImage.Upload(images);
+            return Ok(filesNames);
 
         }
 
