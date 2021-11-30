@@ -34,5 +34,20 @@ namespace Taxes.Services
 
             return fileNames;
         }
+
+        public Task<Boolean> DeleteImage(string imageName)
+        {
+            string path = Path.Combine(_environment.ContentRootPath, "Uploads", "images/" + imageName);
+            try
+            {
+                File.Delete(path);
+                return Task.FromResult(true);
+
+            } catch(Exception e)
+            {
+                return Task.FromResult(false);
+            }
+            
+        }
     }
 }

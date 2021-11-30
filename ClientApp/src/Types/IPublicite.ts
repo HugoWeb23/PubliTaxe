@@ -1,3 +1,4 @@
+import { IPhoto } from "./IPhoto";
 import { IRue } from "./IRue";
 
 export interface IPublicite {
@@ -17,6 +18,13 @@ export interface IPublicite {
     taxe_totale?: number,
     code_recu: number
     exoneration: number,
-    pv: number
+    pv: number,
+    photos: IPhoto[]
 
+}
+
+export interface IPubliciteImage {
+    id: number,
+    numero_panneau: number,
+    photo: string
 }

@@ -20,7 +20,7 @@ namespace Taxes.Handlers
         public Task<List<Code_postal>> Handle(GetPostalCodesByLocalityQuery request, CancellationToken cancellationToken)
         {
             List<Code_postal> codes = _context.codes_postaux
-                .Where(code => code.Localite == request.locality)
+                .Where(code => code.Localite.Contains(request.locality))
                 .Include(cp => cp.Pays)
                 .ToList();
             return Task.FromResult(codes);

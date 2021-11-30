@@ -15,7 +15,6 @@ export const TaxeFormSchema = yup.object().shape({
         localite: yup.string().required('Veuillez saisir une localité')
     }),
     numero_telephone: yup.string().required('Veuillez saisir un numéro de téléphone').min(3, "Le numéro est trop court").max(25, "Le numéro est trop long"),
-    numero_fax: yup.string().required('Veuillez saisir un numéro de fax').min(3, "Le fax est trop court").max(25, "Le fax est trop long"),
     personne_contact: yup.string().required('Veuillez définir une personne de contact').min(2, "La valeur est trop courte").max(50, "La valeur est trop longue"),
     telephone_contact: yup.string().required('Veuillez saisir un numéro de téléphone').min(5, "Le numéro est trop court").max(50, "Le numéro est trop long"),
     mail_contact: yup.string().required('Veuillez saisir une adresse email').email("L'adresse email n'est pas valide"),

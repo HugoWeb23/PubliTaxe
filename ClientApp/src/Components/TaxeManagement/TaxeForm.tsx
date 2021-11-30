@@ -24,6 +24,9 @@ import { Link } from "react-router-dom";
 import { LeftArrow } from '../UI/LeftArroy'
 import { ManageAdvertising } from './ManageAdvertising'
 import { IPublicite } from "../../Types/IPublicite";
+import { Printer } from "../UI/Printer";
+import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
+import { TaxPrinter } from "./PDF/TaxPrinter";
 
 interface TaxeForm {
     data?: any,
@@ -35,6 +38,7 @@ interface TaxeForm {
 
 export const TaxeForm = ({ data = {}, type, motifs, tarifs, onFormSubmit }: TaxeForm) => {
     const defaultValues = data ? data : {}
+    const [tax, setTax] = useState<Entreprise>(data as Entreprise)
     const [publicites, setPublicites] = useState(data.publicites ? data.publicites : [])
     const [streetCodeModal, setStreetCodeModal] = useState<boolean>(false)
     const [postCodes, setPostCodes] = useState<any>(data.code_postal ? [data.code_postal] : [])
@@ -44,15 +48,22 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, onFormSubmit }: Taxe
 
     const OnSubmit = async (form: any) => {
         try {
+            setTax(form)
             const newArray = form.publicites.map(({ rue, ...rest }: any) => rest)
             form.publicites = newArray
             if (codePostal != null) {
                 form.code_postalId = codePostal
             }
-            const test = await onFormSubmit(form)
+            const test: any = await onFormSubmit(form)
+            const oldPubs = { ...publicites };
+            test.publicites.forEach((pub: IPublicite, index: number) => {
+                oldPubs[index].photos = pub.photos
+            });
+            setPublicites(oldPubs)
             toast.success('Modifications sauvegardées')
         } catch (e: any) {
             toast.error('Une erreur est survenue')
+            console.log(e)
         }
     }
 
@@ -96,26 +107,34 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, onFormSubmit }: Taxe
     const UpdatePubs = (pubs: any) => {
         setValue('publicites', pubs)
         setPublicites(pubs)
-        const checkPubs = pubs.reduce((acc: any, curr: any) => {
-            if (acc.rue == undefined) return false
-            if ((acc.rue.rueId == curr.rue.rueId) && (acc.adresse_numero == curr.adresse_numero)) {
-                return acc
+        if (pubs.length > 0) {
+            const checkPubs = pubs.reduce((acc: any, curr: any) => {
+                if (acc.rue == undefined) return false
+                if ((acc.rue.rueId == curr.rue.rueId) && (acc.adresse_numero == curr.adresse_numero)) {
+                    return acc
+                } else {
+                    return false
+                }
+            })
+            if (checkPubs != false) {
+                setValue('code_rue_taxation', checkPubs.rue.code_rue)
+                setValue('adresse_taxation', checkPubs.rue.nom_rue)
+                setValue('adresse_code_postal_taxation', checkPubs.rue.code_postal.cp)
+                setValue('adresse_localite_taxation', checkPubs.rue.code_postal.localite)
+                setValue('adresse_numero_taxation', checkPubs.adresse_numero)
             } else {
-                return false
+                setValue('code_rue_taxation', '888')
+                setValue('adresse_taxation', "Dans l'arondissement de Mouscron")
+                setValue('adresse_code_postal_taxation', '7700')
+                setValue('adresse_localite_taxation', 'MOUSCRON')
+                setValue('adresse_numero_taxation', '0')
             }
-        })
-        if (checkPubs != false) {
-            setValue('code_rue_taxation', checkPubs.rue.code_rue)
-            setValue('adresse_taxation', checkPubs.rue.nom_rue)
-            setValue('adresse_code_postal_taxation', checkPubs.rue.code_postal.cp)
-            setValue('adresse_localite_taxation', checkPubs.rue.code_postal.localite)
-            setValue('adresse_numero_taxation', checkPubs.adresse_numero)
         } else {
-            setValue('code_rue_taxation', '888')
-            setValue('adresse_taxation', "Dans l'arondissement de Mouscron")
-            setValue('adresse_code_postal_taxation', '7700')
-            setValue('adresse_localite_taxation', 'MOUSCRON')
-            setValue('adresse_numero_taxation', '0')
+            setValue('code_rue_taxation', '')
+            setValue('adresse_taxation', '')
+            setValue('adresse_code_postal_taxation', '')
+            setValue('adresse_localite_taxation', '')
+            setValue('adresse_numero_taxation', '')
         }
     }
 
@@ -124,8 +143,17 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, onFormSubmit }: Taxe
         <Container fluid="xl">
             <Form onSubmit={handleSubmit(OnSubmit)} className="mb-2">
                 <div className="d-flex justify-content-between align-items-center">
-                    <Link to="/" className="link"><LeftArrow /> Retour à la liste des entreprises</Link>
-                    <Button variant="success" size="sm" type="submit" className="mt-3 mb-3" disabled={isSubmitting}>{type == "create" ? "Créer l'entreprise" : "Modifier l'entreprise"}</Button>
+                    <div>
+                        <Link to="/" className="link"><LeftArrow /> Retour à la liste des entreprises</Link>
+                    </div>
+                    <div>
+                        <PDFDownloadLink document={<TaxPrinter entreprise={tax} />} fileName="taxe.pdf">
+                            {({ blob, url, loading, error }) =>
+                                <Button variant="outline-primary" className="me-4" size="sm" disabled={loading}><Printer /> {loading ? "Chargement" : "Version imprimable"}</Button>
+                            }
+                        </PDFDownloadLink>
+                        <Button variant="success" type="submit" className="mt-3 mb-3" disabled={isSubmitting}>{type == "create" ? "Créer l'entreprise" : "Modifier l'entreprise"}</Button>
+                    </div>
                 </div>
                 <Row className="mb-3">
                     <Col>
@@ -450,6 +478,9 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, onFormSubmit }: Taxe
                 </Row>
             </Form>
             <ManageAdvertising pubs={publicites} matricule={defaultValues.matricule_ciger} tarifs={tarifs} onSubmit={UpdatePubs} />
+            <PDFViewer width="100%" height="1300px">
+                            <TaxPrinter entreprise={tax} />
+                        </PDFViewer>
         </Container>
     </>
 }

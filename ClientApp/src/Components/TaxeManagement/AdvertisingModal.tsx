@@ -7,15 +7,17 @@ import {
     InputGroup,
     Image
 } from 'react-bootstrap'
-import { IPublicite } from "../../Types/IPublicite"
+import { IPublicite, IPubliciteImage } from "../../Types/IPublicite"
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, Controller, useWatch } from "react-hook-form"
 import { AdvertisingFormSchema } from '../../Validation/Tax/AdvertisingFormSchema';
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead'
 import { apiFetch } from "../../Services/apiFetch";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { IRue } from '../../Types/IRue';
 import { resourceUsage } from 'process';
+import { Trash } from '../UI/Trash';
+import { toast } from 'react-toastify';
 
 interface IAdvertisingModal {
     type: 'create' | 'edit',
@@ -30,7 +32,8 @@ interface IAdvertisingModal {
 export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, handleClose, onValidate }: IAdvertisingModal) => {
     const [streets, setStreets] = useState<IRue[]>(publicite?.rue ? [publicite.rue] : [])
     const [streetId, setStreetId] = useState<number>()
-    const [imagesLinks, setImagesLinks] = useState<string[]>(publicite?.photos.length > 0 ? publicite.photos : [])
+    const [loadingStreets, setLoadingStreets] = useState<boolean>(false)
+    const [imagesLinks, setImagesLinks] = useState<IPubliciteImage[]>(publicite?.photos.length > 0 ? publicite.photos : [])
     const { register, control, reset, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(AdvertisingFormSchema), defaultValues: publicite ? publicite : { type_publicite: 1, face: 1 } });
     const pricesByTypes: any[] = [
         { type: 1, value: "prix_unitaire_enseigne_non_lumineuse" },
@@ -68,11 +71,13 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, han
     }
 
     const StreetSearch = async (query: string) => {
+        setLoadingStreets(true)
         const streets = await apiFetch(`/rues/getbyname`, {
             method: 'POST',
             body: JSON.stringify({ nom_rue: query })
         })
         setStreets(streets)
+        setLoadingStreets(false)
     }
 
     const SetValueOnChange = (data: any) => {
@@ -99,26 +104,38 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, han
         handleClose()
     }
 
-    const onFileChange = async(e: any) => {
-       const files = e.target.files
-            const formData = new FormData()
-                        Array.from(files).forEach((image: any, index: number) => {
-                            formData.append(`images`, image)
-                        })
+    const onFileChange = async (e: any) => {
+        const files = e.target.files
+        const formData = new FormData()
+        Array.from(files).forEach((image: any, index: number) => {
+            formData.append(`images`, image)
+        })
 
-            const link = await apiFetch(`/entreprises/publicite/uploadimage`, {
-                method: 'POST',
-                body: formData
+        const link = await apiFetch(`/entreprises/publicite/uploadimage`, {
+            method: 'POST',
+            body: formData
+        })
+
+        const allImages = [...imagesLinks, ...link.map((l: any) => {
+            return { photo: l }
+        })]
+        setValue('photos', allImages)
+
+        setImagesLinks(links => [...links, ...link.map((l: any) => {
+            return { photo: l }
+        })])
+    }
+
+    const deleteImage = async (imageName: string) => {
+        try {
+            await apiFetch(`/entreprises/publicite/deleteimage/${imageName}`, {
+                method: 'DELETE'
             })
-
-            const allImages = [...imagesLinks, ...link.map((l: any) => {
-                return {photo: l}
-            })]
-            setValue('photos', allImages)
-
-            setImagesLinks(links => [...links, ...link.map((l: any) => {
-                return {photo: l}
-            })])
+            setImagesLinks(links => links.filter((link: IPubliciteImage) => link.photo != imageName))
+            setValue('photos', imagesLinks.filter((link: IPubliciteImage) => link.photo != imageName))
+        } catch (e) {
+            toast.error('Une erreur est survenue')
+        }
     }
 
     return <>
@@ -157,7 +174,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, han
                                         <AsyncTypeahead
                                             filterBy={() => true}
                                             id="rue"
-                                            isLoading={false}
+                                            isLoading={loadingStreets}
                                             labelKey="nom_rue"
                                             placeholder="Rue"
                                             isInvalid={errors.rue && errors.rue.nom_rue}
@@ -171,15 +188,19 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, han
                                             renderMenu={(results, menuProps) => (
                                                 <Menu {...menuProps}>
                                                     {results.map((result, index) => (
-                                                        <MenuItem
-                                                            key={index}
-                                                            option={result}
-                                                            position={index}>
-                                                            <div>{result.nom_rue}</div>
-                                                            <div>
-                                                                <small>{result.code_postal.localite}</small>
-                                                            </div>
-                                                        </MenuItem>
+                                                        <>
+                                                            {result.code_postal &&
+                                                                <MenuItem
+                                                                    key={index}
+                                                                    option={result}
+                                                                    position={index}>
+                                                                    <div>{result.nom_rue}</div>
+                                                                    <div>
+                                                                        <small>{result.code_postal.localite}</small>
+                                                                    </div>
+                                                                </MenuItem>
+                                                            }
+                                                        </>
                                                     ))}
                                                 </Menu>
                                             )}
@@ -282,6 +303,9 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, han
                             <Form.Group controlId="formFileSm" className="mb-3">
                                 <Form.Label>Photos du panneau</Form.Label>
                                 <Form.Control type="file" size="sm" accept="image/*" multiple onChange={onFileChange} />
+                                <Form.Text className="text-muted">
+                                    Maintenez la touche CTRL pour sélectionner plusieurs photos.
+                                </Form.Text>
                             </Form.Group>
                         </Col>
                     </Row>
@@ -298,13 +322,21 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, han
                         </Col>
                     </Row>
                 </Form>
-                <Row>
-                {imagesLinks.map((image: any) => {
-                    return <Col xs={6} md={4}>
-                      <Image src={"https://localhost:5001/api/images/"+image.photo} style={{height: "200px", width: "200px"}} rounded />
-                    </Col>
-                })}
-                 </Row>
+                <div className="d-flex justify-content-start">
+                    {imagesLinks.map((image: IPubliciteImage, index: number) => {
+                        return <>
+                            <div style={{ position: 'relative' }} className="me-4" key={index}>
+                                <Button className="btn-circle" onClick={() => deleteImage(image.photo)} style={{ position: 'absolute', top: "-7px", right: "-14px" }} variant="danger" size="sm"><Trash /></Button>
+                                <a href={"https://localhost:5001/api/images/" + image.photo} target="_blank"><Image src={"https://localhost:5001/api/images/" + image.photo} style={{ height: "100px", width: "100px" }} rounded /></a>
+                            </div>
+                        </>
+                    })}
+                </div>
+                {imagesLinks.length > 0 &&
+                    <Form.Text className="text-muted">
+                        Cliquez sur une photo pour la voir dans sa taille réelle.
+                    </Form.Text>
+                }
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>

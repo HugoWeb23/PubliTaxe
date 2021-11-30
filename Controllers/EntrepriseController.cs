@@ -77,7 +77,7 @@ namespace Taxes.Controllers
             try
             {
                 Entreprise entr = await _mediator.Send(new UpdateEntrepriseCommand(entreprise));
-                return Ok("OK");
+                return Ok(entr);
             } catch (Exception e)
             {
                 return BadRequest(new ErreurSimple { Erreur = "Une erreur est survenue lors de la modification de l'entreprise", Details = e.ToString() });
@@ -111,6 +111,21 @@ namespace Taxes.Controllers
             List<string> filesNames = await UploadImage.Upload(images);
             return Ok(filesNames);
 
+        }
+
+        [HttpDelete("publicite/deleteimage/{imagename}")]
+        public async Task<IActionResult> DeleteImage(string imagename)
+        {
+            UploadImage UploadImage = new UploadImage(_environment);
+            await _mediator.Send(new DeleteImageCommand(imagename));
+            bool Resut = await UploadImage.DeleteImage(imagename);
+            if(Resut == true)
+            {
+                return Ok(new { type = "success", message = "L'image a été supprimée" });
+            } else
+            {
+                return BadRequest(new { type = "error", message = "Une erreur est survenue lors de la suppression de l'image" });
+            }
         }
 
     }

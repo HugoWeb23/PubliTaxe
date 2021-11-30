@@ -20,7 +20,7 @@ namespace Taxes.Handlers
         public Task<List<Rue>> Handle(GetStreetsByNameQuery request, CancellationToken cancellationToken)
         {
             List<Rue> Rues = _context.rues
-                .Where(rue => rue.Nom_rue == request.Nom_rue)
+                .Where(rue => rue.Nom_rue.Contains(request.Nom_rue))
                 .Include(rue => rue.Code_postal)
                 .ThenInclude(rue => rue.Pays)
                 .ToList();

@@ -23,11 +23,12 @@ export const EditTax = ({match, motifs, tarifs}: any) => {
     }, [])
 
     const handleEditTax = async(data: any) => {
-            delete data.code_postal
+            const {code_postal, ...data2} = data
             const editTax = await apiFetch(`/entreprises/edit/${data.matricule_ciger}`, {
                 method: 'PUT',
-                body: JSON.stringify(data)
+                body: JSON.stringify(data2)
             })
+            return editTax
     }
 return <>
 {(loader != true && motifs != null && tarifs != null) ? <TaxeForm type="edit" data={entreprise} motifs={motifs} tarifs={tarifs} onFormSubmit={handleEditTax}/> : <Loader/> }
