@@ -48,25 +48,26 @@ namespace Taxes.Handlers
         {
             Dictionary<int, string> PricesNames = new Dictionary<int, string>()
             {
-            {1, "prix_unitaire_enseigne_non_lumineuse" },
-            {2, "prix_unitaire_enseigne_lumineuse" },
-            {3,"prix_unitaire_enseigne_clignotante" },
-            {4, "prix_unitaire_panneau_non_lumineux" },
-            {5, "prix_unitaire_panneau_lumineux" },
-            {6, "prix_unitaire_panneau_a_defilement" }
+
+            {1, "Prix_unitaire_enseigne_non_lumineuse" },
+            {2, "Prix_unitaire_enseigne_lumineuse" },
+            {3,"Prix_unitaire_enseigne_clignotante" },
+            {4, "Prix_unitaire_panneau_non_lumineux" },
+            {5, "Prix_unitaire_panneau_lumineux" },
+            {6, "Prix_unitaire_panneau_a_defilement" }
+
             };
+
             List<Tarif> tarifs = await _mediator.Send(new GetAllPricesQuery());
 
-            string data = PricesNames.FirstOrDefault(price => price.Key == Type_publicite).Value;
-            decimal price = 0;
-            if(data != null)
-            {
-                price = tarifs.First(p => p.Exercice == exercice).Prix_unitaire_panneau_a_defilement;
-            }
-            decimal sum = price * Surface * Quantite * Face;
-            Test test = new Test { Id = 5, Nom = "test", Code_postal = 7700, Prenom = "lol" };
-            object propValue = test.GetType().GetProperty("Nom").GetValue(test);
+                string PubName = PricesNames.FirstOrDefault(price => price.Key == Type_publicite).Value;
+                Tarif tarif = tarifs.First(p => p.Exercice == exercice);
+                decimal price = (decimal)tarif.GetType().GetProperty(PubName).GetValue(tarif, null);
+          
+                decimal sum = price * Surface * Quantite * Face;
+     
             return decimal.Round(sum, 2, System.MidpointRounding.AwayFromZero);
+
         }
     }
 }
