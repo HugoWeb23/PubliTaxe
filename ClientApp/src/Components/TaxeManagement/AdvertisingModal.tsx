@@ -111,9 +111,9 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, han
     }
 
     useEffect(() => {
-        setValue('taxe_totale', SumTax())
+        setValue('taxe_totale', SumTax(surface, quantite, face, typePub))
         setValue('surface_totale', isNaN(quantite * surface) != true ? (quantite * surface) : 0)
-    }, [SumTax])
+    }, [surface, quantite, face, typePub])
 
     const onFileChange = async (e: any) => {
         const files = e.target.files
@@ -325,7 +325,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, han
                             <Form.Group className="mb-3" controlId="taxe_totale">
                                 <Form.Label column="sm">Taxe totale</Form.Label>
                                 <InputGroup className="mb-2" size="sm">
-                                    <Form.Control type="text" disabled placeholder="Taxe totale" size="sm" isInvalid={errors.taxe_totale} value={SumTax()} />
+                                    <Form.Control type="text" disabled placeholder="Taxe totale" size="sm" isInvalid={errors.taxe_totale} value={SumTax(surface, quantite, face, typePub)} />
                                     <InputGroup.Text>€</InputGroup.Text>
                                     {errors.taxe_totale && <Form.Control.Feedback type="invalid">{errors.taxe_totale.message}</Form.Control.Feedback>}
                                 </InputGroup>

@@ -105,6 +105,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, onFormSubmit }: Taxe
     }
 
     const UpdatePubs = (pubs: any) => {
+        console.log(pubs)
         setValue('publicites', pubs)
         setPublicites(pubs)
         if (pubs.length > 0) {
@@ -141,6 +142,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, onFormSubmit }: Taxe
     return <>
         <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet} />
         <Container fluid="xl">
+          {JSON.stringify(tax)}
             <Form onSubmit={handleSubmit(OnSubmit)} className="mb-2">
                 <div className="d-flex justify-content-between align-items-center">
                     <div>

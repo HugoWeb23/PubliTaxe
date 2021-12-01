@@ -13,7 +13,7 @@ namespace Taxes.Handlers
     {
         public Context _context;
 
-        public GetAllPricesHandler(Context context)
+        public GetAllPricesHandler(Context context, IMediator mediator)
         {
             _context = context;
         }

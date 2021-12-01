@@ -9,6 +9,8 @@ namespace Taxes.Entities
 {
     public class Tarif
     {
+        internal decimal data;
+
         [Key]
         public short Exercice { get; set; }
         [Column(TypeName = "decimal(5,3)")]

@@ -28,6 +28,8 @@ namespace Taxes.Entities
                    this.Face == other.Face &&
                    this.Mesure == other.Mesure &&
                    this.Surface == other.Surface &&
+                   this.Surface_totale == other.Surface_totale &&
+                   this.Taxe_totale == other.Taxe_totale &&
                    this.Code_recu == other.Code_recu &&
                    this.Exoneration == other.Exoneration &&
                    this.Pv == other.Pv &&
@@ -47,6 +49,8 @@ namespace Taxes.Entities
                                               Face,
                                               Mesure,
                                               Surface,
+                                              Surface_totale,
+                                              Taxe_totale,
                                               Code_recu,
                                               Exoneration,
                                               Pv,
@@ -68,6 +72,10 @@ namespace Taxes.Entities
         public string Mesure { get; set; }
         [Column(TypeName = "decimal(9,2)")]
         public decimal Surface { get; set; }
+        [NotMapped]
+        public decimal Surface_totale { get; set; }
+        [NotMapped]
+        public decimal Taxe_totale { get; set; }
         public short Code_recu { get; set; }
         public bool Exoneration { get; set; }
         public short Pv { get; set; }
