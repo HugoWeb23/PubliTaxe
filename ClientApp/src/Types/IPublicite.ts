@@ -17,7 +17,7 @@ export interface IPublicite {
     surface_totale?: number
     taxe_totale?: number,
     code_recu: number
-    exoneration: number,
+    exoneration: boolean,
     pv: number,
     photos: IPhoto[]
 

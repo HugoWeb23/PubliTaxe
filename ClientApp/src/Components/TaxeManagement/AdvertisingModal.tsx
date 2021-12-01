@@ -18,6 +18,7 @@ import { IRue } from '../../Types/IRue';
 import { resourceUsage } from 'process';
 import { Trash } from '../UI/Trash';
 import { toast } from 'react-toastify';
+import { IPricesByTypes } from './ManageAdvertising';
 
 interface IAdvertisingModal {
     type: 'create' | 'edit',
@@ -26,15 +27,18 @@ interface IAdvertisingModal {
     matricule: number,
     tarifs: any,
     handleClose: () => void,
-    onValidate: (daya: any, type: 'create' | 'edit') => void
+    onValidate: (daya: any, type: 'create' | 'edit') => void,
+    pricesByTypes: IPricesByTypes[],
+    SumTax: any
 }
 
-export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, handleClose, onValidate }: IAdvertisingModal) => {
+export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, handleClose, onValidate, pricesByTypes, SumTax }: IAdvertisingModal) => {
     const [streets, setStreets] = useState<IRue[]>(publicite?.rue ? [publicite.rue] : [])
     const [streetId, setStreetId] = useState<number>()
     const [loadingStreets, setLoadingStreets] = useState<boolean>(false)
     const [imagesLinks, setImagesLinks] = useState<IPubliciteImage[]>(publicite?.photos.length > 0 ? publicite.photos : [])
     const { register, control, reset, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(AdvertisingFormSchema), defaultValues: publicite ? publicite : { type_publicite: 1, face: 1 } });
+    /*
     const pricesByTypes: any[] = [
         { type: 1, value: "prix_unitaire_enseigne_non_lumineuse" },
         { type: 2, value: "prix_unitaire_enseigne_lumineuse" },
@@ -43,6 +47,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, han
         { type: 5, value: "prix_unitaire_panneau_lumineux" },
         { type: 6, value: "prix_unitaire_panneau_a_defilement" }
     ]
+    */
 
     const quantite = useWatch({
         control,
@@ -63,12 +68,13 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, han
         control,
         name: "type_publicite"
     })
-
+    /*
     const SumTax = () => {
         const data = pricesByTypes.find((element: any) => element.type == typePub).value
         const price = (surface * tarifs[0][data]) * quantite * face
         return !isNaN(price) ? price.toFixed(2) : 0
     }
+    */
 
     const StreetSearch = async (query: string) => {
         setLoadingStreets(true)
@@ -103,6 +109,11 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, han
         onValidate(data, type)
         handleClose()
     }
+
+    useEffect(() => {
+        setValue('taxe_totale', SumTax())
+        setValue('surface_totale', isNaN(quantite * surface) != true ? (quantite * surface) : 0)
+    }, [SumTax])
 
     const onFileChange = async (e: any) => {
         const files = e.target.files

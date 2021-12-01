@@ -1,4 +1,5 @@
 import { ICode_postal } from "./ICode_postal";
+import { IPublicite } from "./IPublicite";
 
 export interface Entreprise {
         matricule_ciger: number,
@@ -12,8 +13,9 @@ export interface Entreprise {
         numero_telephone: string,
         numero_fax: string,
         numero_tva: string,
-        recu: number,
-        province: number,
+        proces_verbal: boolean,
+        recu: boolean,
+        province: boolean,
         personne_contact: string,
         telephone_contact: string,
         mail_contact: string,
@@ -28,5 +30,6 @@ export interface Entreprise {
         adresse_localite_taxation: string,
         commentaire_taxation: string,
         role_linguistique: number
-        code_postal: ICode_postal
+        code_postal: ICode_postal,
+        publicites: IPublicite[]
 }

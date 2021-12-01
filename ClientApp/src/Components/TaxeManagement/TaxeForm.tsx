@@ -15,7 +15,6 @@ import { StreetCodeModal } from "./StreetCodeModal";
 import { IRue } from "../../Types/IRue";
 import { IMotif_majoration } from "../../Types/IMotif_majoration";
 import { apiFetch } from "../../Services/apiFetch";
-import { Loader } from "../UI/Loader";
 import { ErrorAlert } from "../UI/ErrorAlert";
 import { toast } from 'react-toastify';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -44,17 +43,18 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, onFormSubmit }: Taxe
     const [postCodes, setPostCodes] = useState<any>(data.code_postal ? [data.code_postal] : [])
     const [codePostal, setCodePostal] = useState<any>(null)
     const [autoTaxAdress, setAutoTaxAdress] = useState<boolean>(true)
-    const { register, unregister, control, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(TaxeFormSchema), defaultValues: defaultValues });
+    const { register, control, handleSubmit, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(TaxeFormSchema), defaultValues: defaultValues });
 
     const OnSubmit = async (form: any) => {
         try {
             setTax(form)
-            const newArray = form.publicites.map(({ rue, ...rest }: any) => rest)
-            form.publicites = newArray
+            const form2 = {...form}
+            const newArray = form2.publicites.map(({ rue, ...rest }: any) => rest)
+            form2.publicites = newArray
             if (codePostal != null) {
-                form.code_postalId = codePostal
+                form2.code_postalId = codePostal
             }
-            const test: any = await onFormSubmit(form)
+            const test: any = await onFormSubmit(form2)
             const oldPubs = { ...publicites };
             test.publicites.forEach((pub: IPublicite, index: number) => {
                 oldPubs[index].photos = pub.photos
