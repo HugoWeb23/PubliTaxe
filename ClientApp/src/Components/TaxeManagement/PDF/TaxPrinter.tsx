@@ -8,9 +8,6 @@ interface ITaxPrinter {
 }
 
 export const TaxPrinter = ({ entreprise }: ITaxPrinter) => {
-    useEffect(() => {
-        console.log('pdf render')
-    }, [entreprise])
     const styles = StyleSheet.create({
         Page: {
             padding: '5mm'
