@@ -7,6 +7,7 @@ using System.Threading;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Taxes.Services;
+using System;
 
 namespace Taxes.Handlers
 {
@@ -66,7 +67,7 @@ namespace Taxes.Handlers
           
                 decimal sum = price * Surface * Quantite * Face;
      
-            return decimal.Round(sum, 2, System.MidpointRounding.AwayFromZero);
+            return Math.Round(sum, 2);
 
         }
     }

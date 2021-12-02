@@ -8,6 +8,9 @@ interface ITaxPrinter {
 }
 
 export const TaxPrinter = ({ entreprise }: ITaxPrinter) => {
+    useEffect(() => {
+        console.log('pdf render')
+    }, [entreprise])
     const styles = StyleSheet.create({
         Page: {
             padding: '5mm'
@@ -49,18 +52,25 @@ export const TaxPrinter = ({ entreprise }: ITaxPrinter) => {
         Address: {
             width: '50%',
             border: '1px solid #000',
-            padding: '1mm'
         },
         AddressTitle: {
-            padding: '0!important',
-            border: '1px solid #000'
+            borderBottom: '1px solid #000',
+            textAlign: 'center',
+            fontSize: '14px'
+        },
+        AddressTextBlock: {
+            padding: '1mm'
         },
         TaxAddress: {
             marginBottom: '3mm'
         },
         Publicite: {
             flexDirection: 'row',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            flexWrap: 'wrap'
+        },
+        PubliciteSituation: {
+            flexBasis: '100%'
         },
         PubSeparator: {
             height: '1mm',
@@ -68,6 +78,12 @@ export const TaxPrinter = ({ entreprise }: ITaxPrinter) => {
             borderBottom: '0.5px solid #black',
             marginTop: '2mm',
             marginBottom: '2mm'
+        },
+        Paginate: {
+            position: 'absolute',
+            bottom: '3mm',
+            right: '5mm',
+            fontSize: '11px'
         }
     });
 
@@ -102,13 +118,15 @@ export const TaxPrinter = ({ entreprise }: ITaxPrinter) => {
                     <View style={styles.AddressTitle}>
                         <Text>Adresse</Text>
                     </View>
-                    <Text style={styles.NormalText}>Code rue : {entreprise.code_rue}</Text>
-                    <Text style={styles.NormalText}>Rue : {entreprise.adresse_rue}</Text>
-                    <Text style={styles.NormalText}>Numéro : {entreprise.adresse_numero}</Text>
-                    <Text style={styles.NormalText}>Index : {entreprise.adresse_index}</Text>
-                    <Text style={styles.NormalText}>Boite : {entreprise.adresse_boite}</Text>
-                    <Text style={styles.NormalText}>Code postal : {entreprise.code_postal.cp}</Text>
-                    <Text style={styles.NormalText}>Localité : {entreprise.code_postal.localite}</Text>
+                    <View style={styles.AddressTextBlock}>
+                        <Text style={styles.NormalText}>Code rue : {entreprise.code_rue}</Text>
+                        <Text style={styles.NormalText}>Rue : {entreprise.adresse_rue}</Text>
+                        <Text style={styles.NormalText}>Numéro : {entreprise.adresse_numero}</Text>
+                        <Text style={styles.NormalText}>Index : {entreprise.adresse_index}</Text>
+                        <Text style={styles.NormalText}>Boite : {entreprise.adresse_boite}</Text>
+                        <Text style={styles.NormalText}>Code postal : {entreprise.code_postal.cp}</Text>
+                        <Text style={styles.NormalText}>Localité : {entreprise.code_postal.localite}</Text>
+                    </View>
                 </View>
             </View>
             <View style={styles.SubTitleView}>
@@ -128,7 +146,7 @@ export const TaxPrinter = ({ entreprise }: ITaxPrinter) => {
             </View>
             {entreprise.publicites.map((publicite: IPublicite, index: number) => {
                 return <>
-                    <View style={styles.Publicite}>
+                    <View style={styles.Publicite} wrap={false}>
                         <View>
                             <Text style={styles.NormalText}>Code rue : {publicite.rue.code_rue}</Text>
                             <Text style={styles.NormalText}>Code postal : {publicite.rue.code_postal.cp}</Text>
@@ -145,15 +163,18 @@ export const TaxPrinter = ({ entreprise }: ITaxPrinter) => {
                             <Text style={styles.NormalText}>Mesure : {publicite.mesure}</Text>
                             <Text style={styles.NormalText}>Exonération : {publicite.exoneration == true ? 'Oui' : 'Non'}</Text>
                             <Text style={styles.NormalText}>Surface totale : {publicite.surface_totale}</Text>
-                            <Text style={styles.NormalText}>Taxe totale : {publicite.taxe_totale}</Text>
+                            <Text style={styles.NormalText}>Taxe totale : {publicite.taxe_totale} €</Text>
                         </View>
-                    </View>
-                    <View>
-                        <Text style={styles.NormalText}>Situation : {publicite.situation}</Text>
+                        <View style={styles.PubliciteSituation}>
+                            <Text style={styles.NormalText}>Situation : {publicite.situation}</Text>
+                        </View>
                     </View>
                     {(index + 1 >= entreprise.publicites.length) == false && <View style={styles.PubSeparator}></View>}
                 </>
             })}
+            <Text style={styles.Paginate} render={({ pageNumber, totalPages }) => (
+                `${pageNumber} / ${totalPages}`
+            )} fixed />
         </Page>
     </Document>
 }

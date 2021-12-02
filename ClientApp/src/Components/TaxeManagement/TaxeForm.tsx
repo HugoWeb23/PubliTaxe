@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form"
 import {
     Form,
@@ -24,8 +24,10 @@ import { LeftArrow } from '../UI/LeftArroy'
 import { ManageAdvertising } from './ManageAdvertising'
 import { IPublicite } from "../../Types/IPublicite";
 import { Printer } from "../UI/Printer";
-import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
+import { PDFDownloadLink, PDFViewer, usePDF } from '@react-pdf/renderer';
 import { TaxPrinter } from "./PDF/TaxPrinter";
+import { PrintTaxButton } from "./PDF/PrintTaxButton";
+import {IndividualPrint} from './IndividualPrint';
 
 interface TaxeForm {
     data?: any,
@@ -43,6 +45,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, onFormSubmit }: Taxe
     const [postCodes, setPostCodes] = useState<any>(data.code_postal ? [data.code_postal] : [])
     const [codePostal, setCodePostal] = useState<any>(null)
     const [autoTaxAdress, setAutoTaxAdress] = useState<boolean>(true)
+    const [individualPrint, setIndiviualPrint] = useState<boolean>(false)
     const { register, control, handleSubmit, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(TaxeFormSchema), defaultValues: defaultValues });
 
     const OnSubmit = async (form: any) => {
@@ -105,9 +108,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, onFormSubmit }: Taxe
     }
 
     const UpdatePubs = (pubs: any) => {
-        console.log(pubs)
         setValue('publicites', pubs)
-        setPublicites(pubs)
         if (pubs.length > 0) {
             const checkPubs = pubs.reduce((acc: any, curr: any) => {
                 if (acc.rue == undefined) return false
@@ -141,19 +142,15 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, onFormSubmit }: Taxe
 
     return <>
         <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet} />
+        <IndividualPrint show={individualPrint} handleClose={() => setIndiviualPrint(false)} tax={tax}/>
         <Container fluid="xl">
-          {JSON.stringify(tax)}
             <Form onSubmit={handleSubmit(OnSubmit)} className="mb-2">
                 <div className="d-flex justify-content-between align-items-center">
                     <div>
                         <Link to="/" className="link"><LeftArrow /> Retour à la liste des entreprises</Link>
                     </div>
                     <div>
-                        <PDFDownloadLink document={<TaxPrinter entreprise={tax} />} fileName="taxe.pdf">
-                            {({ blob, url, loading, error }) =>
-                                <Button variant="outline-primary" className="me-4" size="sm" disabled={loading}><Printer /> {loading ? "Chargement" : "Version imprimable"}</Button>
-                            }
-                        </PDFDownloadLink>
+                    <Button variant="outline-primary" className="me-4" size="sm" onClick={() => setIndiviualPrint(true)}><Printer /> Impression individuelle</Button>
                         <Button variant="success" type="submit" className="mt-3 mb-3" disabled={isSubmitting}>{type == "create" ? "Créer l'entreprise" : "Modifier l'entreprise"}</Button>
                     </div>
                 </div>
@@ -480,9 +477,6 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, onFormSubmit }: Taxe
                 </Row>
             </Form>
             <ManageAdvertising pubs={publicites} matricule={defaultValues.matricule_ciger} tarifs={tarifs} onSubmit={UpdatePubs} />
-            <PDFViewer width="100%" height="1300px">
-                            <TaxPrinter entreprise={tax} />
-                        </PDFViewer>
         </Container>
     </>
 }

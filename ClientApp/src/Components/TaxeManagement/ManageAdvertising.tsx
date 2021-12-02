@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, memo, useState } from 'react'
 import {
     Table,
     Button,
@@ -27,32 +27,13 @@ export interface IPricesByTypes {
     value: string
 }
 
-export const ManageAdvertising = ({ pubs = [], matricule, tarifs, onSubmit }: IManageAdvertising) => {
+export const ManageAdvertising = memo(({ pubs = [], matricule, tarifs, onSubmit }: IManageAdvertising) => {
     const isMounted = useRef(false)
     const [showEdit, setShowEdit] = useState<boolean>(false)
     const [type, setType] = useState<'edit' | 'create'>('edit')
     const [publicites, setPublicites] = useState<IPublicite[]>(pubs)
     const [publicite, setPublicite] = useState<IPublicite | null>(null)
     const [deleteModal, setDeleteModal] = useState<{ show: boolean, element: IPublicite | null }>({ show: false, element: null })
-
-
-    const pricesByTypes: IPricesByTypes[] = [
-        { type: 1, value: "prix_unitaire_enseigne_non_lumineuse" },
-        { type: 2, value: "prix_unitaire_enseigne_lumineuse" },
-        { type: 3, value: "prix_unitaire_enseigne_clignotante" },
-        { type: 4, value: "prix_unitaire_panneau_non_lumineux" },
-        { type: 5, value: "prix_unitaire_panneau_lumineux" },
-        { type: 6, value: "prix_unitaire_panneau_a_defilement" }
-    ]
-
-    const SumTax = (surface: number, quantite: number, face: number, typePub: number): string => {
-        const data = pricesByTypes.find((element: IPricesByTypes) => element.type == typePub)?.value
-        if(data != undefined) {
-            const price = (surface * tarifs[0][data]) * quantite * face
-            return !isNaN(price) ? price.toFixed(2) : "0"
-        }
-        return "0"
-    }
 
     useEffect(() => {
         if (isMounted.current == false) {
@@ -106,8 +87,6 @@ export const ManageAdvertising = ({ pubs = [], matricule, tarifs, onSubmit }: IM
             tarifs={tarifs}
             handleClose={handleUnSelectPub}
             onValidate={handleSubmit}
-            pricesByTypes={pricesByTypes}
-            SumTax={SumTax}
         />}
         <div className="d-flex justify-content-start align-items-center mb-2 link" onClick={setCreateMode}><PlusIcon /> Créer un panneau</div>
         <ConfirmModal
@@ -173,4 +152,4 @@ export const ManageAdvertising = ({ pubs = [], matricule, tarifs, onSubmit }: IM
             </tbody>
         </Table>
     </>
-}
+})
