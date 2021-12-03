@@ -7,12 +7,11 @@ import {
   Modal,
   Form,
   Row,
-  Col
+  Col,
+  Alert
 } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
-import { PrintTaxButton } from './PDF/PrintTaxButton'
 import { TaxPrinter } from './PDF/TaxPrinter';
-import { DeclarationPrinter } from './PDF/DeclarationPrinter';
 import { IndividualPrintSchema } from '../../Validation/Tax/IndividualPrintSchema';
 import { IPrintData } from '../../Types/IPrintData';
 import { Printer } from './PDF/Printer'
@@ -43,6 +42,7 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs }: any) => {
         <Modal.Title>Impression individuelle</Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        <Alert variant="warning">Enregistrez les changements avant de générer un document.</Alert>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Row className="mb-3">
             <Col>
@@ -93,15 +93,15 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs }: any) => {
               </Form.Group>
             </Col>
             <Form.Group controlId="submit" className="mt-3">
-              <Button variant="danger" type="submit">Générer le document</Button>
+              <Button variant="danger" className="mb-1" type="submit">Générer le document</Button>
             </Form.Group>
           </Row>
           <Form.Text className="text-muted">
             La génération du document peut durer plusieurs secondes.
           </Form.Text>
         </Form>
-        {printData != null && <PDFViewer width="100%" height="700px" style={{marginTop: '10px'}}>
-        <Printer entreprises={[tax]} printData={printData} tarifs={tarifs} />
+        {printData != null && <PDFViewer width="100%" height="700px" style={{ marginTop: '10px' }}>
+          <Printer entreprises={[tax]} printData={printData} tarifs={tarifs} />
         </PDFViewer>}
       </Modal.Body>
       <Modal.Footer>
