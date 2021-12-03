@@ -24,9 +24,6 @@ import { LeftArrow } from '../UI/LeftArroy'
 import { ManageAdvertising } from './ManageAdvertising'
 import { IPublicite } from "../../Types/IPublicite";
 import { Printer } from "../UI/Printer";
-import { PDFDownloadLink, PDFViewer, usePDF } from '@react-pdf/renderer';
-import { TaxPrinter } from "./PDF/TaxPrinter";
-import { PrintTaxButton } from "./PDF/PrintTaxButton";
 import {IndividualPrint} from './IndividualPrint';
 
 interface TaxeForm {
@@ -142,7 +139,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, onFormSubmit }: Taxe
 
     return <>
         <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet} />
-        <IndividualPrint show={individualPrint} handleClose={() => setIndiviualPrint(false)} tax={tax}/>
+        <IndividualPrint show={individualPrint} handleClose={() => setIndiviualPrint(false)} tax={tax} tarifs={tarifs}/>
         <Container fluid="xl">
             <Form onSubmit={handleSubmit(OnSubmit)} className="mb-2">
                 <div className="d-flex justify-content-between align-items-center">

@@ -1,5 +1,4 @@
 import { Page, Text, View, Document, StyleSheet, Font } from '@react-pdf/renderer';
-import { useEffect } from 'react';
 import { Entreprise } from '../../../Types/IEntreprise';
 import { IPublicite } from '../../../Types/IPublicite';
 
@@ -84,8 +83,7 @@ export const TaxPrinter = ({ entreprise }: ITaxPrinter) => {
         }
     });
 
-    return <Document>
-        <Page size="A4" style={styles.Page}>
+    return <Page size="A4" style={styles.Page}>
             <View style={styles.ViewMainTitle}>
                 <Text style={styles.MainTitle}>Fiche de taxation</Text>
             </View>
@@ -173,5 +171,4 @@ export const TaxPrinter = ({ entreprise }: ITaxPrinter) => {
                 `${pageNumber} / ${totalPages}`
             )} fixed />
         </Page>
-    </Document>
 }

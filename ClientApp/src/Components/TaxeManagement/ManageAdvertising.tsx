@@ -22,11 +22,6 @@ interface IManageAdvertising {
     onSubmit: (publicites: IPublicite[]) => void
 }
 
-export interface IPricesByTypes {
-    type: number, 
-    value: string
-}
-
 export const ManageAdvertising = memo(({ pubs = [], matricule, tarifs, onSubmit }: IManageAdvertising) => {
     const isMounted = useRef(false)
     const [showEdit, setShowEdit] = useState<boolean>(false)

@@ -7,18 +7,18 @@ import {
     InputGroup,
     Image
 } from 'react-bootstrap'
-import { IPublicite, IPubliciteImage } from "../../Types/IPublicite"
+import { IPubliciteImage } from "../../Types/IPublicite"
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, Controller, useWatch } from "react-hook-form"
 import { AdvertisingFormSchema } from '../../Validation/Tax/AdvertisingFormSchema';
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead'
 import { apiFetch } from "../../Services/apiFetch";
-import { useEffect, useState, useRef, useMemo } from 'react';
+import { useState } from 'react';
 import { IRue } from '../../Types/IRue';
-import { resourceUsage } from 'process';
 import { Trash } from '../UI/Trash';
 import { toast } from 'react-toastify';
-import { IPricesByTypes } from './ManageAdvertising';
+import { SumTax } from '../../Services/SumTax'
+
 
 interface IAdvertisingModal {
     type: 'create' | 'edit',
@@ -36,15 +36,6 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, han
     const [loadingStreets, setLoadingStreets] = useState<boolean>(false)
     const [imagesLinks, setImagesLinks] = useState<IPubliciteImage[]>(publicite?.photos.length > 0 ? publicite.photos : [])
     const { register, control, reset, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(AdvertisingFormSchema), defaultValues: publicite ? publicite : { type_publicite: 1, face: 1 } });
-
-    const pricesByTypes: any[] = [
-        { type: 1, value: "prix_unitaire_enseigne_non_lumineuse" },
-        { type: 2, value: "prix_unitaire_enseigne_lumineuse" },
-        { type: 3, value: "prix_unitaire_enseigne_clignotante" },
-        { type: 4, value: "prix_unitaire_panneau_non_lumineux" },
-        { type: 5, value: "prix_unitaire_panneau_lumineux" },
-        { type: 6, value: "prix_unitaire_panneau_a_defilement" }
-    ]
 
     const quantite = useWatch({
         control,
@@ -65,12 +56,6 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, han
         control,
         name: "type_publicite"
     })
-
-    const SumTax = () => {
-        const data = pricesByTypes.find((element: any) => element.type == typePub).value
-        const price = (surface * tarifs[0][data]) * quantite * face
-        return !isNaN(price) ? price.toFixed(2) : 0
-    }
 
     const StreetSearch = async (query: string) => {
         setLoadingStreets(true)
@@ -316,7 +301,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, han
                             <Form.Group className="mb-3" controlId="taxe_totale">
                                 <Form.Label column="sm">Taxe totale</Form.Label>
                                 <InputGroup className="mb-2" size="sm">
-                                    <Form.Control type="text" disabled placeholder="Taxe totale" size="sm" isInvalid={errors.taxe_totale} value={SumTax()} />
+                                    <Form.Control type="text" disabled placeholder="Taxe totale" size="sm" isInvalid={errors.taxe_totale} value={SumTax(publicite.exercice_courant, quantite, surface, face, typePub, tarifs)} />
                                     <InputGroup.Text>€</InputGroup.Text>
                                     {errors.taxe_totale && <Form.Control.Feedback type="invalid">{errors.taxe_totale.message}</Form.Control.Feedback>}
                                 </InputGroup>
