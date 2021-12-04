@@ -17,7 +17,7 @@ import { IPrintData } from '../../Types/IPrintData';
 import { Printer } from './PDF/Printer'
 
 export const IndividualPrint = ({ show, handleClose, tax, tarifs }: any) => {
-  const [printData, setPrintData] = useState<IPrintData | null>(null)
+  const [printData, setPrintData] = useState<IPrintData | null>({print_letter: true} as IPrintData)
   const { register, handleSubmit } = useForm({ resolver: yupResolver(IndividualPrintSchema) })
 
   const onClose = () => {
