@@ -17,8 +17,18 @@ import { IPrintData } from '../../Types/IPrintData';
 import { Printer } from './PDF/Printer'
 
 export const IndividualPrint = ({ show, handleClose, tax, tarifs }: any) => {
-  const [printData, setPrintData] = useState<IPrintData | null>({print_letter: true} as IPrintData)
-  const { register, handleSubmit } = useForm({ resolver: yupResolver(IndividualPrintSchema) })
+  const initialValues: IPrintData = {
+    deadline: '2021-12-21',
+    print_date: '2021-12-06',
+    contact_person: 'Mme MARTEN',
+    phone: '056/86.02.80',
+    mail: 'sylvie.maerten@mouscron.be',
+    print_letter: true,
+    print_declaration: false,
+    print_form: false
+  }
+  const [printData, setPrintData] = useState<IPrintData | null>(null)
+  const { register, handleSubmit } = useForm({ resolver: yupResolver(IndividualPrintSchema), defaultValues: initialValues })
 
   const onClose = () => {
     setPrintData(null)
