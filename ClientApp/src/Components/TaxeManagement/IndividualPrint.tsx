@@ -52,7 +52,7 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs }: any) => {
         <Modal.Title>Impression individuelle</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Alert variant="warning">Enregistrez les changements avant de générer un document.</Alert>
+        <Alert variant="secondary" >Veillez à bien sauvegarder les changements avant de générer un document.</Alert>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Row className="mb-3">
             <Col>

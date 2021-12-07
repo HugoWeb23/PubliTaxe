@@ -15,6 +15,19 @@ interface IDeclarationPrinter {
 
 export const DeclarationPrinter = ({ entreprise, printData, tarifs }: IDeclarationPrinter) => {
     const prices = useMemo(() => GetPricesByYear(tarifs, 2021), [])
+
+    Font.register({
+        family: 'Tahoma', fonts: [
+            {
+                src: '/Fonts/Tahoma.ttf'
+            },
+            {
+                src: '/Fonts/TahomaBold.ttf',
+                fontWeight: 'bold'
+            }
+        ]
+    });
+
     const styles = StyleSheet.create({
         Page: {
             padding: '5mm'
@@ -30,9 +43,11 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs }: IDeclarati
         },
         HeaderText: {
             fontSize: '15px',
+            fontFamily: 'Tahoma'
         },
         HeaderSubText: {
-            fontSize: '13px'
+            fontSize: '13px',
+            fontFamily: 'Tahoma'
         },
         SubHeader: {
             justifyContent: 'space-between',
@@ -41,7 +56,8 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs }: IDeclarati
             marginTop: '3mm'
         },
         NormalText: {
-            fontSize: '10px'
+            fontSize: '10px',
+            fontFamily: 'Tahoma'
         },
         BusinessInformations: {
             justifyContent: 'space-between',
@@ -63,6 +79,7 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs }: IDeclarati
         Col: {
             flex: 1,
             fontSize: '10px',
+            fontFamily: 'Tahoma',
             borderRight: '0.5px solid #000',
             borderBottom: '0.5px solid #000',
             paddingTop: '1.5mm',
@@ -71,6 +88,7 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs }: IDeclarati
         ColLG: {
             flex: 2,
             fontSize: '10px',
+            fontFamily: 'Tahoma',
             borderRight: '0.5px solid #000',
             borderBottom: '0.5px solid #000',
             paddingTop: '1.5mm',
@@ -79,6 +97,7 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs }: IDeclarati
         ColXL: {
             flex: 4,
             fontSize: '10px',
+            fontFamily: 'Tahoma',
             borderRight: '0.5px solid #000',
             borderBottom: '0.5px solid #000',
             paddingTop: '1.5mm',
@@ -112,6 +131,7 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs }: IDeclarati
             justifyContent: 'flex-end',
             flexDirection: 'row',
             fontSize: '12px',
+            fontFamily: 'Tahoma',
             borderRight: '0.5px solid #000',
             borderBottom: '0.5px solid #000',
             borderLeft: '0.5px solid #000',
@@ -120,6 +140,7 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs }: IDeclarati
     });
 
     return <Page size="A4" orientation="landscape" style={styles.Page}>
+                <View fixed>
                 <View style={styles.Header}>
                     <View><Image src={mouscron} style={styles.HeaderImages} /></View>
                     <View>
@@ -131,9 +152,10 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs }: IDeclarati
                 </View>
                 <View style={styles.SubHeader}>
                     <Text style={styles.NormalText}>Contact : {printData.contact_person}, tél : {printData.phone}</Text>
-                    <Text style={styles.NormalText} render={({ pageNumber, totalPages }) => (
-                        `Page ${pageNumber} de ${totalPages}`
+                    <Text style={styles.NormalText} render={({ subPageNumber, subPageTotalPages }) => (
+                        `Page ${subPageNumber} de ${subPageTotalPages}`
                     )} fixed />
+                </View>
                 </View>
                 <View style={styles.BusinessInformations}>
                     <View>
@@ -183,27 +205,31 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs }: IDeclarati
                             <Text style={styles.Col}>{pub.surface_totale}</Text>
                             <Text style={styles.Col}>{pub.exoneration ? 'Oui' : 'Non'}</Text>
                             <Text style={styles.Col}>{prices[pub.type_publicite]}</Text>
-                            <Text style={styles.Col}>{pub.taxe_totale}</Text>
+                            <Text style={styles.Col}>{pub.exoneration ? '0.00' : pub.taxe_totale}</Text>
                         </View>
                     })}
                 </View>
                 <View style={styles.TotalTax}>
                 <Text>Taxe totale : {entreprise.publicites.reduce((acc: any, value: IPublicite) => {
+                    if(value.exoneration) {
+                        return acc
+                    }
                     return acc + value.taxe_totale
                 }, 0)} €</Text>
                 </View>
+                <View wrap={false}>
                 <View style={styles.Remark}>
-                    <Text style={{ fontSize: '10px' }}>Remarques éventuelles :</Text>
+                    <Text style={[styles.NormalText, { fontSize: '10px' }]}>Remarques éventuelles :</Text>
                 </View>
                 <View style={styles.Informations}>
-                    <View>
+                    <View style={styles.NormalText}>
                         <Text style={{ fontSize: '13px' }}>A .........................., le ..........................</Text>
                         <Text style={[styles.NormalText, { marginTop: '3mm' }]}>Certifié sincère et véritable</Text>
                         <View style={{ marginTop: '5mm' }}>
                             <Text style={{ fontSize: '9px' }}>(Signature)</Text>
                         </View>
                     </View>
-                    <View>
+                    <View style={styles.NormalText}>
                         <Text style={{ fontSize: '13px' }}>A RENVOYER</Text>
                         <Text style={{ fontSize: '13px', marginTop: '3mm' }}>Par courrier : rue de Courtrai, 63 - 7700 Mouscron</Text>
                         <Text style={{ fontSize: '13px', marginTop: '3mm' }}>Par mail : {printData.mail}</Text>
@@ -214,32 +240,33 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs }: IDeclarati
                             <Text style={styles.NormalText}>Enseignes non lumineuses (ENL) :</Text>
                             <Text style={styles.NormalText}>{prices[1]} €</Text>
                         </View>
-                        <View style={[styles.PriceDetail, { marginTop: '1mm' }]}>
+                        <View style={[styles.PriceDetail, { marginTop: '0.5mm' }]}>
                             <Text style={styles.NormalText}>Enseignes lumineuses (EL) :</Text>
                             <Text style={styles.NormalText}>{prices[2]} €</Text>
                         </View>
-                        <View style={[styles.PriceDetail, { marginTop: '1mm' }]}>
+                        <View style={[styles.PriceDetail, { marginTop: '0.5mm' }]}>
                             <Text style={styles.NormalText}>Enseignes clignotantes (EC) :</Text>
                             <Text style={styles.NormalText}>{prices[3]} €</Text>
                         </View>
-                        <View style={[styles.PriceDetail, { marginTop: '1mm' }]}>
+                        <View style={[styles.PriceDetail, { marginTop: '0.5mm' }]}>
                             <Text style={styles.NormalText}>Panneaux non lumineux (PNL) :</Text>
                             <Text style={styles.NormalText}>{prices[4]} €</Text>
                         </View>
-                        <View style={[styles.PriceDetail, { marginTop: '1mm' }]}>
+                        <View style={[styles.PriceDetail, { marginTop: '0.5mm' }]}>
                             <Text style={styles.NormalText}>Panneaux lumineux (PL) :</Text>
                             <Text style={styles.NormalText}>{prices[5]} €</Text>
                         </View>
-                        <View style={[styles.PriceDetail, { marginTop: '1mm' }]}>
+                        <View style={[styles.PriceDetail, { marginTop: '0.5mm' }]}>
                             <Text style={styles.NormalText}>Panneaux à défilement (PD) : </Text>
                             <Text style={styles.NormalText}>{prices[6]} €</Text>
                         </View>
-                        <View style={[styles.TypeDetail, { marginTop: '2mm' }]}>
+                        <View style={[styles.TypeDetail, { marginTop: '1mm' }]}>
                             <Text style={[styles.NormalText, { marginRight: '2mm' }]}>(S) Simple face</Text>
                             <Text style={[styles.NormalText, { marginRight: '2mm' }]}>(D) Double face</Text>
                             <Text style={styles.NormalText}>(T) Triple face</Text>
                         </View>
                     </View>
+                </View>
                 </View>
             </Page>
 }

@@ -7,6 +7,19 @@ interface ITaxPrinter {
 }
 
 export const TaxPrinter = ({ entreprise }: ITaxPrinter) => {
+
+    Font.register({
+        family: 'Arial', fonts: [
+            {
+                src: '/Fonts/Arial.ttf'
+            },
+            {
+                src: '/Fonts/ArialBold.ttf',
+                fontWeight: 'bold'
+            }
+        ]
+    });
+
     const styles = StyleSheet.create({
         Page: {
             padding: '5mm'
@@ -17,6 +30,7 @@ export const TaxPrinter = ({ entreprise }: ITaxPrinter) => {
         MainTitle: {
             color: '#000',
             fontSize: '15px',
+            fontFamily: 'Arial',
             textAlign: 'center',
             padding: '1mm'
         },
@@ -26,11 +40,13 @@ export const TaxPrinter = ({ entreprise }: ITaxPrinter) => {
         },
         SubTitleText: {
             fontSize: '13px',
+            fontFamily: 'Arial',
             textAlign: 'center',
             padding: '1mm'
         },
         NormalText: {
-            fontSize: '12px'
+            fontSize: '12px',
+            fontFamily: 'Arial'
         },
         GeneralInformations: {
             flexDirection: 'row',
@@ -79,7 +95,8 @@ export const TaxPrinter = ({ entreprise }: ITaxPrinter) => {
             position: 'absolute',
             bottom: '3mm',
             right: '5mm',
-            fontSize: '11px'
+            fontSize: '11px',
+            fontFamily: 'Arial'
         }
     });
 
@@ -158,7 +175,7 @@ export const TaxPrinter = ({ entreprise }: ITaxPrinter) => {
                             <Text style={styles.NormalText}>Mesure : {publicite.mesure}</Text>
                             <Text style={styles.NormalText}>Exonération : {publicite.exoneration == true ? 'Oui' : 'Non'}</Text>
                             <Text style={styles.NormalText}>Surface totale : {publicite.surface_totale}</Text>
-                            <Text style={styles.NormalText}>Taxe totale : {publicite.taxe_totale} €</Text>
+                            <Text style={styles.NormalText}>Taxe totale : {publicite.exoneration ? '0.00' : publicite.taxe_totale} €</Text>
                         </View>
                         <View style={styles.PubliciteSituation}>
                             <Text style={styles.NormalText}>Situation : {publicite.situation}</Text>

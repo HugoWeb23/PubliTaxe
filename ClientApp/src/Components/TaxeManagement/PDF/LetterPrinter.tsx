@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { Page, Text, View, Document, StyleSheet, Font, Image } from '@react-pdf/renderer';
 import { Entreprise } from '../../../Types/IEntreprise';
 import { IPrintData } from '../../../Types/IPrintData';
@@ -7,6 +8,7 @@ import transversal from '../../../Images/transversal.jpg'
 import blancke_signature from '../../../Images/blancke_signature.jpg'
 import aubert_signature from '../../../Images/aubert_signature.jpg'
 import cachet_ville from '../../../Images/cachet_ville.jpg'
+import { GetPricesByYear } from '../../../Services/SumTax';
 
 interface ILetterPrinter {
     entreprise: Entreprise,
@@ -15,6 +17,7 @@ interface ILetterPrinter {
 }
 
 export const LetterPrinter = ({ entreprise, printData, tarifs }: ILetterPrinter) => {
+    const prices = useMemo(() => GetPricesByYear(tarifs, 2021), [])
     Font.register({
         family: 'Arial', fonts: [
             {
@@ -26,6 +29,7 @@ export const LetterPrinter = ({ entreprise, printData, tarifs }: ILetterPrinter)
             }
         ]
     });
+
     Font.register({
         family: 'Tahoma', fonts: [
             {
@@ -120,6 +124,16 @@ export const LetterPrinter = ({ entreprise, printData, tarifs }: ILetterPrinter)
             fontFamily: 'Tahoma',
             fontWeight: 'bold',
             fontSize: '10px'
+        },
+        TaxPricesContainer: {
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+            maxWidth: '100%'
+        },
+        TaxPrice: {
+            justifyContent: 'flex-start',
+            alignItems: 'flex-start',
+            flexDirection: 'row'
         }
     })
     return <Page style={styles.Page}>
@@ -185,17 +199,16 @@ export const LetterPrinter = ({ entreprise, printData, tarifs }: ILetterPrinter)
                 </View>
             </View>
         </View>
-        {/* Règlement */}
+        {/* Réglement */}
         <View style={styles.RegulationNormalText} break>
             <Text style={[styles.RegulationBoldText, { textDecoration: 'underline' }]}>TAXE COMMUNALE SUR LES ENSEIGNES LES PANNEAUX PUBLICITAIRES ET PUBLICITES ASSIMILEES</Text>
-            <Text style={{ marginTop: '5mm' }}>Il est établi  une taxe communale sur les enseignes, les panneaux publicitaires et publicités assimilées directement ou
-                indirectement lumineuses ou non lumineuses de quelque nature qu'elles soient.</Text>
+            <Text style={{ marginTop: '5mm' }}>Il est établi une taxe communale sur les enseignes, les panneaux publicitaires et publicités assimilées directement ou indirectement lumineuses ou non lumineuses de quelque nature qu'elles soient.</Text>
             <Text style={{ marginTop: '5mm' }}>
                 Sont visées toutes enseignes existantes au 1er janvier de l'exercice d'imposition sur lesquelles figurent des indications visibles
-                de la voie publique et qui ont pour but de faire connaÓtre la dénomination du commerce ou de l'industrie ou du service, les
-                produits ou services offerts ou susceptible de l'Ítre et l'activité ou la profession exercée, ainsi que les supports visibles d'une
+                de la voie publique et qui ont pour but de faire connaître la dénomination du commerce ou de l'industrie ou du service, les
+                produits ou services offerts ou susceptible de l'être et l'activité ou la profession exercée, ainsi que les supports visibles d'une
                 voie de communication ou d'un endroit fréquenté en permanence ou occasionnellement par le public et destinés à l'apposition
-                d'affiches à caractËre publicitaire.
+                d'affiches à caractère publicitaire.
                 Sont également visées les affiches publicitaires en métal léger ou en PVC ne nécessitant aucun support.
             </Text>
             <Text style={{ marginTop: '5mm' }}>
@@ -203,43 +216,54 @@ export const LetterPrinter = ({ entreprise, printData, tarifs }: ILetterPrinter)
                 établissement ou les activités qui s'y déroulent et les produits et services qui y sont fournis.
             </Text>
             <Text style={{ marginTop: '5mm' }}>
-                L'impÙt est d ̊ solidairement par toute personne physique ou morale qui exploite un établissement comprenant des enseignes et/ou qui bénéficie directement ou indirectement de l'enseigne et par le propriétaire de l'immeuble auquel est attachée
+                L'impôt est dû solidairement par toute personne physique ou morale qui exploite un établissement comprenant des enseignes et/ou qui bénéficie directement ou indirectement de l'enseigne et par le propriétaire de l'immeuble auquel est attachée
                 l'enseigne au 1er janvier de l'exercice d'imposition.
             </Text>
             <Text style={{ marginTop: '5mm' }}>
-                Sont exonÈrÈs : l'enseigne la plus chËre indiquant la raison sociale ou la dÈnomination de l'Ètablissement et ‡ raison d'une
-                seule enseigne par Ètablissement - les autocollants de moins d'un mËtre carrÈ - les enseignes l'annÈe qui suit leur installation/
-                mise en conformitÈ aprËs introduction d'un dossier au service de l'Urbanisme.
+                Sont exonérés : l'enseigne la plus chère indiquant la raison sociale ou la dénomination de l'établissement et à raison d'une
+                seule enseigne par établissement - les autocollants de moins d'un métre carré - les enseignes l'année qui suit leur installation/
+                mise en conformité après introduction d'un dossier au service de l'Urbanisme.
             </Text>
-            <View style={{ marginTop: '5mm' }}>
-                <View>
-                    <Text>L'impôt est fixé à</Text>
+            <View style={[styles.TaxPricesContainer, { marginTop: '5mm' }]}>
+                <View style={{ flex: 0.2 }}>
+                    <Text>L'impôt est fixé à :</Text>
                 </View>
-                <View>
-                    <Text>0,15 EUR. par dÈcimËtre carrÈ pour les enseignes non lumineuses.</Text>
-                    <Text>0,30 EUR. par dÈcimËtre carrÈ pour les enseignes lumineuses ou ÈclairÈes.</Text>
-                    <Text>0,82 EUR. par dÈcimËtre carrÈ de surface du panneau publicitaire.</Text>
-                    <Text>1,64 EUR. lorsque le panneau est ÈquipÈ d'un systËme de dÈfilement Èlectronique ou mÈcanique
-                        ou lorsque le panneau est lumineux ou ÈclairÈ.</Text>
+                <View style={{ flex: 1 }}>
+                    <View style={styles.TaxPrice}>
+                        <Text style={{ flex: 0.120 }}>{prices[1].toFixed(2)} EUR.</Text>
+                        <Text style={{ flex: 1 }}>par décimètre carré pour les enseignes non lumineuses.</Text>
+                    </View>
+                    <View style={styles.TaxPrice}>
+                        <Text style={{ flex: 0.120 }}>{prices[2].toFixed(2)} EUR.</Text>
+                        <Text style={{ flex: 1 }}>par décimètre carré pour les enseignes lumineuses ou éclairées.</Text>
+                    </View>
+                    <View style={styles.TaxPrice}>
+                        <Text style={{ flex: 0.120 }}>{prices[3].toFixed(2)} EUR.</Text>
+                        <Text style={{ flex: 1 }}>par décimètre carré pour les enseignes clignotantes.</Text>
+                    </View>
+                    <View style={styles.TaxPrice}>
+                        <Text style={{ flex: 0.120 }}>{prices[4].toFixed(2)} EUR.</Text>
+                        <Text style={{ flex: 1 }}>par décimètre carré de surface du panneau publicitaire.</Text>
+                    </View>
+                    <View style={styles.TaxPrice}>
+                        <Text style={{ flex: 0.120 }}>{prices[5].toFixed(2)} EUR.</Text>
+                        <Text style={{ flex: 1 }}>lorsque le panneau est équipé d'un système de défilement électronique ou mécanique ou lorsque le panneau est lumineux ou éclairé.</Text>
+                    </View>
                 </View>
             </View>
-            <Text style={{ marginTop: '5mm' }}>La superficie retenue est celle du support sur lequel se trouve l'enseigne ou le panneau et ce quelle que soit la surface
-                par l'information qui y est diffusÈe.</Text>
-            <Text style={{ marginTop: '5mm' }}>L'administration communale adresse au contribuable une formule de dÈclaration que celui-ci est tenu de renvoyer, d ̊ment
-                remplie et signÈe, avant l'ÈchÈance mentionnÈe sur la dite formule.
-                Le contribuable qui n'a pas reÁu de formule de dÈclaration est tenu de dÈclarer ‡ l'administration communale, au plus tard le
-                le 31 juillet de l'exercice d'imposition, les ÈlÈments nÈcessaires ‡ l'imposition.</Text>
-            <Text style={{ marginTop: '5mm' }}>En cas d'enrÙlement d'office, la majoration sera la suivante :</Text>
-            <Text style={{ marginTop: '3mm' }}>Montant de la taxe + 10% pour ce qui concerne la premiËre infraction,</Text>
-            <Text>Montant de la taxe + 50% pour ce qui concerne la seconde infraction,</Text>
-            <Text>Montant de la taxe + 100% pour ce qui concerne la troisiËme infraction,</Text>
-            <Text>Montant de la taxe + 200% pour ce qui concerne la quatriËme infraction et les suivantes.</Text>
-            <Text style={{ marginTop: '5mm' }}>Il y a 2Ëme violation ou violation subsÈquente si, au moment o ̆ une nouvelle violation est commise, le contribuable s'est vu
-                prÈcÈdemment adressÈ une ou plusieurs notification(s) de taxation d'office en application de l'article L3321-6 alinÈa 2 du code
-                de la DÈmocratie Locale et de la DÈcentralisation.</Text>
-            <Text style={{ marginTop: '5mm' }}>Pour la dÈtermination du pourcentage d'accroissement ‡ appliquer, les violations antÈrieures ne sont pas prises en
-                considÈration si aucune violation n'est constatÈe pour les 4 derniers exercices d'imposition qui prÈcËdent celui pour lequel la
-                nouvelle violation est constatÈe.</Text>
+            <Text style={{ marginTop: '5mm' }}>La superficie retenue est celle du support sur lequel se trouve l'enseigne ou le panneau et ce quelle que soit la surface par l'information qui y est diffusée.</Text>
+            <Text style={{ marginTop: '5mm' }}>L'administration communale adresse au contribuable une formule de déclaration que celui-ci est tenu de renvoyer, dûment remplie et signée, avant l'échéance mentionnée sur la dite formule. Le contribuable qui n'a pas reçu de formule de déclaration est tenu de déclarer à l'administration communale, au plus tard le 31 juillet de l'exercice d'imposition, les éléments nécessaires à l'imposition.</Text>
+            <Text style={{ marginTop: '5mm' }}>En cas d'enrôlement d'office, la majoration sera la suivante :</Text>
+            <View style={{marginLeft: '15mm'}}>
+                <Text style={{ marginTop: '3mm' }}>Montant de la taxe + 10% pour ce qui concerne la première infraction,</Text>
+                <Text>Montant de la taxe + 50% pour ce qui concerne la seconde infraction,</Text>
+                <Text>Montant de la taxe + 100% pour ce qui concerne la troisième infraction,</Text>
+                <Text>Montant de la taxe + 200% pour ce qui concerne la quatrième infraction et les suivantes.</Text>
+            </View>
+            <Text style={{ marginTop: '5mm' }}>Il y a 2ème violation ou violation subséquente si, au moment où une nouvelle violation est commise, le contribuable s'est vu précédemment adressé une ou plusieurs notification(s) de taxation d'office en application de l'article L3321-6 alinéa 2 du code de la Démocratie Locale et de la Décentralisation.</Text>
+            <Text style={{ marginTop: '5mm' }}>Pour la détermination du pourcentage d'accroissement à appliquer, les violations antérieures ne sont pas prises en
+                considération si aucune violation n'est constatée pour les 4 derniers exercices d'imposition qui précédent celui pour lequel la
+                nouvelle violation est constatée.</Text>
         </View>
     </Page>
 }

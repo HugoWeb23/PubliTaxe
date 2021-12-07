@@ -35,7 +35,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, han
     const [streetId, setStreetId] = useState<number>()
     const [loadingStreets, setLoadingStreets] = useState<boolean>(false)
     const [imagesLinks, setImagesLinks] = useState<IPubliciteImage[]>(publicite?.photos.length > 0 ? publicite.photos : [])
-    const { register, control, reset, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(AdvertisingFormSchema), defaultValues: publicite ? publicite : { type_publicite: 1, face: 1 } });
+    const { register, control, reset, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(AdvertisingFormSchema), defaultValues: publicite ? publicite : { type_publicite: 1, face: 1, exoneration: false } });
 
     const quantite = useWatch({
         control,
@@ -55,6 +55,11 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, han
     const typePub = useWatch({
         control,
         name: "type_publicite"
+    })
+
+    const exoneration = useWatch({
+        control,
+        name: "exoneration"
     })
 
     const StreetSearch = async (query: string) => {
@@ -301,7 +306,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, han
                             <Form.Group className="mb-3" controlId="taxe_totale">
                                 <Form.Label column="sm">Taxe totale</Form.Label>
                                 <InputGroup className="mb-2" size="sm">
-                                    <Form.Control type="text" disabled placeholder="Taxe totale" size="sm" isInvalid={errors.taxe_totale} value={SumTax(publicite.exercice_courant, quantite, surface, face, typePub, tarifs)} />
+                                    <Form.Control type="text" disabled placeholder="Taxe totale" size="sm" isInvalid={errors.taxe_totale} value={exoneration ? '0.00' : SumTax(publicite?.exercice_courant, quantite, surface, face, typePub, tarifs)} />
                                     <InputGroup.Text>€</InputGroup.Text>
                                     {errors.taxe_totale && <Form.Control.Feedback type="invalid">{errors.taxe_totale.message}</Form.Control.Feedback>}
                                 </InputGroup>
