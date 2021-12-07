@@ -16,9 +16,9 @@ export const Printer = ({ entreprises, printData, tarifs }: IPrinter) => {
         <Document>
         {entreprises.map((entreprise: Entreprise, index: number) => {
             return <>
-            {printData.print_declaration && <DeclarationPrinter entreprise={entreprise} printData={printData} tarifs={tarifs} />}
-            {printData.print_form && <TaxPrinter entreprise={entreprise}/>}
-            {printData.print_letter && <LetterPrinter entreprise={entreprise} printData={printData} tarifs={tarifs}/>}
+            {printData.options.print_declaration && <DeclarationPrinter entreprise={entreprise} printData={printData} tarifs={tarifs} />}
+            {printData.options.print_form && <TaxPrinter entreprise={entreprise}/>}
+            {printData.options.print_letter && <LetterPrinter entreprise={entreprise} printData={printData} tarifs={tarifs}/>}
             </>
         })}
         </Document>

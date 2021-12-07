@@ -4,7 +4,10 @@ export interface IPrintData {
     contact_person: string,
     phone: string,
     mail: string,
-    print_letter: boolean,
-    print_declaration: boolean,
-    print_form: boolean
+    options: {
+        print_letter: boolean,
+        print_declaration: boolean,
+        print_form: boolean
+    }
+
 }
