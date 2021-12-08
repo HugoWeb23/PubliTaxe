@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Entreprise } from "../../../Types/IEntreprise";
 import { IPrintData } from "../../../Types/IPrintData";
 import { Page, Text, View, Document, StyleSheet, Font, Image } from '@react-pdf/renderer';
@@ -11,16 +12,16 @@ interface IPrinter {
     tarifs: any
 }
 
-export const Printer = ({ entreprises, printData, tarifs }: IPrinter) => {
+export const Printer = memo(({ entreprises, printData, tarifs }: IPrinter) => {
     return <>
         <Document>
-        {entreprises.map((entreprise: Entreprise, index: number) => {
-            return <>
-            {printData.options.print_declaration && <DeclarationPrinter entreprise={entreprise} printData={printData} tarifs={tarifs} />}
-            {printData.options.print_form && <TaxPrinter entreprise={entreprise}/>}
-            {printData.options.print_letter && <LetterPrinter entreprise={entreprise} printData={printData} tarifs={tarifs}/>}
-            </>
-        })}
+            {entreprises.map((entreprise: Entreprise, index: number) => {
+                return <>
+                    {printData.options.print_declaration && <DeclarationPrinter entreprise={entreprise} printData={printData} tarifs={tarifs} />}
+                    {printData.options.print_form && <TaxPrinter entreprise={entreprise} />}
+                    {printData.options.print_letter && <LetterPrinter entreprise={entreprise} printData={printData} tarifs={tarifs} />}
+                </>
+            })}
         </Document>
     </>
-}
+})

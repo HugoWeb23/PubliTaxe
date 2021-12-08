@@ -128,5 +128,12 @@ namespace Taxes.Controllers
             }
         }
 
+        [HttpGet("printallbycity/{citytype}")]
+        public async Task<IActionResult> PrintAllByCity(int citytype)
+        {
+            List<Entreprise> entreprises = await _mediator.Send(new GetEntreprisesByCityType(citytype));
+            return Ok(entreprises);
+        }
+
     }
 }

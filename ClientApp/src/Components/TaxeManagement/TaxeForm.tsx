@@ -43,7 +43,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, onFormSubmit }: Taxe
     const [codePostal, setCodePostal] = useState<any>(null)
     const [autoTaxAdress, setAutoTaxAdress] = useState<boolean>(true)
     const [individualPrint, setIndiviualPrint] = useState<boolean>(false)
-    const { register, control, handleSubmit, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(TaxeFormSchema), defaultValues: defaultValues });
+    const { register, reset, control, handleSubmit, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(TaxeFormSchema), defaultValues: defaultValues });
 
     const OnSubmit = async (form: any) => {
         try {
@@ -60,6 +60,10 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, onFormSubmit }: Taxe
                 oldPubs[index].photos = pub.photos
             });
             setPublicites(oldPubs)
+            if(type == 'create') {
+                reset()
+                toast.success("Entreprise créée avec succès")
+            }
             toast.success('Modifications sauvegardées')
         } catch (e: any) {
             toast.error('Une erreur est survenue')
