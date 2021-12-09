@@ -15,8 +15,10 @@ export const Navigation = () => {
         <NavDropdown title="Outils" id="collasible-nav-dropdown">
           <LinkContainer to="/tools/printall"><NavDropdown.Item>Imprimer toutes les déclarations</NavDropdown.Item></LinkContainer>
           <LinkContainer to="/tools/manageprices"><NavDropdown.Item>Gestion des tarifs</NavDropdown.Item></LinkContainer>
-          <LinkContainer to="/tools/changefiscalyear"><NavDropdown.Item>Changement d'exercice</NavDropdown.Item></LinkContainer>
+          <LinkContainer to="/tools/managefiscalyears"><NavDropdown.Item>Gestion des exercices</NavDropdown.Item></LinkContainer>
           <LinkContainer to="/tools/changefiscalyear"><NavDropdown.Item>Gestion des informations générales</NavDropdown.Item></LinkContainer>
+          <NavDropdown.Divider />
+          <LinkContainer to="/tools/changefiscalyear"><NavDropdown.Item>Changement d'exercice</NavDropdown.Item></LinkContainer>
         </NavDropdown>
         <NavDropdown title="Gestion des accès" id="collasible-nav-dropdown">
           <LinkContainer to="/manageaccess/all"><NavDropdown.Item>Gestion des utilisateurs</NavDropdown.Item></LinkContainer>

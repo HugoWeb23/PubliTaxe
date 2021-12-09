@@ -9,7 +9,7 @@ namespace Taxes.Entities
     public class Exercice
     {
         [Key]
-        public short Anee_exercice { get; set; }
+        public short Annee_exercice { get; set; }
         public DateTime Date_echeance { get; set; }
         public DateTime Date_reglement_taxe { get; set; }
 

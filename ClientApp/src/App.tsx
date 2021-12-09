@@ -14,6 +14,7 @@ import { CreateTax } from './Components/TaxeManagement/CreateTax';
 import { ViewTax } from './Components/TaxeManagement/ViewTax';
 import { apiFetch } from './Services/apiFetch';
 import { PrintAllTaxes } from './Components/TaxeManagement/PrintAllTaxes';
+import { ManageFiscalYears } from './Components/TaxeManagement/FiscalYear/ManageFiscalYears';
 
 export const App = () => {
   const [motifsMajoration, setMotifsMajoration] = useState<any>(null)
@@ -43,6 +44,7 @@ export const App = () => {
       <Route path="/tools/printall" exact>
         <PrintAllTaxes tarifs={tarifs} />
       </Route>
+      <Route path="/tools/managefiscalyears" component={ManageFiscalYears}/>
     </Router>
   </>
 }
