@@ -22,8 +22,12 @@ export const ManageFiscalYears = () => {
         })()
     }, [])
 
+    const handleSubmit = (data: any) => {
+        console.log(data)
+    }
+
     return <>
-        <FiscalYearModal type="create" show={fiscalModal} onSubmit={(data) => console.log(data)} handleClose={() => setFiscalModal(false)}/>
+        <FiscalYearModal type="create" show={fiscalModal} onSubmit={handleSubmit} handleClose={() => setFiscalModal(false)}/>
         <Container fluid="sm">
             <div className="d-flex justify-content-between align-items-center">
             <h2 className="mt-2 mb-3">Gestion des exercices </h2>

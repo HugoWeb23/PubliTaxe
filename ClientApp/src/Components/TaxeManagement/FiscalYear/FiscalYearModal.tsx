@@ -4,6 +4,7 @@ import {
     Button,
     Form
 } from 'react-bootstrap'
+import { useEffect, useState } from 'react'
 
 interface FiscalYearModal {
     type: 'create' | 'edit',
@@ -20,6 +21,15 @@ export const FiscalYearModal = ({type, show, handleClose, onSubmit}: FiscalYearM
         handleClose()
     }
 
+    const generateDate = (): number[] => {
+      const years: number[] = []
+      for(let i = 0; i < 2; i++) {
+        years.push(new Date().getFullYear() + i)
+      }
+      return years
+    }
+
+
     return <>
     <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
@@ -29,7 +39,9 @@ export const FiscalYearModal = ({type, show, handleClose, onSubmit}: FiscalYearM
             <Form onSubmit={handleSubmit(formSubmit)}>
                 <Form.Group controlId="exercice">
                     <Form.Label column="sm">Année de l'exercice</Form.Label>
-                    <Form.Control size="sm" {...register('annee_exercice')}/>
+                   <Form.Select {...register('annee_exercice')}>
+                    {generateDate().map((value: number, index: number) => <option value={value}>{value}</option>)}
+                    </Form.Select>
                 </Form.Group>
                 <Form.Group controlId="echeance">
                     <Form.Label column="sm">Date d'échéance</Form.Label>
@@ -45,7 +57,7 @@ export const FiscalYearModal = ({type, show, handleClose, onSubmit}: FiscalYearM
           <Button variant="secondary" onClick={handleClose}>
             Annuler
           </Button>
-          <Button variant="primary" onClick={handleClose}>
+          <Button variant="primary" onClick={handleSubmit(formSubmit)}>
             {type == "create" ? "Créer" : "Modifier"}
           </Button>
         </Modal.Footer>
