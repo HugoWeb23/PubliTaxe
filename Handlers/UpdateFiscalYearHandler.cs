@@ -19,15 +19,16 @@ namespace Taxes.Handlers
 
         public Task<Exercice> Handle(UpdateFiscalYearCommand request, CancellationToken cancellationToken)
         {
-            if(request.Year != request.FiscalYear.Annee_exercice)
+            Exercice CurrentFiscalYear = _context.exercices.AsNoTracking().FirstOrDefault(f => f.Id == request.FiscalYear.Id);
+            if(request.FiscalYear.Annee_exercice != CurrentFiscalYear.Annee_exercice)
             {
-                Exercice check_year = _context.exercices.FirstOrDefault(fisc => fisc.Annee_exercice == request.FiscalYear.Annee_exercice);
+                Exercice check_year = _context.exercices.AsNoTracking().FirstOrDefault(fisc => fisc.Annee_exercice == request.FiscalYear.Annee_exercice);
                 if (check_year != null)
                 {
                     throw new Exception("Un exercice est déjà lié à cette année !");
                 }
             }
-            request.FiscalYear.Annee_exercice = request.Year;
+            
             _context.Entry(request.FiscalYear).State = EntityState.Modified;
             _context.exercices.Update(request.FiscalYear);
             _context.SaveChanges();

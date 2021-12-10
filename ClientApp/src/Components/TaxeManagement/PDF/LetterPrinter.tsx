@@ -17,7 +17,7 @@ interface ILetterPrinter {
 }
 
 export const LetterPrinter = ({ entreprise, printData, tarifs }: ILetterPrinter) => {
-    const prices = useMemo(() => GetPricesByYear(tarifs, 2021), [])
+    const prices = useMemo(() => GetPricesByYear(tarifs, 1), [])
     Font.register({
         family: 'Arial', fonts: [
             {

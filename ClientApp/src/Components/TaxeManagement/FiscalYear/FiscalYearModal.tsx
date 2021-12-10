@@ -18,6 +18,7 @@ export const FiscalYearModal = ({ fiscalYear, handleClose, onSubmit }: FiscalYea
 
   useEffect(() => {
     if (Object.keys(fiscalYear.fiscalYear).length > 0 && fiscalYear.type == 'edit') {
+      setValue('id', fiscalYear.fiscalYear.id)
       setValue('annee_exercice', fiscalYear.fiscalYear.annee_exercice)
       setValue('date_echeance', fiscalYear.fiscalYear.date_echeance)
       setValue('date_reglement_taxe', fiscalYear.fiscalYear.date_reglement_taxe)
@@ -27,6 +28,7 @@ export const FiscalYearModal = ({ fiscalYear, handleClose, onSubmit }: FiscalYea
   }, [fiscalYear])
 
   const formSubmit = (data: any) => {
+    console.log(data)
     onSubmit({type: fiscalYear.type, data: data})
     handleClose()
   }

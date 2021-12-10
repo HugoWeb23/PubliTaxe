@@ -14,7 +14,7 @@ interface IDeclarationPrinter {
 }
 
 export const DeclarationPrinter = ({ entreprise, printData, tarifs }: IDeclarationPrinter) => {
-    const prices = useMemo(() => GetPricesByYear(tarifs, 2021), [])
+    const prices = useMemo(() => GetPricesByYear(tarifs, 1), [])
 
     Font.register({
         family: 'Tahoma', fonts: [

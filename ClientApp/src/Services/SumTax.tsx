@@ -12,17 +12,17 @@ export const pricesByTypes: IPricesByTypes[] = [
 export const SumTax = (exercice: number, quantite: number, surface: number, face: number, typePub: number, tarifs: any) => {
     const data = pricesByTypes.find((element: IPricesByTypes) => element.type == typePub)?.value
     if (data != undefined) {
-        if(exercice == null)
-            exercice = 2021
-        const price = (surface * tarifs.find((tarif: any) => tarif.exercice == exercice)[data]) * quantite * face
+        if (exercice == null)
+            exercice = 1
+        const price = (surface * tarifs.find((tarif: any) => tarif.exerciceId == exercice)[data]) * quantite * face
         return !isNaN(price) ? price.toFixed(2) : 0
     } else {
         return 0
     }
 }
 
-export const GetPricesByYear = (allprices: any, year: number) => {
-    const prices = allprices.find((price: any) => price.exercice == year)
+export const GetPricesByYear = (allprices: any, yearId: number) => {
+    const prices = allprices.find((price: any) => price.exerciceId == yearId)
 
     let aa: any = {}
     if (prices != undefined) {

@@ -41,12 +41,12 @@ namespace Taxes.Controllers
             }
         }
 
-        [HttpPut("edit/{Year}")]
-        public async Task<IActionResult> CreateYear(short Year, Exercice FiscalYear)
+        [HttpPut("edit")]
+        public async Task<IActionResult> UpdateYear(Exercice FiscalYear)
         {
             try
             {
-                Exercice Fisc = await _mediator.Send(new UpdateFiscalYearCommand(Year, FiscalYear));
+                Exercice Fisc = await _mediator.Send(new UpdateFiscalYearCommand(FiscalYear));
                 return Ok(Fisc);
             }
             catch (Exception ex)

@@ -20,7 +20,7 @@ export const useFicalYears = () => {
             case 'INSERT':
                 return { ...state, fiscalYears: [...state.fiscalYears, action.payLoad] }
             case 'EDIT':
-                return { ...state, fiscalYears: state.fiscalYears.map((fiscalYear: IExercice) => fiscalYear.annee_exercice == action.payLoad.annee_exercice ? action.payLoad : fiscalYear) }
+                return { ...state, fiscalYears: state.fiscalYears.map((fiscalYear: IExercice) => fiscalYear.id == action.payLoad.id ? action.payLoad : fiscalYear) }
             default:
                 return state
         }
@@ -42,7 +42,7 @@ export const useFicalYears = () => {
             dispatch({ type: 'INSERT', payLoad: fetch })
         },
         editFiscalYear: async (data: IExercice) => {
-            const fetch = await apiFetch(`/fiscalyears/edit/${data.id}`, {
+            const fetch = await apiFetch(`/fiscalyears/edit`, {
                 method: 'PUT',
                 body: JSON.stringify(data)
             })
