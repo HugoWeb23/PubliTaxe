@@ -37,7 +37,7 @@ namespace Taxes.Handlers
             List<Tarif> tarifs = await _mediator.Send(new GetAllPricesQuery());
 
             string PubName = PricesNames.FirstOrDefault(price => price.Key == request.Type_publicite).Value;
-            Tarif tarif = tarifs.First(p => p.Exercice == request.Exercice);
+            Tarif tarif = tarifs.First(p => p.ExerciceId == request.Exercice);
             decimal price = (decimal)tarif.GetType().GetProperty(PubName).GetValue(tarif, null);
 
             decimal sum = price * request.Surface * request.Quantite * request.Face;

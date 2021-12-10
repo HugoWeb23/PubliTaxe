@@ -12,7 +12,8 @@ namespace Taxes.Entities
         internal decimal data;
 
         [Key]
-        public short Exercice { get; set; }
+        public long Id { get; set; }
+        public long ExerciceId { get; set; }
         [Column(TypeName = "decimal(5,3)")]
         public decimal Prix_unitaire_enseigne_non_lumineuse { get; set; }
         [Column(TypeName = "decimal(5,3)")]

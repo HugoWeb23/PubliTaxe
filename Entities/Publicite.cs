@@ -63,7 +63,7 @@ namespace Taxes.Entities
         public long Matricule_ciger { get; set; }
         [ForeignKey("Rue")]
         public int Id_rue { get; set; }
-        public short Exercice_courant { get; set; }
+        public long Exercice_courant { get; set; }
         public short Type_publicite { get; set; }
         public string Adresse_numero { get; set; }
         public string Situation { get; set; }

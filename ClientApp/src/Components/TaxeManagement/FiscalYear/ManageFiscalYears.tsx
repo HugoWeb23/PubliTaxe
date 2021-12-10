@@ -9,11 +9,13 @@ import { IExercice } from "../../../Types/IExercice"
 import { PlusIcon } from "../../UI/PlusIcon"
 import { Pencil } from "../../UI/Pencil"
 import { FiscalYearModal } from "./FiscalYearModal"
+import { apiFetch } from "../../../Services/apiFetch"
+import { toast } from 'react-toastify';
 
 export const ManageFiscalYears = () => {
-    const { fiscalYears, getAll } = useFicalYears()
+    const { fiscalYears, getAll, newFiscalYear, editFiscalYear } = useFicalYears()
+    const [selectedFiscalYear, setSelectedFiscalYear] = useState({fiscalYear: {} as IExercice, show: false, type: 'create'})
     const [loader, setLoader] = useState<boolean>(true)
-    const [fiscalModal, setFiscalModal] = useState<boolean>(false)
 
     useEffect(() => {
         (async () => {
@@ -22,16 +24,26 @@ export const ManageFiscalYears = () => {
         })()
     }, [])
 
-    const handleSubmit = (data: any) => {
-        console.log(data)
+    const handleSubmit = async({type, data}: any) => {
+        try {
+            if(type == 'create') {
+                await newFiscalYear(data)
+                toast.success("L'exercice a été créé")
+            } else if(type == 'edit') {
+                await editFiscalYear(data)
+                toast.success("L'exercice a été modifié")
+            }
+        } catch(e) {
+            toast.error('Une erreur est survenue')
+        }
     }
 
     return <>
-        <FiscalYearModal type="create" show={fiscalModal} onSubmit={handleSubmit} handleClose={() => setFiscalModal(false)}/>
+        <FiscalYearModal fiscalYear={selectedFiscalYear} onSubmit={handleSubmit} handleClose={() => setSelectedFiscalYear(element => ({...element, show: false, type: 'create'}))}/>
         <Container fluid="sm">
             <div className="d-flex justify-content-between align-items-center">
             <h2 className="mt-2 mb-3">Gestion des exercices </h2>
-            <div className="link" onClick={() => setFiscalModal(true)}><PlusIcon/> Nouvel exercice</div>
+            <div className="link" onClick={() => setSelectedFiscalYear(element => ({...element, show: true}))}><PlusIcon/> Nouvel exercice</div>
             </div>
             <Table striped bordered hover>
                 <thead>
@@ -48,7 +60,7 @@ export const ManageFiscalYears = () => {
                             <td>{year.annee_exercice}</td>
                             <td>{year.date_echeance}</td>
                             <td>{year.date_reglement_taxe}</td>
-                            <td><Button size="sm"><Pencil/></Button></td>
+                            <td><Button size="sm" onClick={() => setSelectedFiscalYear(element => ({fiscalYear: year, show: true, type: 'edit'}))}><Pencil/></Button></td>
                         </tr>
                     })}
                 </tbody>
