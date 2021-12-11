@@ -34,14 +34,14 @@ export const usePrices = () => {
             const prices: IPrice[] = await apiFetch('/prices/getall')
             dispatch({ type: 'FETCH_ALL_PRICES', payLoad: prices })
         },
-        newFiscalYear: async (data: IPrice) => {
+        newPrice: async (data: IPrice) => {
             const fetch = await apiFetch('/prices/new', {
                 method: 'POST',
                 body: JSON.stringify(data)
             })
             dispatch({ type: 'INSERT', payLoad: fetch })
         },
-        editFiscalYear: async (data: IPrice) => {
+        editPrice: async (data: IPrice) => {
             const fetch = await apiFetch(`/prices/edit`, {
                 method: 'PUT',
                 body: JSON.stringify(data)

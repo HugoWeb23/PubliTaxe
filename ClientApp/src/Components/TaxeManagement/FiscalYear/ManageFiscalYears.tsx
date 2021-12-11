@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useFicalYears } from "../../Hooks/FiscalYearsHook"
+import { useFiscalYears } from "../../Hooks/FiscalYearsHook"
 import {
     Container,
     Table,
@@ -13,7 +13,7 @@ import { apiFetch } from "../../../Services/apiFetch"
 import { toast } from 'react-toastify';
 
 export const ManageFiscalYears = () => {
-    const { fiscalYears, getAll, newFiscalYear, editFiscalYear } = useFicalYears()
+    const { fiscalYears, getAll, newFiscalYear, editFiscalYear } = useFiscalYears()
     const [selectedFiscalYear, setSelectedFiscalYear] = useState({fiscalYear: {} as IExercice, show: false, type: 'create'})
     const [loader, setLoader] = useState<boolean>(true)
 

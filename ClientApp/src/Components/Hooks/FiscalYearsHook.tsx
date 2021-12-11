@@ -11,7 +11,7 @@ interface Action {
     payLoad: any
 }
 
-export const useFicalYears = () => {
+export const useFiscalYears = () => {
 
     const reducer = (state: State, action: Action) => {
         switch (action.type) {

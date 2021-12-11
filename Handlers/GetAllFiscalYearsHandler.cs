@@ -19,7 +19,9 @@ namespace Taxes.Handlers
         }
         public Task<List<Exercice>> Handle(GetAllFiscalYearsQuery request, CancellationToken cancellationToken)
         {
-            List<Exercice> exercices = _context.exercices.ToList();
+            List<Exercice> exercices = _context.exercices
+                .OrderBy(t => t.Annee_exercice)
+                .ToList();
             return Task.FromResult(exercices);
         }
     }

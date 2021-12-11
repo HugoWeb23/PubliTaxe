@@ -28,5 +28,34 @@ namespace Taxes.Controllers
             List<Tarif> Tarifs = await _mediator.Send(new GetAllPricesQuery());
             return Ok(Tarifs);
         }
+
+        [HttpPost("new")]
+        public async Task<IActionResult> New(Tarif Price)
+        {
+            try
+            {
+                Tarif newPrice = await _mediator.Send(new InsertPriceCommand(Price));
+                return Ok(newPrice);
+            } catch(Exception ex)
+            {
+                return BadRequest(new { error = ex.Message});
+            }
+            
+        }
+
+        [HttpPut("edit")]
+        public async Task<IActionResult> Update(Tarif Price)
+        {
+            try
+            {
+                Tarif editPrice = await _mediator.Send(new UpdatePriceCommand(Price));
+                return Ok(editPrice);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
+        }
     }
 }
