@@ -384,8 +384,9 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, onFormSubmit }: Taxe
                             <Form.Select {...register('pourcentage_majoration')} isInvalid={errors.pourcentage_majoration} size="sm">
                                 <option value="0">Aucune</option>
                                 <option value="10">10 %</option>
-                                <option value="2">20 %</option>
-                                <option value="5">50 %</option>
+                                <option value="50">50 %</option>
+                                <option value="100">100 %</option>
+                                <option value="200">200 %</option>
                             </Form.Select>
                             {errors.pourcentage_majoration && <Form.Control.Feedback type="invalid">{errors.pourcentage_majoration.message}</Form.Control.Feedback>}
                         </Form.Group>

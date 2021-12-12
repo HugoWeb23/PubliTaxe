@@ -16,6 +16,7 @@ import { apiFetch } from './Services/apiFetch';
 import { PrintAllTaxes } from './Components/TaxeManagement/PrintAllTaxes';
 import { ManageFiscalYears } from './Components/TaxeManagement/FiscalYear/ManageFiscalYears';
 import { ManagePrices } from './Components/TaxeManagement/Prices/ManagePrices';
+import { ManageNotReceived } from './Components/TaxeManagement/NotReceived/ManageNotReceived';
 
 export const App = () => {
   const [motifsMajoration, setMotifsMajoration] = useState<any>(null)
@@ -42,11 +43,14 @@ export const App = () => {
         <CreateTax motifs={motifsMajoration} tarifs={tarifs} />
       </Route>
       <Route path="/entreprise/view/:id" exact component={ViewTax} />
+      <Route path="/notreceived" exact>
+        <ManageNotReceived motifs={motifsMajoration} />
+      </Route>
       <Route path="/tools/printall" exact>
         <PrintAllTaxes tarifs={tarifs} />
       </Route>
-      <Route path="/tools/managefiscalyears" component={ManageFiscalYears}/>
-      <Route path="/tools/manageprices" component={ManagePrices}/>
+      <Route path="/tools/managefiscalyears" component={ManageFiscalYears} />
+      <Route path="/tools/manageprices" component={ManagePrices} />
     </Router>
   </>
 }

@@ -11,7 +11,10 @@ export const Navigation = () => {
     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
     <Navbar.Collapse id="responsive-navbar-nav">
       <Nav className="me-auto">
-        <LinkContainer to="/"><Nav.Link>Gestion</Nav.Link></LinkContainer>
+      <NavDropdown title="Gestion" id="collasible-nav-dropdown">
+          <LinkContainer to="/"><NavDropdown.Item>Gestion des entreprises</NavDropdown.Item></LinkContainer>
+          <LinkContainer to="/notreceived"><NavDropdown.Item>Encodage des non reçus</NavDropdown.Item></LinkContainer>
+        </NavDropdown>
         <NavDropdown title="Outils" id="collasible-nav-dropdown">
           <LinkContainer to="/tools/printall"><NavDropdown.Item>Imprimer toutes les déclarations</NavDropdown.Item></LinkContainer>
           <LinkContainer to="/tools/manageprices"><NavDropdown.Item>Gestion des tarifs</NavDropdown.Item></LinkContainer>

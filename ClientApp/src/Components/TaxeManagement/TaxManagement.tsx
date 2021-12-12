@@ -39,6 +39,7 @@ export const TaxManagement = () => {
 
     return <>
         <Container fluid={true}>
+            <h2 className="mt-2 mb-3">Gestion des entreprises</h2>
             <Row className="me-0 mt-0 mt-3">
                 <Col md="3" xs="12">
                     <Card>
@@ -56,7 +57,7 @@ export const TaxManagement = () => {
                                 <th>Matricule</th>
                                 <th>Nom entreprise</th>
                                 <th>Panneaux</th>
-                                <th>Recu</th>
+                                <th>Déclaration reçue</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>

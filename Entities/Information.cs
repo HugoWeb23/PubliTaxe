@@ -12,6 +12,7 @@ namespace Taxes.Entities
         public int Id { get; set; }
         public string Personne_de_contact { get; set; }
         public string Telephone_contact { get; set; }
+        public long Exercice_courant { get; set; }
 
     }
 }

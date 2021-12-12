@@ -135,5 +135,13 @@ namespace Taxes.Controllers
             return Ok(entreprises);
         }
 
+        [HttpGet("notreceived")]
+        public async Task<IActionResult> GetNotReceived()
+        {
+            List<Entreprise> entreprises = await _mediator.Send(new GetNotReceivedQuery());
+            var filtered = entreprises.Select(x => new { x.Matricule_ciger, x.Nom, nombre_panneaux = x.Publicites.Count }).ToList();
+            return Ok(filtered);
+        }
+
     }
 }
