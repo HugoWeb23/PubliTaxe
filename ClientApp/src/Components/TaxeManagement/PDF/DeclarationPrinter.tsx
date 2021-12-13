@@ -6,15 +6,17 @@ import wapi from '../../../Images/wapi.jpg'
 import { GetPricesByYear } from '../../../Services/SumTax';
 import { useEffect, useMemo } from 'react';
 import { IPrintData } from '../../../Types/IPrintData';
+import { IExercice } from '../../../Types/IExercice';
 
 interface IDeclarationPrinter {
     entreprise: Entreprise,
     printData: IPrintData,
-    tarifs: any
+    tarifs: any,
+    currentFiscalYear: IExercice
 }
 
-export const DeclarationPrinter = ({ entreprise, printData, tarifs }: IDeclarationPrinter) => {
-    const prices = useMemo(() => GetPricesByYear(tarifs, 1), [])
+export const DeclarationPrinter = ({ entreprise, printData, tarifs, currentFiscalYear }: IDeclarationPrinter) => {
+    const prices = useMemo(() => GetPricesByYear(tarifs, currentFiscalYear.id), [])
 
     Font.register({
         family: 'Tahoma', fonts: [
@@ -145,13 +147,13 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs }: IDeclarati
                     <View><Image src={mouscron} style={styles.HeaderImages} /></View>
                     <View>
                         <Text style={styles.HeaderText}>Déclaration des taxes communales</Text>
-                        <Text style={styles.HeaderSubText}>Exercice 2022 - Situation 2022</Text>
+                        <Text style={styles.HeaderSubText}>Exercice {currentFiscalYear.annee_exercice} - Situation {currentFiscalYear.annee_exercice}</Text>
                         <Text style={styles.HeaderSubText}>Taxe panneaux d'affichage et/ ou enseignes</Text>
                     </View>
                     <View><Image src={wapi} style={styles.HeaderImages} /></View>
                 </View>
                 <View style={styles.SubHeader}>
-                    <Text style={styles.NormalText}>Contact : {printData.contact_person}, tél : {printData.phone}</Text>
+                    <Text style={styles.NormalText}>Contact : {printData.personne_contact}, tél : {printData.telephone_contact}</Text>
                     <Text style={styles.NormalText} render={({ subPageNumber, subPageTotalPages }) => (
                         `Page ${subPageNumber} de ${subPageTotalPages}`
                     )} fixed />
@@ -232,8 +234,8 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs }: IDeclarati
                     <View style={styles.NormalText}>
                         <Text style={{ fontSize: '13px' }}>A RENVOYER</Text>
                         <Text style={{ fontSize: '13px', marginTop: '3mm' }}>Par courrier : rue de Courtrai, 63 - 7700 Mouscron</Text>
-                        <Text style={{ fontSize: '13px', marginTop: '3mm' }}>Par mail : {printData.mail}</Text>
-                        <Text style={{ fontSize: '13px', marginTop: '6mm' }}>Pour le {printData.deadline} au plus tard.</Text>
+                        <Text style={{ fontSize: '13px', marginTop: '3mm' }}>Par mail : {printData.mail_contact}</Text>
+                        <Text style={{ fontSize: '13px', marginTop: '6mm' }}>Pour le {printData.date_echeance} au plus tard.</Text>
                     </View>
                     <View style={styles.Prices}>
                         <View style={styles.PriceDetail}>

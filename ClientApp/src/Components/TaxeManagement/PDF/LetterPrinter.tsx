@@ -9,15 +9,17 @@ import blancke_signature from '../../../Images/blancke_signature.jpg'
 import aubert_signature from '../../../Images/aubert_signature.jpg'
 import cachet_ville from '../../../Images/cachet_ville.jpg'
 import { GetPricesByYear } from '../../../Services/SumTax';
+import { IExercice } from '../../../Types/IExercice';
 
 interface ILetterPrinter {
     entreprise: Entreprise,
     printData: IPrintData,
-    tarifs: any
+    tarifs: any,
+    currentFiscalYear: IExercice
 }
 
-export const LetterPrinter = ({ entreprise, printData, tarifs }: ILetterPrinter) => {
-    const prices = useMemo(() => GetPricesByYear(tarifs, 1), [])
+export const LetterPrinter = ({ entreprise, printData, tarifs, currentFiscalYear }: ILetterPrinter) => {
+    const prices = useMemo(() => GetPricesByYear(tarifs, currentFiscalYear.id), [])
     Font.register({
         family: 'Arial', fonts: [
             {
@@ -164,7 +166,7 @@ export const LetterPrinter = ({ entreprise, printData, tarifs }: ILetterPrinter)
                 <Image src={transversal} style={styles.TransversalLogoImg} />
             </View>
             <View style={{ marginRight: '40mm' }}>
-                <Text style={styles.NormalText}>Mouscron, le {printData.print_date}</Text>
+                <Text style={styles.NormalText}>Mouscron, le {printData.date_impression}</Text>
             </View>
         </View>
         <View style={{ marginTop: '10mm' }}>
@@ -176,10 +178,10 @@ export const LetterPrinter = ({ entreprise, printData, tarifs }: ILetterPrinter)
         <View style={{ marginTop: '5mm' }}>
             <Text style={styles.NormalText}>Vous trouverez en annexe le formulaire de déclaration relatif aux panneaux et/ou enseignes publicitaires pour l'exercice 2022, <Text style={[styles.BoldText, { textDecoration: 'underline' }]}>avec situation au 1er janvier de l'année</Text>.</Text>
             <Text style={[styles.NormalText, { marginTop: '5mm' }]}>Voudriez-vous vérifier si ces données sont exactes et, éventuellement, les compléter en cas d'oubli ?</Text>
-            <Text style={[styles.NormalText, { marginTop: '5mm' }]}>Nous vous prions de bien vouloir nous retourner cette déclaration signée de préférence par mail à {printData.mail} ou au Service des Taxes de la ville de Mouscron, rue de Courtrai, 63 à 7700 Mouscron pour le <Text style={[styles.BoldText, { textDecoration: 'underline' }]}>{printData.deadline}</Text> au plus tard et ce, même s'il n'y a aucun changement à la situation.</Text>
+            <Text style={[styles.NormalText, { marginTop: '5mm' }]}>Nous vous prions de bien vouloir nous retourner cette déclaration signée de préférence par mail à {printData.mail_contact} ou au Service des Taxes de la ville de Mouscron, rue de Courtrai, 63 à 7700 Mouscron pour le <Text style={[styles.BoldText, { textDecoration: 'underline' }]}>{printData.date_echeance}</Text> au plus tard et ce, même s'il n'y a aucun changement à la situation.</Text>
             <Text style={[styles.NormalText, { marginTop: '5mm' }]}>Pour tout renseignement complémentaire, veuillez contacter</Text>
             <View style={{ marginLeft: '50mm', marginTop: '5mm' }}>
-                <Text style={styles.NormalText}>{printData.contact_person} au {printData.phone}</Text>
+                <Text style={styles.NormalText}>{printData.personne_contact} au {printData.telephone_contact}</Text>
                 <Text style={[styles.NormalText, { marginLeft: '20mm', marginTop: '3mm' }]}>(du lundi au jeudi)</Text>
             </View>
             <Text style={[styles.NormalText, { marginLeft: '15mm', marginTop: '5mm' }]}>Nous vous prions d'agréer, Madame, Monsieur, l'expression de nos sentiments distingués.</Text>

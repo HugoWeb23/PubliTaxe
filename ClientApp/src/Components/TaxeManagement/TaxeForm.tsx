@@ -25,16 +25,20 @@ import { ManageAdvertising } from './ManageAdvertising'
 import { IPublicite } from "../../Types/IPublicite";
 import { Printer } from "../UI/Printer";
 import {IndividualPrint} from './IndividualPrint';
+import { IExercice } from "../../Types/IExercice";
+import { IPrintData } from "../../Types/IPrintData";
 
 interface TaxeForm {
     data?: any,
     type: 'create' | 'edit',
     motifs: IMotif_majoration[],
     tarifs: any,
+    currentFiscalYear: IExercice,
+    informations?: IPrintData,
     onFormSubmit: (data: any) => Promise<void>
 }
 
-export const TaxeForm = ({ data = {}, type, motifs, tarifs, onFormSubmit }: TaxeForm) => {
+export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, informations, onFormSubmit }: TaxeForm) => {
     const defaultValues = data ? data : {}
     const [tax, setTax] = useState<Entreprise>(data as Entreprise)
     const [publicites, setPublicites] = useState(data.publicites ? data.publicites : [])
@@ -143,7 +147,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, onFormSubmit }: Taxe
 
     return <>
         <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet} />
-        <IndividualPrint show={individualPrint} handleClose={() => setIndiviualPrint(false)} tax={tax} tarifs={tarifs}/>
+        <IndividualPrint show={individualPrint} handleClose={() => setIndiviualPrint(false)} tax={tax} tarifs={tarifs} currentFiscalYear={currentFiscalYear} informations={informations}/>
         <Container fluid="xl">
             <Form onSubmit={handleSubmit(OnSubmit)} className="mb-2">
                 <div className="d-flex justify-content-between align-items-center">
@@ -478,7 +482,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, onFormSubmit }: Taxe
                     </Col>
                 </Row>
             </Form>
-            <ManageAdvertising pubs={publicites} matricule={defaultValues.matricule_ciger} tarifs={tarifs} onSubmit={UpdatePubs} />
+            <ManageAdvertising pubs={publicites} matricule={defaultValues.matricule_ciger} tarifs={tarifs} currentFiscalYear={currentFiscalYear} onSubmit={UpdatePubs} />
         </Container>
     </>
 }

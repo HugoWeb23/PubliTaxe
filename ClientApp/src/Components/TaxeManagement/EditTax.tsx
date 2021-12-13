@@ -9,7 +9,7 @@ interface EditTax {
     isLoading: boolean
 }
 
-export const EditTax = ({match, motifs, tarifs}: any) => {
+export const EditTax = ({match, motifs, tarifs, currentFiscalYear, informations}: any) => {
 
     const [entreprise, setEntreprise] = useState<Entreprise>({} as Entreprise)
     const [loader, setLoader] = useState<boolean>(true)
@@ -31,6 +31,6 @@ export const EditTax = ({match, motifs, tarifs}: any) => {
             return editTax
     }
 return <>
-{(loader != true && motifs != null && tarifs != null) ? <TaxeForm type="edit" data={entreprise} motifs={motifs} tarifs={tarifs} onFormSubmit={handleEditTax}/> : <Loader/> }
+{(loader != true && motifs != null && tarifs != null && currentFiscalYear != null) ? <TaxeForm type="edit" data={entreprise} motifs={motifs} tarifs={tarifs} currentFiscalYear={currentFiscalYear} informations={informations} onFormSubmit={handleEditTax}/> : <Loader/> }
 </>
 }

@@ -19,6 +19,7 @@ namespace Taxes.Entities
         public DbSet<Rue> rues { get; set; }
         public DbSet<Tarif> tarifs { get; set; }
         public DbSet<Pays> pays { get; set; }
+        public DbSet<NotReceived> non_recus { get; set; }
 
     }
 }

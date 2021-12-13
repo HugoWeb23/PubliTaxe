@@ -28,6 +28,13 @@ namespace Taxes.Controllers
             return Ok(FiscalYears);
         }
 
+        [HttpGet("getcurrentfiscalyear")]
+        public async Task<IActionResult> GetCurrentFiscalYear()
+        {
+            Exercice FiscalYear = await _mediator.Send(new GetCurrentFiscalYearQuery());
+            return Ok(FiscalYear);
+        }
+
         [HttpPost("new")]
         public async Task<IActionResult> CreateYear(Exercice FiscalYear)
         {

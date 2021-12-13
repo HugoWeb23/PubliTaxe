@@ -1,9 +1,9 @@
 export interface IPrintData {
-    deadline: string,
-    print_date: string,
-    contact_person: string,
-    phone: string,
-    mail: string,
+    date_echeance: string,
+    date_impression: string,
+    personne_contact: string,
+    telephone_contact: string,
+    mail_contact: string,
     options: {
         print_letter: boolean,
         print_declaration: boolean,

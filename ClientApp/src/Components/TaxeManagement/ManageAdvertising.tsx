@@ -7,6 +7,8 @@ import {
 } from 'react-bootstrap'
 import { boolean } from 'yup/lib/locale'
 import { apiFetch } from '../../Services/apiFetch'
+import { IExercice } from '../../Types/IExercice'
+import { IPrice } from '../../Types/IPrice'
 import { IPublicite } from '../../Types/IPublicite'
 import { ConfirmModal } from '../UI/ConfirmModal'
 import { Eye } from '../UI/Eye'
@@ -18,11 +20,12 @@ import { AdvertisingModal } from './AdvertisingModal'
 interface IManageAdvertising {
     pubs: IPublicite[],
     matricule: number,
-    tarifs: any,
+    tarifs: IPrice[],
+    currentFiscalYear: IExercice,
     onSubmit: (publicites: IPublicite[]) => void
 }
 
-export const ManageAdvertising = memo(({ pubs = [], matricule, tarifs, onSubmit }: IManageAdvertising) => {
+export const ManageAdvertising = memo(({ pubs = [], matricule, tarifs, currentFiscalYear, onSubmit }: IManageAdvertising) => {
     const isMounted = useRef(false)
     const [showEdit, setShowEdit] = useState<boolean>(false)
     const [type, setType] = useState<'edit' | 'create'>('edit')
@@ -80,6 +83,7 @@ export const ManageAdvertising = memo(({ pubs = [], matricule, tarifs, onSubmit 
             publicite={publicite}
             matricule={matricule}
             tarifs={tarifs}
+            currentFiscalYear={currentFiscalYear}
             handleClose={handleUnSelectPub}
             onValidate={handleSubmit}
         />}

@@ -25,8 +25,9 @@ namespace Taxes.Handlers
                     Id = info.Id, 
                     Personne_contact = info.Personne_de_contact, 
                     Telephone_contact = info.Telephone_contact, 
+                    Mail_contact = info.Mail_contact,
                     Exercice = ex.Annee_exercice
-                });
+                }).FirstOrDefault();
             return Task.FromResult((object)Informations);
         }
     }

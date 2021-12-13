@@ -7,7 +7,7 @@ import {
     InputGroup,
     Image
 } from 'react-bootstrap'
-import { IPubliciteImage } from "../../Types/IPublicite"
+import { IPublicite, IPubliciteImage } from "../../Types/IPublicite"
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, Controller, useWatch } from "react-hook-form"
 import { AdvertisingFormSchema } from '../../Validation/Tax/AdvertisingFormSchema';
@@ -18,6 +18,8 @@ import { IRue } from '../../Types/IRue';
 import { Trash } from '../UI/Trash';
 import { toast } from 'react-toastify';
 import { SumTax } from '../../Services/SumTax'
+import { IPrice } from '../../Types/IPrice';
+import { IExercice } from '../../Types/IExercice';
 
 
 interface IAdvertisingModal {
@@ -25,12 +27,13 @@ interface IAdvertisingModal {
     show: boolean,
     publicite: any,
     matricule: number,
-    tarifs: any,
+    tarifs: IPrice[],
+    currentFiscalYear: IExercice,
     handleClose: () => void,
     onValidate: (daya: any, type: 'create' | 'edit') => void
 }
 
-export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, handleClose, onValidate }: IAdvertisingModal) => {
+export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, currentFiscalYear, handleClose, onValidate }: IAdvertisingModal) => {
     const [streets, setStreets] = useState<IRue[]>(publicite?.rue ? [publicite.rue] : [])
     const [streetId, setStreetId] = useState<number>()
     const [loadingStreets, setLoadingStreets] = useState<boolean>(false)
@@ -306,7 +309,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, han
                             <Form.Group className="mb-3" controlId="taxe_totale">
                                 <Form.Label column="sm">Taxe totale</Form.Label>
                                 <InputGroup className="mb-2" size="sm">
-                                    <Form.Control type="text" disabled placeholder="Taxe totale" size="sm" isInvalid={errors.taxe_totale} value={exoneration ? '0.00' : SumTax(publicite?.exercice_courant, quantite, surface, face, typePub, tarifs)} />
+                                    <Form.Control type="text" disabled placeholder="Taxe totale" size="sm" isInvalid={errors.taxe_totale} value={exoneration ? '0.00' : SumTax(currentFiscalYear.id, quantite, surface, face, typePub, tarifs)} />
                                     <InputGroup.Text>€</InputGroup.Text>
                                     {errors.taxe_totale && <Form.Control.Feedback type="invalid">{errors.taxe_totale.message}</Form.Control.Feedback>}
                                 </InputGroup>

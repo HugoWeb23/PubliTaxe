@@ -15,15 +15,10 @@ import { IPrintData } from '../../Types/IPrintData'
 import { saveAs } from 'file-saver'
 import { pdf } from '@react-pdf/renderer'
 
-export const PrintAllTaxes = ({tarifs}: any) => {
+export const PrintAllTaxes = ({tarifs, currentFiscalYear, informations}: any) => {
 
-    const initialValues: any = {
-        deadline: '2021-12-21',
-        print_date: '2021-12-06',
-        contact_person: 'Mme MARTEN',
-        phone: '056/86.02.80',
-        mail: 'sylvie.maerten@mouscron.be'
-    }
+    const date = new Date()
+    const initialValues = ({...informations, date_echeance: currentFiscalYear.date_echeance, date_impression: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`})
 
     const { register, handleSubmit, formState: { errors } } = useForm({ resolver: yupResolver(PrintAllTaxesSchema), defaultValues: initialValues })
     
@@ -35,7 +30,7 @@ export const PrintAllTaxes = ({tarifs}: any) => {
             data.options = { print_declaration: true, print_letter: true, print_form: false}
         }
         const blob = await pdf((
-            <Printer entreprises={entreprises} printData={data} tarifs={tarifs} />
+            <Printer entreprises={entreprises} printData={data} tarifs={tarifs} currentFiscalYear={currentFiscalYear} />
           )).toBlob();
           saveAs(blob, 'document.pdf');
     }
@@ -56,36 +51,36 @@ export const PrintAllTaxes = ({tarifs}: any) => {
                         <Col>
                             <Form.Group controlId="echeance">
                                 <Form.Label column="sm">Date d'échéance</Form.Label>
-                                <Form.Control type="date" placeholder="Date d'échéance" isInvalid={errors.deadline} size="sm" {...register('deadline')} />
-                                {errors.deadline && <Form.Control.Feedback type="invalid">{errors.deadline.message}</Form.Control.Feedback>}
+                                <Form.Control type="date" placeholder="Date d'échéance" isInvalid={errors.date_echeance} size="sm" {...register('date_echeance')} />
+                                {errors.date_echeance && <Form.Control.Feedback type="invalid">{errors.date_echeance.message}</Form.Control.Feedback>}
                             </Form.Group>
                         </Col>
                         <Col>
                             <Form.Group controlId="date">
                                 <Form.Label column="sm">Date d'impression</Form.Label>
-                                <Form.Control type="date" placeholder="Date d'impression" isInvalid={errors.print_date} size="sm" {...register('print_date')} />
-                                {errors.print_date && <Form.Control.Feedback type="invalid">{errors.print_date.message}</Form.Control.Feedback>}
+                                <Form.Control type="date" placeholder="Date d'impression" isInvalid={errors.date_impression} size="sm" {...register('date_impression')} />
+                                {errors.date_impression && <Form.Control.Feedback type="invalid">{errors.date_impression.message}</Form.Control.Feedback>}
                             </Form.Group>
                         </Col>
                     </Row>
                     <Form.Group controlId="contact" className="mt-3">
                         <Form.Label column="sm">Personne de contact</Form.Label>
-                        <Form.Control type="text" placeholder="Personne de contact" isInvalid={errors.contact_person} size="sm" {...register('contact_person')} />
-                        {errors.contact_person && <Form.Control.Feedback type="invalid">{errors.contact_person.message}</Form.Control.Feedback>}
+                        <Form.Control type="text" placeholder="Personne de contact" isInvalid={errors.personne_contact} size="sm" {...register('personne_contact')} />
+                        {errors.personne_contact && <Form.Control.Feedback type="invalid">{errors.personne_contact.message}</Form.Control.Feedback>}
                     </Form.Group>
                     <Row>
                         <Col>
                             <Form.Group controlId="telephone" className="mt-3">
                                 <Form.Label column="sm">Téléphone</Form.Label>
-                                <Form.Control type="text" placeholder="Téléphone" isInvalid={errors.phone} size="sm" {...register('phone')} />
-                                {errors.phone && <Form.Control.Feedback type="invalid">{errors.phone.message}</Form.Control.Feedback>}
+                                <Form.Control type="text" placeholder="Téléphone" isInvalid={errors.telephone_contact} size="sm" {...register('telephone_contact')} />
+                                {errors.telephone_contact && <Form.Control.Feedback type="invalid">{errors.telephone_contact.message}</Form.Control.Feedback>}
                             </Form.Group>
                         </Col>
                         <Col>
                             <Form.Group controlId="mail" className="mt-3">
                                 <Form.Label column="sm">Adresse e-mail</Form.Label>
-                                <Form.Control type="text" placeholder="Adresse e-mail" isInvalid={errors.mail} size="sm" {...register('mail')} />
-                                {errors.mail && <Form.Control.Feedback type="invalid">{errors.mail.message}</Form.Control.Feedback>}
+                                <Form.Control type="text" placeholder="Adresse e-mail" isInvalid={errors.mail_contact} size="sm" {...register('mail_contact')} />
+                                {errors.mail_contact && <Form.Control.Feedback type="invalid">{errors.mail_contact.message}</Form.Control.Feedback>}
                             </Form.Group>
                         </Col>
                     </Row>
