@@ -15,7 +15,7 @@ export interface IPublicite {
     mesure: string,
     surface: number,
     surface_totale?: number
-    taxe_totale?: number,
+    taxe_totale: number,
     code_recu: number
     exoneration: boolean,
     pv: number,

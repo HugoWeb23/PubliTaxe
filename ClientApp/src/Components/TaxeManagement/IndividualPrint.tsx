@@ -17,22 +17,25 @@ import { Printer } from './PDF/Printer'
 
 export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalYear, informations }: any) => {
   const date = new Date()
-  const initialValues = ({...informations, 
-    date_echeance: currentFiscalYear.date_echeance, 
+  const initialValues = ({
+    ...informations,
+    date_echeance: currentFiscalYear.date_echeance,
     date_impression: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
     options: {
-      print_letter: true,
-      print_declaration: true,
-      print_form: false
-    }})
-  
+      print_letter: false,
+      print_declaration: false,
+      print_form: false,
+      print_minutes: true
+    }
+  })
+
   const { register, handleSubmit, formState: { errors } } = useForm({ resolver: yupResolver(IndividualPrintSchema), defaultValues: initialValues })
 
   const onClose = () => {
     handleClose()
   }
 
-  const onSubmit = async(data: any) => {
+  const onSubmit = async (data: any) => {
     await generatePdfDocument(data as IPrintData)
   }
 
@@ -101,16 +104,21 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalY
             </Col>
             <Col>
               <Form.Group controlId="form">
+                <Form.Check type="checkbox" label="Imprimer le procès verbal" isInvalid={errors.options} {...register('options.print_minutes')} />
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group controlId="form">
                 <Form.Check type="checkbox" label="Imprimer la fiche d'entreprise" isInvalid={errors.options} {...register('options.print_form')} />
               </Form.Group>
             </Col>
             {errors.options && <Form.Text className="text-danger">
-             {errors.options.message}
+              {errors.options.message}
             </Form.Text>}
             <Form.Group controlId="submit" className="mt-5">
-            <div className="d-grid gap-2">
-              <Button variant="outline-dark" className="mb-1" type="submit">Générer le document</Button>
-            </div>
+              <div className="d-grid gap-2">
+                <Button variant="outline-dark" className="mb-1" type="submit">Générer le document</Button>
+              </div>
             </Form.Group>
           </Row>
           <Form.Text className="text-muted">

@@ -7,7 +7,8 @@ export interface IPrintData {
     options: {
         print_letter: boolean,
         print_declaration: boolean,
-        print_form: boolean
+        print_form: boolean,
+        print_minutes: boolean
     }
 
 }
