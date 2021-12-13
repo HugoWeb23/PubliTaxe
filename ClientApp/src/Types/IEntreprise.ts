@@ -14,6 +14,7 @@ export interface Entreprise {
         numero_fax: string,
         numero_tva: string,
         proces_verbal: boolean,
+        motif_majorationId: number,
         recu: boolean,
         province: boolean,
         personne_contact: string,

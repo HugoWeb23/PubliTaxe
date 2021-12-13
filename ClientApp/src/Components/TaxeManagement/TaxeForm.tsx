@@ -147,7 +147,14 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
 
     return <>
         <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet} />
-        <IndividualPrint show={individualPrint} handleClose={() => setIndiviualPrint(false)} tax={tax} tarifs={tarifs} currentFiscalYear={currentFiscalYear} informations={informations}/>
+        <IndividualPrint 
+        show={individualPrint} 
+        handleClose={() => setIndiviualPrint(false)} 
+        tax={tax} tarifs={tarifs} 
+        currentFiscalYear={currentFiscalYear} 
+        informations={informations}
+        motifs={motifs}
+        />
         <Container fluid="xl">
             <Form onSubmit={handleSubmit(OnSubmit)} className="mb-2">
                 <div className="d-flex justify-content-between align-items-center">

@@ -15,7 +15,7 @@ import { IndividualPrintSchema } from '../../Validation/Tax/IndividualPrintSchem
 import { IPrintData } from '../../Types/IPrintData';
 import { Printer } from './PDF/Printer'
 
-export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalYear, informations }: any) => {
+export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalYear, informations, motifs }: any) => {
   const date = new Date()
   const initialValues = ({
     ...informations,
@@ -41,7 +41,7 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalY
 
   const generatePdfDocument = async (printData: IPrintData) => {
     const blob = await pdf((
-      <Printer entreprises={[tax]} tarifs={tarifs} currentFiscalYear={currentFiscalYear} printData={printData} />
+      <Printer entreprises={[tax]} tarifs={tarifs} currentFiscalYear={currentFiscalYear} printData={printData} motifsMajoration={motifs} />
     )).toBlob();
     saveAs(blob, `${tax.nom.split(' ').join('_')}.pdf`);
   }
