@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentValidation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -27,5 +28,19 @@ namespace Taxes.Entities
         [Column(TypeName = "decimal(5,3)")]
         public decimal Prix_unitaire_panneau_a_defilement { get; set; }
 
+    }
+
+    public class TarifValidator : AbstractValidator<Tarif>
+    {
+        public TarifValidator()
+        {
+            RuleFor(t => t.ExerciceId).NotEmpty().WithMessage("Veuillez renseigner un exercice");
+            RuleFor(t => t.Prix_unitaire_enseigne_non_lumineuse).NotEmpty().WithMessage("Veuillez renseigner un prix");
+            RuleFor(t => t.Prix_unitaire_enseigne_lumineuse).NotEmpty().WithMessage("Veuillez renseigner un prix");
+            RuleFor(t => t.Prix_unitaire_enseigne_clignotante).NotEmpty().WithMessage("Veuillez renseigner un prix");
+            RuleFor(t => t.Prix_unitaire_panneau_non_lumineux).NotEmpty().WithMessage("Veuillez renseigner un prix");
+            RuleFor(t => t.Prix_unitaire_panneau_lumineux).NotEmpty().WithMessage("Veuillez renseigner un prix");
+            RuleFor(t => t.Prix_unitaire_panneau_a_defilement).NotEmpty().WithMessage("Veuillez renseigner un prix");
+        }
     }
 }

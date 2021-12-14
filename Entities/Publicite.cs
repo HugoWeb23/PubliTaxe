@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using FluentValidation;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -84,5 +85,23 @@ namespace Taxes.Entities
         public Rue Rue { get; set; }
         public ICollection<PublicitesPhotos> Photos { get; set; }
 
+    }
+
+    public class PubliciteValidator : AbstractValidator<Publicite>
+    {
+        public PubliciteValidator()
+        {
+            RuleFor(pub => pub.Matricule_ciger).NotEmpty().WithMessage("Veuillez saisir un matricule");
+            RuleFor(pub => pub.Id_rue).NotEmpty().WithMessage("Veuillez saisir un ID de rue");
+            RuleFor(pub => pub.Exercice_courant).NotEmpty().WithMessage("Veuillez renseigner l'année de l'exercice");
+            RuleFor(pub => pub.Type_publicite).NotEmpty().WithMessage("Veuillez saisir le type de la publicité");
+            RuleFor(pub => pub.Adresse_numero).NotEmpty().WithMessage("Veuillez le numéro de l'adresse");
+            RuleFor(pub => pub.Numero_panneau).NotNull().WithMessage("Veuillez saisir une situation");
+            RuleFor(pub => pub.Quantite).NotEmpty().WithMessage("Veuillez saisir une quantité");
+            RuleFor(pub => pub.Face).NotEmpty().WithMessage("Veuillez saisir une type de face");
+            RuleFor(pub => pub.Mesure).NotEmpty().WithMessage("Veuillez saisir les mesures du panneau");
+            RuleFor(pub => pub.Surface).NotEmpty().WithMessage("Veuillez saisir la surface du panneau");
+            RuleFor(pub => pub.Exoneration).NotNull().WithMessage("Veuillez préciser si le panneau bénéficie d'une exonération");
+        }
     }
 }

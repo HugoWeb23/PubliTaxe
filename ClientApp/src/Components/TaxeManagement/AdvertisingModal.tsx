@@ -13,7 +13,7 @@ import { useForm, Controller, useWatch } from "react-hook-form"
 import { AdvertisingFormSchema } from '../../Validation/Tax/AdvertisingFormSchema';
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead'
 import { apiFetch } from "../../Services/apiFetch";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IRue } from '../../Types/IRue';
 import { Trash } from '../UI/Trash';
 import { toast } from 'react-toastify';
@@ -37,7 +37,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
     const [streets, setStreets] = useState<IRue[]>(publicite?.rue ? [publicite.rue] : [])
     const [streetId, setStreetId] = useState<number>()
     const [loadingStreets, setLoadingStreets] = useState<boolean>(false)
-    const [imagesLinks, setImagesLinks] = useState<IPubliciteImage[]>(publicite?.photos.length > 0 ? publicite.photos : [])
+    const [imagesLinks, setImagesLinks] = useState<IPubliciteImage[]>(publicite?.photos && publicite.photos.length > 0 ? publicite.photos : [])
     const { register, control, reset, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(AdvertisingFormSchema), defaultValues: publicite ? publicite : { type_publicite: 1, face: 1, exoneration: false } });
 
     const quantite = useWatch({
@@ -64,6 +64,15 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
         control,
         name: "exoneration"
     })
+
+    useEffect(() => {
+        if(exoneration == false) {
+            const TaxValue = SumTax(currentFiscalYear.id, quantite, surface, face, typePub, tarifs)
+            setValue('taxe_totale', TaxValue)
+        } else {
+            setValue('taxe_totale', '0.00')
+        }
+    }, [quantite, surface, face, typePub, exoneration])
 
     const StreetSearch = async (query: string) => {
         setLoadingStreets(true)
@@ -309,7 +318,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
                             <Form.Group className="mb-3" controlId="taxe_totale">
                                 <Form.Label column="sm">Taxe totale</Form.Label>
                                 <InputGroup className="mb-2" size="sm">
-                                    <Form.Control type="text" disabled placeholder="Taxe totale" size="sm" isInvalid={errors.taxe_totale} value={exoneration ? '0.00' : SumTax(currentFiscalYear.id, quantite, surface, face, typePub, tarifs)} />
+                                    <Form.Control type="text" disabled placeholder="Taxe totale" size="sm" isInvalid={errors.taxe_totale} {...register('taxe_totale')} />
                                     <InputGroup.Text>€</InputGroup.Text>
                                     {errors.taxe_totale && <Form.Control.Feedback type="invalid">{errors.taxe_totale.message}</Form.Control.Feedback>}
                                 </InputGroup>

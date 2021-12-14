@@ -19,12 +19,34 @@ namespace Taxes.Handlers
 
         public Task<NotReceived> Handle(InsertNotReceivedCommand request, CancellationToken cancellationToken)
         {
+            if(request.NotReceived.Remarque == null)
+            {
+                request.NotReceived.Remarque = "";
+            }
+
             request.NotReceived.Date = DateTime.Now.ToString("dd/MM/yyyy");
             NotReceived notReceived = _context.non_recus
+                .AsNoTracking()
                 .Where(nr => nr.Matricule_ciger == request.NotReceived.Matricule_ciger && nr.ExerciceId == request.NotReceived.ExerciceId)
                 .FirstOrDefault();
 
-            _context.non_recus.Add(request.NotReceived);
+            if (notReceived != null)
+            {
+                NotReceived editNotReceived = new NotReceived
+                {
+                    Id = notReceived.Id,
+                    Matricule_ciger = notReceived.Matricule_ciger,
+                    ExerciceId = notReceived.ExerciceId,
+                    Pourcentage_majoration = request.NotReceived.Pourcentage_majoration,
+                    Motif_majorationId = request.NotReceived.Motif_majorationId,
+                    Date = request.NotReceived.Date,
+                    Remarque = request.NotReceived.Remarque
+                };
+                _context.non_recus.Update(editNotReceived);
+            } else
+            {
+                _context.non_recus.Add(request.NotReceived);
+            }
             _context.SaveChanges();
             return Task.FromResult(request.NotReceived);
         }

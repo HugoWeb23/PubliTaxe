@@ -42,5 +42,12 @@ namespace Taxes.Controllers
             }
             
         }
+
+        [HttpGet("gethistory/{Matricule}")]
+        public async Task<IActionResult> GetHistory(long Matricule)
+        {
+            var NotReceivedHistory = await _mediator.Send(new GetNotReceivedHistoryQuery(Matricule));
+            return Ok(NotReceivedHistory);
+        }
     }
 }

@@ -16,6 +16,7 @@ import { INotReceived } from '../../../Types/INotReceived'
 import { Loader } from '../../UI/Loader'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { EncodeNotReceivedSchema } from '../../../Validation/NotReceived/EncodeNotReceivedSchema'
+import { NotReceivedHistory } from './NotReceivedHistory'
 
 
 interface INotReceivedModal {
@@ -27,7 +28,7 @@ interface INotReceivedModal {
 
 export const NotReceivedModal = ({ element, motifs, handleClose, onSubmit }: INotReceivedModal) => {
 
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm({resolver: yupResolver(EncodeNotReceivedSchema)})
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm({ resolver: yupResolver(EncodeNotReceivedSchema) })
     const [entreprise, setEntreprise] = useState<Entreprise>({} as Entreprise)
     const [loader, setLoader] = useState<boolean>(false)
 
@@ -85,6 +86,10 @@ export const NotReceivedModal = ({ element, motifs, handleClose, onSubmit }: INo
                                         <option value="100">100 %</option>
                                         <option value="200">200 %</option>
                                     </Form.Select>
+                                    <Form.Text className="text-muted">
+                                        Ce pourcentage de majoration est proposé automatiquement (surligné en vert dans la liste déroulante) en fonction
+                                        des infractions précédentes.
+                                    </Form.Text>
                                     {errors.pourcentage_majoration && <Form.Control.Feedback type="invalid">{errors.pourcentage_majoration.message}</Form.Control.Feedback>}
                                 </Form.Group>
                             </Col>
@@ -98,10 +103,12 @@ export const NotReceivedModal = ({ element, motifs, handleClose, onSubmit }: INo
                                 </Form.Group>
                             </Col>
                         </Row>
-                        <Form.Group controlId="remarque">
+                        <Form.Group controlId="remarque" className="mt-1">
                             <Form.Label column="sm">Remarque éventuelle</Form.Label>
                             <Form.Control as="textarea" size="sm" placeholder="Remarque éventuelle pour la taxation d'office" {...register('remarque')} />
                         </Form.Group>
+                        <p className="fw-normal mt-3 mb-3">Historique des non reçus sur les 5 dernières années</p>
+                        <NotReceivedHistory matricule={element.entrepriseInfos.matricule_ciger} motifs={motifs} />
                     </>
                 }
             </Modal.Body>

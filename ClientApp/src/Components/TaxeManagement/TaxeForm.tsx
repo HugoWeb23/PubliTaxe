@@ -132,6 +132,8 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
             } else {
                 setValue('code_rue_taxation', '888')
                 setValue('adresse_taxation', "Dans l'arondissement de Mouscron")
+                setValue('adresse_index_taxation', '0')
+                setValue('adresse_boite_taxation', '0')
                 setValue('adresse_code_postal_taxation', '7700')
                 setValue('adresse_localite_taxation', 'MOUSCRON')
                 setValue('adresse_numero_taxation', '0')
@@ -139,6 +141,8 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
         } else {
             setValue('code_rue_taxation', '')
             setValue('adresse_taxation', '')
+            setValue('adresse_boite_taxation', '')
+            setValue('adresse_index_taxation', '')
             setValue('adresse_code_postal_taxation', '')
             setValue('adresse_localite_taxation', '')
             setValue('adresse_numero_taxation', '')
@@ -393,7 +397,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                         <Form.Group controlId="pourcentage_majoration">
                             <Form.Label column="sm">% majoration</Form.Label>
                             <Form.Select {...register('pourcentage_majoration')} isInvalid={errors.pourcentage_majoration} size="sm">
-                                <option value="0">Aucune</option>
+                                <option value="0">Aucun</option>
                                 <option value="10">10 %</option>
                                 <option value="50">50 %</option>
                                 <option value="100">100 %</option>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentValidation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,5 +16,16 @@ namespace Taxes.Entities
         public string Mail_contact { get; set; }
         public long Exercice_courant { get; set; }
 
+    }
+
+    public class InformationValidator : AbstractValidator<Information>
+    {
+        public InformationValidator()
+        {
+            RuleFor(info => info.Personne_de_contact).NotEmpty().WithMessage("Veuillez saisir une personne de contact");
+            RuleFor(info => info.Telephone_contact).NotEmpty().WithMessage("Veuillez saisir un numéro de téléphone");
+            RuleFor(info => info.Mail_contact).NotEmpty().WithMessage("Veuillez saisir une adresse e-mail");
+            RuleFor(info => info.Exercice_courant).NotEmpty().WithMessage("Veuillez spécifier l'exercice courant");
+        }
     }
 }

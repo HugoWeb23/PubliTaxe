@@ -55,6 +55,8 @@ namespace Taxes.Entities
             RuleFor(entreprise => entreprise.Nom).NotEmpty().WithMessage("Veuillez saisir un nom");
             RuleFor(entreprise => entreprise.Adresse_rue).NotEmpty().WithMessage("Veuillez saisir une adresse");
             RuleFor(entreprise => entreprise.Adresse_numero).NotEmpty().WithMessage("Veuillez saisir un numéro");
+            RuleFor(entreprise => entreprise.Adresse_boite).NotEmpty().WithMessage("Veuillez saisir une boite");
+            RuleFor(entreprise => entreprise.Adresse_index).NotEmpty().WithMessage("Veuillez saisir une index");
             RuleFor(entreprise => entreprise.Numero_telephone).NotEmpty().WithMessage("Veuillez saisir un numéro de téléphone");
             RuleFor(entreprise => entreprise.Numero_fax).NotEmpty().WithMessage("Veuillez saisir un numéro de fax");
             RuleFor(entreprise => entreprise.Recu).NotNull().WithMessage("La propriété 'reçu' est manquante");
@@ -65,9 +67,12 @@ namespace Taxes.Entities
             RuleFor(entreprise => entreprise.Code_rue_taxation).NotEmpty().WithMessage("Veuillez saisir un code de rue pour la taxation");
             RuleFor(entreprise => entreprise.Adresse_taxation).NotEmpty().WithMessage("Veuillez saisir une adresse de taxation");
             RuleFor(entreprise => entreprise.Adresse_numero_taxation).NotEmpty().WithMessage("Veuillez saisir un numéro de rue pour la taxation");
+            RuleFor(entreprise => entreprise.Adresse_index_taxation).NotEmpty().WithMessage("Veuillez saisir une index");
+            RuleFor(entreprise => entreprise.Adresse_boite_taxation).NotEmpty().WithMessage("Veuillez saisir une boite");
             RuleFor(entreprise => entreprise.Adresse_code_postal_taxation).NotEmpty().WithMessage("Veuillez saisir un code postal pour la taxation");
             RuleFor(entreprise => entreprise.Adresse_localite_taxation).NotEmpty().WithMessage("Veuillez saisir une localité pour la taxation");
             RuleFor(entreprise => entreprise.Role_linguistique).NotEmpty().WithMessage("Veuillez choisir une langue");
+            RuleForEach(x => x.Publicites).SetValidator(new PubliciteValidator());
         }
     }
 }

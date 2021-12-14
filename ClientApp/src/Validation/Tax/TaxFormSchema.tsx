@@ -8,8 +8,8 @@ export const TaxeFormSchema = yup.object().shape({
     recu: yup.boolean().typeError('Valeur invalide'),
     adresse_rue: yup.string().required('Veuillez saisir une adresse').min(3, "La rue est trop courte").max(50, "La rue est trop longue"),
     adresse_numero: yup.string().required('Veuillez saisir un numéro').max(10, "Le numéro est trop long"),
-    adresse_boite: yup.string().max(9, 'Le numéro de boite est trop long'),
-    adresse_index: yup.string().max(9, "L'index est trop long"),
+    adresse_boite: yup.string().required("Veuillez saisir une boite").max(9, 'Le numéro de boite est trop long'),
+    adresse_index: yup.string().required("Veuillez saisir une index").max(9, "L'index est trop longue"),
     code_postal: yup.object().shape({
         cp: yup.string().required('Veuillez saisir un code postal'),
         localite: yup.string().required('Veuillez saisir une localité')
@@ -27,8 +27,8 @@ export const TaxeFormSchema = yup.object().shape({
     code_rue_taxation: yup.string().required("Veuillez saisir un code de rue").min(3, "Le code rue est trop court").max(5, "Le code rue est trop long"),
     adresse_taxation: yup.string().required('Veuillez saisir une adresse de taxation').min(3, "La rue est trop courte").max(50, "La rue est trop longue"),
     adresse_numero_taxation: yup.string().required("Veuillez saisir un numéro").max(10, "Le numéro est trop long"),
-    adresse_index_taxation: yup.string().max(9, "L'index est trop long"),
-    adresse_boite_taxation: yup.string().max(9, 'Le numéro de boite est trop long'),
+    adresse_index_taxation: yup.string().required("Veuillez saisir une index").max(9, "L'index est trop longue"),
+    adresse_boite_taxation: yup.string().required("Veuillez saisir une boite").max(9, 'Le numéro de boite est trop long'),
     adresse_code_postal_taxation: yup.string().required('Veuillez saisir un code postal').min(3, "Le code postal est trop court").max(15, "Le code postal est trop long"),
     adresse_localite_taxation: yup.string().required('Veuillez saisir une localité').min(1, "La localité est trop courte").max(35, "La localité est trop longue"),
     commentaire_taxation: yup.string().typeError("Le format du commentaire n'est pas valide")

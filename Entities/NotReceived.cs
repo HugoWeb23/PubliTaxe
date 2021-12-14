@@ -22,7 +22,6 @@ namespace Taxes.Entities
             RuleFor(n => n.Matricule_ciger).NotEmpty().WithMessage("Veuillez renseigner un matricule");
             RuleFor(n => n.Motif_majorationId).NotEmpty().WithMessage("Veuillez saisir un motif de majoration");
             RuleFor(n => n.ExerciceId).NotEmpty().WithMessage("Veuillez renseigner un exercice");
-            RuleFor(n => n.Remarque).NotNull().WithMessage("Veuillez saisir une remarque");
             RuleFor(n => n.Pourcentage_majoration).NotEmpty().WithMessage("Veuillez saisir un pourcentage de majoration");
         }
     }

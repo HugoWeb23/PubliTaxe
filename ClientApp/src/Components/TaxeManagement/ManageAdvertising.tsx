@@ -148,7 +148,7 @@ export const ManageAdvertising = memo(({ pubs = [], matricule, tarifs, currentFi
                             </OverlayTrigger></td>
                     </tr>
                 })}
-                <tr><td colSpan={6} className="text-end">Taxe totale : <span className="fw-bold">{publicites.reduce((acc: any, curr: IPublicite) => acc + curr.taxe_totale, 0)} €</span></td></tr>
+                <tr><td colSpan={6} className="text-end">Taxe totale : <span className="fw-bold">{publicites.reduce((acc: any, curr: any) => acc + parseFloat(curr.taxe_totale), 0)} €</span></td></tr>
             </tbody>
         </Table>
     </>

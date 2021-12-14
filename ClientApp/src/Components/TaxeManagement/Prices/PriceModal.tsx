@@ -88,7 +88,7 @@ export const PriceModal = ({ element, fiscalYears, fiscalYearsUsed, handleClose,
         <Button variant="secondary" onClick={handleClose}>
           Annuler
         </Button>
-        <Button variant="primary" onClick={handleSubmit(formSubmit)}>
+        <Button variant="success" onClick={handleSubmit(formSubmit)}>
           {element.type == "create" ? "Créer le tarif" : "Modifier le tarif"}
         </Button>
       </Modal.Footer>
