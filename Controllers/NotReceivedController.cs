@@ -34,7 +34,7 @@ namespace Taxes.Controllers
         {
             try
             {
-                NotReceived notReceived = await _mediator.Send(new InsertNotReceivedCommand(data));
+                NotReceived notReceived = await _mediator.Send(new InsertNotReceivedCommand(data, true));
                 return Ok(notReceived);
             } catch(Exception ex)
             {

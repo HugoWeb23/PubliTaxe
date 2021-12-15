@@ -26,6 +26,7 @@ namespace Taxes.Handlers
                     Personne_contact = info.Personne_de_contact, 
                     Telephone_contact = info.Telephone_contact, 
                     Mail_contact = info.Mail_contact,
+                    Exercice_courant = info.Exercice_courant,
                     Exercice = ex.Annee_exercice
                 })
                 .FirstOrDefault();

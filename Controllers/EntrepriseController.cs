@@ -143,5 +143,22 @@ namespace Taxes.Controllers
             return Ok(filtered);
         }
 
+        [HttpDelete("delete/{Matricule}")]
+        public async Task<IActionResult> Delete(long Matricule)
+        {
+            try
+            {
+                bool isDeleted = await _mediator.Send(new DeleteEntrepriseCommand(Matricule));
+                if(isDeleted == false)
+                {
+                    return BadRequest(new { error = "Une erreur est survenue lors de la suppression de l'entreprise" });
+                }
+                return Ok(new {type = "success", message = "L'entreprise a été supprimée"});
+            } catch(Exception ex)
+            {
+                return BadRequest(new { error = ex.Message, exception = ex });
+            }
+        }
+
     }
 }

@@ -31,7 +31,8 @@ namespace Taxes.Handlers
                      Date = n.Date,
                      Exercice = e.Annee_exercice
                  })
-                 .Where(n => n.Matricule_ciger == request.Matricule);
+                 .Where(n => n.Matricule_ciger == request.Matricule)
+                 .OrderByDescending(n => n.Exercice);
 
             return Task.FromResult(NotReceivedList);
         }

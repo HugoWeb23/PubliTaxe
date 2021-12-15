@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import {
     Modal,
     Button,
     Form,
     Row,
     Col,
-    Card
+    Card,
+    Table
 } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { apiFetch } from '../../../Services/apiFetch'
@@ -16,24 +17,32 @@ import { INotReceived } from '../../../Types/INotReceived'
 import { Loader } from '../../UI/Loader'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { EncodeNotReceivedSchema } from '../../../Validation/NotReceived/EncodeNotReceivedSchema'
-import { NotReceivedHistory } from './NotReceivedHistory'
+import { INotReceivedHistory } from '../../../Types/INotReceivedHistory'
+import { SumIncrease } from '../../../Services/SumIncrease'
+import { IExercice } from '../../../Types/IExercice'
 
 
 interface INotReceivedModal {
     element: { entrepriseInfos: IApercu_entreprise, show: boolean },
-    motifs: IMotif_majoration[]
+    motifs: IMotif_majoration[],
+    currentFiscalYear: IExercice,
     handleClose: () => void,
     onSubmit: (data: INotReceived) => void
 }
 
-export const NotReceivedModal = ({ element, motifs, handleClose, onSubmit }: INotReceivedModal) => {
+export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClose, onSubmit }: INotReceivedModal) => {
 
     const { register, handleSubmit, setValue, formState: { errors } } = useForm({ resolver: yupResolver(EncodeNotReceivedSchema) })
     const [entreprise, setEntreprise] = useState<Entreprise>({} as Entreprise)
+    const [history, setHistory] = useState<INotReceivedHistory[]>([])
     const [loader, setLoader] = useState<boolean>(false)
+    const isMounted = useRef(false)
 
     useEffect(() => {
         (async () => {
+            const history = await apiFetch(`/notreceived/gethistory/${element.entrepriseInfos.matricule_ciger}`)
+            setHistory(history)
+            setValue('pourcentage_majoration', await SumIncrease(history, currentFiscalYear))
             if (element.entrepriseInfos.matricule_ciger !== entreprise.matricule_ciger) {
                 setLoader(true)
                 const fetch = await apiFetch(`/entreprises/id/${element.entrepriseInfos.matricule_ciger}`)
@@ -108,7 +117,27 @@ export const NotReceivedModal = ({ element, motifs, handleClose, onSubmit }: INo
                             <Form.Control as="textarea" size="sm" placeholder="Remarque éventuelle pour la taxation d'office" {...register('remarque')} />
                         </Form.Group>
                         <p className="fw-normal mt-3 mb-3">Historique des non reçus sur les 5 dernières années</p>
-                        <NotReceivedHistory matricule={element.entrepriseInfos.matricule_ciger} motifs={motifs} />
+                        <Table striped bordered hover size="sm">
+                            <thead>
+                                <tr>
+                                    <th>Exercice</th>
+                                    <th>Motif</th>
+                                    <th>Remarque</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {(loader === false && history.length === 0) && <td colSpan={4}>Aucun résultat</td>}
+                                {history.map((history: INotReceivedHistory, index: number) => {
+                                    return <tr key={index}>
+                                        <td>{history.exercice}</td>
+                                        <td>{motifs.find((motif: IMotif_majoration) => motif.id_motif == history.motif_majorationId)?.libelle}</td>
+                                        <td>{history.remarque}</td>
+                                        <td>{history.date}</td>
+                                    </tr>
+                                })}
+                            </tbody>
+                        </Table>
                     </>
                 }
             </Modal.Body>

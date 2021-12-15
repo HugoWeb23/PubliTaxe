@@ -12,18 +12,25 @@ namespace Taxes.Handlers
     public class InsertNotReceivedHandler : IRequestHandler<InsertNotReceivedCommand, NotReceived>
     {
         private Context _context;
-        public InsertNotReceivedHandler(Context context)
+        private IMediator _mediator;
+        public InsertNotReceivedHandler(Context context, IMediator mediator)
         {
             _context = context;
+            _mediator = mediator;
         }
 
-        public Task<NotReceived> Handle(InsertNotReceivedCommand request, CancellationToken cancellationToken)
+        public async Task<NotReceived> Handle(InsertNotReceivedCommand request, CancellationToken cancellationToken)
         {
             if(request.NotReceived.Remarque == null)
             {
                 request.NotReceived.Remarque = "";
             }
 
+            if(request.UpdateEntreprise == true)
+            {
+                await _mediator.Send(new UpdateEntreprisePVCommand(request.NotReceived), cancellationToken);
+            }
+           
             request.NotReceived.Date = DateTime.Now.ToString("dd/MM/yyyy");
             NotReceived notReceived = _context.non_recus
                 .AsNoTracking()
@@ -48,7 +55,8 @@ namespace Taxes.Handlers
                 _context.non_recus.Add(request.NotReceived);
             }
             _context.SaveChanges();
-            return Task.FromResult(request.NotReceived);
+
+            return request.NotReceived;
         }
     }
 }

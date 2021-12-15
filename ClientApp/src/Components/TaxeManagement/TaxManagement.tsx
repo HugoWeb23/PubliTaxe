@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, memo } from 'react'
 import {
     Card,
     Row,
@@ -18,26 +18,46 @@ import { IApercu_entreprise } from '../../Types/IApercu_entreprise'
 import { Pencil } from '../UI/Pencil'
 import { Eye } from '../UI/Eye'
 import { Trash } from '../UI/Trash'
+import { useEntreprises } from '../Hooks/TaxManagementHook'
+import { boolean } from 'yup/lib/locale'
+import { ConfirmModal } from '../UI/ConfirmModal'
+import { toast } from 'react-toastify';
 
 export const TaxManagement = () => {
 
-    const [entreprises, setEntreprises] = useState<IApercu_entreprise[]>([])
     const [loader, setLoader] = useState<boolean>(true)
+    const { entreprises, getAll, deleteOne } = useEntreprises()
+    const [deleteModal, setDeleteModal] = useState<{ show: boolean, entreprise: IApercu_entreprise }>({ show: false, entreprise: {} as IApercu_entreprise })
     const history = useHistory()
 
     useEffect(() => {
         (async () => {
             try {
-                const fetchEntreprises = await apiFetch('/entreprises/names')
-                setEntreprises(fetchEntreprises)
-            } catch(e) {
+                await getAll()
+            } catch (e) {
                 alert('error')
             }
             setTimeout(() => setLoader(false), 300)
         })()
     }, [])
 
+    const handleDelete = async (entreprise: IApercu_entreprise) => {
+        try {
+            await deleteOne(entreprise)
+            setDeleteModal(d => ({ ...d, show: false }))
+            toast.success("L'entreprise a été supprimée")
+        } catch (e: any) {
+            toast.error(e.error)
+        }
+    }
+
     return <>
+        <ConfirmModal
+            show={deleteModal.show}
+            element={deleteModal.entreprise}
+            onClose={() => setDeleteModal(d => ({ ...d, show: false }))}
+            onConfirm={(element: IApercu_entreprise) => handleDelete(element)}
+        />
         <Container fluid={true}>
             <h2 className="mt-2 mb-3">Gestion des entreprises</h2>
             <Row className="me-0 mt-0 mt-3">
@@ -63,7 +83,7 @@ export const TaxManagement = () => {
                         </thead>
                         <tbody>
                             {loader && <div>Chargement...</div>}
-                            {loader == false && entreprises.map((entreprise: IApercu_entreprise, index: number) => <Tax apercu_entreprise={entreprise} index={index} />)}
+                            {(loader == false && entreprises.length > 0) && entreprises.map((entreprise: IApercu_entreprise, index: number) => <Tax apercu_entreprise={entreprise} index={index} handleDelete={(entreprise: IApercu_entreprise) => setDeleteModal({ show: true, entreprise: entreprise })} />)}
                         </tbody>
                     </Table>
                 </Col>
@@ -74,11 +94,12 @@ export const TaxManagement = () => {
 
 interface ITax {
     apercu_entreprise: IApercu_entreprise,
-    index: number
+    index: number,
+    handleDelete: (entreprise: IApercu_entreprise) => void
 }
 
 
-const Tax = ({ apercu_entreprise, index }: ITax) => {
+const Tax = memo(({ apercu_entreprise, index, handleDelete }: ITax) => {
     const history = useHistory();
     return <>
         <tr key={index}>
@@ -106,7 +127,7 @@ const Tax = ({ apercu_entreprise, index }: ITax) => {
                             </Tooltip>
                         }
                     >
-                    <Button size="sm" className="me-1" variant="info" onClick={() => history.push(`/entreprise/view/${apercu_entreprise.matricule_ciger}`)}><Eye /></Button>
+                        <Button size="sm" className="me-1" variant="info" onClick={() => history.push(`/entreprise/view/${apercu_entreprise.matricule_ciger}`)}><Eye /></Button>
                     </OverlayTrigger>
                     <OverlayTrigger
                         placement="top"
@@ -116,10 +137,10 @@ const Tax = ({ apercu_entreprise, index }: ITax) => {
                             </Tooltip>
                         }
                     >
-                    <Button size="sm" variant="danger"><Trash /></Button>
+                        <Button size="sm" variant="danger" onClick={() => handleDelete(apercu_entreprise)}><Trash /></Button>
                     </OverlayTrigger>
                 </div>
             </td>
         </tr>
     </>
-}
+})

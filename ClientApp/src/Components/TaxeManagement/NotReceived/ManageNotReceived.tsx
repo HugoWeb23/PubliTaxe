@@ -55,7 +55,7 @@ export const ManageNotReceived = ({ motifs, currentFiscalYear }: IManageNotRecei
         return <Loader />
     }
     return <>
-        <NotReceivedModal element={selectedEntreprise} motifs={motifs} handleClose={() => setSelectedEntreprise(el => ({ ...el, show: false }))} onSubmit={EncodeNotReceived} />
+        <NotReceivedModal element={selectedEntreprise} motifs={motifs} currentFiscalYear={currentFiscalYear} handleClose={() => setSelectedEntreprise(el => ({ ...el, show: false }))} onSubmit={EncodeNotReceived} />
         <Container fluid={true}>
             <h2 className="mt-2 mb-3">Encodage des déclarations non reçues (exercice {currentFiscalYear.annee_exercice})</h2>
             <Table striped bordered hover size="sm">

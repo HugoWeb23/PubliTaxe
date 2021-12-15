@@ -39,7 +39,11 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs, currentFisca
             alignItems: 'center',
             flexDirection: 'row'
         },
-        HeaderImages: {
+        MouscronImage: {
+            width: '140px',
+            height: '90px'
+        },
+        WapiImage: {
             width: '90px',
             height: '90px'
         },
@@ -144,13 +148,13 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs, currentFisca
     return <Page size="A4" orientation="landscape" style={styles.Page}>
                 <View fixed>
                 <View style={styles.Header}>
-                    <View><Image src={mouscron} style={styles.HeaderImages} /></View>
+                    <View><Image src={mouscron} style={styles.MouscronImage} /></View>
                     <View>
                         <Text style={styles.HeaderText}>Déclaration des taxes communales</Text>
                         <Text style={styles.HeaderSubText}>Exercice {currentFiscalYear.annee_exercice} - Situation {currentFiscalYear.annee_exercice}</Text>
                         <Text style={styles.HeaderSubText}>Taxe panneaux d'affichage et/ ou enseignes</Text>
                     </View>
-                    <View><Image src={wapi} style={styles.HeaderImages} /></View>
+                    <View><Image src={wapi} style={styles.WapiImage} /></View>
                 </View>
                 <View style={styles.SubHeader}>
                     <Text style={styles.NormalText}>Contact : {printData.personne_contact}, tél : {printData.telephone_contact}</Text>
