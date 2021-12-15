@@ -53,7 +53,11 @@ export const LetterPrinter = ({ entreprise, printData, tarifs, currentFiscalYear
             alignItems: 'center',
             flexDirection: 'row'
         },
-        HeaderImages: {
+        MouscronImage: {
+            width: '140px',
+            height: '90px'
+        },
+        WapiImage: {
             width: '90px',
             height: '90px'
         },
@@ -140,11 +144,11 @@ export const LetterPrinter = ({ entreprise, printData, tarifs, currentFiscalYear
     })
     return <Page style={styles.Page}>
         <View style={styles.Header}>
-            <View><Image src={mouscron} style={styles.HeaderImages} /></View>
+            <View><Image src={mouscron} style={styles.MouscronImage} /></View>
             <View>
                 <Text style={[styles.HeaderText, { textDecoration: 'underline' }]}>Administration communale de Mouscron</Text>
             </View>
-            <View><Image src={wapi} style={styles.HeaderImages} /></View>
+            <View><Image src={wapi} style={styles.WapiImage} /></View>
         </View>
         <View style={styles.CityName}>
             <View>
@@ -176,7 +180,7 @@ export const LetterPrinter = ({ entreprise, printData, tarifs, currentFiscalYear
             <Text style={[styles.NormalText, styles.BoldText, { textDecoration: 'underline' }]}>Concerne : Taxe communale sur les panneaux publicitaires et les enseignes</Text>
         </View>
         <View style={{ marginTop: '5mm' }}>
-            <Text style={styles.NormalText}>Vous trouverez en annexe le formulaire de déclaration relatif aux panneaux et/ou enseignes publicitaires pour l'exercice 2022, <Text style={[styles.BoldText, { textDecoration: 'underline' }]}>avec situation au 1er janvier de l'année</Text>.</Text>
+            <Text style={styles.NormalText}>Vous trouverez en annexe le formulaire de déclaration relatif aux panneaux et/ou enseignes publicitaires pour l'exercice {currentFiscalYear.annee_exercice}, <Text style={[styles.BoldText, { textDecoration: 'underline' }]}>avec situation au 1er janvier de l'année</Text>.</Text>
             <Text style={[styles.NormalText, { marginTop: '5mm' }]}>Voudriez-vous vérifier si ces données sont exactes et, éventuellement, les compléter en cas d'oubli ?</Text>
             <Text style={[styles.NormalText, { marginTop: '5mm' }]}>Nous vous prions de bien vouloir nous retourner cette déclaration signée de préférence par mail à {printData.mail_contact} ou au Service des Taxes de la ville de Mouscron, rue de Courtrai, 63 à 7700 Mouscron pour le <Text style={[styles.BoldText, { textDecoration: 'underline' }]}>{printData.date_echeance}</Text> au plus tard et ce, même s'il n'y a aucun changement à la situation.</Text>
             <Text style={[styles.NormalText, { marginTop: '5mm' }]}>Pour tout renseignement complémentaire, veuillez contacter</Text>
@@ -201,7 +205,7 @@ export const LetterPrinter = ({ entreprise, printData, tarifs, currentFiscalYear
                 </View>
             </View>
         </View>
-        {/* Réglement */}
+        {/* Règlement */}
         <View style={styles.RegulationNormalText} break>
             <Text style={[styles.RegulationBoldText, { textDecoration: 'underline' }]}>TAXE COMMUNALE SUR LES ENSEIGNES LES PANNEAUX PUBLICITAIRES ET PUBLICITES ASSIMILEES</Text>
             <Text style={{ marginTop: '5mm' }}>Il est établi une taxe communale sur les enseignes, les panneaux publicitaires et publicités assimilées directement ou indirectement lumineuses ou non lumineuses de quelque nature qu'elles soient.</Text>
