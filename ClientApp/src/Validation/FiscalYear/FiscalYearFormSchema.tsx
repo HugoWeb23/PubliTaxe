@@ -10,7 +10,7 @@ export const FiscalYearFormSchema = yup.object().shape({
         }
         return true
     }
-    ).test("La date d'échéance n'est pas inférieure à la date du jour", "La date d'échéance ne peut pas être inférieur à la date du jour", (value: any) => {
+    ).test("La date d'échéance n'est pas inférieure à la date du jour", "La date d'échéance ne peut pas être inférieure à la date du jour", (value: any) => {
         const today = new Date().getDate()
         const date_echeance = new Date(value).getDate()
         if (date_echeance < today) {

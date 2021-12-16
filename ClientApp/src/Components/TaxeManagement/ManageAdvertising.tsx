@@ -47,7 +47,7 @@ export const ManageAdvertising = memo(({ pubs = [], matricule, tarifs, currentFi
         } else if (isMounted.current == true) {
             if(pubs.length > 0) {
                 const test = [...publicites]
-                setPublicites(test.map((pub: IPublicite, index: number) => ({...pub, photos: pubs[index].photos})))
+                setPublicites(test.map((pub: IPublicite, index: number) => ({...pub, numero_panneau: pubs[index].numero_panneau, photos: pubs[index].photos})))
             } else {
                 setPublicites([])
             }

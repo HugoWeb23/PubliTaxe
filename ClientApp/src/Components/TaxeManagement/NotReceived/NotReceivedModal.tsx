@@ -40,15 +40,17 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
 
     useEffect(() => {
         (async () => {
-            const history = await apiFetch(`/notreceived/gethistory/${element.entrepriseInfos.matricule_ciger}`)
-            setHistory(history)
-            setValue('pourcentage_majoration', await SumIncrease(history, currentFiscalYear))
-            if (element.entrepriseInfos.matricule_ciger !== entreprise.matricule_ciger) {
-                setLoader(true)
-                const fetch = await apiFetch(`/entreprises/id/${element.entrepriseInfos.matricule_ciger}`)
-                setEntreprise(fetch)
-                setValue('matricule_ciger', fetch.matricule_ciger)
-                setTimeout(() => setLoader(false), 300)
+            if (element.entrepriseInfos.matricule_ciger !== undefined) {
+                const history = await apiFetch(`/notreceived/gethistory/${element.entrepriseInfos.matricule_ciger}`)
+                setHistory(history)
+                setValue('pourcentage_majoration', await SumIncrease(history, currentFiscalYear))
+                if (element.entrepriseInfos.matricule_ciger !== entreprise.matricule_ciger) {
+                    setLoader(true)
+                    const fetch = await apiFetch(`/entreprises/id/${element.entrepriseInfos.matricule_ciger}`)
+                    setEntreprise(fetch)
+                    setValue('matricule_ciger', fetch.matricule_ciger)
+                    setTimeout(() => setLoader(false), 300)
+                }
             }
         })()
     }, [element])
