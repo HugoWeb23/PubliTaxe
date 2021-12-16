@@ -4,6 +4,7 @@ export interface IPrintData {
     personne_contact: string,
     telephone_contact: string,
     mail_contact: string,
+    date_proces_verbal: string,
     options: {
         print_letter: boolean,
         print_declaration: boolean,

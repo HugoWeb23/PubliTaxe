@@ -184,8 +184,8 @@ export const TaxPrinter = ({ entreprise }: ITaxPrinter) => {
                     {(index + 1 >= entreprise.publicites.length) == false && <View style={styles.PubSeparator}></View>}
                 </>
             })}
-            <Text style={styles.Paginate} render={({ pageNumber, totalPages, subPageNumber, subPageTotalPages }) => (
-                `${pageNumber} / ${totalPages} (${subPageNumber} sur ${subPageTotalPages})`
+            <Text style={styles.Paginate} render={({ subPageNumber, subPageTotalPages }) => (
+                `Page ${subPageNumber} sur ${subPageTotalPages}`
             )} fixed />
         </Page>
 }

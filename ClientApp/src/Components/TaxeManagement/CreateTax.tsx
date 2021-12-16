@@ -10,6 +10,7 @@ export const CreateTax = ({ motifs, tarifs, currentFiscalYear }: any) => {
             method: 'POST',
             body: JSON.stringify(data)
         })
+        return newentreprise
     }
     return <>
         {(motifs != null && tarifs != null && currentFiscalYear != null) ? <TaxeForm

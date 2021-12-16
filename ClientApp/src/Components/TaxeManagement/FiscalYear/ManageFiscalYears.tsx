@@ -12,7 +12,11 @@ import { FiscalYearModal } from "./FiscalYearModal"
 import { apiFetch } from "../../../Services/apiFetch"
 import { toast } from 'react-toastify';
 
-export const ManageFiscalYears = () => {
+interface IManageFiscalyears {
+    handleEdit: (fiscalYear: any) => void
+}
+
+export const ManageFiscalYears = ({handleEdit}: IManageFiscalyears) => {
     const { fiscalYears, getAll, newFiscalYear, editFiscalYear } = useFiscalYears()
     const [selectedFiscalYear, setSelectedFiscalYear] = useState({fiscalYear: {} as IExercice, show: false, type: 'create'})
     const [loader, setLoader] = useState<boolean>(true)
@@ -31,6 +35,7 @@ export const ManageFiscalYears = () => {
                 toast.success("L'exercice a été créé")
             } else if(type == 'edit') {
                 await editFiscalYear(data)
+                handleEdit(data)
                 toast.success("L'exercice a été modifié")
             }
         } catch(e) {
@@ -50,7 +55,7 @@ export const ManageFiscalYears = () => {
                     <tr>
                         <th>Exercice</th>
                         <th>Date d'échéance</th>
-                        <th>Date limite de règlement</th>
+                        <th>Date de règlement</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -58,8 +63,8 @@ export const ManageFiscalYears = () => {
                     {loader == false && fiscalYears.map((year: IExercice, index: number) => {
                         return <tr>
                             <td>{year.annee_exercice}</td>
-                            <td>{year.date_echeance}</td>
-                            <td>{year.date_reglement_taxe}</td>
+                            <td>{new Date(year.date_echeance).toLocaleDateString('fr-FR')}</td>
+                            <td>{new Date(year.date_reglement_taxe).toLocaleDateString('fr-FR')}</td>
                             <td><Button size="sm" onClick={() => setSelectedFiscalYear(element => ({fiscalYear: year, show: true, type: 'edit'}))}><Pencil/></Button></td>
                         </tr>
                     })}

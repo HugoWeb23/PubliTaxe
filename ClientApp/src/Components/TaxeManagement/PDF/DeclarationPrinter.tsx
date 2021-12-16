@@ -159,7 +159,7 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs, currentFisca
                 <View style={styles.SubHeader}>
                     <Text style={styles.NormalText}>Contact : {printData.personne_contact}, tél : {printData.telephone_contact}</Text>
                     <Text style={styles.NormalText} render={({ subPageNumber, subPageTotalPages }) => (
-                        `Page ${subPageNumber} de ${subPageTotalPages}`
+                        `Page ${subPageNumber} sur ${subPageTotalPages}`
                     )} fixed />
                 </View>
                 </View>
@@ -197,15 +197,55 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs, currentFisca
                         <Text style={styles.Col}>Prix</Text>
                     </View>
                     {entreprise.publicites.map((pub: IPublicite) => {
+                        let type_publicite_text: string = ""
+                        let face_text: string = ""
+                        switch(pub.type_publicite) {
+                            case 1:
+                                type_publicite_text = "ENL"
+                                break;
+                            case 2:
+                                type_publicite_text = "EL"
+                                break;
+                            case 3:
+                                type_publicite_text = "EC"
+                                break;
+                            case 4:
+                                type_publicite_text = "PNL"
+                                break;
+                            case 5:
+                                type_publicite_text = "PL"
+                                break;
+                            case 6:
+                                type_publicite_text = "PD"
+                                break;
+                            default:
+                                type_publicite_text = ""
+                                break;
+                        }
+
+                        switch(pub.face) {
+                            case 1:
+                                face_text = "S"
+                                break;
+                            case 2:
+                                face_text = "D"
+                                break;
+                            case 3:
+                                face_text = "T"
+                                break;
+                            default:
+                                face_text = ""
+                                break;
+                        }
                         return <View style={styles.Row}>
                             <Text style={styles.Col}>{pub.rue.code_postal.cp}</Text>
                             <Text style={styles.Col}>{pub.rue.code_rue}</Text>
                             <Text style={styles.ColXL}>{pub.rue.nom_rue}</Text>
                             <Text style={styles.Col}>{pub.adresse_numero}</Text>
                             <Text style={styles.ColXL}>{pub.situation}</Text>
-                            <Text style={styles.Col}>{pub.type_publicite}</Text>
+                            <Text style={styles.Col}>{type_publicite_text}</Text>
                             <Text style={styles.Col}>{pub.quantite}</Text>
-                            <Text style={styles.Col}>{pub.face}</Text>
+                            <Text style={styles.Col}>{face_text}</Text>
                             <Text style={styles.ColLG}>{pub.mesure}</Text>
                             <Text style={styles.Col}>{pub.surface}</Text>
                             <Text style={styles.Col}>{pub.surface_totale}</Text>

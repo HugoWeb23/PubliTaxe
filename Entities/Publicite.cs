@@ -91,7 +91,6 @@ namespace Taxes.Entities
     {
         public PubliciteValidator()
         {
-            RuleFor(pub => pub.Matricule_ciger).NotEmpty().WithMessage("Veuillez saisir un matricule");
             RuleFor(pub => pub.Id_rue).NotEmpty().WithMessage("Veuillez saisir un ID de rue");
             RuleFor(pub => pub.Exercice_courant).NotEmpty().WithMessage("Veuillez renseigner l'année de l'exercice");
             RuleFor(pub => pub.Type_publicite).NotEmpty().WithMessage("Veuillez saisir le type de la publicité");

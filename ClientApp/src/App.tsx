@@ -37,6 +37,12 @@ export const App = () => {
       setInformations(informations)
     })()
   }, [])
+
+  const editFiscalYear = (data: any) => {
+    if(data.id == exerciceCourant.id) {
+      setExerciceCourant(data)
+    }
+  }
   return <>
     <Router>
       <ToastContainer autoClose={2500} />
@@ -56,7 +62,9 @@ export const App = () => {
       <Route path="/tools/printalldeclarations" exact>
         {(tarifs != null && exerciceCourant != null && informations != null) && <PrintAllTaxes tarifs={tarifs} currentFiscalYear={exerciceCourant} informations={informations} />}
       </Route>
-      <Route path="/tools/managefiscalyears" component={ManageFiscalYears} />
+      <Route path="/tools/managefiscalyears">
+        <ManageFiscalYears handleEdit={editFiscalYear} />
+        </Route>
       <Route path="/tools/manageprices" component={ManagePrices} />
     </Router>
   </>

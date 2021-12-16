@@ -18,12 +18,5 @@ export const FiscalYearFormSchema = yup.object().shape({
         }
         return true
     }),
-    date_reglement_taxe: yup.string().required("Veuillez saisir une date limite de règlement").test("La date d'échéance n'est pas inférieure à la date du jour", "La date d'échéance ne peut pas être inférieur à la date du jour", (value: any) => {
-        const today = new Date().getDate()
-        const date_echeance = new Date(value).getDate()
-        if (date_echeance < today) {
-            return false
-        }
-        return true
-    })
+    date_reglement_taxe: yup.string().required("Veuillez saisir une date limite de règlement")
 });

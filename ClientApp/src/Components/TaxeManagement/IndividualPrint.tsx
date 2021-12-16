@@ -29,7 +29,7 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalY
     }
   })
 
-  const { register, handleSubmit, formState: { errors } } = useForm({ resolver: yupResolver(IndividualPrintSchema), defaultValues: initialValues })
+  const { register, handleSubmit, watch, formState: { errors } } = useForm({ resolver: yupResolver(IndividualPrintSchema), defaultValues: initialValues })
 
   const onClose = () => {
     handleClose()
@@ -46,6 +46,8 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalY
     saveAs(blob, `${tax.nom.split(' ').join('_')}.pdf`);
   }
 
+  const print_minutes = watch('options.print_minutes')
+
   return <>
     <Modal show={show} onHide={onClose} size="xl">
       <Modal.Header closeButton>
@@ -58,7 +60,7 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalY
             <Col>
               <Form.Group controlId="echeance" className="mb-3">
                 <Form.Label column="sm">Date d'échéance</Form.Label>
-                <Form.Control type="date" placeholder="Date d'échéance" isInvalid={errors.date_echeance} size="sm" {...register('date_echeance')} />
+                <Form.Control type="date" placeholder="dd-mm-yyyy" isInvalid={errors.date_echeance} size="sm" {...register('date_echeance')} />
                 {errors.date_echeance && <Form.Control.Feedback type="invalid">{errors.date_echeance.message}</Form.Control.Feedback>}
               </Form.Group>
             </Col>
@@ -91,6 +93,11 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalY
               </Form.Group>
             </Col>
           </Row>
+          {print_minutes && <Form.Group controlId="send_date_minutes" className="mb-3">
+            <Form.Label column="sm">Date d'envoi procès-verbal</Form.Label>
+            <Form.Control type="date" placeholder="dd-mm-yyyy" isInvalid={errors.date_proces_verbal} size="sm" {...register('date_proces_verbal')} />
+            {errors.date_proces_verbal && <Form.Control.Feedback type="invalid">{errors.date_proces_verbal.message}</Form.Control.Feedback>}
+          </Form.Group>}
           <Row>
             <Col>
               <Form.Group controlId="lettre">
@@ -103,7 +110,7 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalY
               </Form.Group>
             </Col>
             <Col>
-              <Form.Group controlId="form">
+              <Form.Group controlId="minutes">
                 <Form.Check type="checkbox" label="Imprimer le procès verbal" isInvalid={errors.options} {...register('options.print_minutes')} />
               </Form.Group>
             </Col>

@@ -24,7 +24,7 @@ import { LeftArrow } from '../UI/LeftArroy'
 import { ManageAdvertising } from './ManageAdvertising'
 import { IPublicite } from "../../Types/IPublicite";
 import { Printer } from "../UI/Printer";
-import {IndividualPrint} from './IndividualPrint';
+import { IndividualPrint } from './IndividualPrint';
 import { IExercice } from "../../Types/IExercice";
 import { IPrintData } from "../../Types/IPrintData";
 
@@ -52,23 +52,21 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
     const OnSubmit = async (form: any) => {
         try {
             setTax(form)
-            const form2 = {...form}
+            const form2 = { ...form }
             const newArray = form2.publicites.map(({ rue, ...rest }: any) => rest)
             form2.publicites = newArray
             if (codePostal != null) {
                 form2.code_postalId = codePostal
             }
             const test: any = await onFormSubmit(form2)
-            const oldPubs = { ...publicites };
-            test.publicites.forEach((pub: IPublicite, index: number) => {
-                oldPubs[index].photos = pub.photos
-            });
-            setPublicites(oldPubs)
-            if(type == 'create') {
+            if (type == 'create') {
                 reset()
+                setPublicites([])
                 toast.success("Entreprise créée avec succès")
+            } else {
+                setPublicites(test.publicites)
+                toast.success('Modifications sauvegardées')
             }
-            toast.success('Modifications sauvegardées')
         } catch (e: any) {
             toast.error('Une erreur est survenue')
             console.log(e)
@@ -129,6 +127,8 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                 setValue('adresse_code_postal_taxation', checkPubs.rue.code_postal.cp)
                 setValue('adresse_localite_taxation', checkPubs.rue.code_postal.localite)
                 setValue('adresse_numero_taxation', checkPubs.adresse_numero)
+                setValue('adresse_index_taxation', '0')
+                setValue('adresse_boite_taxation', '0')
             } else {
                 setValue('code_rue_taxation', '888')
                 setValue('adresse_taxation', "Dans l'arondissement de Mouscron")
@@ -151,13 +151,13 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
 
     return <>
         <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet} />
-        <IndividualPrint 
-        show={individualPrint} 
-        handleClose={() => setIndiviualPrint(false)} 
-        tax={tax} tarifs={tarifs} 
-        currentFiscalYear={currentFiscalYear} 
-        informations={informations}
-        motifs={motifs}
+        <IndividualPrint
+            show={individualPrint}
+            handleClose={() => setIndiviualPrint(false)}
+            tax={tax} tarifs={tarifs}
+            currentFiscalYear={currentFiscalYear}
+            informations={informations}
+            motifs={motifs}
         />
         <Container fluid="xl">
             <Form onSubmit={handleSubmit(OnSubmit)} className="mb-2">
@@ -166,7 +166,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                         <Link to="/" className="link"><LeftArrow /> Retour à la liste des entreprises</Link>
                     </div>
                     <div>
-                    {type == 'edit' && <Button variant="outline-primary" className="me-4" size="sm" onClick={() => setIndiviualPrint(true)}><Printer /> Impression individuelle</Button>}
+                        {type == 'edit' && <Button variant="outline-primary" className="me-4" size="sm" onClick={() => setIndiviualPrint(true)}><Printer /> Impression individuelle</Button>}
                         <Button variant="success" type="submit" className="mt-3 mb-3" disabled={isSubmitting}>{type == "create" ? "Créer l'entreprise" : "Modifier l'entreprise"}</Button>
                     </div>
                 </div>

@@ -64,7 +64,7 @@ export const FiscalYearModal = ({ fiscalYear, handleClose, onSubmit }: FiscalYea
             {errors.date_echeance && <Form.Control.Feedback type="invalid">{errors.date_echeance.message}</Form.Control.Feedback>}
           </Form.Group>
           <Form.Group controlId="reglement_taxe">
-            <Form.Label column="sm">Date limite règlement taxe</Form.Label>
+            <Form.Label column="sm">Date règlement taxe</Form.Label>
             <Form.Control type="date" size="sm" isInvalid={errors.date_reglement_taxe} {...register('date_reglement_taxe')} />
             {errors.date_reglement_taxe && <Form.Control.Feedback type="invalid">{errors.date_reglement_taxe.message}</Form.Control.Feedback>}
           </Form.Group>

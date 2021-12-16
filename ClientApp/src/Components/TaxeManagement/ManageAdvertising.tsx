@@ -18,7 +18,7 @@ import { Trash } from '../UI/Trash'
 import { AdvertisingModal } from './AdvertisingModal'
 
 interface IManageAdvertising {
-    pubs: IPublicite[],
+    pubs: any[],
     matricule: number,
     tarifs: IPrice[],
     currentFiscalYear: IExercice,
@@ -40,6 +40,20 @@ export const ManageAdvertising = memo(({ pubs = [], matricule, tarifs, currentFi
             onSubmit(publicites)
         }
     }, [publicites])
+
+    useEffect(() => {
+        if (isMounted.current == false) {
+            isMounted.current = true
+        } else if (isMounted.current == true) {
+            if(pubs.length > 0) {
+                const test = [...publicites]
+                setPublicites(test.map((pub: IPublicite, index: number) => ({...pub, photos: pubs[index].photos})))
+            } else {
+                setPublicites([])
+            }
+        }
+
+    }, [pubs])
 
     const handleSelectPub = (pub: IPublicite) => {
         setPublicite(pub)
