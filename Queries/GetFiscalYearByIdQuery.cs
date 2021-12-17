@@ -4,5 +4,5 @@ using Taxes.Entities;
 
 namespace Taxes.Queries
 {
-    public record GetInformationsQuery() : IRequest<Information>;
+    public record GetFiscalYearByIdQuery(long FiscalYearId) : IRequest<Exercice>;
 }

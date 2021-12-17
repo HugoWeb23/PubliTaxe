@@ -22,6 +22,7 @@ import { useEntreprises } from '../Hooks/TaxManagementHook'
 import { boolean } from 'yup/lib/locale'
 import { ConfirmModal } from '../UI/ConfirmModal'
 import { toast } from 'react-toastify';
+import { SheetIcon } from '../UI/SheetIcon'
 
 export const TaxManagement = () => {
 
@@ -59,7 +60,11 @@ export const TaxManagement = () => {
             onConfirm={(element: IApercu_entreprise) => handleDelete(element)}
         />
         <Container fluid={true}>
+            <div className="d-flex justify-content-between align-items-center">
             <h2 className="mt-2 mb-3">Gestion des entreprises</h2>
+            <Button variant="success" size="sm"><SheetIcon/> Encodage des reçus</Button>
+            </div>
+            
             <Row className="me-0 mt-0 mt-3">
                 <Col md="3" xs="12">
                     <Card>
@@ -70,7 +75,7 @@ export const TaxManagement = () => {
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col md="9" xs="1">
+                <Col md="9" xs="1" style={{paddingRight: 0}}>
                     <Table striped bordered hover size="sm">
                         <thead>
                             <tr>

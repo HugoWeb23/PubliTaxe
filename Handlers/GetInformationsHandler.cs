@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Taxes.Handlers
 {
-    public class GetInformationsHandler : IRequestHandler<GetInformationsQuery, object>
+    public class GetInformationsHandler : IRequestHandler<GetInformationsQuery, Information>
     {
         public Context _context;
 
@@ -17,20 +17,20 @@ namespace Taxes.Handlers
         {
             _context = context;
         }
-        public Task<object> Handle(GetInformationsQuery request, CancellationToken cancellationToken)
+        public Task<Information> Handle(GetInformationsQuery request, CancellationToken cancellationToken)
         {
-            var Informations = _context.informations
-                .Join(_context.exercices, info => info.Exercice_courant, ex => ex.Id, (info, ex) => new 
+            Information Informations = _context.informations
+                .Join(_context.exercices, info => info.Exercice_courant, ex => ex.Id, (info, ex) => new Information 
                 { 
                     Id = info.Id, 
-                    Personne_contact = info.Personne_de_contact, 
+                    Personne_contact = info.Personne_contact, 
                     Telephone_contact = info.Telephone_contact, 
                     Mail_contact = info.Mail_contact,
                     Exercice_courant = info.Exercice_courant,
                     Exercice = ex.Annee_exercice
                 })
                 .FirstOrDefault();
-            return Task.FromResult((object)Informations);
+            return Task.FromResult(Informations);
         }
     }
 }

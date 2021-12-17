@@ -34,7 +34,7 @@ namespace Taxes.Controllers
         {
             try
             {
-                var informations = await _mediator.Send(new GetInformationsQuery());
+                Information informations = await _mediator.Send(new GetInformationsQuery());
                 return Ok(informations);
             } catch(Exception ex)
             {

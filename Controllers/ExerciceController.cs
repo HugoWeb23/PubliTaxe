@@ -61,5 +61,18 @@ namespace Taxes.Controllers
                 return BadRequest(new { error = ex.Message });
             }
         }
+
+        [HttpGet("changecurrentfiscalyear/{FiscalYearId}")]
+        public async Task<IActionResult> UpdateCurrentFiscalYear(long FiscalYearId)
+        {
+            try
+            {
+                Exercice FiscalYear = await _mediator.Send(new ChangeFiscalYearCommand(FiscalYearId));
+                return Ok(FiscalYear);
+            } catch(Exception ex)
+            {
+                return BadRequest(new { error = "Une erreur est survenue", exception = ex });
+            }
+        }
     }
 }
