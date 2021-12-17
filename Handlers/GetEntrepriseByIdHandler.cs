@@ -34,6 +34,11 @@ namespace Taxes.Handlers
                 .ThenInclude(pub => pub.Photos)
                 .FirstOrDefault(ent => ent.Matricule_ciger == request.matricule);
 
+            if(entreprise == null)
+            {
+                throw new Exception("L'entreprise n'existe pas");
+            }
+
             foreach(var ent in entreprise.Publicites)
             {
                 ent.Taxe_totale = ent.Exoneration ? new Decimal(0.00) : await _mediator.Send(new SumTaxQuery(ent.Exercice_courant, ent.Type_publicite, ent.Quantite, ent.Face, ent.Surface));

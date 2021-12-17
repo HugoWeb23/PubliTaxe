@@ -12,6 +12,7 @@ using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Taxes.Services;
+using Taxes.ViewModels;
 
 namespace Taxes.Controllers
 {
@@ -36,6 +37,27 @@ namespace Taxes.Controllers
             List<Entreprise> entreprises = await _mediator.Send(new GetEntreprisesQuery());
             var filtered = entreprises.Select(x => new { x.Matricule_ciger, x.Nom, nombre_panneaux = x.Publicites.Count, recu = x.Recu }).ToList();
             return Ok(filtered);
+        }
+
+        [HttpGet("searchbyid/{Matricule}")]
+        public async Task<IActionResult> SearchById(long Matricule)
+        {
+            try
+            {
+                Entreprise entreprise = await _mediator.Send(new GetEntrepriseById(Matricule));
+                var filtered = new
+                {
+                    Matricule_ciger = entreprise.Matricule_ciger,
+                    Nom = entreprise.Nom,
+                    Nombre_panneaux = entreprise.Publicites.Count,
+                    Recu = entreprise.Recu
+                };
+                return Ok(filtered);
+            } catch(Exception ex)
+            {
+                return BadRequest(new {error = ex.Message});
+            }
+            
         }
 
         [HttpGet("id/{matricule}")]
@@ -158,6 +180,20 @@ namespace Taxes.Controllers
             {
                 return BadRequest(new { error = ex.Message, exception = ex });
             }
+        }
+
+        [HttpPost("encodereceived")]
+        public async Task<IActionResult> EncodeReceived(EncodeReceivedViewModel Matricules)
+        {
+            try
+            {
+                List<Entreprise> entreprises = await _mediator.Send(new EncodeReceivedCommand(Matricules.Matricules));
+                return Ok(entreprises.Select(ent => new { Matricule_ciger = ent.Matricule_ciger, Recu = ent.Recu}));
+            } catch(Exception ex)
+            {
+                return BadRequest(new { erreur = "Une erreur est survenue" });
+            }
+            
         }
 
     }

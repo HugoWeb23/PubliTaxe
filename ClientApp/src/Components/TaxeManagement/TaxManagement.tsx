@@ -23,12 +23,14 @@ import { boolean } from 'yup/lib/locale'
 import { ConfirmModal } from '../UI/ConfirmModal'
 import { toast } from 'react-toastify';
 import { SheetIcon } from '../UI/SheetIcon'
+import { ReceivedModal } from './ReceivedModal'
 
 export const TaxManagement = () => {
 
     const [loader, setLoader] = useState<boolean>(true)
-    const { entreprises, getAll, deleteOne } = useEntreprises()
+    const { entreprises, getAll, deleteOne, setReceived } = useEntreprises()
     const [deleteModal, setDeleteModal] = useState<{ show: boolean, entreprise: IApercu_entreprise }>({ show: false, entreprise: {} as IApercu_entreprise })
+    const [receivedModal, setReceivedModal] = useState<boolean>(false)
     const history = useHistory()
 
     useEffect(() => {
@@ -59,12 +61,17 @@ export const TaxManagement = () => {
             onClose={() => setDeleteModal(d => ({ ...d, show: false }))}
             onConfirm={(element: IApercu_entreprise) => handleDelete(element)}
         />
+        <ReceivedModal
+            show={receivedModal}
+            handleClose={() => setReceivedModal(false)}
+            onSubmit={setReceived}
+        />
         <Container fluid={true}>
             <div className="d-flex justify-content-between align-items-center">
-            <h2 className="mt-2 mb-3">Gestion des entreprises</h2>
-            <Button variant="success" size="sm"><SheetIcon/> Encodage des reçus</Button>
+                <h2 className="mt-2 mb-3">Gestion des entreprises</h2>
+                <Button variant="success" size="sm" onClick={() => setReceivedModal(true)}><SheetIcon /> Encodage des reçus</Button>
             </div>
-            
+
             <Row className="me-0 mt-0 mt-3">
                 <Col md="3" xs="12">
                     <Card>
@@ -75,7 +82,7 @@ export const TaxManagement = () => {
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col md="9" xs="1" style={{paddingRight: 0}}>
+                <Col md="9" xs="1" style={{ paddingRight: 0 }}>
                     <Table striped bordered hover size="sm">
                         <thead>
                             <tr>

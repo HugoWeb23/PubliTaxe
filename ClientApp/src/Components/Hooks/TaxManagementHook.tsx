@@ -1,6 +1,7 @@
 import { useReducer } from "react"
 import { apiFetch } from "../../Services/apiFetch";
 import { IApercu_entreprise } from "../../Types/IApercu_entreprise";
+import { Entreprise } from "../../Types/IEntreprise";
 
 interface State {
     entreprises: IApercu_entreprise[]
@@ -37,6 +38,9 @@ export const useEntreprises = () => {
                 method: 'DELETE'
             })
             dispatch({ type: 'DELETE', payLoad: entreprise })
+        },
+        setReceived: (selected: IApercu_entreprise[]) => {
+
         }
     }
 
