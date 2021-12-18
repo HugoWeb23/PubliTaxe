@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Taxes.Services;
 
 namespace Taxes.Handlers
 {
@@ -19,9 +20,23 @@ namespace Taxes.Handlers
         }
         public Task<List<Entreprise>> Handle(GetEntreprisesQuery request, CancellationToken cancellationToken)
         {
+
+            var predicate = PredicateBuilder.True<Entreprise>();
+
+            if (!string.IsNullOrEmpty(request.Filters.Nom)) {
+                predicate = predicate.And(ent => ent.Nom.Contains(request.Filters.Nom));
+            }
+            
+            if(request.Filters.PubExoneration)
+            {
+                predicate = predicate.And(ent => ent.Publicites.Any(p => p.Exoneration == true));
+            }
+
             List<Entreprise> entreprises = _context.entreprises
                 .Include(ent => ent.Publicites)
+                .Where(predicate)
                 .ToList();
+
             return Task.FromResult(entreprises);
         }
     }

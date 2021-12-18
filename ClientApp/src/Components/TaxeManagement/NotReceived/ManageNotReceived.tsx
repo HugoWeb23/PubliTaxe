@@ -68,6 +68,7 @@ export const ManageNotReceived = ({ motifs, currentFiscalYear }: IManageNotRecei
                     </tr>
                 </thead>
                 <tbody>
+                    {notReceivedList.length === 0 && <tr><td colSpan={4}>Aucun résultat</td></tr>}
                     {notReceivedList.map((notreceived: any, index: number) => <NotReceived element={notreceived} index={index} handleSelect={(element: IApercu_entreprise) => setSelectedEntreprise({ entrepriseInfos: element, show: true })} />)}
                 </tbody>
             </Table>

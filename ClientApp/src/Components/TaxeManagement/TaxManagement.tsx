@@ -13,7 +13,7 @@ import {
 } from 'react-bootstrap'
 import { apiFetch } from '../../Services/apiFetch'
 import { Loader } from '../UI/Loader'
-import { Link, useHistory } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { IApercu_entreprise } from '../../Types/IApercu_entreprise'
 import { Pencil } from '../UI/Pencil'
 import { Eye } from '../UI/Eye'
@@ -24,6 +24,9 @@ import { ConfirmModal } from '../UI/ConfirmModal'
 import { toast } from 'react-toastify';
 import { SheetIcon } from '../UI/SheetIcon'
 import { ReceivedModal } from './ReceivedModal'
+import { SearchIcon } from '../UI/SearchIcon'
+import { ExclamationIcon } from '../UI/ExclamationIcon'
+import { SearchModal } from './SearchModal'
 
 export const TaxManagement = () => {
 
@@ -31,18 +34,19 @@ export const TaxManagement = () => {
     const { entreprises, getAll, deleteOne, setReceived } = useEntreprises()
     const [deleteModal, setDeleteModal] = useState<{ show: boolean, entreprise: IApercu_entreprise }>({ show: false, entreprise: {} as IApercu_entreprise })
     const [receivedModal, setReceivedModal] = useState<boolean>(false)
-    const history = useHistory()
+    const [searchModal, setSearchModal] = useState<boolean>(false)
+    const [filterOptions, setFilterOptions] = useState<any>({matricule: "", nom: "", pubExoneration: false})
 
     useEffect(() => {
         (async () => {
             try {
-                await getAll()
+                await getAll(filterOptions)
             } catch (e) {
                 alert('error')
             }
             setTimeout(() => setLoader(false), 300)
         })()
-    }, [])
+    }, [filterOptions])
 
     const handleDelete = async (entreprise: IApercu_entreprise) => {
         try {
@@ -66,10 +70,19 @@ export const TaxManagement = () => {
             handleClose={() => setReceivedModal(false)}
             onSubmit={setReceived}
         />
+        <SearchModal
+            show={searchModal}
+            handleClose={() => setSearchModal(false)}
+            handleSearch={(options) => setFilterOptions(options)}
+        />
         <Container fluid={true}>
             <div className="d-flex justify-content-between align-items-center">
                 <h2 className="mt-2 mb-3">Gestion des entreprises</h2>
-                <Button variant="success" size="sm" onClick={() => setReceivedModal(true)}><SheetIcon /> Encodage des reçus</Button>
+                <div>
+                    <Button variant="success" className="me-2" size="sm" onClick={() => setReceivedModal(true)}><SheetIcon /> Encodage des reçus</Button>
+                    <Link to="/notreceived" className="me-2 btn btn-danger btn-sm"><ExclamationIcon /> Encodage des non reçus</Link>
+                    <Button variant="secondary" size="sm" onClick={() => setSearchModal(true)}><SearchIcon /> Recherche</Button>
+                </div>
             </div>
 
             <Row className="me-0 mt-0 mt-3">
@@ -77,7 +90,7 @@ export const TaxManagement = () => {
                     <Card>
                         <Card.Body>
                             <div className="d-grid gap-2">
-                                <Button variant="primary" size="sm" onClick={() => history.push('/entreprise/create')}>Nouvel enregistrement</Button>
+                                <Link className="btn btn-primary btn-sm" to={'/entreprise/create'}>Nouvel enregistrement</Link>
                             </div>
                         </Card.Body>
                     </Card>
@@ -112,7 +125,6 @@ interface ITax {
 
 
 const Tax = memo(({ apercu_entreprise, index, handleDelete }: ITax) => {
-    const history = useHistory();
     return <>
         <tr key={index}>
             <td>{apercu_entreprise.matricule_ciger}</td>
@@ -129,7 +141,7 @@ const Tax = memo(({ apercu_entreprise, index, handleDelete }: ITax) => {
                             </Tooltip>
                         }
                     >
-                        <Button size="sm" variant="secondary" className="me-1" onClick={() => history.push(`/entreprise/edit/${apercu_entreprise.matricule_ciger}`)}><Pencil /></Button>
+                        <Link className="me-1 btn btn-secondary btn-sm" to={`/entreprise/edit/${apercu_entreprise.matricule_ciger}`}><Pencil /></Link>
                     </OverlayTrigger>
                     <OverlayTrigger
                         placement="top"
@@ -139,7 +151,7 @@ const Tax = memo(({ apercu_entreprise, index, handleDelete }: ITax) => {
                             </Tooltip>
                         }
                     >
-                        <Button size="sm" className="me-1" variant="info" onClick={() => history.push(`/entreprise/view/${apercu_entreprise.matricule_ciger}`)}><Eye /></Button>
+                        <Link className="me-1 btn btn-info btn-sm" to={`/entreprise/view/${apercu_entreprise.matricule_ciger}`}><Eye /></Link>
                     </OverlayTrigger>
                     <OverlayTrigger
                         placement="top"

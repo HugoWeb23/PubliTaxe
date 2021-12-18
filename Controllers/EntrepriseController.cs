@@ -31,10 +31,10 @@ namespace Taxes.Controllers
             _environment = environment;
         }
 
-        [HttpGet("names")]
-        public async Task<IActionResult> GetNames()
+        [HttpPost("names")]
+        public async Task<IActionResult> GetNames(SearchFiltersViewModel Filters)
         {
-            List<Entreprise> entreprises = await _mediator.Send(new GetEntreprisesQuery());
+            List<Entreprise> entreprises = await _mediator.Send(new GetEntreprisesQuery(Filters));
             var filtered = entreprises.Select(x => new { x.Matricule_ciger, x.Nom, nombre_panneaux = x.Publicites.Count, recu = x.Recu }).ToList();
             return Ok(filtered);
         }
@@ -58,6 +58,27 @@ namespace Taxes.Controllers
                 return BadRequest(new {error = ex.Message});
             }
             
+        }
+
+        [HttpPost("searchbyname")]
+        public async Task<IActionResult> GetEntreprisesByName(GetEntreprisesByNameViewModel Entreprise)
+        {
+            try
+            {
+                List<Entreprise> entreprises = await _mediator.Send(new GetEntreprisesByNameQuery(Entreprise.Name));
+                return Ok(entreprises.Select(ent => new
+                {
+                    Matricule_ciger = ent.Matricule_ciger,
+                    Nom = ent.Nom,
+                    Nombre_panneaux = ent.Publicites.Count,
+                    Recu = ent.Recu
+                }));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { erreur = "Une erreur est survenue" });
+            }
+
         }
 
         [HttpGet("id/{matricule}")]

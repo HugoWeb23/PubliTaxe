@@ -1,4 +1,4 @@
-import { useState, memo } from 'react'
+import { useState, memo, useRef } from 'react'
 import {
     Modal,
     Table,
@@ -11,41 +11,73 @@ import { IApercu_entreprise } from '../../Types/IApercu_entreprise'
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead'
 import { apiFetch } from '../../Services/apiFetch'
 import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
 interface IReceivedModal {
     show: boolean,
     handleClose: () => void,
-    onSubmit: (selected: IApercu_entreprise[]) => void
+    onSubmit: (selected: IApercu_entreprise[]) => Promise<void>
 }
 
 export const ReceivedModal = ({ show, handleClose, onSubmit }: IReceivedModal) => {
 
     const [selectedEntreprises, setSelectedEntreprises] = useState<IApercu_entreprise[]>([])
     const [searchEntrepriseById, setSearchEntrepriseById] = useState<IApercu_entreprise>({} as IApercu_entreprise)
+    const [entpreview, setEntpreview] = useState<IApercu_entreprise[]>([])
     const { register, setValue, setError, clearErrors, formState: { errors } } = useForm()
+    const SearchNameRef: any = useRef()
 
     const UnSelectEntreprise = (ent: IApercu_entreprise) => {
         setSelectedEntreprises(entreprises => entreprises.filter((entreprise: IApercu_entreprise) => entreprise.matricule_ciger != ent.matricule_ciger))
+    }
+
+    const CheckEntIsNotSelected = (matricule: number): boolean => {
+        return selectedEntreprises.filter((ent: IApercu_entreprise) => ent.matricule_ciger == matricule).length === 0
     }
 
     const SearchById = async (e: any) => {
         if (e.key === "Enter" && e.target.value.length >= 2) {
             const matriculeToInt = parseInt(e.target.value)
             clearErrors('matricule')
-            if (isNaN(matriculeToInt) === false && selectedEntreprises.filter((ent: IApercu_entreprise) => ent.matricule_ciger == e.target.value).length === 0) {
+            if (isNaN(matriculeToInt) === false && CheckEntIsNotSelected(e.target.value)) {
                 try {
                     const fetch = await apiFetch(`/entreprises/searchbyid/${matriculeToInt}`)
                     setSelectedEntreprises(ent => ([...ent, fetch]))
                     setValue('matricule', '')
-                } catch(e: any) {
-                    setError('matricule', {type: "manual", message: e.error})
+                } catch (e: any) {
+                    setError('matricule', { type: "manual", message: "Aucun résultat" })
                 }
             }
         }
     }
 
-    const handleSubmit = () => {
-        onSubmit(selectedEntreprises)
+    const SearchByName = async (name: string) => {
+        if (name.length > 2) {
+            const fetch = await apiFetch(`/entreprises/searchbyname`, {
+                method: 'POST',
+                body: JSON.stringify({ name: name })
+            })
+            setEntpreview(fetch)
+        }
+    }
+
+    const SelectEntName = (value: any) => {
+        value = { ...value[0] }
+        if (CheckEntIsNotSelected(value.matricule_ciger)) {
+            setSelectedEntreprises(ent => ([...ent, value]))
+        }
+        SearchNameRef.current.clear()
+    }
+
+    const handleSubmit = async () => {
+        try {
+            await onSubmit(selectedEntreprises)
+            handleClose()
+            setSelectedEntreprises([])
+            toast.success("Opération effectuée")
+        } catch (e) {
+            toast.error('Une erreur est survenue')
+        }
     }
     return <>
         <Modal show={show} onHide={handleClose} size="lg">
@@ -68,7 +100,36 @@ export const ReceivedModal = ({ show, handleClose, onSubmit }: IReceivedModal) =
                         <Col>
                             <Form.Group controlId="nom">
                                 <Form.Label column="sm">Recherche par nom</Form.Label>
-                                <Form.Control type="text" size="sm" />
+                                <AsyncTypeahead
+                                    filterBy={() => true}
+                                    id="localite"
+                                    labelKey={option => option.nom}
+                                    ref={SearchNameRef}
+                                    isLoading={false}
+                                    placeholder="Nom de l'entreprise"
+                                    isInvalid={errors.code_postal && errors.code_postal.cp}
+                                    onSearch={(query) => SearchByName(query)}
+                                    options={entpreview}
+                                    onChange={(value) => SelectEntName(value)}
+                                    emptyLabel='Aucun résultat'
+                                    size="sm"
+                                    className="is-invalid"
+                                    renderMenu={(results, menuProps) => (
+                                        <Menu {...menuProps}>
+                                            {results.map((result, index) => (
+                                                <MenuItem
+                                                    key={index}
+                                                    option={result}
+                                                    position={index}>
+                                                    <div>{result.nom}</div>
+                                                    <div>
+                                                        <small>Recu: {result.recu ? "oui" : "non"}</small>
+                                                    </div>
+                                                </MenuItem>
+                                            ))}
+                                        </Menu>
+                                    )}
+                                />
                             </Form.Group>
                         </Col>
                     </Row>

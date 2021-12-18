@@ -35,6 +35,7 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
     const { register, handleSubmit, setValue, formState: { errors } } = useForm({ resolver: yupResolver(EncodeNotReceivedSchema) })
     const [entreprise, setEntreprise] = useState<Entreprise>({} as Entreprise)
     const [history, setHistory] = useState<INotReceivedHistory[]>([])
+    const [sumIncrease, setSumIncrease] = useState<number>()
     const [loader, setLoader] = useState<boolean>(false)
     const isMounted = useRef(false)
 
@@ -43,7 +44,9 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
             if (element.entrepriseInfos.matricule_ciger !== undefined) {
                 const history = await apiFetch(`/notreceived/gethistory/${element.entrepriseInfos.matricule_ciger}`)
                 setHistory(history)
-                setValue('pourcentage_majoration', await SumIncrease(history, currentFiscalYear))
+                const sum = await SumIncrease(history, currentFiscalYear)
+                setSumIncrease(sum)
+                setValue('pourcentage_majoration', sum)
                 if (element.entrepriseInfos.matricule_ciger !== entreprise.matricule_ciger) {
                     setLoader(true)
                     const fetch = await apiFetch(`/entreprises/id/${element.entrepriseInfos.matricule_ciger}`)
@@ -92,10 +95,10 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
                                 <Form.Group controlId="pourcentage_majoration">
                                     <Form.Label column="sm">Pourcentage majoration</Form.Label>
                                     <Form.Select size="sm" isInvalid={errors.pourcentage_majoration} {...register('pourcentage_majoration')}>
-                                        <option value="10">10 %</option>
-                                        <option value="50">50 %</option>
-                                        <option value="100">100 %</option>
-                                        <option value="200">200 %</option>
+                                        <option value="10" style={{background : sumIncrease === 10 ? "#198754" : ""}}>10 %</option>
+                                        <option value="50" style={{background : sumIncrease === 50 ? "#198754" : ""}}>50 %</option>
+                                        <option value="100" style={{background : sumIncrease === 100 ? "#198754" : ""}}>100 %</option>
+                                        <option value="200" style={{background : sumIncrease === 200 ? "#198754" : ""}}>200 %</option>
                                     </Form.Select>
                                     <Form.Text className="text-muted">
                                         Ce pourcentage de majoration est proposé automatiquement (surligné en vert dans la liste déroulante) en fonction
@@ -147,7 +150,7 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
                 <Button variant="secondary" onClick={handleClose}>
                     Annuler
                 </Button>
-                <Button variant="primary" onClick={handleSubmit(OnFormSubmit)} disabled={loader}>
+                <Button variant="danger" onClick={handleSubmit(OnFormSubmit)} disabled={loader}>
                     Valider
                 </Button>
             </Modal.Footer>
