@@ -5,5 +5,6 @@
         public long? Matricule { get; set; }
         public string Nom { get; set; }
         public bool PubExoneration { get; set; }
+        public int? Rue { get; set; }
     }
 }

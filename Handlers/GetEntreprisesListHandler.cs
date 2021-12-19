@@ -32,6 +32,11 @@ namespace Taxes.Handlers
                 predicate = predicate.And(ent => ent.Publicites.Any(p => p.Exoneration == true));
             }
 
+            if (request.Filters.Rue != null)
+            {
+                predicate = predicate.And(ent => ent.Publicites.Any(p => p.Id_rue == request.Filters.Rue));
+            }
+
             List<Entreprise> entreprises = _context.entreprises
                 .Include(ent => ent.Publicites)
                 .Where(predicate)
