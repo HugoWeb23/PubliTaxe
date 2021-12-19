@@ -20,6 +20,8 @@ import { ManageNotReceived } from './Components/TaxeManagement/NotReceived/Manag
 import { Loader } from './Components/UI/Loader';
 import { ChangeFiscalYear } from './Components/TaxeManagement/FiscalYear/ChangeFiscalYear';
 import { IExercice } from './Types/IExercice';
+import { Login } from './Components/TaxeManagement/Login';
+import { Register } from './Components/TaxeManagement/Register';
 
 export const App = () => {
   const [motifsMajoration, setMotifsMajoration] = useState<any>(null)
@@ -71,6 +73,8 @@ export const App = () => {
       <Route path="/tools/changefiscalyear">
         <ChangeFiscalYear currentFiscalYear={exerciceCourant} handleChange={(data: IExercice) => setExerciceCourant(data)} />
         </Route>
+      <Route path="/login" component={Login}/>
+      <Route path="/register" component={Register}/>
     </Router>
   </>
 }

@@ -35,7 +35,7 @@ export const TaxManagement = () => {
     const [deleteModal, setDeleteModal] = useState<{ show: boolean, entreprise: IApercu_entreprise }>({ show: false, entreprise: {} as IApercu_entreprise })
     const [receivedModal, setReceivedModal] = useState<boolean>(false)
     const [searchModal, setSearchModal] = useState<boolean>(false)
-    const [filterOptions, setFilterOptions] = useState<any>({matricule: "", nom: "", pubExoneration: false})
+    const [filterOptions, setFilterOptions] = useState<any>({matricules: [], noms: [], pubExoneration: false})
 
     useEffect(() => {
         (async () => {

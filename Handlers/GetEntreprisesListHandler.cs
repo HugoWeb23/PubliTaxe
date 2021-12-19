@@ -23,11 +23,17 @@ namespace Taxes.Handlers
 
             var predicate = PredicateBuilder.True<Entreprise>();
 
-            if (!string.IsNullOrEmpty(request.Filters.Nom)) {
+            if (request.Filters.Matricule != null)
+            {
+                predicate = predicate.And(ent => ent.Matricule_ciger == request.Filters.Matricule);
+            }
+
+            if (!string.IsNullOrEmpty(request.Filters.Nom))
+            {
                 predicate = predicate.And(ent => ent.Nom.Contains(request.Filters.Nom));
             }
-            
-            if(request.Filters.PubExoneration)
+
+            if (request.Filters.PubExoneration)
             {
                 predicate = predicate.And(ent => ent.Publicites.Any(p => p.Exoneration == true));
             }

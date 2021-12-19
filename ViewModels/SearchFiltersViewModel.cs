@@ -1,4 +1,6 @@
-﻿namespace Taxes.ViewModels
+﻿using System.Collections.Generic;
+
+namespace Taxes.ViewModels
 {
     public class SearchFiltersViewModel
     {

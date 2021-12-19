@@ -25,4 +25,22 @@
     font-size: 12px;
     line-height: 1.428571429;
     border-radius: 15px;
-  }
+}
+
+.login-container {
+    height: calc(100vh - 250px);
+}
+
+.login-image {
+    margin-bottom: 20px;
+}
+
+.login-title {
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: 5px;
+    color: #c91d2d;
+    font-size: 20px;
+    font-weight: bold;
+}
+

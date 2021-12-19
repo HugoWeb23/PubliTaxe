@@ -45,9 +45,9 @@ export const ManageAdvertising = memo(({ pubs = [], matricule, tarifs, currentFi
         if (isMounted.current == false) {
             isMounted.current = true
         } else if (isMounted.current == true) {
-            if(pubs.length > 0) {
+            if (pubs.length > 0) {
                 const test = [...publicites]
-                setPublicites(test.map((pub: IPublicite, index: number) => ({...pub, numero_panneau: pubs[index].numero_panneau, photos: pubs[index].photos})))
+                setPublicites(test.map((pub: IPublicite, index: number) => ({ ...pub, numero_panneau: pubs[index].numero_panneau, photos: pubs[index].photos })))
             } else {
                 setPublicites([])
             }
@@ -130,16 +130,6 @@ export const ManageAdvertising = memo(({ pubs = [], matricule, tarifs, currentFi
                         <td>{publicite.rue.nom_rue}</td>
                         <td>{publicite.adresse_numero}</td>
                         <td className="d-flex">
-                            <OverlayTrigger
-                                placement="top"
-                                overlay={
-                                    <Tooltip id={`tooltip-2`}>
-                                        Consulter
-                                    </Tooltip>
-                                }
-                            >
-                                <Button size="sm" variant="info" className="me-1"><Eye /></Button>
-                            </OverlayTrigger>
                             <OverlayTrigger
                                 placement="top"
                                 overlay={
