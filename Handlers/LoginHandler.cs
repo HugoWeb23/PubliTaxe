@@ -5,8 +5,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Taxes.Commands;
+using Taxes.Queries;
 using Taxes.Entities;
-using Taxes.ViewModels;
 using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace Taxes.Handlers
@@ -14,12 +14,14 @@ namespace Taxes.Handlers
     public class LoginHandler : IRequestHandler<LoginQuery, Utilisateur>
     {
         private Context _context;
-        public LoginHandler(Context context)
+        private IMediator _mediator;
+        public LoginHandler(Context context, IMediator mediator)
         {
             _context = context;
+            _mediator = mediator;
         }
 
-        public Task<Utilisateur> Handle(LoginQuery request, CancellationToken cancellationToken)
+        public async Task<Utilisateur> Handle(LoginQuery request, CancellationToken cancellationToken)
         {
             Utilisateur CheckUser = _context.utilisateurs.SingleOrDefault(user => user.Mail == request.User.Mail);
             if (CheckUser == null || !BCryptNet.Verify(request.User.Pass, CheckUser.Pass))
@@ -27,7 +29,9 @@ namespace Taxes.Handlers
                 throw new Exception("Adresse e-mail ou mot de passe incorrect");
             }
 
-            return Task.FromResult(CheckUser);
+            CheckUser.Token = await _mediator.Send(new GenerateJwtTokenQuery(CheckUser));
+
+            return CheckUser;
 
         }
     }

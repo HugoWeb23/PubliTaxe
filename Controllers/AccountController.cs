@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Taxes.Entities;
 using Taxes.Commands;
+using Taxes.Queries;
 using System;
 using Taxes.ViewModels;
 
@@ -47,5 +48,42 @@ namespace Taxes.Controllers
             }
 
         }
+
+        [HttpGet("getuser")]
+        public IActionResult GetUser()
+        {
+            try
+            {
+                Utilisateur User = (Utilisateur)HttpContext.Items["User"];
+                if(User == null)
+                {
+                    return BadRequest();
+                }
+                return Ok(User);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
+        }
+
+
+
+        [HttpGet("getbyid/{Id}")]
+        public async Task<IActionResult> GetById(long Id)
+        {
+            try
+            {
+                Utilisateur User = await _mediator.Send(new GetUserByIdQuery(Id));
+                return Ok(User);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
+        }
+
     }
 }

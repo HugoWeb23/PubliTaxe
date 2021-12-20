@@ -35,7 +35,8 @@ export const apiFetch = async (endpoint: string, options = {} as any) => {
     const token = null;
     options = {
         headers: {
-            Accept: 'application/json'
+            Accept: 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
         },
         ...options
     }

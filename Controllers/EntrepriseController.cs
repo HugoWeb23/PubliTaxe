@@ -31,6 +31,7 @@ namespace Taxes.Controllers
             _environment = environment;
         }
 
+        [Authorize]
         [HttpPost("names")]
         public async Task<IActionResult> GetNames(SearchFiltersViewModel Filters)
         {

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
 namespace Taxes.Entities
@@ -13,5 +14,7 @@ namespace Taxes.Entities
         [JsonIgnore]
         public string Pass { get; set; }
         public bool Actif { get; set; }
+        [NotMapped]
+        public string Token { get; set; }
     }
 }

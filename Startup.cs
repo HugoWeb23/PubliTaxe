@@ -11,6 +11,8 @@ using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
+using Taxes.Helpers;
+using Taxes.Services;
 
 namespace Taxes
 {
@@ -28,6 +30,7 @@ namespace Taxes
         {
             services.AddDbContext<Context>(options =>
                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<IUserService, UserService>();
             services.AddMediatR(typeof(Startup).Assembly);
             services.AddControllers()
                 .ConfigureApiBehaviorOptions(options =>
@@ -58,6 +61,7 @@ namespace Taxes
                 app.UseHsts();
             }
 
+            app.UseMiddleware<JwtMiddleware>();
             app.UseHttpsRedirection();
             app.UseStaticFiles(new StaticFileOptions
             {
