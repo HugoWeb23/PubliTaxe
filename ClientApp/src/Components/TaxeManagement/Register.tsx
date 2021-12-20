@@ -3,13 +3,32 @@ import {
     Button,
     Form,
     Col,
-    Row
+    Row,
+    Alert
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import { callbackify } from 'util'
 import MouscronLogo from '../../Images/MouscronLogo.png'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup';
+import { RegisterFormSchema } from '../../Validation/Register/RegisterFormSchema'
+import { apiFetch } from '../../Services/apiFetch'
+import { useState } from 'react';
 
 export const Register = () => {
+    const { register, handleSubmit, reset, formState: { errors, isSubmitSuccessful } } = useForm({resolver: yupResolver(RegisterFormSchema)})
+    const [error, setError] = useState<any>(null)
+    const OnSubmit = async(data: any) => {
+        try {
+            setError(null)
+            const CreateAccount = await apiFetch('/accounts/newaccount', {
+                method: 'POST',
+                body: JSON.stringify(data)
+            })
+            reset()
+        } catch(e: any) {
+            setError(e.error)
+        }
+    }
 
     return <>
         <div className="d-flex justify-content-center align-items-center flex-column login-container">
@@ -19,40 +38,47 @@ export const Register = () => {
             </div>
             <Card style={{ width: '40rem' }}>
                 <Card.Body>
+                    {error != null && <Alert variant="danger">{error}</Alert>}
+                    {isSubmitSuccessful && <Alert variant="success">Votre compte a été créé, il est en attente d'activation.</Alert>}
                     <div className="d-flex justify-content-between align-items-center">
                         <Card.Title>Inscription</Card.Title>
                         <Link to="/login" className="link">Se connecter</Link>
                     </div>
-                    <Form onSubmit={() => console.log("dd")}>
+                    <Form onSubmit={handleSubmit(OnSubmit)}>
                         <Row>
                             <Col>
                                 <Form.Group controlId="firstname" className="mt-3">
                                     <Form.Label>Prénom</Form.Label>
-                                    <Form.Control type="text" placeholder="Prénom" />
+                                    <Form.Control type="text" placeholder="Prénom" isInvalid={errors.prenom} {...register('prenom')} />
+                                    {errors.prenom && <Form.Control.Feedback type="invalid">{errors.prenom.message}</Form.Control.Feedback>}
                                 </Form.Group>
                             </Col>
                             <Col>
                                 <Form.Group controlId="mail" className="mt-3">
                                     <Form.Label>Nom</Form.Label>
-                                    <Form.Control type="text" placeholder="Nom" />
+                                    <Form.Control type="text" placeholder="Nom" isInvalid={errors.nom} {...register('nom')} />
+                                    {errors.nom && <Form.Control.Feedback type="invalid">{errors.nom.message}</Form.Control.Feedback>}
                                 </Form.Group>
                             </Col>
                         </Row>
                         <Form.Group controlId="mail" className="mt-3">
                             <Form.Label>Adresse e-mail</Form.Label>
-                            <Form.Control type="text" placeholder="Adresse email" />
+                            <Form.Control type="text" placeholder="Adresse e-mail" isInvalid={errors.mail} {...register('mail')} />
+                            {errors.mail && <Form.Control.Feedback type="invalid">{errors.mail.message}</Form.Control.Feedback>}
                         </Form.Group>
                         <Row>
                             <Col>
                                 <Form.Group controlId="password" className="mt-2">
                                     <Form.Label>Mot de passe</Form.Label>
-                                    <Form.Control type="password" placeholder="Mot de passe" />
+                                    <Form.Control type="password" placeholder="Mot de passe" isInvalid={errors.pass} {...register('pass')} />
+                                    {errors.pass && <Form.Control.Feedback type="invalid">{errors.pass.message}</Form.Control.Feedback>}
                                 </Form.Group>
                             </Col>
                             <Col>
-                                <Form.Group controlId="password" className="mt-2">
+                                <Form.Group controlId="repeatpassword" className="mt-2">
                                     <Form.Label>Répétez le mot de passe</Form.Label>
-                                    <Form.Control type="password" placeholder="Répétez le mot de passe" />
+                                    <Form.Control type="password" placeholder="Répétez le mot de passe" isInvalid={errors.repeatpass} {...register('repeatpass')} />
+                                    {errors.repeatpass && <Form.Control.Feedback type="invalid">{errors.repeatpass.message}</Form.Control.Feedback>}
                                 </Form.Group>
                             </Col>
                         </Row>

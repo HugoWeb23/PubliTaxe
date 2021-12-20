@@ -178,6 +178,13 @@ namespace Taxes.Controllers
             return Ok(entreprises);
         }
 
+        [HttpGet("printallminutes")]
+        public async Task<IActionResult> PrintAllMinutes()
+        {
+            List<Entreprise> entreprises = await _mediator.Send(new GetEntreprisesByMinutesQuery());
+            return Ok(entreprises);
+        }
+
         [HttpGet("notreceived/{FiscalYear}")]
         public async Task<IActionResult> GetNotReceived(long FiscalYear)
         {

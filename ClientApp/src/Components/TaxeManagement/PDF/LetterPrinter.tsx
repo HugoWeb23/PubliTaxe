@@ -10,11 +10,12 @@ import aubert_signature from '../../../Images/aubert_signature.jpg'
 import cachet_ville from '../../../Images/cachet_ville.jpg'
 import { GetPricesByYear } from '../../../Services/SumTax';
 import { IExercice } from '../../../Types/IExercice';
+import { IPrice } from '../../../Types/IPrice';
 
 interface ILetterPrinter {
     entreprise: Entreprise,
     printData: IPrintData,
-    tarifs: any,
+    tarifs: IPrice[],
     currentFiscalYear: IExercice
 }
 

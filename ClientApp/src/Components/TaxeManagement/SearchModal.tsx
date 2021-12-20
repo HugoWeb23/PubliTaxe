@@ -1,4 +1,4 @@
-import { useEffect, useState, memo } from 'react'
+import { useEffect, useState, memo, useRef } from 'react'
 import {
     Modal,
     Table,
@@ -21,8 +21,8 @@ interface ISearchModal {
 export const SearchModal = ({show, handleClose, handleSearch}: ISearchModal) => {
     const { register, handleSubmit, control, setValue, setError, clearErrors, formState: { errors } } = useForm()
     const [streets, setStreets] = useState<IRue[]>([])
-    const [streetId, setStreetId] = useState<number>()
     const [loadingStreets, setLoadingStreets] = useState<boolean>(false)
+    const streetRef: any = useRef()
 
     const onSearch = (data: any) => {
         data = ({...data, rue: data.rue.rueId})
@@ -44,12 +44,16 @@ export const SearchModal = ({show, handleClose, handleSearch}: ISearchModal) => 
         const rue: IRue = { ...data[0] }
         const inputvalue = { ...data }
         if (Object.keys(rue).length > 0) {
-            setStreetId(rue.rueId)
             setValue('rue', rue)
             clearErrors(['rue.nom_rue', 'rue.code_rue', 'rue.code_postal.cp'])
         } else {
             setValue('rue.nom_rue', inputvalue.nom_rue)
         }
+    }
+
+    const ResetStreet = () => {
+        setValue('rue', '')
+        streetRef.current.clear()
     }
     return <>
         <Modal show={show} onHide={handleClose} size="lg">
@@ -94,6 +98,7 @@ export const SearchModal = ({show, handleClose, handleSearch}: ISearchModal) => 
                                             isLoading={loadingStreets}
                                             labelKey="nom_rue"
                                             placeholder="Rue"
+                                            ref={streetRef}
                                             isInvalid={errors.rue && errors.rue.nom_rue}
                                             onSearch={(query) => StreetSearch(query)}
                                             options={streets}
@@ -123,6 +128,7 @@ export const SearchModal = ({show, handleClose, handleSearch}: ISearchModal) => 
                                             )}
                                         />
                                     )} />
+                                <div className="link" onClick={ResetStreet}>(réinitialiser)</div>
                                 {errors.rue && errors.rue.nom_rue && <Form.Control.Feedback type="invalid">{errors.rue.nom_rue.message}</Form.Control.Feedback>}
                             </Form.Group>
                         </Col>

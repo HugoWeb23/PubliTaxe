@@ -14,7 +14,7 @@ import { RegisteredLetter } from './RegisteredLetter';
 interface IPrinter {
     entreprises: Entreprise[],
     printData: IPrintData,
-    tarifs: IPrice,
+    tarifs: IPrice[],
     currentFiscalYear: IExercice,
     motifsMajoration?: IMotif_majoration[]
 }

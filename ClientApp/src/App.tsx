@@ -22,6 +22,7 @@ import { ChangeFiscalYear } from './Components/TaxeManagement/FiscalYear/ChangeF
 import { IExercice } from './Types/IExercice';
 import { Login } from './Components/TaxeManagement/Login';
 import { Register } from './Components/TaxeManagement/Register';
+import { PrintAllMinutes } from './Components/TaxeManagement/PrintAllMinutes';
 
 export const App = () => {
   const [motifsMajoration, setMotifsMajoration] = useState<any>(null)
@@ -65,6 +66,9 @@ export const App = () => {
       </Route>
       <Route path="/tools/printalldeclarations" exact>
         {(tarifs != null && exerciceCourant != null && informations != null) && <PrintAllTaxes tarifs={tarifs} currentFiscalYear={exerciceCourant} informations={informations} />}
+      </Route>
+      <Route path="/tools/printallminutes" exact>
+        {(tarifs != null && motifsMajoration != null && exerciceCourant != null && informations != null) && <PrintAllMinutes tarifs={tarifs} motifsMajoration={motifsMajoration} currentFiscalYear={exerciceCourant} informations={informations} />}
       </Route>
       <Route path="/tools/managefiscalyears">
         <ManageFiscalYears handleEdit={editFiscalYear} />
