@@ -27,7 +27,7 @@ namespace Taxes.Handlers
             }
 
             request.User.Pass = BCryptNet.HashPassword(request.User.Pass);
-            request.User.Actif = false;
+            request.User.Actif = 0;
 
             _context.utilisateurs.Add(request.User);
             _context.SaveChanges();

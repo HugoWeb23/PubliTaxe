@@ -13,8 +13,7 @@ namespace Taxes.Entities
         public string Mail { get; set; }
         [JsonIgnore]
         public string Pass { get; set; }
-        public bool Actif { get; set; }
-        [NotMapped]
-        public string Token { get; set; }
+        public short Actif { get; set; }
+        public short Role { get; set; }
     }
 }

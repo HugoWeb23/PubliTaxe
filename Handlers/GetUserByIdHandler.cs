@@ -20,6 +20,7 @@ namespace Taxes.Handlers
         public Task<Utilisateur> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
         {
             Utilisateur User = _context.utilisateurs
+                .AsNoTracking()
                 .FirstOrDefault(user => user.Id == request.Id);
 
             return Task.FromResult(User);

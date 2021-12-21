@@ -28,6 +28,7 @@ import { IUser } from './Types/IUser';
 import { PrivateRoute } from './Components/PrivateRoute';
 import { UserContext } from './Components/Contexts/UserContext';
 import { ManageUsers } from './Components/ManageUsers/ManageUsers';
+import { EditUser } from './Components/ManageUsers/EditUser';
 
 export const App = () => {
   const [user, setUser] = useState<IUser | null>(null)
@@ -114,6 +115,7 @@ export const App = () => {
         </Route>
         <Route path="/register" component={Register} />
         <Route path="/manageaccess/all" component={ManageUsers}/>
+        <Route path="/manageaccess/edit/:id" exact component={EditUser} />
         </UserContext.Provider>
       </Router>
     }

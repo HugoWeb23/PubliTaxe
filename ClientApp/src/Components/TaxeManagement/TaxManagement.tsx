@@ -77,13 +77,14 @@ export const TaxManagement = () => {
         />
         <Container fluid={true}>
             <div className="d-flex justify-content-between align-items-center">
-                <h2 className="mt-2 mb-3">Gestion des entreprises</h2>
+                <h2 className="mt-2">Gestion des entreprises</h2>
                 <div>
                     <Button variant="success" className="me-2" size="sm" onClick={() => setReceivedModal(true)}><SheetIcon /> Encodage des reçus</Button>
                     <Link to="/notreceived" className="me-2 btn btn-danger btn-sm"><ExclamationIcon /> Encodage des non reçus</Link>
                     <Button variant="secondary" size="sm" onClick={() => setSearchModal(true)}><SearchIcon /> Recherche</Button>
                 </div>
             </div>
+            <hr className="mt-3 mb-4"/>
 
             <Row className="me-0 mt-0 mt-3">
                 <Col md="3" xs="12">

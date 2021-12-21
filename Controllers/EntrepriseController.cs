@@ -17,6 +17,7 @@ using Taxes.ViewModels;
 namespace Taxes.Controllers
 {
     [ApiController]
+    [Authorize]
     [ErrorFormatter]
     [Route("api/entreprises")]
 
@@ -31,7 +32,6 @@ namespace Taxes.Controllers
             _environment = environment;
         }
 
-        [Authorize]
         [HttpPost("names")]
         public async Task<IActionResult> GetNames(SearchFiltersViewModel Filters)
         {
@@ -100,6 +100,7 @@ namespace Taxes.Controllers
 
         }
 
+        [AuthorizeRole(MinRole: 2)]
         [HttpPost("new")]
         public async Task<IActionResult> NewEntreprise(Entreprise entreprise)
         {
@@ -115,6 +116,7 @@ namespace Taxes.Controllers
 
         }
 
+        [AuthorizeRole(MinRole: 2)]
         [HttpPut("edit/{matricule_ciger}")]
         public async Task<IActionResult> EditEntreprise(Entreprise entreprise)
         {
@@ -129,6 +131,7 @@ namespace Taxes.Controllers
 
         }
 
+        [AuthorizeRole(MinRole: 2)]
         [HttpPut("editpub")]
         public async Task<IActionResult> EditEntreprise(Publicite publicite)
         {
@@ -144,6 +147,7 @@ namespace Taxes.Controllers
 
         }
 
+        [AuthorizeRole(MinRole: 2)]
         [HttpPost("publicite/uploadimage")]
         public async Task<IActionResult> UploadImageAsync([FromForm] List<IFormFile> images)
         {
@@ -157,6 +161,7 @@ namespace Taxes.Controllers
 
         }
 
+        [AuthorizeRole(MinRole: 2)]
         [HttpDelete("publicite/deleteimage/{imagename}")]
         public async Task<IActionResult> DeleteImage(string imagename)
         {
@@ -194,6 +199,7 @@ namespace Taxes.Controllers
             return Ok(filtered);
         }
 
+        [AuthorizeRole(MinRole: 2)]
         [HttpDelete("delete/{Matricule}")]
         public async Task<IActionResult> Delete(long Matricule)
         {
@@ -211,6 +217,7 @@ namespace Taxes.Controllers
             }
         }
 
+        [AuthorizeRole(MinRole: 2)]
         [HttpPost("encodereceived")]
         public async Task<IActionResult> EncodeReceived(EncodeReceivedViewModel Matricules)
         {
