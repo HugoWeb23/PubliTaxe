@@ -4,5 +4,6 @@ export interface IUser {
     prenom: string,
     mail: string,
     actif: boolean,
+    changement_pass: boolean,
     token: string
 }

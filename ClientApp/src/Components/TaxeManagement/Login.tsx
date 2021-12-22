@@ -19,7 +19,7 @@ export const Login = ({handleLogin}: ILogin) => {
     const { register, handleSubmit, reset, formState: { errors, isSubmitSuccessful } } = useForm({resolver: yupResolver(LoginFormSchema)})
     
     const OnSubmit = async(data: any) => {
-        const user: IUser = await apiFetch('/accounts/login', {
+        const user: IUser = await apiFetch('/user/login', {
             method: 'POST',
             body: JSON.stringify(data)
         })

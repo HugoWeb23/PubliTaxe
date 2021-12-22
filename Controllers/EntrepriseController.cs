@@ -17,7 +17,7 @@ using Taxes.ViewModels;
 namespace Taxes.Controllers
 {
     [ApiController]
-    [Authorize]
+    [AuthorizeRole(MinRole: 1)]
     [ErrorFormatter]
     [Route("api/entreprises")]
 

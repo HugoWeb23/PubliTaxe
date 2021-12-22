@@ -13,7 +13,6 @@ namespace Taxes.Controllers
 {
     [ApiController]
     [Route("/api/accounts")]
-    [Authorize]
     [AuthorizeRole(MinRole: 3)]
     public class AccountController : Controller
     {
@@ -21,54 +20,6 @@ namespace Taxes.Controllers
         public AccountController(IMediator mediator)
         {
             _mediator = mediator;
-        }
-
-        [HttpPost("newaccount")]
-        public async Task<IActionResult> NewAccount(Utilisateur Utilisateur)
-        {
-            try
-            {
-                Utilisateur User = await _mediator.Send(new NewUserCommand(Utilisateur));
-                return Ok(User);
-            } catch (Exception ex)
-            {
-                return BadRequest(new { error = ex.Message });
-            }
-
-        }
-
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginViewModel Utilisateur)
-        {
-            try
-            {
-                UserLoginViewModel User = await _mediator.Send(new LoginQuery(Utilisateur));
-                return Ok(User);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { error = ex.Message });
-            }
-
-        }
-
-        [HttpGet("getuser")]
-        public IActionResult GetUser()
-        {
-            try
-            {
-                Utilisateur User = (Utilisateur)HttpContext.Items["User"];
-                if (User == null)
-                {
-                    return BadRequest();
-                }
-                return Ok(User);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { error = ex.Message });
-            }
-
         }
 
         [HttpGet("getbyid/{Id}")]
@@ -106,6 +57,21 @@ namespace Taxes.Controllers
             {
                 Utilisateur user = await _mediator.Send(new UpdateUserCommand(User));
                 return Ok(user);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = "Une erreur est survenue", ex = e.Message });
+            }
+        }
+
+       
+        [HttpGet("newpassword/{UserID}")]
+        public async Task<IActionResult> NewPassword(long UserID)
+        {
+            try
+            {
+                string NewPassword = await _mediator.Send(new GenerateNewUserPasswordCommand(UserID));
+                return Ok(new {password = NewPassword});
             }
             catch (Exception e)
             {

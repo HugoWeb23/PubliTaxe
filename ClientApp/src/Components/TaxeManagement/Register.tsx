@@ -20,7 +20,7 @@ export const Register = () => {
     const OnSubmit = async(data: any) => {
         try {
             setError(null)
-            const CreateAccount = await apiFetch('/accounts/newaccount', {
+            const CreateAccount = await apiFetch('/user/newaccount', {
                 method: 'POST',
                 body: JSON.stringify(data)
             })

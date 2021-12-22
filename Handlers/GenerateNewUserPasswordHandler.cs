@@ -6,6 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Taxes.Entities;
 using Taxes.Commands;
+using Taxes.Services;
+using BCryptNet = BCrypt.Net.BCrypt;
+using System;
 
 namespace Taxes.Handlers
 {
@@ -19,7 +22,26 @@ namespace Taxes.Handlers
         }
         public Task<string> Handle(GenerateNewUserPasswordCommand request, CancellationToken cancellationToken)
         {
-            string NewPassword = "abcd1234";
+            string NewPassword = RandomPassword.GenerateRandomPassword();
+
+            Utilisateur UserExist = _context.utilisateurs.AsNoTracking().FirstOrDefault(u => u.Id == request.UserID);
+
+            if(UserExist == null)
+            {
+                throw new Exception("L'utilisateur n'existe pas");
+            }
+
+            Utilisateur utilisateur = new Utilisateur
+            {
+                Id = request.UserID,
+                Pass = BCryptNet.HashPassword(NewPassword),
+                Changement_pass = 1
+            };
+
+            _context.utilisateurs.Attach(utilisateur);
+            _context.Entry(utilisateur).Property(u => u.Pass).IsModified = true;
+            _context.Entry(utilisateur).Property(u => u.Changement_pass).IsModified = true;
+            _context.SaveChanges();
 
             return Task.FromResult(NewPassword);
         }

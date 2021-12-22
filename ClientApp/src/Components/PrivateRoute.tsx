@@ -16,7 +16,7 @@ export const PrivateRoute = ({ component: Component, user, ...rest }: IPrivateRo
             render={props => <>
                 {value?.user ?
                     <>
-                        <Component {...props} />
+                        {value.user.changement_pass ? <Redirect to="/passwordchange"/> : <Component {...props} />}
                     </>
                     :
                     <Redirect to={{ pathname: '/login', state: { from: props.location } }} />

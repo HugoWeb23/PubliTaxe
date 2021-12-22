@@ -15,5 +15,6 @@ namespace Taxes.Entities
         public string Pass { get; set; }
         public short Actif { get; set; }
         public short Role { get; set; }
+        public short Changement_pass { get; set; }
     }
 }

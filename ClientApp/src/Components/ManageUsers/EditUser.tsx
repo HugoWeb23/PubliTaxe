@@ -8,7 +8,8 @@ import {
     Card,
     Container,
     Table,
-    Modal
+    Modal,
+    Alert
 } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { apiFetch } from '../../Services/apiFetch'
@@ -16,6 +17,8 @@ import { IUser } from '../../Types/IUser'
 import { CheckCircle } from '../UI/CheckCircle'
 import { ErrorCircle } from '../UI/ErrorCircle'
 import { toast } from 'react-toastify';
+import { boolean } from 'yup/lib/locale'
+import { Loader } from '../UI/Loader'
 
 interface IEditUser {
     location: any,
@@ -26,6 +29,8 @@ export const EditUser = ({ location = {}, match }: IEditUser) => {
     const UserID = match.params.id
     const [user, setUser] = useState<IUser | undefined>(location.state)
     const [modalInfos, setModalInfos] = useState<boolean>(false)
+    const [newPasswordAlert, setNewPasswordAlert] = useState<{ show: boolean, password: string | null }>({ show: false, password: null })
+    const [passwordLoading, setPasswordLoading] = useState<boolean>(false)
     const { register, handleSubmit, setValue, formState: { errors } } = useForm()
 
     const setInputsValues = (obj: Object) => {
@@ -58,6 +63,13 @@ export const EditUser = ({ location = {}, match }: IEditUser) => {
         }
     }
 
+    const handleNewPassword = async () => {
+        setPasswordLoading(true)
+        const NewPassword = await apiFetch(`/accounts/newpassword/${UserID}`)
+        setNewPasswordAlert({ show: true, password: NewPassword.password })
+        setPasswordLoading(false)
+    }
+
     return <>
         <Container fluid="xl">
             <ModalInfos
@@ -84,11 +96,11 @@ export const EditUser = ({ location = {}, match }: IEditUser) => {
                         </Form.Group>
                     </Col>
                 </Row>
-                <Form.Group controlId="mail">
+                <Form.Group controlId="mail" className="mt-3">
                     <Form.Label column="sm">Adresse e-mail</Form.Label>
                     <Form.Control type="text" size="sm" {...register('mail')} />
                 </Form.Group>
-                <Row>
+                <Row className="mt-3">
                     <Col>
                         <Form.Group controlId="role">
                             <Form.Label column="sm">Rôle</Form.Label>
@@ -115,7 +127,14 @@ export const EditUser = ({ location = {}, match }: IEditUser) => {
             <Card border="danger" className="mt-4">
                 <Card.Header as="h6">Changement du mot de passe</Card.Header>
                 <Card.Body>
-                    <Button variant="outline-danger">Demander un nouveau mot de passe</Button>
+                <p className="fst-normal">Le mot de passe de sera changé immédiatement. Lors de sa prochaine connexion, l'utilisateur sera dans l'obligation de modifier son mot de passe.</p>
+                    {passwordLoading && <>
+                        <div className="mb-3">
+                            <Loader variant="danger" />
+                        </div>
+                    </>}
+                    {(newPasswordAlert.show && !passwordLoading) && <Alert variant="success">Nouveau mot de passe à communiquer à l'utilisateur : <span className="fw-bold">{newPasswordAlert.password}</span></Alert>}
+                    <Button variant="outline-danger" as="div" onClick={handleNewPassword} disabled={passwordLoading}>Demander un nouveau mot de passe</Button>
                 </Card.Body>
             </Card>
         </Container>

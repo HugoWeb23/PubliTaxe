@@ -16,9 +16,14 @@ public class AuthorizeRoleAttribute : Attribute, IAuthorizationFilter
     {
         var user = (Utilisateur)context.HttpContext.Items["User"];
 
-        if (user.Role < Role)
+        if(user == null)
         {
-            context.Result = new JsonResult(new { error = "Vous n'avez pas la permission d'effectuer cette action !" }) { StatusCode = StatusCodes.Status401Unauthorized };
+            context.Result = new JsonResult(new { error = "Vous devez vous connecter afin d'effectuer cette action" }) { StatusCode = StatusCodes.Status401Unauthorized };
+
+        } else if(user.Role < Role)
+
+        {
+            context.Result = new JsonResult(new { error = "Vous n'avez pas la permission d'effectuer cette action" }) { StatusCode = StatusCodes.Status401Unauthorized };
         }
     }
 }

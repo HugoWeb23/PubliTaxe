@@ -29,6 +29,7 @@ import { PrivateRoute } from './Components/PrivateRoute';
 import { UserContext } from './Components/Contexts/UserContext';
 import { ManageUsers } from './Components/ManageUsers/ManageUsers';
 import { EditUser } from './Components/ManageUsers/EditUser';
+import { PasswordChange } from './Components/ManageUsers/PasswordChange';
 
 export const App = () => {
   const [user, setUser] = useState<IUser | null>(null)
@@ -41,8 +42,13 @@ export const App = () => {
   useEffect(() => {
     (async () => {
       if (user === null) {
-        const fetchuser = await apiFetch('/accounts/getuser')
-        setUser(fetchuser)
+        try {
+          const fetchuser = await apiFetch('/user/getuser')
+          setUser(fetchuser)
+        } catch(e: any) {
+          setUser(null)
+        }
+        
       }
       if (user !== null) {
         const motifs = await apiFetch('/motifs_majoration/getall')
@@ -116,6 +122,7 @@ export const App = () => {
         <Route path="/register" component={Register} />
         <Route path="/manageaccess/all" component={ManageUsers}/>
         <Route path="/manageaccess/edit/:id" exact component={EditUser} />
+        <Route path="/passwordchange" component={PasswordChange}/>
         </UserContext.Provider>
       </Router>
     }
