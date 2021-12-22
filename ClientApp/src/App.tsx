@@ -45,10 +45,10 @@ export const App = () => {
         try {
           const fetchuser = await apiFetch('/user/getuser')
           setUser(fetchuser)
-        } catch(e: any) {
+        } catch (e: any) {
           setUser(null)
         }
-        
+
       }
       if (user !== null) {
         const motifs = await apiFetch('/motifs_majoration/getall')
@@ -71,7 +71,7 @@ export const App = () => {
   }
 
   const toggleUser = (user?: IUser) => {
-    if(user === undefined) {
+    if (user === undefined) {
       setUser(null)
     } else {
       setUser(user)
@@ -83,46 +83,48 @@ export const App = () => {
       user,
       toggleUser
     }
-  }, [user, toggleUser])
+  }, [user])
 
   return <>
     {loading ? 'chargement' :
       <Router>
         <UserContext.Provider value={value}>
-        <ToastContainer autoClose={2500} />
-        <Navigation />
-        <PrivateRoute path="/" exact component={TaxManagement} user={user} />
-        <Route path="/entreprise/edit/:id" exact render={(matchProps) =>
-          <EditTax {...matchProps} motifs={motifsMajoration} tarifs={tarifs} currentFiscalYear={exerciceCourant} informations={informations} />
-        }>
-        </Route>
-        <Route path="/entreprise/create/" exact>
-          <CreateTax motifs={motifsMajoration} tarifs={tarifs} currentFiscalYear={exerciceCourant} />
-        </Route>
-        <Route path="/entreprise/view/:id" exact component={ViewTax} />
-        <Route path="/notreceived" exact>
-          {exerciceCourant != null ? <ManageNotReceived motifs={motifsMajoration} currentFiscalYear={exerciceCourant} /> : <Loader />}
-        </Route>
-        <Route path="/tools/printalldeclarations" exact>
-          {(tarifs != null && exerciceCourant != null && informations != null) && <PrintAllTaxes tarifs={tarifs} currentFiscalYear={exerciceCourant} informations={informations} />}
-        </Route>
-        <Route path="/tools/printallminutes" exact>
-          {(tarifs != null && motifsMajoration != null && exerciceCourant != null && informations != null) && <PrintAllMinutes tarifs={tarifs} motifsMajoration={motifsMajoration} currentFiscalYear={exerciceCourant} informations={informations} />}
-        </Route>
-        <Route path="/tools/managefiscalyears">
-          <ManageFiscalYears handleEdit={editFiscalYear} />
-        </Route>
-        <Route path="/tools/manageprices" component={ManagePrices} />
-        <Route path="/tools/changefiscalyear">
-          <ChangeFiscalYear currentFiscalYear={exerciceCourant} handleChange={(data: IExercice) => setExerciceCourant(data)} />
-        </Route>
-        <Route path="/login">
-          {user ? <Redirect to="/"/> : <Login handleLogin={toggleUser}/>}
-        </Route>
-        <Route path="/register" component={Register} />
-        <Route path="/manageaccess/all" component={ManageUsers}/>
-        <Route path="/manageaccess/edit/:id" exact component={EditUser} />
-        <Route path="/passwordchange" component={PasswordChange}/>
+          <ToastContainer autoClose={2500} />
+          <Navigation />
+          <PrivateRoute path="/" exact component={TaxManagement} user={user} />
+          <Route path="/entreprise/edit/:id" exact render={(matchProps) =>
+            <EditTax {...matchProps} motifs={motifsMajoration} tarifs={tarifs} currentFiscalYear={exerciceCourant} informations={informations} />
+          }>
+          </Route>
+          <Route path="/entreprise/create/" exact>
+            <CreateTax motifs={motifsMajoration} tarifs={tarifs} currentFiscalYear={exerciceCourant} />
+          </Route>
+          <Route path="/entreprise/view/:id" exact component={ViewTax} />
+          <Route path="/notreceived" exact>
+            {exerciceCourant != null ? <ManageNotReceived motifs={motifsMajoration} currentFiscalYear={exerciceCourant} /> : <Loader />}
+          </Route>
+          <Route path="/tools/printalldeclarations" exact>
+            {(tarifs != null && exerciceCourant != null && informations != null) && <PrintAllTaxes tarifs={tarifs} currentFiscalYear={exerciceCourant} informations={informations} />}
+          </Route>
+          <Route path="/tools/printallminutes" exact>
+            {(tarifs != null && motifsMajoration != null && exerciceCourant != null && informations != null) && <PrintAllMinutes tarifs={tarifs} motifsMajoration={motifsMajoration} currentFiscalYear={exerciceCourant} informations={informations} />}
+          </Route>
+          <Route path="/tools/managefiscalyears">
+            <ManageFiscalYears handleEdit={editFiscalYear} />
+          </Route>
+          <Route path="/tools/manageprices" component={ManagePrices} />
+          <Route path="/tools/changefiscalyear">
+            <ChangeFiscalYear currentFiscalYear={exerciceCourant} handleChange={(data: IExercice) => setExerciceCourant(data)} />
+          </Route>
+          <Route path="/login">
+            {user ? <Redirect to="/" /> : <Login handleLogin={toggleUser} />}
+          </Route>
+          <Route path="/register" component={Register} />
+          <Route path="/manageaccess/all" component={ManageUsers} />
+          <Route path="/manageaccess/edit/:id" exact component={EditUser} />
+          {<Route path="/passwordchange">
+            {user?.changement_pass === 1 ? <PasswordChange /> : <Redirect to="/" />}
+          </Route>}
         </UserContext.Provider>
       </Router>
     }

@@ -70,5 +70,23 @@ namespace Taxes.Controllers
 
         }
 
+        [HttpPut("changepassword/{UserID}")]
+        public async Task<IActionResult> ChangePassword(long UserID, ChangePasswordViewModel Data)
+        {
+            try
+            {
+                Data.UserID = UserID;
+                bool UpdatePassword = await _mediator.Send(new ChangePasswordCommand(Data));
+                if (!UpdatePassword) return BadRequest(new { error = "Une erreur est survenue" });
+
+                return Ok( new { success = "Le mot de passe a été modifié"});
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
+        }
+
     }
 }

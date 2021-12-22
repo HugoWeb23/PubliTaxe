@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Taxes.Commands;
 using Taxes.Entities;
-using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace Taxes.Handlers
 {

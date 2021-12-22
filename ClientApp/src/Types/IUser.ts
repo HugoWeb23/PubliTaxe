@@ -3,7 +3,7 @@ export interface IUser {
     nom: string,
     prenom: string,
     mail: string,
-    actif: boolean,
-    changement_pass: boolean,
+    actif: number,
+    changement_pass: number,
     token: string
 }
