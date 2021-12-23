@@ -124,12 +124,12 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalY
             </Form.Text>}
             <Form.Group controlId="submit" className="mt-5">
               <div className="d-grid gap-2">
-                <Button variant="outline-dark" className="mb-1" type="submit">Générer le document</Button>
+                <Button variant="outline-dark" className="mb-1" type="submit">Générer les documents</Button>
               </div>
             </Form.Group>
           </Row>
           <Form.Text className="text-muted">
-            La génération du document peut durer plusieurs secondes.
+            La génération des documents peut durer plusieurs secondes.
           </Form.Text>
         </Form>
       </Modal.Body>

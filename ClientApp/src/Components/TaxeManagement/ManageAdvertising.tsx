@@ -114,7 +114,7 @@ export const ManageAdvertising = memo(({ pubs = [], matricule, tarifs, currentFi
                 <tr>
                     <th>Exercice</th>
                     <th>Code postal</th>
-                    <th>N° rue</th>
+                    <th>Code rue</th>
                     <th>Rue</th>
                     <th>N°</th>
                     <th>Actions</th>
