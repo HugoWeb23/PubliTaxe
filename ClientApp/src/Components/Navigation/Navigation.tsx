@@ -24,21 +24,21 @@ export const Navigation = () => {
         <Nav className="me-auto">
           <NavDropdown title="Gestion" id="collasible-nav-dropdown">
             <LinkContainer to="/"><NavDropdown.Item>Gestion des entreprises</NavDropdown.Item></LinkContainer>
-            <LinkContainer to="/notreceived"><NavDropdown.Item>Encodage des non reçus</NavDropdown.Item></LinkContainer>
+            {value.user.role > 1 && <LinkContainer to="/notreceived"><NavDropdown.Item>Encodage des non reçus</NavDropdown.Item></LinkContainer>}
           </NavDropdown>
           <NavDropdown title="Outils" id="collasible-nav-dropdown">
             <LinkContainer to="/tools/printalldeclarations"><NavDropdown.Item>Imprimer toutes les déclarations</NavDropdown.Item></LinkContainer>
             <LinkContainer to="/tools/printallminutes"><NavDropdown.Item>Imprimer tous les procès verbaux</NavDropdown.Item></LinkContainer>
-            <LinkContainer to="/tools/manageprices"><NavDropdown.Item>Gestion des tarifs</NavDropdown.Item></LinkContainer>
-            <LinkContainer to="/tools/managefiscalyears"><NavDropdown.Item>Gestion des exercices</NavDropdown.Item></LinkContainer>
-            <LinkContainer to="/tools/changefiscalyear"><NavDropdown.Item>Gestion des informations générales</NavDropdown.Item></LinkContainer>
-            <NavDropdown.Divider />
-            <LinkContainer to="/tools/changefiscalyear"><NavDropdown.Item>Changement d'exercice</NavDropdown.Item></LinkContainer>
+            {value.user.role >= 3 && <><LinkContainer to="/tools/manageprices"><NavDropdown.Item>Gestion des tarifs</NavDropdown.Item></LinkContainer>
+              <LinkContainer to="/tools/managefiscalyears"><NavDropdown.Item>Gestion des exercices</NavDropdown.Item></LinkContainer>
+              <LinkContainer to="/tools/managegeneralinformations"><NavDropdown.Item>Gestion des informations générales</NavDropdown.Item></LinkContainer>
+              <NavDropdown.Divider />
+              <LinkContainer to="/tools/changefiscalyear"><NavDropdown.Item>Changement d'exercice</NavDropdown.Item></LinkContainer></>}
           </NavDropdown>
-          <NavDropdown title="Gestion des accès" id="collasible-nav-dropdown">
+          {value.user.role >= 3 && <NavDropdown title="Gestion des accès" id="collasible-nav-dropdown">
             <LinkContainer to="/manageaccess/all"><NavDropdown.Item>Gestion des utilisateurs</NavDropdown.Item></LinkContainer>
             <LinkContainer to="/manageaccess/pendingaccounts"><NavDropdown.Item>Utilisateurs en attente d'activation</NavDropdown.Item></LinkContainer>
-          </NavDropdown>
+          </NavDropdown>}
         </Nav>
         <Nav>
           <NavDropdown title={`${value.user?.prenom} ${value.user?.nom}`} id="collasible-nav-dropdown" align="end">

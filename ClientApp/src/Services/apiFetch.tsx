@@ -46,7 +46,7 @@ export const apiFetch = async (endpoint: string, options = {} as any) => {
     }
 
 
-    const response = await fetch(`https://localhost:5001/api${endpoint}`, options)
+    const response = await fetch(`${process.env.NODE_ENV === 'development' ? 'https://localhost:5001' : ''}/api${endpoint}`, options)
 
     if (response.status == 204) {
         return null;

@@ -16,6 +16,8 @@ namespace Taxes.Entities
         public string Telephone_contact { get; set; }
         public string Mail_contact { get; set; }
         public long Exercice_courant { get; set; }
+        public string Bourgmestre { get; set; }
+        public string Direction_generale { get; set; }
         [NotMapped]
         public short Exercice { get; set; }
 
@@ -29,6 +31,8 @@ namespace Taxes.Entities
             RuleFor(info => info.Telephone_contact).NotEmpty().WithMessage("Veuillez saisir un numéro de téléphone");
             RuleFor(info => info.Mail_contact).NotEmpty().WithMessage("Veuillez saisir une adresse e-mail");
             RuleFor(info => info.Exercice_courant).NotEmpty().WithMessage("Veuillez spécifier l'exercice courant");
+            RuleFor(info => info.Bourgmestre).NotEmpty().WithMessage("Veuillez saisir le nom et prénom du bourgmestre");
+            RuleFor(info => info.Direction_generale).NotEmpty().WithMessage("Veuillez saisir le nom et prénom du directeur général");
         }
     }
 }

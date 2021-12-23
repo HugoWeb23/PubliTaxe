@@ -33,7 +33,7 @@ export const PasswordChange = () => {
             <Card border="danger" className="mt-4">
                 <Card.Header as="h5">Changement de mot de passe</Card.Header>
                 <Card.Body>
-                    <p className="fst-normal">Votre mot de passe a récemment été réinitalisé. Nous vons invitons à redéfinir un mot de passe <span className="fw-bold">sécurisé</span> (8 caractères minimum, chiffres et caractères spéciaux) pour récupérer l'accès à votre compte.</p>
+                    <p className="fst-normal">Votre mot de passe a récemment été réinitalisé. Nous vons invitons à redéfinir un mot de passe <span className="fw-bold">sécurisé</span> (minimum 8 caractères, au moins 1 chiffre et 1 caractère spécial) pour récupérer l'accès à votre compte.</p>
                     <Form onSubmit={handleSubmit(OnSubmit)}>
                         <Form.Group controlId="oldpassword">
                             <Form.Label>Mot de passe actuel</Form.Label>

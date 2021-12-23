@@ -8,7 +8,7 @@ interface State {
 }
 
 interface Action {
-    type: 'FETCH_ALL_ACCOUNTS' | 'INSERT' | 'EDIT',
+    type: 'FETCH_ALL_ACCOUNTS' | 'DELETE',
     payLoad: any
 }
 
@@ -18,10 +18,8 @@ export const useAccounts = () => {
         switch (action.type) {
             case 'FETCH_ALL_ACCOUNTS':
                 return { ...state, accounts: action.payLoad }
-            case 'INSERT':
-                return { ...state, accounts: [...state.accounts, action.payLoad] }
-            case 'EDIT':
-                return { ...state, accounts: state.accounts.map((account: IUser) => account.id == action.payLoad.id ? action.payLoad : account) }
+            case 'DELETE':
+                return { ...state, accounts: state.accounts.filter((account: IUser) => account.id !== action.payLoad.id) }
             default:
                 return state
         }
@@ -35,12 +33,11 @@ export const useAccounts = () => {
             const accounts: IUser[] = await apiFetch('/accounts/getallusers')
             dispatch({ type: 'FETCH_ALL_ACCOUNTS', payLoad: accounts })
         },
-        editAccount: async (data: IExercice) => {
-            const fetch = await apiFetch(`/accounts/edituser`, {
-                method: 'PUT',
-                body: JSON.stringify(data)
+        deleteAccount: async (data: IUser) => {
+            await apiFetch(`/accounts/deleteuser/${data.id}`, {
+                method: 'DELETE'
             })
-            dispatch({ type: 'EDIT', payLoad: fetch })
+            dispatch({ type: 'DELETE', payLoad: data })
         }
     }
 

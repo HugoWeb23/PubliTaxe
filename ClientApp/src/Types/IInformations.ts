@@ -6,5 +6,5 @@ export interface IInformation {
     exercice_courant: number,
     exercice: string,
     bourgmestre: string,
-    directeur_general: string
+    direction_generale: string
 }

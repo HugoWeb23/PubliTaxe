@@ -1,4 +1,4 @@
-import { useEffect, useState, memo } from 'react'
+import { useEffect, useState, memo, useContext } from 'react'
 import {
     Card,
     Row,
@@ -27,6 +27,7 @@ import { ReceivedModal } from './ReceivedModal'
 import { SearchIcon } from '../UI/SearchIcon'
 import { ExclamationIcon } from '../UI/ExclamationIcon'
 import { SearchModal } from './SearchModal'
+import { UserContext } from '../Contexts/UserContext'
 
 export const TaxManagement = () => {
 
@@ -35,7 +36,8 @@ export const TaxManagement = () => {
     const [deleteModal, setDeleteModal] = useState<{ show: boolean, entreprise: IApercu_entreprise }>({ show: false, entreprise: {} as IApercu_entreprise })
     const [receivedModal, setReceivedModal] = useState<boolean>(false)
     const [searchModal, setSearchModal] = useState<boolean>(false)
-    const [filterOptions, setFilterOptions] = useState<any>({matricules: [], noms: [], pubExoneration: false})
+    const [filterOptions, setFilterOptions] = useState<any>({ matricules: [], noms: [], pubExoneration: false })
+    const value = useContext(UserContext)
 
     useEffect(() => {
         (async () => {
@@ -79,20 +81,20 @@ export const TaxManagement = () => {
             <div className="d-flex justify-content-between align-items-center">
                 <h2 className="mt-2">Gestion des entreprises</h2>
                 <div>
-                    <Button variant="success" className="me-2" size="sm" onClick={() => setReceivedModal(true)}><SheetIcon /> Encodage des reçus</Button>
-                    <Link to="/notreceived" className="me-2 btn btn-danger btn-sm"><ExclamationIcon /> Encodage des non reçus</Link>
+                    {value.user && value.user.role > 1 && <><Button variant="success" className="me-2" size="sm" onClick={() => setReceivedModal(true)}><SheetIcon /> Encodage des reçus</Button>
+                        <Link to="/notreceived" className="me-2 btn btn-danger btn-sm"><ExclamationIcon /> Encodage des non reçus</Link></>}
                     <Button variant="secondary" size="sm" onClick={() => setSearchModal(true)}><SearchIcon /> Recherche</Button>
                 </div>
             </div>
-            <hr className="mt-3 mb-4"/>
+            <hr className="mt-3 mb-4" />
 
             <Row className="me-0 mt-0 mt-3">
                 <Col md="3" xs="12">
                     <Card>
                         <Card.Body>
-                            <div className="d-grid gap-2">
+                            {value.user && value.user.role > 1 && <div className="d-grid gap-2">
                                 <Link className="btn btn-primary btn-sm" to={'/entreprise/create'}>Nouvel enregistrement</Link>
-                            </div>
+                            </div>}
                         </Card.Body>
                     </Card>
                 </Col>
@@ -126,6 +128,7 @@ interface ITax {
 
 
 const Tax = memo(({ apercu_entreprise, index, handleDelete }: ITax) => {
+    const value = useContext(UserContext)
     return <>
         <tr key={index}>
             <td>{apercu_entreprise.matricule_ciger}</td>
@@ -134,7 +137,7 @@ const Tax = memo(({ apercu_entreprise, index, handleDelete }: ITax) => {
             <td className={apercu_entreprise.recu ? "table-success" : "table-danger"}>{apercu_entreprise.recu ? "Oui" : "Non"}</td>
             <td>
                 <div className="d-flex">
-                    <OverlayTrigger
+                    {value.user && value.user.role > 1 && <OverlayTrigger
                         placement="top"
                         overlay={
                             <Tooltip id={`tooltip-1`}>
@@ -143,7 +146,7 @@ const Tax = memo(({ apercu_entreprise, index, handleDelete }: ITax) => {
                         }
                     >
                         <Link className="me-1 btn btn-secondary btn-sm" to={`/entreprise/edit/${apercu_entreprise.matricule_ciger}`}><Pencil /></Link>
-                    </OverlayTrigger>
+                    </OverlayTrigger>}
                     <OverlayTrigger
                         placement="top"
                         overlay={
@@ -154,7 +157,7 @@ const Tax = memo(({ apercu_entreprise, index, handleDelete }: ITax) => {
                     >
                         <Link className="me-1 btn btn-info btn-sm" to={`/entreprise/view/${apercu_entreprise.matricule_ciger}`}><Eye /></Link>
                     </OverlayTrigger>
-                    <OverlayTrigger
+                    {value.user && value.user.role > 1 && <OverlayTrigger
                         placement="top"
                         overlay={
                             <Tooltip id={`tooltip-2`}>
@@ -163,7 +166,7 @@ const Tax = memo(({ apercu_entreprise, index, handleDelete }: ITax) => {
                         }
                     >
                         <Button size="sm" variant="danger" onClick={() => handleDelete(apercu_entreprise)}><Trash /></Button>
-                    </OverlayTrigger>
+                    </OverlayTrigger>}
                 </div>
             </td>
         </tr>

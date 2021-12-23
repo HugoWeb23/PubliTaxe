@@ -13,14 +13,15 @@ import { toast } from 'react-toastify'
 import { IUser } from "../../Types/IUser"
 import { useAccounts } from "../Hooks/AccountsHook"
 import { Trash } from "../UI/Trash"
+import { ConfirmModal } from "../UI/ConfirmModal"
 
 interface IManageFiscalyears {
     handleEdit: (fiscalYear: any) => void
 }
 
 export const ManageUsers = ({ handleEdit }: IManageFiscalyears) => {
-    const { accounts, getAllAccounts, editAccount } = useAccounts()
-    const [selectedFiscalYear, setSelectedFiscalYear] = useState({ user: {} as IUser, show: false })
+    const { accounts, getAllAccounts, deleteAccount } = useAccounts()
+    const [deleteModal, setDeleteModal] = useState<{ show: boolean, user: IUser }>({ show: false, user: {} as IUser })
     const [loader, setLoader] = useState<boolean>(true)
 
     useEffect(() => {
@@ -30,19 +31,29 @@ export const ManageUsers = ({ handleEdit }: IManageFiscalyears) => {
         })()
     }, [])
 
-    const handleSubmit = async ({ type, data }: any) => {
+    const handleDeleteAccount = async (user: IUser) => {
         try {
-
+            await deleteAccount(user)
+            toast.success("Utilisateur supprimé")
         } catch (e) {
             toast.error('Une erreur est survenue')
         }
     }
 
     return <>
+        <ConfirmModal
+            show={deleteModal.show}
+            element={deleteModal.user}
+            bodyText="Voulez-vous vraiment supprimer cet utilisateur ?"
+            onClose={() => setDeleteModal(e => ({ ...e, show: false }))}
+            onConfirm={handleDeleteAccount}
+        />
         <Container fluid="sm">
             <div className="d-flex justify-content-between align-items-center">
-                <h2 className="mt-2 mb-3">Gestion des utilisateurs</h2>
+                <h2 className="mt-3">Gestion des utilisateurs</h2>
+
             </div>
+            <hr className="my-3" />
             <Table striped bordered hover>
                 <thead>
                     <tr>
@@ -55,7 +66,7 @@ export const ManageUsers = ({ handleEdit }: IManageFiscalyears) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {loader == false && accounts.map((user: IUser, index: number) => <UserRow user={user} />)}
+                    {loader == false && accounts.map((user: IUser, index: number) => <UserRow user={user} onDelete={(user: IUser) => setDeleteModal({ show: true, user: user })} />)}
                 </tbody>
             </Table>
         </Container>
@@ -63,15 +74,16 @@ export const ManageUsers = ({ handleEdit }: IManageFiscalyears) => {
 }
 
 interface IUserRow {
-    user: IUser
+    user: IUser,
+    onDelete: (user: IUser) => void
 }
 
-const UserRow = ({ user }: IUserRow) => {
+const UserRow = ({ user, onDelete }: IUserRow) => {
     return <tr>
         <td>{user.id}</td>
         <td>{user.prenom}</td>
         <td>{user.nom}</td>
-        <td>{user.mail}</td>
+        <td>{user.mail} {user.changement_pass === 1 && <span className="fs-6 text-danger fw-bold">(Changement de mot de passe en attente)</span>}</td>
         <td>{user.actif ? "Oui" : "Non"}</td>
         <td><div className="d-flex">
             <OverlayTrigger
@@ -82,7 +94,7 @@ const UserRow = ({ user }: IUserRow) => {
                     </Tooltip>
                 }
             >
-                <Link className="me-1 btn btn-secondary btn-sm" to={{pathname: `/manageaccess/edit/${user.id}`, state: user}}><Pencil /></Link>
+                <Link className="me-1 btn btn-secondary btn-sm" to={{ pathname: `/manageaccess/edit/${user.id}`, state: user }}><Pencil /></Link>
             </OverlayTrigger>
             <OverlayTrigger
                 placement="top"
@@ -92,7 +104,7 @@ const UserRow = ({ user }: IUserRow) => {
                     </Tooltip>
                 }
             >
-                <Button size="sm" variant="danger"><Trash /></Button>
+                <Button size="sm" variant="danger" onClick={() => onDelete(user)}><Trash /></Button>
             </OverlayTrigger>
         </div></td>
     </tr>

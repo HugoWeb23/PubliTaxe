@@ -79,5 +79,20 @@ namespace Taxes.Controllers
             }
         }
 
+        [HttpDelete("deleteuser/{UserID}")]
+        public async Task<IActionResult> DeleteUser(long UserID)
+        {
+            try
+            {
+                bool DeleteSuccess = await _mediator.Send(new DeleteUserCommand(UserID));
+                if (!DeleteSuccess) return BadRequest(new { error = "Une erreur est survenue" });
+                return Ok(new { success = "L'utilisateur a été supprimé"});
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = "Une erreur est survenue", ex = e.Message });
+            }
+        }
+
     }
 }

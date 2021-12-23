@@ -30,13 +30,15 @@ import { UserContext } from './Components/Contexts/UserContext';
 import { ManageUsers } from './Components/ManageUsers/ManageUsers';
 import { EditUser } from './Components/ManageUsers/EditUser';
 import { PasswordChange } from './Components/ManageUsers/PasswordChange';
+import { ManageGeneralInformations } from './Components/TaxeManagement/GeneralInformations/ManageGeneralInformations';
+import { IInformation } from './Types/IInformations';
 
 export const App = () => {
   const [user, setUser] = useState<IUser | null>(null)
   const [motifsMajoration, setMotifsMajoration] = useState<any>(null)
   const [tarifs, setTarifs] = useState<any>(null)
   const [exerciceCourant, setExerciceCourant] = useState<any>(null)
-  const [informations, setInformations] = useState<any>(null)
+  const [informations, setInformations] = useState<IInformation | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
@@ -51,14 +53,22 @@ export const App = () => {
 
       }
       if (user !== null) {
-        const motifs = await apiFetch('/motifs_majoration/getall')
-        const tarifs = await apiFetch('/prices/getall')
-        const exerciceCourant = await apiFetch('/fiscalyears/getcurrentfiscalyear')
-        const informations = await apiFetch('/informations/getinformations')
-        setMotifsMajoration(motifs)
-        setTarifs(tarifs)
-        setExerciceCourant(exerciceCourant)
-        setInformations(informations)
+        if (motifsMajoration === null) {
+          const motifs = await apiFetch('/motifs_majoration/getall')
+          setMotifsMajoration(motifs)
+        }
+        if (tarifs === null) {
+          const tarifs = await apiFetch('/prices/getall')
+          setTarifs(tarifs)
+        }
+        if (exerciceCourant === null) {
+          const exerciceCourant = await apiFetch('/fiscalyears/getcurrentfiscalyear')
+          setExerciceCourant(exerciceCourant)
+        }
+        if (informations === null) {
+          const informations = await apiFetch('/informations/getinformations')
+          setInformations(informations)
+        }
       }
       setLoading(false)
     })()
@@ -113,6 +123,9 @@ export const App = () => {
             <ManageFiscalYears handleEdit={editFiscalYear} />
           </Route>
           <Route path="/tools/manageprices" component={ManagePrices} />
+          <Route path="/tools/managegeneralinformations">
+            {informations !== null ? <ManageGeneralInformations generalInformations={informations} handleChange={(data: IInformation) => setInformations(data)} /> : <Loader/>}
+          </Route>
           <Route path="/tools/changefiscalyear">
             <ChangeFiscalYear currentFiscalYear={exerciceCourant} handleChange={(data: IExercice) => setExerciceCourant(data)} />
           </Route>

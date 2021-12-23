@@ -37,6 +37,8 @@ namespace Taxes.Handlers
                 Prenom = CheckUser.Prenom,
                 Mail = CheckUser.Mail,
                 Actif = CheckUser.Actif,
+                Role = CheckUser.Role,
+                Changement_pass = CheckUser.Changement_pass,
                 Token = await _mediator.Send(new GenerateJwtTokenQuery(CheckUser))
             };
 

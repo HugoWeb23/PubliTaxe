@@ -43,5 +43,20 @@ namespace Taxes.Controllers
             
         }
 
+        [HttpPut("updateinformations")]
+        public async Task<IActionResult> UpdateInformations(Information Informations)
+        {
+            try
+            {
+                Information informations = await _mediator.Send(new UpdateInformationsCommand(Informations));
+                return Ok(informations);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { erreur = "Une erreur est survenue", exception = ex });
+            }
+
+        }
+
     }
 }

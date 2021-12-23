@@ -25,6 +25,13 @@ namespace Taxes.Handlers
                 throw new Exception("L'utilisateur n'existe pas");
             }
 
+            if (request.User.Mail != CheckUser.Mail)
+            {
+                Utilisateur CheckMailIsAvailable = _context.utilisateurs.AsNoTracking().FirstOrDefault(u => u.Mail == request.User.Mail);
+                if (CheckMailIsAvailable != null)
+                    throw new Exception("Un utilisateur est déjà associé à l'adresse e-mail saisie");
+            }
+
             request.User.Pass = CheckUser.Pass;
 
             _context.utilisateurs.Update(request.User);

@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { RouteComponentProps } from 'react-router-dom'
 import {
     Form,
     Button,
@@ -17,7 +16,6 @@ import { IUser } from '../../Types/IUser'
 import { CheckCircle } from '../UI/CheckCircle'
 import { ErrorCircle } from '../UI/ErrorCircle'
 import { toast } from 'react-toastify';
-import { boolean } from 'yup/lib/locale'
 import { Loader } from '../UI/Loader'
 
 interface IEditUser {
