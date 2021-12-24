@@ -41,6 +41,14 @@ export const useEntreprises = () => {
 
     const [state, dispatch] = useReducer(reducer, { entreprises: [], totalPages: 1, pageCourante: 1, elementsParPage: 15 });
 
+    const GetTaxes = async(options: any) => {
+        const fetch: ITaxManagement = await apiFetch(`/entreprises/names`, {
+            method: 'POST',
+            body: JSON.stringify(options)
+        })
+        dispatch({ type: 'FETCH_ALL', payLoad: fetch })
+    }
+
     return {
         entreprises: state.entreprises,
         totalPages: state.totalPages,
@@ -49,16 +57,15 @@ export const useEntreprises = () => {
         totalRecus: state.totalRecus,
         totalEntreprises: state.totalEntreprises,
         getAll: async (options: any) => {
-            const fetch: ITaxManagement = await apiFetch(`/entreprises/names`, {
-                method: 'POST',
-                body: JSON.stringify(options)
-            })
-            dispatch({ type: 'FETCH_ALL', payLoad: fetch })
+           await GetTaxes(options)
         },
         deleteOne: async (entreprise: IApercu_entreprise) => {
             await apiFetch(`/entreprises/delete/${entreprise.matricule_ciger}`, {
                 method: 'DELETE'
             })
+            if(state.entreprises.length <= 1 && state.totalPages > 1 ) {
+                await GetTaxes({pageCourante: 1})
+            }
             dispatch({ type: 'DELETE', payLoad: entreprise })
         },
         setReceived: async (selected: IApercu_entreprise[]) => {

@@ -38,28 +38,40 @@ export const ViewTax = ({ match }: any) => {
                 <hr className="my-3" />
             </div>
             {(loader === false && entreprise !== null) ? <>
-                <div>Matricule Ciger : <span className="fw-bold">{entreprise.matricule_ciger}</span></div>
-                <div>Procès-verbal : <span className="fw-bold">{entreprise.proces_verbal ? "Oui" : "Non"}</span></div>
-                <div>Province : <span className="fw-bold">{entreprise.province ? "Oui" : "Non"}</span></div>
-                <div>Reçu : <span className="fw-bold">{entreprise.recu ? "Oui" : "Non"}</span></div>
-                <div>Langue : <span className="fw-bold">{entreprise.role_linguistique === 1 ? "Français" : "Néerlandais"}</span></div>
-                <div>Nom : <span className="fw-bold">{entreprise.nom}</span></div>
-                <div>Code rue : <span className="fw-bold">{entreprise.code_rue}</span></div>
-                <div>Rue : <span className="fw-bold">{entreprise.adresse_rue}</span></div>
-                <div>Numéro : <span className="fw-bold">{entreprise.adresse_numero}</span></div>
-                <div>Index : <span className="fw-bold">{entreprise.adresse_index}</span></div>
-                <div>Boite : <span className="fw-bold">{entreprise.adresse_boite}</span></div>
-                <div>Numéro : <span className="fw-bold">{entreprise.adresse_numero}</span></div>
-                <div>Code postal : <span className="fw-bold">{entreprise.code_postal.cp}</span></div>
-                <div>Localité : <span className="fw-bold">{entreprise.code_postal.localite}</span></div>
-                <div>Téléphone : <span className="fw-bold">{entreprise.numero_telephone}</span></div>
-                <div>Fax : <span className="fw-bold">{entreprise.numero_fax}</span></div>
-                <div>Personne de contact : <span className="fw-bold">{entreprise.personne_contact}</span></div>
-                <div>Téléphone : <span className="fw-bold">{entreprise.telephone_contact}</span></div>
-                <div>Adresse e-mail : <span className="fw-bold">{entreprise.mail_contact}</span></div>
-                <div>Numéro de TVA : <span className="fw-bold">{entreprise.numero_tva}</span></div>
-                <div>% majoration : <span className="fw-bold">{entreprise.pourcentage_majoration}</span></div>
-                <div>Motif majoration : <span className="fw-bold">{entreprise.motif_majoration}</span></div>
+                <Row>
+                    <Col><div>Matricule Ciger : <span className="fw-bold">{entreprise.matricule_ciger}</span></div></Col>
+                    <Col><div>Procès-verbal : <span className="fw-bold">{entreprise.proces_verbal ? "Oui" : "Non"}</span></div></Col>
+                    <Col><div>Province : <span className="fw-bold">{entreprise.province ? "Oui" : "Non"}</span></div></Col>
+                    <Col><div>Reçu : <span className="fw-bold">{entreprise.recu ? "Oui" : "Non"}</span></div></Col>
+                    <Col><div>Langue : <span className="fw-bold">{entreprise.role_linguistique === 1 ? "Français" : "Néerlandais"}</span></div></Col>
+                </Row>
+                <Row>
+                    <Col><div>Nom : <span className="fw-bold">{entreprise.nom}</span></div></Col>
+                </Row>
+                <Row>
+                    <Col><div>Code rue : <span className="fw-bold">{entreprise.code_rue}</span></div></Col>
+                    <Col><div>Rue : <span className="fw-bold">{entreprise.adresse_rue}</span></div></Col>
+                    <Col><div>Numéro : <span className="fw-bold">{entreprise.adresse_numero}</span></div></Col>
+                    <Col><div>Index : <span className="fw-bold">{entreprise.adresse_index}</span></div></Col>
+                    <Col><div>Boite : <span className="fw-bold">{entreprise.adresse_boite}</span></div></Col>
+                    <Col><div>Numéro : <span className="fw-bold">{entreprise.adresse_numero}</span></div></Col>
+                </Row>
+                <Row>
+                    <Col><div>Code postal : <span className="fw-bold">{entreprise.code_postal.cp}</span></div></Col>
+                    <Col><div>Localité : <span className="fw-bold">{entreprise.code_postal.localite}</span></div></Col>
+                </Row>
+               <Row>
+                   <Col><div>Téléphone : <span className="fw-bold">{entreprise.numero_telephone}</span></div></Col>
+                   <Col><div>Fax : <span className="fw-bold">{entreprise.numero_fax}</span></div></Col>
+                   <Col><div>Personne de contact : <span className="fw-bold">{entreprise.personne_contact}</span></div></Col>
+                   <Col><div>Téléphone : <span className="fw-bold">{entreprise.telephone_contact}</span></div></Col>
+                   <Col><div>Adresse e-mail : <span className="fw-bold">{entreprise.mail_contact}</span></div></Col>
+               </Row>
+               <Row>
+                   <Col><div>Numéro de TVA : <span className="fw-bold">{entreprise.numero_tva}</span></div></Col>
+                   <Col><div>% majoration : <span className="fw-bold">{entreprise.pourcentage_majoration}</span></div></Col>
+                   <Col><div>Motif majoration : <span className="fw-bold">{entreprise.motif_majoration}</span></div></Col>
+               </Row>
                 <div>Commentaire : <span className="fw-bold">{entreprise.commentaire_taxation}</span></div>
                 <Card>
                     <Card.Header as="h6">Adresse de taxation</Card.Header>

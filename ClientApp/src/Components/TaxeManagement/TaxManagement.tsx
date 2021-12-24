@@ -29,6 +29,7 @@ import { ExclamationIcon } from '../UI/ExclamationIcon'
 import { SearchModal } from './SearchModal'
 import { UserContext } from '../Contexts/UserContext'
 import { Paginate } from '../../Services/Paginate'
+import { ElementsPerPage } from '../../Services/ElementsPerPage'
 
 export const TaxManagement = () => {
 
@@ -37,7 +38,7 @@ export const TaxManagement = () => {
     const [deleteModal, setDeleteModal] = useState<{ show: boolean, entreprise: IApercu_entreprise }>({ show: false, entreprise: {} as IApercu_entreprise })
     const [receivedModal, setReceivedModal] = useState<boolean>(false)
     const [searchModal, setSearchModal] = useState<boolean>(false)
-    const [filterOptions, setFilterOptions] = useState<any>({ matricules: [], noms: [], pubExoneration: false, pageCourante: 1 })
+    const [filterOptions, setFilterOptions] = useState<any>({ matricules: [], noms: [], pubExoneration: false, pageCourante: 1, elementsParPage: 15 })
     const value = useContext(UserContext)
 
     useEffect(() => {
@@ -88,7 +89,6 @@ export const TaxManagement = () => {
                 </div>
             </div>
             <hr className="mt-3 mb-4" />
-
             <Row className="me-0 mt-0 mt-3">
                 <Col md="3" xs="12">
                     <Card>
@@ -117,10 +117,24 @@ export const TaxManagement = () => {
                         </thead>
                         <tbody>
                             {loader && <div>Chargement...</div>}
-                            {(loader == false && entreprises.length > 0) && entreprises.map((entreprise: IApercu_entreprise, index: number) => <Tax apercu_entreprise={entreprise} index={index} handleDelete={(entreprise: IApercu_entreprise) => setDeleteModal({ show: true, entreprise: entreprise })} />)}
+                            {(loader == false && entreprises.length > 0) && entreprises.map((entreprise: IApercu_entreprise) => <Tax apercu_entreprise={entreprise} handleDelete={(entreprise: IApercu_entreprise) => setDeleteModal({ show: true, entreprise: entreprise })} />)}
                         </tbody>
                     </Table>
-                    {(loader == false && entreprises.length > 0) && <Paginate totalPages={totalPages} pageCourante={pageCourante} pageChange={(page) => setFilterOptions((filters: any) => ({ ...filters, pageCourante: page }))} />}
+                    {(loader == false && entreprises.length > 0) && <>
+                        <div className="d-flex justify-content-end align-items-center">
+                            <div className="me-2">
+                                <ElementsPerPage
+                                    elementsPerPage={filterOptions.elementsParPage}
+                                    onChange={(elements) => setFilterOptions((filters: any) => ({ ...filters, elementsParPage: elements }))}
+                                />
+                            </div>
+                            <Paginate
+                                totalPages={totalPages}
+                                pageCourante={pageCourante}
+                                pageChange={(page) => setFilterOptions((filters: any) => ({ ...filters, pageCourante: page }))}
+                            />
+                        </div>
+                    </>}
                 </Col>
             </Row>
         </Container>
@@ -129,15 +143,14 @@ export const TaxManagement = () => {
 
 interface ITax {
     apercu_entreprise: IApercu_entreprise,
-    index: number,
     handleDelete: (entreprise: IApercu_entreprise) => void
 }
 
 
-const Tax = memo(({ apercu_entreprise, index, handleDelete }: ITax) => {
+const Tax = memo(({ apercu_entreprise, handleDelete }: ITax) => {
     const value = useContext(UserContext)
     return <>
-        <tr key={index}>
+        <tr key={apercu_entreprise.matricule_ciger}>
             <td>{apercu_entreprise.matricule_ciger}</td>
             <td>{apercu_entreprise.nom}</td>
             <td>{apercu_entreprise.nombre_panneaux}</td>
