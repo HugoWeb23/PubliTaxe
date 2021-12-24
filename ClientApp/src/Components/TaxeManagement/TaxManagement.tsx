@@ -28,15 +28,16 @@ import { SearchIcon } from '../UI/SearchIcon'
 import { ExclamationIcon } from '../UI/ExclamationIcon'
 import { SearchModal } from './SearchModal'
 import { UserContext } from '../Contexts/UserContext'
+import { Paginate } from '../../Services/Paginate'
 
 export const TaxManagement = () => {
 
     const [loader, setLoader] = useState<boolean>(true)
-    const { entreprises, getAll, deleteOne, setReceived } = useEntreprises()
+    const { entreprises, totalPages, pageCourante, totalRecus, totalEntreprises, getAll, deleteOne, setReceived } = useEntreprises()
     const [deleteModal, setDeleteModal] = useState<{ show: boolean, entreprise: IApercu_entreprise }>({ show: false, entreprise: {} as IApercu_entreprise })
     const [receivedModal, setReceivedModal] = useState<boolean>(false)
     const [searchModal, setSearchModal] = useState<boolean>(false)
-    const [filterOptions, setFilterOptions] = useState<any>({ matricules: [], noms: [], pubExoneration: false })
+    const [filterOptions, setFilterOptions] = useState<any>({ matricules: [], noms: [], pubExoneration: false, pageCourante: 1 })
     const value = useContext(UserContext)
 
     useEffect(() => {
@@ -95,6 +96,11 @@ export const TaxManagement = () => {
                             {value.user && value.user.role > 1 && <div className="d-grid gap-2">
                                 <Link className="btn btn-primary btn-sm" to={'/entreprise/create'}>Nouvel enregistrement</Link>
                             </div>}
+                            <div className="mt-3">
+                                {entreprises.length > 0 && <div>
+                                    <span className="fw-bold">{totalRecus}</span> déclarations recues sur <span className="fw-bold">{totalEntreprises}</span> entreprises enregistrées ({Math.round((totalRecus * 100) / totalEntreprises)} %).
+                                </div>}
+                            </div>
                         </Card.Body>
                     </Card>
                 </Col>
@@ -114,6 +120,7 @@ export const TaxManagement = () => {
                             {(loader == false && entreprises.length > 0) && entreprises.map((entreprise: IApercu_entreprise, index: number) => <Tax apercu_entreprise={entreprise} index={index} handleDelete={(entreprise: IApercu_entreprise) => setDeleteModal({ show: true, entreprise: entreprise })} />)}
                         </tbody>
                     </Table>
+                    {(loader == false && entreprises.length > 0) && <Paginate totalPages={totalPages} pageCourante={pageCourante} pageChange={(page) => setFilterOptions((filters: any) => ({ ...filters, pageCourante: page }))} />}
                 </Col>
             </Row>
         </Container>

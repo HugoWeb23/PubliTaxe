@@ -5,5 +5,5 @@ using Taxes.ViewModels;
 
 namespace Taxes.Queries
 {
-    public record GetEntreprisesQuery(SearchFiltersViewModel Filters) : IRequest<List<Entreprise>>;
+    public record GetEntreprisesQuery(SearchFiltersViewModel Filters) : IRequest<EntreprisesViewModel>;
 }

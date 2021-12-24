@@ -180,7 +180,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                     </Col>
                     <Col>
                         <Form.Group controlId="proces_verbal">
-                            <Form.Label column="sm">Procès verbal</Form.Label>
+                            <Form.Label column="sm">Procès-verbal</Form.Label>
                             <Form.Check type="checkbox" isInvalid={errors.proces_verbal} {...register('proces_verbal')} />
                             {errors.proces_verbal && <Form.Control.Feedback type="invalid">{errors.proces_verbal.message}</Form.Control.Feedback>}
                         </Form.Group>

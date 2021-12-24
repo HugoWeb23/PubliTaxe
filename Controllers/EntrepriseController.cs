@@ -35,9 +35,14 @@ namespace Taxes.Controllers
         [HttpPost("names")]
         public async Task<IActionResult> GetNames(SearchFiltersViewModel Filters)
         {
-            List<Entreprise> entreprises = await _mediator.Send(new GetEntreprisesQuery(Filters));
-            var filtered = entreprises.Select(x => new { x.Matricule_ciger, x.Nom, nombre_panneaux = x.Publicites.Count, recu = x.Recu }).ToList();
-            return Ok(filtered);
+            Filters.ElementsParPage = 3;
+            if(Filters.PageCourante == 0)
+            {
+                Filters.PageCourante = 1;
+            }
+
+            EntreprisesViewModel model = await _mediator.Send(new GetEntreprisesQuery(Filters));
+            return Ok(model);
         }
 
         [HttpGet("searchbyid/{Matricule}")]

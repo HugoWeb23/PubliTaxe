@@ -316,7 +316,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
                     <Row>
                         <Col>
                             <Form.Group className="mb-3" controlId="taxe_totale">
-                                <Form.Label column="sm">Taxe totale</Form.Label>
+                                <Form.Label column="sm">Taxe</Form.Label>
                                 <InputGroup className="mb-2" size="sm">
                                     <Form.Control type="text" disabled placeholder="Taxe totale" size="sm" isInvalid={errors.taxe_totale} {...register('taxe_totale')} />
                                     <InputGroup.Text>€</InputGroup.Text>

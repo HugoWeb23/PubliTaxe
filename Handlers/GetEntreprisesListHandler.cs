@@ -7,10 +7,12 @@ using System.Threading;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Taxes.Services;
+using Taxes.ViewModels;
+using System;
 
 namespace Taxes.Handlers
 {
-    public class GetEntreprisesListHandler : IRequestHandler<GetEntreprisesQuery, List<Entreprise>>
+    public class GetEntreprisesListHandler : IRequestHandler<GetEntreprisesQuery, EntreprisesViewModel>
     {
         public Context _context;
 
@@ -18,7 +20,7 @@ namespace Taxes.Handlers
         {
             _context = context;
         }
-        public Task<List<Entreprise>> Handle(GetEntreprisesQuery request, CancellationToken cancellationToken)
+        public Task<EntreprisesViewModel> Handle(GetEntreprisesQuery request, CancellationToken cancellationToken)
         {
 
             var predicate = PredicateBuilder.True<Entreprise>();
@@ -48,7 +50,29 @@ namespace Taxes.Handlers
                 .Where(predicate)
                 .ToList();
 
-            return Task.FromResult(entreprises);
+            int TotalEntreprises = _context.entreprises.Count();
+            int TotalElements = entreprises.Count();
+            int TotalRecus = _context.entreprises.Where(e => e.Recu == true).Count();
+
+            int TotalPages = (int)Math.Ceiling(TotalElements / (double)request.Filters.ElementsParPage);
+            if(request.Filters.PageCourante > TotalPages)
+            {
+                request.Filters.PageCourante = TotalPages;
+            }
+            int Index = (request.Filters.PageCourante - 1) * request.Filters.ElementsParPage;
+
+            entreprises = entreprises.Skip(Index).Take(request.Filters.ElementsParPage).ToList();
+
+            return Task.FromResult(new EntreprisesViewModel
+            {
+                Entreprises = entreprises.Select(e => new EntrepriseInfos {  Matricule_ciger = e.Matricule_ciger, Nom = e.Nom, Nombre_panneaux = e.Publicites.Count, Recu = e.Recu}).ToList(),
+                TotalPages = TotalPages,
+                TotalRecus = TotalRecus,
+                TotalEntreprises = TotalEntreprises,
+                TotalElements = TotalElements,
+                PageCourante = request.Filters.PageCourante,
+                ElementsParPage = request.Filters.ElementsParPage
+            });
         }
     }
 }
