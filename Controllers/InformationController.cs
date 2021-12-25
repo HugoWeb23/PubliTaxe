@@ -38,7 +38,7 @@ namespace Taxes.Controllers
                 return Ok(informations);
             } catch(Exception ex)
             {
-                return BadRequest(new { erreur = "Une erreur est survenue", exception = ex });
+                return BadRequest(new { error = ex.Message });
             }
             
         }
@@ -53,7 +53,7 @@ namespace Taxes.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { erreur = "Une erreur est survenue", exception = ex });
+                return BadRequest(new { error = ex.Message });
             }
 
         }

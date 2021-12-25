@@ -32,6 +32,7 @@ import { EditUser } from './Components/ManageUsers/EditUser';
 import { PasswordChange } from './Components/ManageUsers/PasswordChange';
 import { ManageGeneralInformations } from './Components/TaxeManagement/GeneralInformations/ManageGeneralInformations';
 import { IInformation } from './Types/IInformations';
+import { IPrice } from './Types/IPrice';
 
 export const App = () => {
   const [user, setUser] = useState<IUser | null>(null)
@@ -101,43 +102,47 @@ export const App = () => {
         <UserContext.Provider value={value}>
           <ToastContainer autoClose={2500} />
           <Navigation />
-          <PrivateRoute path="/" exact component={TaxManagement} user={user} />
-          <Route path="/entreprise/edit/:id" exact render={(matchProps) =>
-            <EditTax {...matchProps} motifs={motifsMajoration} tarifs={tarifs} currentFiscalYear={exerciceCourant} informations={informations} />
-          }>
-          </Route>
-          <Route path="/entreprise/create/" exact>
+          <PrivateRoute path="/" exact component={TaxManagement} />
+          <PrivateRoute path="/entreprise/edit/:id" exact>
+            <EditTax motifs={motifsMajoration} tarifs={tarifs} currentFiscalYear={exerciceCourant} informations={informations} />
+          </PrivateRoute>
+          <PrivateRoute path="/entreprise/create/" exact>
             <CreateTax motifs={motifsMajoration} tarifs={tarifs} currentFiscalYear={exerciceCourant} />
-          </Route>
-          <Route path="/entreprise/view/:id" exact component={ViewTax} />
-          <Route path="/notreceived" exact>
+          </PrivateRoute>
+          <PrivateRoute path="/entreprise/view/:id" exact component={ViewTax} />
+          <PrivateRoute path="/notreceived" exact>
             {exerciceCourant != null ? <ManageNotReceived motifs={motifsMajoration} currentFiscalYear={exerciceCourant} /> : <Loader />}
-          </Route>
-          <Route path="/tools/printalldeclarations" exact>
-            {(tarifs != null && exerciceCourant != null && informations != null) && <PrintAllTaxes tarifs={tarifs} currentFiscalYear={exerciceCourant} informations={informations} />}
-          </Route>
-          <Route path="/tools/printallminutes" exact>
-            {(tarifs != null && motifsMajoration != null && exerciceCourant != null && informations != null) && <PrintAllMinutes tarifs={tarifs} motifsMajoration={motifsMajoration} currentFiscalYear={exerciceCourant} informations={informations} />}
-          </Route>
-          <Route path="/tools/managefiscalyears">
+          </PrivateRoute>
+          <PrivateRoute path="/tools/printalldeclarations" exact>
+            {(tarifs != null && exerciceCourant != null && informations != null) ? <PrintAllTaxes tarifs={tarifs} currentFiscalYear={exerciceCourant} informations={informations} /> : <Loader />}
+          </PrivateRoute>
+          <PrivateRoute path="/tools/printallminutes" exact>
+            {(tarifs != null && motifsMajoration != null && exerciceCourant != null && informations != null) ? <PrintAllMinutes tarifs={tarifs} motifsMajoration={motifsMajoration} currentFiscalYear={exerciceCourant} informations={informations} /> : <Loader />}
+          </PrivateRoute>
+          <PrivateRoute path="/tools/managefiscalyears">
             <ManageFiscalYears handleEdit={editFiscalYear} />
-          </Route>
-          <Route path="/tools/manageprices" component={ManagePrices} />
-          <Route path="/tools/managegeneralinformations">
-            {informations !== null ? <ManageGeneralInformations generalInformations={informations} handleChange={(data: IInformation) => setInformations(data)} /> : <Loader/>}
-          </Route>
-          <Route path="/tools/changefiscalyear">
+          </PrivateRoute>
+          <PrivateRoute path="/tools/manageprices">
+            <ManagePrices
+              handleEdit={(price: IPrice) => setTarifs((prices: IPrice[]) => prices.map((p: IPrice) => p.id === price.id ? price : p))}
+              handleCreate={(price: IPrice) => setTarifs((prices: IPrice[]) => ([...prices, price]))}
+            />
+          </PrivateRoute>
+          <PrivateRoute path="/tools/managegeneralinformations">
+            {informations !== null ? <ManageGeneralInformations generalInformations={informations} handleChange={(data: IInformation) => setInformations(data)} /> : <Loader />}
+          </PrivateRoute>
+          <PrivateRoute path="/tools/changefiscalyear">
             <ChangeFiscalYear currentFiscalYear={exerciceCourant} handleChange={(data: IExercice) => setExerciceCourant(data)} />
-          </Route>
+          </PrivateRoute>
           <Route path="/login">
             {user ? <Redirect to="/" /> : <Login handleLogin={toggleUser} />}
           </Route>
           <Route path="/register" component={Register} />
-          <Route path="/manageaccess/all" component={ManageUsers} />
-          <Route path="/manageaccess/edit/:id" exact component={EditUser} />
-          {<Route path="/passwordchange">
+          <PrivateRoute path="/manageaccess/all" component={ManageUsers} />
+          <PrivateRoute path="/manageaccess/edit/:id" exact component={EditUser} />
+          <Route path="/passwordchange">
             {user?.changement_pass === 1 ? <PasswordChange /> : <Redirect to="/" />}
-          </Route>}
+          </Route>
         </UserContext.Provider>
       </Router>
     }

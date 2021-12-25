@@ -22,7 +22,7 @@ namespace Taxes.Handlers
             _mediator = mediator;
         }
 
-        public async Task<bool> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
+        public Task<bool> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
         {
             Utilisateur User = _context.utilisateurs.FirstOrDefault(u => u.Id == request.Data.UserID);
             if (User == null)
@@ -37,7 +37,7 @@ namespace Taxes.Handlers
             User.Changement_pass = 0;
 
             _context.SaveChanges();
-            return true;
+            return Task.FromResult(true);
         }
     }
 }

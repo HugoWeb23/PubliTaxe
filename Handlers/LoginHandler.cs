@@ -29,6 +29,10 @@ namespace Taxes.Handlers
             {
                 throw new Exception("Adresse e-mail ou mot de passe incorrect");
             }
+            if(CheckUser.Actif == 0)
+            {
+                throw new Exception("Votre compte est désactivé");
+            }
 
             UserLoginViewModel userLoginViewModel = new UserLoginViewModel
             {

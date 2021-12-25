@@ -40,6 +40,7 @@ export const usePrices = () => {
                 body: JSON.stringify(data)
             })
             dispatch({ type: 'INSERT', payLoad: fetch })
+            return fetch
         },
         editPrice: async (data: IPrice) => {
             const fetch = await apiFetch(`/prices/edit`, {

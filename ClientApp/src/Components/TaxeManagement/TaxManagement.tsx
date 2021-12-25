@@ -38,7 +38,7 @@ export const TaxManagement = () => {
     const [deleteModal, setDeleteModal] = useState<{ show: boolean, entreprise: IApercu_entreprise }>({ show: false, entreprise: {} as IApercu_entreprise })
     const [receivedModal, setReceivedModal] = useState<boolean>(false)
     const [searchModal, setSearchModal] = useState<boolean>(false)
-    const [filterOptions, setFilterOptions] = useState<any>({ matricules: [], noms: [], pubExoneration: false, pageCourante: 1, elementsParPage: 15 })
+    const [filterOptions, setFilterOptions] = useState<any>({ matricule: "", nom: "", pubExoneration: false, pageCourante: 1, elementsParPage: 15 })
     const value = useContext(UserContext)
 
     useEffect(() => {
@@ -77,7 +77,7 @@ export const TaxManagement = () => {
         <SearchModal
             show={searchModal}
             handleClose={() => setSearchModal(false)}
-            handleSearch={(options) => setFilterOptions(options)}
+            handleSearch={(options) => setFilterOptions((filters: any) => ({...options, pageCourante: 1, elementsParPage: filters.elementsParPage}))}
         />
         <Container fluid={true}>
             <div className="d-flex justify-content-between align-items-center">
@@ -93,14 +93,13 @@ export const TaxManagement = () => {
                 <Col md="3" xs="12">
                     <Card>
                         <Card.Body>
-                            {value.user && value.user.role > 1 && <div className="d-grid gap-2">
+                            {value.user && value.user.role > 1 && <div className="d-grid gap-2 mb-3">
                                 <Link className="btn btn-primary btn-sm" to={'/entreprise/create'}>Nouvel enregistrement</Link>
                             </div>}
-                            <div className="mt-3">
                                 {entreprises.length > 0 && <div>
+                                    <div className="fs-5 mb-2">Statistiques</div>
                                     <span className="fw-bold">{totalRecus}</span> déclarations recues sur <span className="fw-bold">{totalEntreprises}</span> entreprises enregistrées ({Math.round((totalRecus * 100) / totalEntreprises)} %).
                                 </div>}
-                            </div>
                         </Card.Body>
                     </Card>
                 </Col>

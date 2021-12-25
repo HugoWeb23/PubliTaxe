@@ -20,6 +20,7 @@ namespace Taxes.Handlers
         public Task<List<Tarif>> Handle(GetAllPricesQuery request, CancellationToken cancellationToken)
         {
             List<Tarif> Tarifs = _context.tarifs
+                .OrderBy(t => t.ExerciceId)
                 .ToList();
             return Task.FromResult(Tarifs);
         }

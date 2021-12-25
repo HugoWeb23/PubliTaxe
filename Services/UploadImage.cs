@@ -22,14 +22,21 @@ namespace Taxes.Services
             List<string> fileNames = new List<string>();
             foreach (var image in images)
             {
-                StringBuilder fileName = new StringBuilder();
-                fileName.AppendFormat("{0}-{1}", Guid.NewGuid(), image.FileName);
-                string path = Path.Combine(_environment.ContentRootPath, "Uploads", "images/" + fileName);
-                using (var stream = new FileStream(path, FileMode.Create))
+                try
                 {
-                    await image.CopyToAsync(stream);
+                    StringBuilder fileName = new StringBuilder();
+                    fileName.AppendFormat("{0}-{1}", Guid.NewGuid(), image.FileName);
+                    string path = Path.Combine(_environment.ContentRootPath, "Uploads", "images/" + fileName);
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await image.CopyToAsync(stream);
+                    }
+                    fileNames.Add(fileName.ToString());
+                } catch(Exception)
+                {
+                    throw new Exception("Une erreur est survenue");
                 }
-                fileNames.Add(fileName.ToString());
+                
             }
 
             return fileNames;
@@ -37,15 +44,15 @@ namespace Taxes.Services
 
         public Task<Boolean> DeleteImage(string imageName)
         {
-            string path = Path.Combine(_environment.ContentRootPath, "Uploads", "images/" + imageName);
             try
             {
+                string path = Path.Combine(_environment.ContentRootPath, "Uploads", "images/" + imageName);
                 File.Delete(path);
                 return Task.FromResult(true);
 
-            } catch(Exception e)
+            } catch(Exception)
             {
-                return Task.FromResult(false);
+                throw new Exception("Une erreur est survenue");
             }
             
         }

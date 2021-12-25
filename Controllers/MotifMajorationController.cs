@@ -26,9 +26,9 @@ namespace Taxes.Controllers
                 List<MotifMajoration> motifs = await _mediator.Send(new GetAllReasonsQuery());
                 return Ok(motifs);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return BadRequest(new ErreurSimple { Erreur = "Une erreur est survenue", Details = e.ToString() });
+                return BadRequest(new { error = ex.Message});
             }
 
         }

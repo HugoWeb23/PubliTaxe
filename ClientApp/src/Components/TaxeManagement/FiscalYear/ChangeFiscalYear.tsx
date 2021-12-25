@@ -10,7 +10,7 @@ import {
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { IExercice } from '../../../Types/IExercice'
-import { apiFetch } from '../../../Services/apiFetch'
+import { ApiErrors, apiFetch } from '../../../Services/apiFetch'
 import { Loader } from '../../UI/Loader'
 import { Link } from "react-router-dom"
 import { PlusIcon } from '../../UI/PlusIcon'
@@ -64,7 +64,9 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
             handleChange(currentFiscalYear)
             toast.success(`Passage à l'exercice ${currentFiscalYear.annee_exercice} effectué avec succès`)
         } catch (e) {
-            toast.error("Une erreur est survenue")
+            if (e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
         }
 
         setConfirmModal(false)
@@ -90,7 +92,6 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
                 <h2 className="mt-2 mb-3">Changement d'exercice</h2>
                 <Link to="/tools/managefiscalyears" className="link"><PlusIcon /> Créer un exercice</Link>
             </div>
-
             <Card body>
                 <Form>
                     <Form.Group controlId="exercice">

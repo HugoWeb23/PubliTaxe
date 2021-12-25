@@ -38,7 +38,7 @@ namespace Taxes.Controllers
                 return Ok(notReceived);
             } catch(Exception ex)
             {
-                return BadRequest(new { error = "Une erreur est survenue", exception = ex });
+                return BadRequest(new { error = ex.Message });
             }
             
         }
@@ -46,8 +46,15 @@ namespace Taxes.Controllers
         [HttpGet("gethistory/{Matricule}")]
         public async Task<IActionResult> GetHistory(long Matricule)
         {
-            var NotReceivedHistory = await _mediator.Send(new GetNotReceivedHistoryQuery(Matricule));
-            return Ok(NotReceivedHistory);
+            try
+            {
+                var NotReceivedHistory = await _mediator.Send(new GetNotReceivedHistoryQuery(Matricule));
+                return Ok(NotReceivedHistory);
+            } catch(Exception ex)
+            {
+                return BadRequest(new { error = ex.Message});
+            }
+            
         }
     }
 }

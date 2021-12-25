@@ -25,11 +25,17 @@ namespace Taxes.Handlers
         {
             List<Publicite> pubs = await _mediator.Send(new GetAllAdvertisingByFiscalYearQuery());
             Exercice Fiscalyear = await _mediator.Send(new GetFiscalYearByIdQuery(request.FiscalYearId), cancellationToken);
+            List<Tarif> prices = await _mediator.Send(new GetAllPricesQuery());
             Information Informations = await _mediator.Send(new GetInformationsQuery());
 
-            if(Fiscalyear == null)
+            if (Fiscalyear == null)
             {
                 throw new Exception("L'exercice n'existe pas");
+            }
+
+            if (prices.Where(p => p.ExerciceId == request.FiscalYearId).FirstOrDefault() == null)
+            {
+                throw new Exception("Aucun tarif n'est lié à cet exercice");
             }
 
             pubs.ForEach(pub =>

@@ -10,8 +10,6 @@ namespace Taxes.Entities
 {
     public class Tarif
     {
-        internal decimal data;
-
         [Key]
         public long Id { get; set; }
         public long ExerciceId { get; set; }

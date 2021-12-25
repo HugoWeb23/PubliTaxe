@@ -16,7 +16,12 @@ import { PriceModal } from "./PriceModal"
 import { IExercice } from "../../../Types/IExercice"
 import { apiFetch } from "../../../Services/apiFetch"
 
-export const ManagePrices = () => {
+interface IManagePrices {
+    handleEdit: (price: IPrice) => void,
+    handleCreate: (price: IPrice) => void
+}
+
+export const ManagePrices = ({handleEdit, handleCreate}: IManagePrices) => {
     const { prices, getAll, editPrice, newPrice } = usePrices()
     const [selectedPrice, setSelectedPrice] = useState<{ price: IPrice, show: boolean, type: string }>({ price: {} as IPrice, show: false, type: 'create' })
     const [fiscalYears, setFiscalYears] = useState<IExercice[]>([])
@@ -36,12 +41,14 @@ export const ManagePrices = () => {
     const handleSubmit = async ({ type, data }: any) => {
         try {
             if (type == 'create') {
-                await newPrice(data)
+                const price: IPrice = await newPrice(data)
                 setSelectedPrice(elem => ({ ...elem, show: false }))
+                handleCreate(price)
                 toast.success("Le tarif a été créé")
             } else if (type == 'edit') {
                 await editPrice(data)
                 setSelectedPrice(elem => ({ ...elem, show: false }))
+                handleEdit(data)
                 toast.success("L'exercice a été modifié")
             }
         } catch (e: any) {

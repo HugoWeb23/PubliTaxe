@@ -27,9 +27,9 @@ namespace Taxes.Controllers
             {
                 List<Rue> rues = await _mediator.Send(new GetStreetsByCodeQuery(CodeRue));
                 return Ok(rues);
-            } catch(Exception e)
+            } catch(Exception ex)
             {
-                return BadRequest(new ErreurSimple { Erreur = "Une erreur est survenue", Details = e.ToString()});
+                return BadRequest(new { error = ex.Message});
             }
             
         }
@@ -42,9 +42,9 @@ namespace Taxes.Controllers
             List<Rue> rues = await _mediator.Send(new GetStreetsByNameQuery(NomRue.Nom_rue));
             return Ok(rues);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            return BadRequest(new ErreurSimple { Erreur = "Une erreur est survenue", Details = e.ToString() });
+            return BadRequest(new { error = ex.Message });
         }
 
     }

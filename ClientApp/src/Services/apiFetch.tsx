@@ -1,5 +1,3 @@
-import axios from 'axios'
-
 interface IErrors {
     field: any,
     message: string
@@ -11,13 +9,8 @@ export class ApiErrors {
         this.errors = errors
     }
 
-    get error() {
-        if (this.errors.error) {
-            const errors: any[] = []
-            this.errors.globalErrors.forEach((error: any) => errors.push(error.message))
-            return errors;
-        }
-        return []
+    get singleError() {
+        return {error : this.errors.singleError};
     }
 
     get errorsPerField() {
@@ -27,7 +20,6 @@ export class ApiErrors {
             return errors;
         }
         return []
-
     }
 }
 
@@ -59,10 +51,8 @@ export const apiFetch = async (endpoint: string, options = {} as any) => {
         if (responseData.errors) {
             throw new ApiErrors({ errorsPerField: responseData.errors })
         } if (responseData.error) {
-            throw new ApiErrors(responseData.error)
+            throw new ApiErrors({ singleError: responseData.error})
         }
     }
-
-
 
 }

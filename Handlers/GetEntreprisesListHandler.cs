@@ -50,6 +50,10 @@ namespace Taxes.Handlers
                 .Where(predicate)
                 .ToList();
 
+            if (request.Filters.PageCourante == 0) request.Filters.PageCourante = 1;
+            if(request.Filters.ElementsParPage == 0) request.Filters.ElementsParPage = 15;
+
+
             int TotalEntreprises = _context.entreprises.Count();
             int TotalElements = entreprises.Count();
             int TotalRecus = _context.entreprises.Where(e => e.Recu == true).Count();

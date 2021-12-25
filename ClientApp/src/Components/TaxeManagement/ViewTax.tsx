@@ -23,9 +23,14 @@ export const ViewTax = ({ match }: any) => {
 
     useEffect(() => {
         (async () => {
-            const entreprise = await apiFetch(`/entreprises/id/${entrepriseID}`)
-            setEntreprise(entreprise)
-            setLoader(false)
+            try {
+                const entreprise = await apiFetch(`/entreprises/id/${entrepriseID}`)
+                setEntreprise(entreprise)
+                setLoader(false)
+            } catch(e: any) {
+                
+            }
+            
         })()
     }, [])
     return <>

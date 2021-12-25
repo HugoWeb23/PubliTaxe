@@ -24,15 +24,29 @@ namespace Taxes.Controllers
         [HttpGet("all")]
         public async Task<IActionResult> GetAll()
         {
-            List<Exercice> FiscalYears = await _mediator.Send(new GetAllFiscalYearsQuery());
-            return Ok(FiscalYears);
+            try
+            {
+                List<Exercice> FiscalYears = await _mediator.Send(new GetAllFiscalYearsQuery());
+                return Ok(FiscalYears);
+            } catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            
         }
 
         [HttpGet("getcurrentfiscalyear")]
         public async Task<IActionResult> GetCurrentFiscalYear()
         {
-            Exercice FiscalYear = await _mediator.Send(new GetCurrentFiscalYearQuery());
-            return Ok(FiscalYear);
+            try
+            {
+                Exercice FiscalYear = await _mediator.Send(new GetCurrentFiscalYearQuery());
+                return Ok(FiscalYear);
+            } catch(Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+           
         }
 
         [HttpPost("new")]
@@ -71,7 +85,7 @@ namespace Taxes.Controllers
                 return Ok(FiscalYear);
             } catch(Exception ex)
             {
-                return BadRequest(new { error = "Une erreur est survenue", exception = ex });
+                return BadRequest(new { error = ex.Message });
             }
         }
     }

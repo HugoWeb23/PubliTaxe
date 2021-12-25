@@ -12,9 +12,9 @@ export const pricesByTypes: IPricesByTypes[] = [
 export const SumTax = (exercice: number, quantite: number, surface: number, face: number, typePub: number, tarifs: any) => {
     const data = pricesByTypes.find((element: IPricesByTypes) => element.type == typePub)?.value
     if (data != undefined) {
-        if (exercice == null)
-            return 0.00
+        if (exercice == null) return 0.00
         const price = (surface * tarifs.find((tarif: any) => tarif.exerciceId == exercice)[data]) * quantite * face
+        if(price === undefined) return 0.00
         return !isNaN(price) ? price.toFixed(2) : 0.00
     } else {
         return 0.00

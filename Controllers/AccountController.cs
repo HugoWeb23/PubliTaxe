@@ -44,9 +44,9 @@ namespace Taxes.Controllers
             {
                 List<Utilisateur> Users = await _mediator.Send(new GetAllUsersQuery());
                 return Ok(Users);
-            } catch (Exception)
+            } catch (Exception ex)
             {
-                return BadRequest(new { error = "Une erreur est survenue" });
+                return BadRequest(new { error = ex.Message });
             }
         }
 
@@ -58,9 +58,9 @@ namespace Taxes.Controllers
                 Utilisateur user = await _mediator.Send(new UpdateUserCommand(User));
                 return Ok(user);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return BadRequest(new { error = "Une erreur est survenue", ex = e.Message });
+                return BadRequest(new { error = ex.Message });
             }
         }
 
@@ -73,9 +73,9 @@ namespace Taxes.Controllers
                 string NewPassword = await _mediator.Send(new GenerateNewUserPasswordCommand(UserID));
                 return Ok(new {password = NewPassword});
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return BadRequest(new { error = "Une erreur est survenue", ex = e.Message });
+                return BadRequest(new { error = ex.Message });
             }
         }
 
@@ -88,9 +88,9 @@ namespace Taxes.Controllers
                 if (!DeleteSuccess) return BadRequest(new { error = "Une erreur est survenue" });
                 return Ok(new { success = "L'utilisateur a été supprimé"});
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return BadRequest(new { error = "Une erreur est survenue", ex = e.Message });
+                return BadRequest(new { error = ex.Message });
             }
         }
 

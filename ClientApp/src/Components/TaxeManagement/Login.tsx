@@ -1,15 +1,17 @@
 import {
     Card,
     Button,
-    Form
+    Form,
+    Alert
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import MouscronLogo from '../../Images/MouscronLogo.png'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoginFormSchema } from '../../Validation/Login/LoginFormSchema'
-import { apiFetch } from '../../Services/apiFetch'
+import { ApiErrors, apiFetch } from '../../Services/apiFetch'
 import { IUser } from '../../Types/IUser'
+import { useState } from 'react';
 
 interface ILogin {
     handleLogin: (user: IUser) => void
@@ -17,14 +19,22 @@ interface ILogin {
 
 export const Login = ({handleLogin}: ILogin) => {
     const { register, handleSubmit, reset, formState: { errors, isSubmitSuccessful } } = useForm({resolver: yupResolver(LoginFormSchema)})
+    const [loginError, setLoginError] = useState<any>(null)
     
     const OnSubmit = async(data: any) => {
-        const user: IUser = await apiFetch('/user/login', {
-            method: 'POST',
-            body: JSON.stringify(data)
-        })
-        localStorage.setItem('token', user.token)
-        handleLogin(user)
+        try {
+            setLoginError(null)
+            const user: IUser = await apiFetch('/user/login', {
+                method: 'POST',
+                body: JSON.stringify(data)
+            })
+            localStorage.setItem('token', user.token)
+            handleLogin(user)
+        } catch(e: any) {
+            if(e instanceof ApiErrors) {
+                setLoginError(e.singleError)
+            }
+        }
     }
     
     return <>
@@ -39,6 +49,7 @@ export const Login = ({handleLogin}: ILogin) => {
                         <Card.Title>Connexion</Card.Title>
                         <Link to="/register" className="link">S'inscrire</Link>
                     </div>
+                    {loginError && <Alert className="mt-3" variant="danger">{loginError.error}</Alert>}
                     <Form onSubmit={handleSubmit(OnSubmit)}>
                         <Form.Group controlId="mail" className="mt-3">
                             <Form.Label>Adresse e-mail</Form.Label>

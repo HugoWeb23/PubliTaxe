@@ -35,14 +35,15 @@ namespace Taxes.Controllers
         [HttpPost("names")]
         public async Task<IActionResult> GetNames(SearchFiltersViewModel Filters)
         {
-            Filters.ElementsParPage = 3;
-            if(Filters.PageCourante == 0)
+            try
             {
-                Filters.PageCourante = 1;
+                EntreprisesViewModel model = await _mediator.Send(new GetEntreprisesQuery(Filters));
+                return Ok(model);
+            } catch(Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
             }
-
-            EntreprisesViewModel model = await _mediator.Send(new GetEntreprisesQuery(Filters));
-            return Ok(model);
+            
         }
 
         [HttpGet("searchbyid/{Matricule}")]
@@ -82,13 +83,13 @@ namespace Taxes.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { erreur = "Une erreur est survenue" });
+                return BadRequest(new { error = ex.Message });
             }
 
         }
 
         [HttpGet("id/{matricule}")]
-        public async Task<IActionResult> GetById(int matricule)
+        public async Task<IActionResult> GetById(long matricule)
         {
             try
             {
@@ -100,7 +101,7 @@ namespace Taxes.Controllers
                 return Ok(entreprise);
             } catch (Exception ex)
             {
-                return BadRequest(new { error = ex });
+                return BadRequest(new { error = ex.Message });
             }
 
         }
@@ -116,7 +117,7 @@ namespace Taxes.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { error = ex });
+                return BadRequest(new { error = ex.Message });
             }
 
         }
@@ -129,9 +130,9 @@ namespace Taxes.Controllers
             {
                 Entreprise entr = await _mediator.Send(new UpdateEntrepriseCommand(entreprise));
                 return Ok(entr);
-            } catch (Exception e)
+            } catch (Exception ex)
             {
-                return BadRequest(new ErreurSimple { Erreur = "Une erreur est survenue lors de la modification de l'entreprise", Details = e.ToString() });
+                return BadRequest(new { error = ex.Message });
             }
 
         }
@@ -145,9 +146,9 @@ namespace Taxes.Controllers
                 Publicite entr = await _mediator.Send(new UpdatePubliciteCommand(publicite));
                 return Ok(publicite);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return BadRequest(new ErreurSimple { Erreur = "Une erreur est survenue lors de la modification de la publicité", Details = e.ToString() });
+                return BadRequest(new { error = ex.Message });
             }
 
         }
@@ -158,11 +159,17 @@ namespace Taxes.Controllers
         {
             if(images == null || images.Count == 0)
             {
-                return BadRequest("Erreur");
+                return BadRequest(new { error = "Veuillez sélectionner au moins une image"});
             }
             UploadImage UploadImage = new UploadImage(_environment);
-            List<string> filesNames = await UploadImage.Upload(images);
-            return Ok(filesNames);
+            try
+            {
+                List<string> filesNames = await UploadImage.Upload(images);
+                return Ok(filesNames);
+            } catch(Exception ex)
+            {
+                return BadRequest(new { error = ex.Message});
+            }
 
         }
 
@@ -171,37 +178,59 @@ namespace Taxes.Controllers
         public async Task<IActionResult> DeleteImage(string imagename)
         {
             UploadImage UploadImage = new UploadImage(_environment);
-            await _mediator.Send(new DeleteImageCommand(imagename));
-            bool Resut = await UploadImage.DeleteImage(imagename);
-            if(Resut == true)
+            try
             {
-                return Ok(new { type = "success", message = "L'image a été supprimée" });
-            } else
+                await UploadImage.DeleteImage(imagename);
+                await _mediator.Send(new DeleteImageCommand(imagename));
+                return Ok(new { success = "L'image a été supprimée" });
+            } catch(Exception ex)
             {
-                return BadRequest(new { type = "error", message = "Une erreur est survenue lors de la suppression de l'image" });
+                return BadRequest(new { error = ex.Message });
             }
+            
         }
 
         [HttpGet("printallbycity/{citytype}")]
         public async Task<IActionResult> PrintAllByCity(int citytype)
         {
-            List<Entreprise> entreprises = await _mediator.Send(new GetEntreprisesByCityType(citytype));
-            return Ok(entreprises);
+            try
+            {
+                List<Entreprise> entreprises = await _mediator.Send(new GetEntreprisesByCityType(citytype));
+                return Ok(entreprises);
+            } catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            
         }
 
         [HttpGet("printallminutes")]
         public async Task<IActionResult> PrintAllMinutes()
         {
-            List<Entreprise> entreprises = await _mediator.Send(new GetEntreprisesByMinutesQuery());
-            return Ok(entreprises);
+            try
+            {
+                List<Entreprise> entreprises = await _mediator.Send(new GetEntreprisesByMinutesQuery());
+                return Ok(entreprises);
+            } catch(Exception ex)
+            {
+                return BadRequest(new { error = ex.Message});
+            }
+            
         }
 
         [HttpGet("notreceived/{FiscalYear}")]
         public async Task<IActionResult> GetNotReceived(long FiscalYear)
         {
-            List<Entreprise> entreprises = await _mediator.Send(new GetNotReceivedQuery(FiscalYear));
-            var filtered = entreprises.Select(x => new { x.Matricule_ciger, x.Nom, nombre_panneaux = x.Publicites.Count }).ToList();
-            return Ok(filtered);
+            try
+            {
+                List<Entreprise> entreprises = await _mediator.Send(new GetNotReceivedQuery(FiscalYear));
+                var filtered = entreprises.Select(x => new { x.Matricule_ciger, x.Nom, nombre_panneaux = x.Publicites.Count }).ToList();
+                return Ok(filtered);
+            } catch(Exception ex)
+            {
+                return BadRequest(new { error = ex.Message});
+            }
+            
         }
 
         [AuthorizeRole(MinRole: 2)]
@@ -215,10 +244,10 @@ namespace Taxes.Controllers
                 {
                     return BadRequest(new { error = "Une erreur est survenue lors de la suppression de l'entreprise" });
                 }
-                return Ok(new {type = "success", message = "L'entreprise a été supprimée"});
+                return Ok(new { success = "L'entreprise a été supprimée"});
             } catch(Exception ex)
             {
-                return BadRequest(new { error = ex.Message, exception = ex });
+                return BadRequest(new { error = ex.Message });
             }
         }
 
@@ -232,7 +261,7 @@ namespace Taxes.Controllers
                 return Ok(entreprises.Select(ent => new { Matricule_ciger = ent.Matricule_ciger, Recu = ent.Recu}));
             } catch(Exception ex)
             {
-                return BadRequest(new { erreur = "Une erreur est survenue" });
+                return BadRequest(new { erreur = ex.Message });
             }
             
         }

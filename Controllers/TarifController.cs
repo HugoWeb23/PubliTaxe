@@ -25,8 +25,15 @@ namespace Taxes.Controllers
         [HttpGet("getall")]
         public async Task<IActionResult> GetAll()
         {
-            List<Tarif> Tarifs = await _mediator.Send(new GetAllPricesQuery());
-            return Ok(Tarifs);
+            try
+            {
+                List<Tarif> Tarifs = await _mediator.Send(new GetAllPricesQuery());
+                return Ok(Tarifs);
+            } catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            
         }
 
         [HttpPost("new")]
