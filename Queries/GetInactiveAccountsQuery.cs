@@ -5,5 +5,5 @@ using Taxes.ViewModels;
 
 namespace Taxes.Queries
 {
-    public record GetAllUsersQuery() : IRequest<List<UserWithoutPassViewModel>>;
+    public record GetInactiveAccountsQuery() : IRequest<List<UserWithoutPassViewModel>>;
 }

@@ -6,6 +6,7 @@ import {
     Form,
     Button
 } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { PrintAllTaxesSchema } from '../../Validation/Tax/PrintAllTaxesSchema'
@@ -24,29 +25,36 @@ interface IPrintAllTaxes {
     informations: IInformation
 }
 
-export const PrintAllTaxes = ({tarifs, currentFiscalYear, informations}: IPrintAllTaxes) => {
+export const PrintAllTaxes = ({ tarifs, currentFiscalYear, informations }: IPrintAllTaxes) => {
 
     const date = new Date()
-    const initialValues = ({...informations, date_echeance: currentFiscalYear.date_echeance, date_impression: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`})
+    const initialValues = ({ ...informations, date_echeance: currentFiscalYear.date_echeance, date_impression: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}` })
 
     const { register, handleSubmit, formState: { errors } } = useForm<any>({ resolver: yupResolver(PrintAllTaxesSchema), defaultValues: initialValues })
-    
-    const launchPrint = async(data: any) => {
+
+    const launchPrint = async (data: any) => {
         const entreprises = await apiFetch(`/entreprises/printallbycity/${data.type}`)
-        if(data.type == 1) {
-            data.options = { print_declaration: true, print_letter: false, print_form: false}
-        } else if(data.type == 2) {
-            data.options = { print_declaration: true, print_letter: true, print_form: false}
+        if (data.type == 1) {
+            data.options = { print_declaration: true, print_letter: false, print_form: false }
+        } else if (data.type == 2) {
+            data.options = { print_declaration: true, print_letter: true, print_form: false }
         }
         const blob = await pdf((
             <Printer entreprises={entreprises} printData={data} tarifs={tarifs} currentFiscalYear={currentFiscalYear} />
-          )).toBlob();
-          saveAs(blob, 'document.pdf');
+        )).toBlob();
+        saveAs(blob, 'document.pdf');
     }
 
     return <>
         <Container fluid="sm">
+            <nav aria-label="breadcrumb" className="mt-3">
+                <ol className="breadcrumb">
+                    <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
+                    <li className="breadcrumb-item active" aria-current="page">Imprimer toutes les déclarations</li>
+                </ol>
+            </nav>
             <h2 className="mt-2 mb-3">Imprimer toutes les déclarations</h2>
+            <hr className="my-3" />
             <Card body>
                 <Form onSubmit={handleSubmit(launchPrint)}>
                     <Form.Group controlId="type">

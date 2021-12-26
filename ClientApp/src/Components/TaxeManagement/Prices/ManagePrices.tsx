@@ -15,13 +15,14 @@ import { IPrice } from "../../../Types/IPrice"
 import { PriceModal } from "./PriceModal"
 import { IExercice } from "../../../Types/IExercice"
 import { apiFetch } from "../../../Services/apiFetch"
+import { Link } from "react-router-dom"
 
 interface IManagePrices {
     handleEdit: (price: IPrice) => void,
     handleCreate: (price: IPrice) => void
 }
 
-export const ManagePrices = ({handleEdit, handleCreate}: IManagePrices) => {
+export const ManagePrices = ({ handleEdit, handleCreate }: IManagePrices) => {
     const { prices, getAll, editPrice, newPrice } = usePrices()
     const [selectedPrice, setSelectedPrice] = useState<{ price: IPrice, show: boolean, type: string }>({ price: {} as IPrice, show: false, type: 'create' })
     const [fiscalYears, setFiscalYears] = useState<IExercice[]>([])
@@ -56,7 +57,7 @@ export const ManagePrices = ({handleEdit, handleCreate}: IManagePrices) => {
         }
     }
 
-    const memoPricesIds:  number[] = useMemo(() => {
+    const memoPricesIds: number[] = useMemo(() => {
         const fiscalYearsUsed = prices.map((price: IPrice) => price.exerciceId)
         return fiscalYearsUsed
     }, [prices])
@@ -64,11 +65,18 @@ export const ManagePrices = ({handleEdit, handleCreate}: IManagePrices) => {
     return <>
         <PriceModal element={selectedPrice} fiscalYears={fiscalYears} fiscalYearsUsed={memoPricesIds} handleClose={() => setSelectedPrice(price => ({ ...price, show: false, type: 'create' }))} onSubmit={handleSubmit} />
         <Container fluid="sm">
-            <div className="d-flex justify-content-between align-items-center">
-                <h2 className="mt-2 mb-3">Gestion des tarifs</h2>
+            <nav aria-label="breadcrumb" className="mt-3">
+                <ol className="breadcrumb">
+                    <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
+                    <li className="breadcrumb-item active" aria-current="page">Gestion des tarifs</li>
+                </ol>
+            </nav>
+            <div className="d-flex justify-content-between align-items-center mt-2 mb-3">
+                <h2 className="mb-0">Gestion des tarifs</h2>
                 <div className="link" onClick={() => setSelectedPrice(price => ({ ...price, show: true, type: 'create' }))}><PlusIcon /> Nouveau tarif</div>
             </div>
-            <Table striped bordered hover style={{verticalAlign: "middle", textAlign: "center"}}>
+            <hr className="my-3"/>
+            <Table striped bordered hover style={{ verticalAlign: "middle", textAlign: "center" }}>
                 <thead>
                     <tr>
                         <th>Exercice</th>

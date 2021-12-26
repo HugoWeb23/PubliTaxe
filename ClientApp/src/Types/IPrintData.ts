@@ -1,4 +1,6 @@
-export interface IPrintData {
+import { IInformation } from "./IInformations";
+
+export interface IPrintData extends IInformation {
     date_echeance: string,
     date_impression: string,
     personne_contact: string,

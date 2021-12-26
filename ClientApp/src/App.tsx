@@ -33,6 +33,8 @@ import { PasswordChange } from './Components/ManageUsers/PasswordChange';
 import { ManageGeneralInformations } from './Components/TaxeManagement/GeneralInformations/ManageGeneralInformations';
 import { IInformation } from './Types/IInformations';
 import { IPrice } from './Types/IPrice';
+import { ManageInactiveAccounts } from './Components/ManageUsers/ManageInactiveAccounts';
+import { ManageAccount } from './Components/UserAccount/ManageAccount';
 
 export const App = () => {
   const [user, setUser] = useState<IUser | null>(null)
@@ -140,6 +142,10 @@ export const App = () => {
           <Route path="/register" component={Register} />
           <PrivateRoute path="/manageaccess/all" component={ManageUsers} />
           <PrivateRoute path="/manageaccess/edit/:id" exact component={EditUser} />
+          <PrivateRoute path="/manageaccess/pendingaccounts" component={ManageInactiveAccounts} />
+          <PrivateRoute path="/account/manageaccount">
+            <ManageAccount />
+          </PrivateRoute>
           <Route path="/passwordchange">
             {user?.changement_pass === 1 ? <PasswordChange /> : <Redirect to="/" />}
           </Route>

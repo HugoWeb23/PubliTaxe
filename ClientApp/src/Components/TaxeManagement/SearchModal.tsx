@@ -56,7 +56,7 @@ export const SearchModal = ({show, handleClose, handleSearch}: ISearchModal) => 
         streetRef.current.clear()
     }
     return <>
-        <Modal show={show} onHide={handleClose} size="lg">
+        <Modal show={show} onHide={handleClose} size="lg" animation={false}>
             <Modal.Header closeButton>
                 <Modal.Title>Recherche</Modal.Title>
             </Modal.Header>

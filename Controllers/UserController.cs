@@ -26,12 +26,12 @@ namespace Taxes.Controllers
         {
             try
             {
-                Utilisateur User = await _mediator.Send(new NewUserCommand(Utilisateur));
+                UserWithoutPassViewModel User = await _mediator.Send(new NewUserCommand(Utilisateur));
                 return Ok(User);
             }
             catch (Exception ex)
             {
-                return BadRequest(new { error = ex.Message });
+                return BadRequest(new { error = ex.Message, ex = ex });
             }
 
         }
@@ -56,7 +56,7 @@ namespace Taxes.Controllers
         {
             try
             {
-                Utilisateur User = (Utilisateur)HttpContext.Items["User"];
+                UserWithoutPassViewModel User = (UserWithoutPassViewModel)HttpContext.Items["User"];
                 if (User == null)
                 {
                     return BadRequest(new {error = "Vous n'êtes pas connecté"});
@@ -80,6 +80,23 @@ namespace Taxes.Controllers
                 if (!UpdatePassword) return BadRequest(new { error = "Une erreur est survenue" });
 
                 return Ok( new { success = "Le mot de passe a été modifié"});
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
+        }
+
+        [HttpPut("myaccount")]
+        public async Task<IActionResult> UpdateMyAccount(Utilisateur Data)
+        {
+            try
+            {
+                UserWithoutPassViewModel User = (UserWithoutPassViewModel)HttpContext.Items["User"];
+                Data.Id = User.Id;
+                UserWithoutPassViewModel NewUser = await _mediator.Send(new EditMyAccountCommand(Data));
+                return Ok(NewUser);
             }
             catch (Exception ex)
             {

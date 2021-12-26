@@ -8,16 +8,20 @@ import {
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { Pencil } from "../UI/Pencil"
-import { apiFetch } from "../../Services/apiFetch"
+import { ApiErrors, apiFetch } from "../../Services/apiFetch"
 import { toast } from 'react-toastify'
 import { IUser } from "../../Types/IUser"
-import { useAccounts } from "../Hooks/AccountsHook"
+import { useInactiveAccounts } from "../Hooks/InactiveAccountsHook"
 import { Trash } from "../UI/Trash"
 import { ConfirmModal } from "../UI/ConfirmModal"
 import { Loader } from "../UI/Loader"
 
-export const ManageUsers = () => {
-    const { accounts, getAllAccounts, deleteAccount } = useAccounts()
+interface IManageFiscalyears {
+    handleEdit: (fiscalYear: any) => void
+}
+
+export const ManageInactiveAccounts = ({ handleEdit }: IManageFiscalyears) => {
+    const { accounts, getAllAccounts, deleteAccount, activateAccount } = useInactiveAccounts()
     const [deleteModal, setDeleteModal] = useState<{ show: boolean, user: IUser }>({ show: false, user: {} as IUser })
     const [loader, setLoader] = useState<boolean>(true)
 
@@ -38,6 +42,17 @@ export const ManageUsers = () => {
         }
     }
 
+    const handleActivateAccount = async(user: IUser) => {
+        try {
+            await activateAccount(user)
+            toast.success("Le compte a été activé")
+        } catch(e: any) {
+            if(e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
+        }
+    }
+
     return <>
         <ConfirmModal
             show={deleteModal.show}
@@ -50,10 +65,10 @@ export const ManageUsers = () => {
             <nav aria-label="breadcrumb" className="mt-3">
                 <ol className="breadcrumb">
                     <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
-                    <li className="breadcrumb-item active" aria-current="page">Gestion des utilisateurs</li>
+                    <li className="breadcrumb-item active" aria-current="page">Utilisateurs en attente d'activation</li>
                 </ol>
             </nav>
-            <h2 className="mt-2">Gestion des utilisateurs</h2>
+            <h2 className="mt-2">Utilisateurs en attente d'activation</h2>
             <hr className="my-3" />
             <Table striped bordered hover>
                 <thead>
@@ -68,7 +83,11 @@ export const ManageUsers = () => {
                 </thead>
                 <tbody>
                     {(loader === false && accounts.length === 0) && <tr><td colSpan={6}>Aucun résultat</td></tr>}
-                    {loader == false ? accounts.map((user: IUser, index: number) => <UserRow user={user} onDelete={(user: IUser) => setDeleteModal({ show: true, user: user })} />) : <Loader/>}
+                    {loader === false ? accounts.map((user: IUser, index: number) => <UserRow
+                        user={user}
+                        onDelete={(user: IUser) => setDeleteModal({ show: true, user: user })}
+                        onActivate={(user: IUser) => handleActivateAccount(user)}
+                    />) : <Loader/>}
                 </tbody>
             </Table>
         </Container>
@@ -77,10 +96,11 @@ export const ManageUsers = () => {
 
 interface IUserRow {
     user: IUser,
-    onDelete: (user: IUser) => void
+    onDelete: (user: IUser) => void,
+    onActivate: (user: IUser) => void
 }
 
-const UserRow = ({ user, onDelete }: IUserRow) => {
+const UserRow = ({ user, onDelete, onActivate }: IUserRow) => {
     return <tr>
         <td>{user.id}</td>
         <td>{user.prenom}</td>
@@ -88,26 +108,8 @@ const UserRow = ({ user, onDelete }: IUserRow) => {
         <td>{user.mail} {user.changement_pass === 1 && <span className="fs-6 text-danger fw-bold">(Changement de mot de passe en attente)</span>}</td>
         <td>{user.actif ? "Oui" : "Non"}</td>
         <td><div className="d-flex">
-            <OverlayTrigger
-                placement="top"
-                overlay={
-                    <Tooltip id={`tooltip-1`}>
-                        Éditer
-                    </Tooltip>
-                }
-            >
-                <Link className="me-1 btn btn-secondary btn-sm" to={{ pathname: `/manageaccess/edit/${user.id}`, state: user }}><Pencil /></Link>
-            </OverlayTrigger>
-            <OverlayTrigger
-                placement="top"
-                overlay={
-                    <Tooltip id={`tooltip-2`}>
-                        Supprimer
-                    </Tooltip>
-                }
-            >
-                <Button size="sm" variant="danger" onClick={() => onDelete(user)}><Trash /></Button>
-            </OverlayTrigger>
+            <Button variant="success" size="sm" className="me-2" onClick={() => onActivate({...user, actif: 1})}>Activer</Button>
+            <Button variant="danger" size="sm" onClick={() => onDelete(user)}>Supprimer</Button>
         </div></td>
     </tr>
 }

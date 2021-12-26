@@ -68,7 +68,6 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
                 toast.error(e.singleError.error)
             }
         }
-
         setConfirmModal(false)
     }
 
@@ -88,10 +87,17 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
             leaveButtonVariant="danger"
         />
         <Container fluid="sm">
-            <div className="d-flex justify-content-between align-items-center">
-                <h2 className="mt-2 mb-3">Changement d'exercice</h2>
+            <nav aria-label="breadcrumb" className="mt-3">
+                <ol className="breadcrumb">
+                    <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
+                    <li className="breadcrumb-item active" aria-current="page">Changement d'exercice</li>
+                </ol>
+            </nav>
+            <div className="d-flex justify-content-between align-items-center mt-2 mb-3">
+                <h2 className="mb-0">Changement d'exercice</h2>
                 <Link to="/tools/managefiscalyears" className="link"><PlusIcon /> Créer un exercice</Link>
             </div>
+            <hr className="my-3" />
             <Card body>
                 <Form>
                     <Form.Group controlId="exercice">
@@ -101,8 +107,8 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
                                 return <option value={fiscalYear.id} disabled={fiscalYear.id === currentFiscalYear.id}>{fiscalYear.annee_exercice}</option>
                             })}
                         </Form.Select>
-                        <div className="d-grid gap-2 mt-3">
-                            <Button variant="danger" size="sm" onClick={() => setConfirmModal(true)}>
+                        <div className="mt-3">
+                            <Button variant="danger" onClick={() => setConfirmModal(true)}>
                                 Changer d'exercice
                             </Button>
                         </div>

@@ -11,22 +11,25 @@ import MouscronLogo from '../../Images/MouscronLogo.png'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { RegisterFormSchema } from '../../Validation/Register/RegisterFormSchema'
-import { apiFetch } from '../../Services/apiFetch'
+import { ApiErrors, apiFetch } from '../../Services/apiFetch'
 import { useState } from 'react';
 
 export const Register = () => {
-    const { register, handleSubmit, reset, formState: { errors, isSubmitSuccessful } } = useForm({resolver: yupResolver(RegisterFormSchema)})
-    const [error, setError] = useState<any>(null)
-    const OnSubmit = async(data: any) => {
+    const { register, handleSubmit, reset, formState: { errors } } = useForm({ resolver: yupResolver(RegisterFormSchema) })
+    const [alert, setAlert] = useState<{ type: string, message: string } | null>(null)
+    const OnSubmit = async (data: any) => {
         try {
-            setError(null)
+            setAlert(null)
             const CreateAccount = await apiFetch('/user/newaccount', {
                 method: 'POST',
                 body: JSON.stringify(data)
             })
             reset()
-        } catch(e: any) {
-            setError(e.error)
+            setAlert({ type: 'success', message: "Votre compte a été créé, il est en attente d'activation." })
+        } catch (e: any) {
+            if (e instanceof ApiErrors) {
+                setAlert({ type: 'danger', message: e.singleError.error })
+            }
         }
     }
 
@@ -38,8 +41,7 @@ export const Register = () => {
             </div>
             <Card style={{ width: '40rem' }}>
                 <Card.Body>
-                    {error != null && <Alert variant="danger">{error}</Alert>}
-                    {isSubmitSuccessful && <Alert variant="success">Votre compte a été créé, il est en attente d'activation.</Alert>}
+                    {alert != null && <Alert variant={alert.type}>{alert.message}</Alert>}
                     <div className="d-flex justify-content-between align-items-center">
                         <Card.Title>Inscription</Card.Title>
                         <Link to="/login" className="link">Se connecter</Link>

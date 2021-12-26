@@ -143,7 +143,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
     }
 
     return <>
-        <Modal show={show} onHide={handleClose} size="xl">
+        <Modal show={show} onHide={handleClose} size="xl" animation={false}>
             <Modal.Header closeButton>
                 <Modal.Title>{type == 'edit' ? `Éditer un panneau` : 'Créer un panneau'}</Modal.Title>
             </Modal.Header>

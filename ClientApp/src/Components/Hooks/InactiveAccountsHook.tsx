@@ -11,7 +11,7 @@ interface Action {
     payLoad: any
 }
 
-export const useAccounts = () => {
+export const useInactiveAccounts = () => {
 
     const reducer = (state: State, action: Action) => {
         switch (action.type) {
@@ -29,8 +29,15 @@ export const useAccounts = () => {
     return {
         accounts: state.accounts,
         getAllAccounts: async () => {
-            const accounts: IUser[] = await apiFetch('/accounts/getallusers')
+            const accounts: IUser[] = await apiFetch('/accounts/inactiveaccounts')
             dispatch({ type: 'FETCH_ALL_ACCOUNTS', payLoad: accounts })
+        },
+        activateAccount: async (data: IUser) => {
+            await apiFetch(`/accounts/updateuser`, {
+                method: 'PUT',
+                body: JSON.stringify(data)
+            })
+            dispatch({ type: 'DELETE', payLoad: data })
         },
         deleteAccount: async (data: IUser) => {
             await apiFetch(`/accounts/deleteuser/${data.id}`, {

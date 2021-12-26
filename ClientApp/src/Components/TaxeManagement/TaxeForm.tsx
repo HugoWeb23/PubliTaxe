@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef } from "react";
-import { useForm, useFieldArray, Controller } from "react-hook-form"
+import { useState } from "react";
+import { useForm, Controller } from "react-hook-form"
 import {
     Form,
     Button,
@@ -15,14 +15,12 @@ import { StreetCodeModal } from "./StreetCodeModal";
 import { IRue } from "../../Types/IRue";
 import { IMotif_majoration } from "../../Types/IMotif_majoration";
 import { apiFetch } from "../../Services/apiFetch";
-import { ErrorAlert } from "../UI/ErrorAlert";
 import { toast } from 'react-toastify';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { TaxeFormSchema } from "../../Validation/Tax/TaxFormSchema";
 import { Link } from "react-router-dom";
 import { LeftArrow } from '../UI/LeftArroy'
 import { ManageAdvertising } from './ManageAdvertising'
-import { IPublicite } from "../../Types/IPublicite";
 import { Printer } from "../UI/Printer";
 import { IndividualPrint } from './IndividualPrint';
 import { IExercice } from "../../Types/IExercice";

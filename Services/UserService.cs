@@ -2,12 +2,13 @@
 using System.Threading.Tasks;
 using Taxes.Entities;
 using Taxes.Queries;
+using Taxes.ViewModels;
 
 namespace Taxes.Services
 {
     public interface IUserService
     {
-        Task<Utilisateur> GetById(long Id);
+        Task<UserWithoutPassViewModel> GetById(long Id);
     }
     public class UserService : IUserService
     {
@@ -17,9 +18,9 @@ namespace Taxes.Services
             _mediator = mediator;
         }
 
-        public async Task<Utilisateur> GetById(long id)
+        public async Task<UserWithoutPassViewModel> GetById(long id)
         {
-            Utilisateur user = await _mediator.Send(new GetUserByIdQuery(id));
+            UserWithoutPassViewModel user = await _mediator.Send(new GetUserByIdQuery(id));
             return user;
         }
     }

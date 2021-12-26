@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using Taxes.Entities;
+using Taxes.ViewModels;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class AuthorizeRoleAttribute : Attribute, IAuthorizationFilter
@@ -14,7 +15,7 @@ public class AuthorizeRoleAttribute : Attribute, IAuthorizationFilter
     }
     public void OnAuthorization(AuthorizationFilterContext context)
     {
-        var user = (Utilisateur)context.HttpContext.Items["User"];
+        var user = (UserWithoutPassViewModel)context.HttpContext.Items["User"];
 
         if(user == null)
         {

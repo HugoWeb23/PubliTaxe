@@ -36,7 +36,7 @@ export const PriceModal = ({ element, fiscalYears, fiscalYearsUsed, handleClose,
   }
 
   return <>
-    <Modal show={element.show} onHide={handleClose}>
+    <Modal show={element.show} onHide={handleClose} animation={false}>
       <Modal.Header closeButton>
         <Modal.Title>{element.type == "create" ? "Créer" : "Éditer"} un tarif</Modal.Title>
       </Modal.Header>

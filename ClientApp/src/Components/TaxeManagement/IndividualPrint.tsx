@@ -49,7 +49,7 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalY
   const print_minutes = watch('options.print_minutes')
 
   return <>
-    <Modal show={show} onHide={onClose} size="xl">
+    <Modal show={show} onHide={onClose} size="xl" animation={false}>
       <Modal.Header closeButton>
         <Modal.Title>Impression individuelle</Modal.Title>
       </Modal.Header>

@@ -11,6 +11,7 @@ import {
     OverlayTrigger,
     Tooltip
 } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 import { IApercu_entreprise } from '../../../Types/IApercu_entreprise'
 import { Entreprise } from '../../../Types/IEntreprise'
 import { IExercice } from '../../../Types/IExercice'
@@ -43,7 +44,7 @@ export const ManageNotReceived = ({ motifs, currentFiscalYear }: IManageNotRecei
         try {
             data.exerciceId = currentFiscalYear.id
             await Insert(data)
-            setSelectedEntreprise(ent => ({...ent, show: false}))
+            setSelectedEntreprise(ent => ({ ...ent, show: false }))
             toast.success('Opération effectuée avec succès')
         } catch (e) {
             toast.error('Une erreur est survenue')
@@ -57,7 +58,14 @@ export const ManageNotReceived = ({ motifs, currentFiscalYear }: IManageNotRecei
     return <>
         <NotReceivedModal element={selectedEntreprise} motifs={motifs} currentFiscalYear={currentFiscalYear} handleClose={() => setSelectedEntreprise(el => ({ ...el, show: false }))} onSubmit={EncodeNotReceived} />
         <Container fluid={true}>
+            <nav aria-label="breadcrumb" className="mt-3">
+                <ol className="breadcrumb">
+                    <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
+                    <li className="breadcrumb-item active" aria-current="page">Encodage des non reçus</li>
+                </ol>
+            </nav>
             <h2 className="mt-2 mb-3">Encodage des déclarations non reçues (exercice {currentFiscalYear.annee_exercice})</h2>
+            <hr className="my-3"/>
             <Table striped bordered hover size="sm">
                 <thead>
                     <tr>

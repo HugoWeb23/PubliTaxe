@@ -27,7 +27,7 @@ namespace Taxes.Controllers
         {
             try
             {
-                Utilisateur User = await _mediator.Send(new GetUserByIdQuery(Id));
+                UserWithoutPassViewModel User = await _mediator.Send(new GetUserByIdQuery(Id));
                 return Ok(User);
             }
             catch (Exception ex)
@@ -42,7 +42,7 @@ namespace Taxes.Controllers
         {
             try
             {
-                List<Utilisateur> Users = await _mediator.Send(new GetAllUsersQuery());
+                List<UserWithoutPassViewModel> Users = await _mediator.Send(new GetAllUsersQuery());
                 return Ok(Users);
             } catch (Exception ex)
             {
@@ -87,6 +87,20 @@ namespace Taxes.Controllers
                 bool DeleteSuccess = await _mediator.Send(new DeleteUserCommand(UserID));
                 if (!DeleteSuccess) return BadRequest(new { error = "Une erreur est survenue" });
                 return Ok(new { success = "L'utilisateur a été supprimé"});
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpGet("inactiveaccounts")]
+        public async Task<IActionResult> GetInactiveAccounts()
+        {
+            try
+            {
+                List<UserWithoutPassViewModel> utilisateurs = await _mediator.Send(new GetInactiveAccountsQuery());
+                return Ok(utilisateurs);
             }
             catch (Exception ex)
             {

@@ -44,18 +44,18 @@ export const StreetCodeModal = ({ isOpen, handleClose, onSelect }: StreetCodeMod
         handleClose()
     }
 
-    return <Modal show={isOpen} onHide={handleClose} size="xl" >
+    return <Modal show={isOpen} onHide={handleClose} size="xl" animation={false}>
         <Modal.Header closeButton>
             <Modal.Title>Recherche par code de rue</Modal.Title>
         </Modal.Header>
         <Modal.Body>
             <Form onSubmit={handleSubmit(OnSearch)} className="mb-3">
                 <Form.Group controlId="code_rue">
-                    <Form.Label>Code rue</Form.Label>
-                    <Form.Control type="text" placeholder="Code rue" isInvalid={errors.code_rue} autoFocus {...register('code_rue')} />
+                    <Form.Label column="sm">Code rue</Form.Label>
+                    <Form.Control type="text" placeholder="Code rue" size="sm" isInvalid={errors.code_rue} autoFocus {...register('code_rue')} />
                     {errors.code_rue && <Form.Control.Feedback type="invalid">{errors.code_rue.message}</Form.Control.Feedback>}
                 </Form.Group>
-                <Button type="submit" variant="primary" className="mt-3">Chercher</Button>
+                <Button type="submit" size="sm" variant="primary" className="mt-3">Chercher</Button>
             </Form>
             {problem != null && <ErrorAlert erreur={problem.erreur} details={problem.details}/>}
             {rues == null && <Alert variant="warning">Aucun résultat</Alert>}

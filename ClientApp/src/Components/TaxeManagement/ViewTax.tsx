@@ -27,19 +27,22 @@ export const ViewTax = ({ match }: any) => {
                 const entreprise = await apiFetch(`/entreprises/id/${entrepriseID}`)
                 setEntreprise(entreprise)
                 setLoader(false)
-            } catch(e: any) {
-                
+            } catch (e: any) {
+
             }
-            
+
         })()
     }, [])
     return <>
         <Container fluid="xl">
             <div className="mt-3">
-                <Link to="/" className="link"><LeftArrow /> Retour à la liste des entreprises</Link>
-                <div className="d-flex justify-content-between align-items-center">
-                    <h4 className="mt-3">Consulter les informations d'une entreprise {entreprise !== null && <span className="fw-bold">({entreprise.nom})</span>}</h4>
-                </div>
+                <nav aria-label="breadcrumb" className="mt-3">
+                    <ol className="breadcrumb">
+                        <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
+                        <li className="breadcrumb-item active" aria-current="page">Consulter une entreprise</li>
+                    </ol>
+                </nav>
+                <h4 className="mt-2">Consulter les informations d'une entreprise {entreprise !== null && <span className="fw-bold">({entreprise.nom})</span>}</h4>
                 <hr className="my-3" />
             </div>
             {(loader === false && entreprise !== null) ? <>
@@ -65,18 +68,18 @@ export const ViewTax = ({ match }: any) => {
                     <Col><div>Code postal : <span className="fw-bold">{entreprise.code_postal.cp}</span></div></Col>
                     <Col><div>Localité : <span className="fw-bold">{entreprise.code_postal.localite}</span></div></Col>
                 </Row>
-               <Row>
-                   <Col><div>Téléphone : <span className="fw-bold">{entreprise.numero_telephone}</span></div></Col>
-                   <Col><div>Fax : <span className="fw-bold">{entreprise.numero_fax}</span></div></Col>
-                   <Col><div>Personne de contact : <span className="fw-bold">{entreprise.personne_contact}</span></div></Col>
-                   <Col><div>Téléphone : <span className="fw-bold">{entreprise.telephone_contact}</span></div></Col>
-                   <Col><div>Adresse e-mail : <span className="fw-bold">{entreprise.mail_contact}</span></div></Col>
-               </Row>
-               <Row>
-                   <Col><div>Numéro de TVA : <span className="fw-bold">{entreprise.numero_tva}</span></div></Col>
-                   <Col><div>% majoration : <span className="fw-bold">{entreprise.pourcentage_majoration}</span></div></Col>
-                   <Col><div>Motif majoration : <span className="fw-bold">{entreprise.motif_majoration}</span></div></Col>
-               </Row>
+                <Row>
+                    <Col><div>Téléphone : <span className="fw-bold">{entreprise.numero_telephone}</span></div></Col>
+                    <Col><div>Fax : <span className="fw-bold">{entreprise.numero_fax}</span></div></Col>
+                    <Col><div>Personne de contact : <span className="fw-bold">{entreprise.personne_contact}</span></div></Col>
+                    <Col><div>Téléphone : <span className="fw-bold">{entreprise.telephone_contact}</span></div></Col>
+                    <Col><div>Adresse e-mail : <span className="fw-bold">{entreprise.mail_contact}</span></div></Col>
+                </Row>
+                <Row>
+                    <Col><div>Numéro de TVA : <span className="fw-bold">{entreprise.numero_tva}</span></div></Col>
+                    <Col><div>% majoration : <span className="fw-bold">{entreprise.pourcentage_majoration}</span></div></Col>
+                    <Col><div>Motif majoration : <span className="fw-bold">{entreprise.motif_majoration}</span></div></Col>
+                </Row>
                 <div>Commentaire : <span className="fw-bold">{entreprise.commentaire_taxation}</span></div>
                 <Card>
                     <Card.Header as="h6">Adresse de taxation</Card.Header>

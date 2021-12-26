@@ -11,17 +11,18 @@ using Taxes.ViewModels;
 
 namespace Taxes.Handlers
 {
-    public class GetAllUsersHandler : IRequestHandler<GetAllUsersQuery, List<UserWithoutPassViewModel>>
+    public class GetInactiveAccountsHandler : IRequestHandler<GetInactiveAccountsQuery, List<UserWithoutPassViewModel>>
     {
         public Context _context;
 
-        public GetAllUsersHandler(Context context)
+        public GetInactiveAccountsHandler(Context context)
         {
             _context = context;
         }
-        public Task<List<UserWithoutPassViewModel>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
+        public Task<List<UserWithoutPassViewModel>> Handle(GetInactiveAccountsQuery request, CancellationToken cancellationToken)
         {
             List<UserWithoutPassViewModel> Utilisateurs = _context.utilisateurs
+                .Where(u => u.Actif == 0)
                 .Select(user => new UserWithoutPassViewModel
                 {
                     Id = user.Id,
@@ -31,8 +32,7 @@ namespace Taxes.Handlers
                     Actif = user.Actif,
                     Role = user.Role,
                     Changement_pass = user.Changement_pass
-                })
-                .ToList();
+                }).ToList();
 
             return Task.FromResult(Utilisateurs);
         }

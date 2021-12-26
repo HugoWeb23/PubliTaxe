@@ -193,7 +193,7 @@ export const LetterPrinter = ({ entreprise, printData, tarifs, currentFiscalYear
             <View style={styles.SignatureSection}>
                 <View>
                     <Text style={styles.NormalText}>La Directrice Générale</Text>
-                    <Text style={[styles.NormalText, { marginTop: '5mm' }]}>Nathalie BLANCKE</Text>
+                    <Text style={[styles.NormalText, { marginTop: '5mm' }]}>{printData.direction_generale}</Text>
                     <Image src={blancke_signature} style={[styles.BlanckeSignature, { marginTop: '5mm' }]} />
                 </View>
                 <View>
@@ -201,7 +201,7 @@ export const LetterPrinter = ({ entreprise, printData, tarifs, currentFiscalYear
                 </View>
                 <View>
                     <Text style={styles.NormalText}>La Bourgmestre</Text>
-                    <Text style={[styles.NormalText, { marginTop: '5mm' }]}>Brigitte AUBERT</Text>
+                    <Text style={[styles.NormalText, { marginTop: '5mm' }]}>{printData.bourgmestre}</Text>
                     <Image src={aubert_signature} style={[styles.AubertSignature, { marginTop: '5mm' }]} />
                 </View>
             </View>

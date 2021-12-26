@@ -20,7 +20,7 @@ interface IConfirmModal {
 export const ConfirmModal = ({ show, element, size = undefined, titleText = "Confirmation", bodyText = "Voulez-vous vraiment supprimer cet élément ?", confirmButtonText = "Supprimer", confirmButtonVariant = "danger", leaveButtonText = "Annuler", leaveButtonVariant = "secondary", onClose, onConfirm }: IConfirmModal) => {
 
     return <>
-        <Modal show={show} onHide={onClose} size={size}>
+        <Modal show={show} onHide={onClose} size={size} animation={false}>
             <Modal.Header closeButton>
                 <Modal.Title>{titleText}</Modal.Title>
             </Modal.Header>

@@ -63,7 +63,7 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
     }
 
     return <>
-        <Modal show={element.show} onHide={handleClose} size="xl">
+        <Modal show={element.show} onHide={handleClose} size="xl" animation={false}>
             <Modal.Header closeButton>
                 <Modal.Title>Encoder un non reçu</Modal.Title>
             </Modal.Header>
