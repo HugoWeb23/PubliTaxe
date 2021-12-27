@@ -10,23 +10,42 @@ import {
     Container,
     Table,
     Modal,
-    Alert
+    Alert,
+    Image
 } from 'react-bootstrap'
 import { Link, Redirect } from 'react-router-dom'
 import { LeftArrow } from "../UI/LeftArroy"
 import { Loader } from "../UI/Loader"
+import { IPublicite, IPubliciteImage } from "../../Types/IPublicite"
+import { ViewAdvertisingModal } from "./ViewAdvertisingModal"
+import { IMotif_majoration } from "../../Types/IMotif_majoration"
+import { IExercice } from "../../Types/IExercice"
+import { IPrintData } from "../../Types/IPrintData"
+import { IInformation } from "../../Types/IInformations"
+import { IndividualPrint } from "./IndividualPrint"
+import { Printer } from "../UI/Printer"
 
-export const ViewTax = ({ match }: any) => {
+interface IViewTax {
+    match?: any,
+    motifs: IMotif_majoration[],
+    tarifs: any,
+    currentFiscalYear: IExercice,
+    informations?: IInformation,
+}
+
+export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations }: IViewTax) => {
     const entrepriseID = match.params.id
     const [entreprise, setEntreprise] = useState<Entreprise | null>(null)
-    const [loader, setLoader] = useState<boolean>(false)
+    const [viewPubModal, setViewPubModal] = useState<{ show: boolean, publicite: IPublicite }>({ show: false, publicite: {} as IPublicite })
+    const [individualPrint, setIndiviualPrint] = useState<boolean>(false)
+    const [loader, setLoader] = useState<boolean>(true)
 
     useEffect(() => {
         (async () => {
             try {
                 const entreprise = await apiFetch(`/entreprises/id/${entrepriseID}`)
                 setEntreprise(entreprise)
-                setLoader(false)
+                setTimeout(() => setLoader(false), 300)
             } catch (e: any) {
 
             }
@@ -34,6 +53,19 @@ export const ViewTax = ({ match }: any) => {
         })()
     }, [])
     return <>
+        <IndividualPrint
+            show={individualPrint}
+            handleClose={() => setIndiviualPrint(false)}
+            tax={entreprise}
+            tarifs={tarifs}
+            currentFiscalYear={currentFiscalYear}
+            informations={informations}
+            motifs={motifs}
+        />
+        <ViewAdvertisingModal
+            data={viewPubModal}
+            handleClose={() => setViewPubModal(pub => ({ ...pub, show: false }))}
+        />
         <Container fluid="xl">
             <div className="mt-3">
                 <nav aria-label="breadcrumb" className="mt-3">
@@ -42,7 +74,10 @@ export const ViewTax = ({ match }: any) => {
                         <li className="breadcrumb-item active" aria-current="page">Consulter une entreprise</li>
                     </ol>
                 </nav>
-                <h4 className="mt-2">Consulter les informations d'une entreprise {entreprise !== null && <span className="fw-bold">({entreprise.nom})</span>}</h4>
+                <div className="d-flex mt-2 justify-content-between align-items-center">
+                <h4 className="mt-0">Consulter les informations d'une entreprise {entreprise !== null && <span className="fw-bold">({entreprise.nom})</span>}</h4>
+                <Button variant="outline-primary" className="me-4" size="sm" onClick={() => setIndiviualPrint(true)}><Printer /> Impression individuelle</Button>
+                </div>
                 <hr className="my-3" />
             </div>
             {(loader === false && entreprise !== null) ? <>
@@ -81,7 +116,7 @@ export const ViewTax = ({ match }: any) => {
                     <Col><div>Motif majoration : <span className="fw-bold">{entreprise.motif_majoration}</span></div></Col>
                 </Row>
                 <div>Commentaire : <span className="fw-bold">{entreprise.commentaire_taxation}</span></div>
-                <Card>
+                <Card className="mt-3">
                     <Card.Header as="h6">Adresse de taxation</Card.Header>
                     <Card.Body>
                         <Row className="mb-3">
@@ -111,6 +146,31 @@ export const ViewTax = ({ match }: any) => {
                         </Row>
                     </Card.Body>
                 </Card>
+                <Table striped bordered hover className="mt-3">
+                    <thead>
+                        <tr>
+                            <th>Exercice</th>
+                            <th>Code postal</th>
+                            <th>Code rue</th>
+                            <th>Rue</th>
+                            <th>Numéro</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {entreprise.publicites.map((pub: IPublicite) => {
+                            return <tr key={pub.matricule_ciger}>
+                                <td>{pub.exercice_courant}</td>
+                                <td>{pub.rue.code_postal.cp}</td>
+                                <td>{pub.rue.code_rue}</td>
+                                <td>{pub.rue.nom_rue}</td>
+                                <td>{pub.adresse_numero}</td>
+                                <td><Button size="sm" variant="info" onClick={() => setViewPubModal({ show: true, publicite: pub })}>Consulter</Button></td>
+                            </tr>
+                        })}
+                        <tr><td colSpan={6} className="text-end">Taxe totale (hors majoration) : <span className="fw-bold">{entreprise.publicites.reduce((acc: any, curr: any) => acc + parseFloat(curr.taxe_totale), 0)} €</span></td></tr>
+                    </tbody>
+                </Table>
             </> : <Loader />}
         </Container>
     </>

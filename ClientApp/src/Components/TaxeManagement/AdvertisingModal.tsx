@@ -7,12 +7,12 @@ import {
     InputGroup,
     Image
 } from 'react-bootstrap'
-import { IPublicite, IPubliciteImage } from "../../Types/IPublicite"
+import { IPubliciteImage } from "../../Types/IPublicite"
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, Controller, useWatch } from "react-hook-form"
 import { AdvertisingFormSchema } from '../../Validation/Tax/AdvertisingFormSchema';
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead'
-import { apiFetch } from "../../Services/apiFetch";
+import { ApiErrors, apiFetch } from "../../Services/apiFetch";
 import { useEffect, useState } from 'react';
 import { IRue } from '../../Types/IRue';
 import { Trash } from '../UI/Trash';
@@ -66,7 +66,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
     })
 
     useEffect(() => {
-        if(exoneration == false) {
+        if (exoneration == false) {
             const TaxValue = SumTax(currentFiscalYear.id, quantite, surface, face, typePub, tarifs)
             setValue('taxe_totale', TaxValue)
         } else {
@@ -109,25 +109,38 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
     }
 
     const onFileChange = async (e: any) => {
+        const allowedFileTypes = ["image/png", "image/jpeg"]
         const files = e.target.files
         const formData = new FormData()
-        Array.from(files).forEach((image: any, index: number) => {
-            formData.append(`images`, image)
+        Array.from(files).forEach((image: any) => {
+            if (allowedFileTypes.includes(image.type)) {
+                formData.append(`images`, image)
+            } else {
+                toast.error(`${image.name} n'est pas un type de fichier autorisé`)
+            }
         })
 
-        const link = await apiFetch(`/entreprises/publicite/uploadimage`, {
-            method: 'POST',
-            body: formData
-        })
+        if (Array.from(formData).length > 0) {
+            try {
+                const link = await apiFetch(`/entreprises/publicite/uploadimage`, {
+                    method: 'POST',
+                    body: formData
+                })
 
-        const allImages = [...imagesLinks, ...link.map((l: any) => {
-            return { photo: l }
-        })]
-        setValue('photos', allImages)
+                const allImages = [...imagesLinks, ...link.map((l: any) => {
+                    return { photo: l }
+                })]
+                setValue('photos', allImages)
 
-        setImagesLinks(links => [...links, ...link.map((l: any) => {
-            return { photo: l }
-        })])
+                setImagesLinks(links => [...links, ...link.map((l: any) => {
+                    return { photo: l }
+                })])
+            } catch (e: any) {
+                if (e instanceof ApiErrors) {
+                    toast.error(e.singleError.error)
+                }
+            }
+        }
     }
 
     const deleteImage = async (imageName: string) => {
@@ -137,8 +150,10 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
             })
             setImagesLinks(links => links.filter((link: IPubliciteImage) => link.photo != imageName))
             setValue('photos', imagesLinks.filter((link: IPubliciteImage) => link.photo != imageName))
-        } catch (e) {
-            toast.error('Une erreur est survenue')
+        } catch (e: any) {
+            if(e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
         }
     }
 

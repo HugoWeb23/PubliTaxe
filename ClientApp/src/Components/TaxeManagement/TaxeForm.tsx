@@ -152,7 +152,8 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
         <IndividualPrint
             show={individualPrint}
             handleClose={() => setIndiviualPrint(false)}
-            tax={tax} tarifs={tarifs}
+            tax={tax}
+            tarifs={tarifs}
             currentFiscalYear={currentFiscalYear}
             informations={informations}
             motifs={motifs}

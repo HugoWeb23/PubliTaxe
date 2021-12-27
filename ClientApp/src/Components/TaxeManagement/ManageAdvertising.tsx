@@ -124,7 +124,7 @@ export const ManageAdvertising = memo(({ pubs = [], matricule, tarifs, currentFi
                 {publicites.length == 0 && <tr><td colSpan={6}>Aucun panneau</td></tr>}
                 {publicites.map((publicite: IPublicite, index: number) => {
                     return <tr key={index}>
-                        <td>{publicite.exercice_courant}</td>
+                        <td>{currentFiscalYear.annee_exercice}</td>
                         <td>{publicite.rue.code_postal.cp}</td>
                         <td>{publicite.rue.code_rue}</td>
                         <td>{publicite.rue.nom_rue}</td>

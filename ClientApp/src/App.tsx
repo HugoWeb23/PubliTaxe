@@ -111,7 +111,9 @@ export const App = () => {
           <PrivateRoute path="/entreprise/create/" exact>
             <CreateTax motifs={motifsMajoration} tarifs={tarifs} currentFiscalYear={exerciceCourant} />
           </PrivateRoute>
-          <PrivateRoute path="/entreprise/view/:id" exact component={ViewTax} />
+          <PrivateRoute path="/entreprise/view/:id" exact>
+          {(tarifs != null && motifsMajoration != null && exerciceCourant != null && informations != null) ? <ViewTax motifs={motifsMajoration} tarifs={tarifs} currentFiscalYear={exerciceCourant} informations={informations}/> : <Loader/>}
+          </PrivateRoute>
           <PrivateRoute path="/notreceived" exact>
             {exerciceCourant != null ? <ManageNotReceived motifs={motifsMajoration} currentFiscalYear={exerciceCourant} /> : <Loader />}
           </PrivateRoute>

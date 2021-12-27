@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System;
 using System.Text;
+using System.Linq;
 
 namespace Taxes.Services
 {
@@ -20,18 +21,23 @@ namespace Taxes.Services
         {
            
             List<string> fileNames = new List<string>();
+            string[] permittedExtensions = { ".png", ".jpeg", ".jpg" };
             foreach (var image in images)
             {
                 try
                 {
-                    StringBuilder fileName = new StringBuilder();
-                    fileName.AppendFormat("{0}-{1}", Guid.NewGuid(), image.FileName);
-                    string path = Path.Combine(_environment.ContentRootPath, "Uploads", "images/" + fileName);
-                    using (var stream = new FileStream(path, FileMode.Create))
+                    string extension = Path.GetExtension(image.FileName);
+                    if (permittedExtensions.Contains(extension))
                     {
-                        await image.CopyToAsync(stream);
+                        StringBuilder fileName = new StringBuilder();
+                        fileName.AppendFormat("{0}-{1}", Guid.NewGuid(), extension);
+                        string path = Path.Combine(_environment.ContentRootPath, "Uploads", "images/" + fileName);
+                        using (var stream = new FileStream(path, FileMode.Create))
+                        {
+                            await image.CopyToAsync(stream);
+                        }
+                        fileNames.Add(fileName.ToString());
                     }
-                    fileNames.Add(fileName.ToString());
                 } catch(Exception)
                 {
                     throw new Exception("Une erreur est survenue");

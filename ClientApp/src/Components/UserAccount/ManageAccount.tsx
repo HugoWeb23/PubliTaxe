@@ -25,6 +25,7 @@ export const ManageAccount = () => {
                 method: 'PUT',
                 body: JSON.stringify(data)
             })
+            value.toggleUser(user)
             setValue('pass', '')
             setValue('repeatpass', '')
             toast.success("Votre compte a été mis à jour")
