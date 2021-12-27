@@ -11,6 +11,7 @@ namespace Taxes.Controllers
 {
     [ApiController]
     [Route("/api/codes_postaux")]
+    [AuthorizeRole(MinRole: 1)]
     public class CodePostalController : Controller
     {
         private readonly IMediator _mediator;

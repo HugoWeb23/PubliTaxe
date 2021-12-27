@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react'
 import {
     Container,
     Card,
-    Row,
-    Col,
     Form,
-    Button
+    Button,
+    Alert
 } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -16,6 +15,7 @@ import { Link } from "react-router-dom"
 import { PlusIcon } from '../../UI/PlusIcon'
 import { ConfirmModal } from '../../UI/ConfirmModal'
 import { toast } from 'react-toastify'
+import { ChangeFiscalYearFormSchema } from '../../../Validation/ChangeFiscalYear/ChangeFiscalYearFormSchema'
 
 interface IChangeFiscalYear {
     currentFiscalYear: IExercice,
@@ -26,7 +26,8 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
     const [allYears, setAllYears] = useState<IExercice[]>([])
     const [loader, setLoader] = useState<boolean>(true)
     const [confirmModal, setConfirmModal] = useState<boolean>(false)
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm()
+    const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm({ resolver: yupResolver(ChangeFiscalYearFormSchema) })
 
     const defaultFiscalyearChecked = (allFiscalYears: IExercice[]): number => {
         if (allFiscalYears.length > 0) {
@@ -51,9 +52,15 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
 
     useEffect(() => {
         (async () => {
-            const years: IExercice[] = await apiFetch('/fiscalyears/all/')
-            setAllYears(years)
-            setValue('id', defaultFiscalyearChecked(years))
+            try {
+                const years: IExercice[] = await apiFetch('/fiscalyears/all/')
+                setAllYears(years)
+                setValue('id', defaultFiscalyearChecked(years))
+            } catch (e: any) {
+                if (e instanceof ApiErrors) {
+                    setErrorModal({ show: true, message: e.singleError.error })
+                }
+            }
             setLoader(false)
         })()
     }, [])
@@ -98,15 +105,17 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
                 <Link to="/tools/managefiscalyears" className="link"><PlusIcon /> Créer un exercice</Link>
             </div>
             <hr className="my-3" />
+            {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
             <Card body>
                 <Form>
                     <Form.Group controlId="exercice">
                         <Form.Label column="sm">Exercice</Form.Label>
-                        <Form.Select size="sm" {...register('id')}>
+                        <Form.Select size="sm" isInvalid={errors.id} {...register('id')}>
                             {allYears.map((fiscalYear: IExercice) => {
                                 return <option value={fiscalYear.id} disabled={fiscalYear.id === currentFiscalYear.id}>{fiscalYear.annee_exercice}</option>
                             })}
                         </Form.Select>
+                        {errors.id && <Form.Control.Feedback type="invalid">{errors.id.message}</Form.Control.Feedback>}
                         <div className="mt-3">
                             <Button variant="danger" onClick={() => setConfirmModal(true)}>
                                 Changer d'exercice

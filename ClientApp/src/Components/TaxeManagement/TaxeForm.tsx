@@ -14,7 +14,7 @@ import { Entreprise } from '../../Types/IEntreprise'
 import { StreetCodeModal } from "./StreetCodeModal";
 import { IRue } from "../../Types/IRue";
 import { IMotif_majoration } from "../../Types/IMotif_majoration";
-import { apiFetch } from "../../Services/apiFetch";
+import { apiFetch, ApiErrors } from "../../Services/apiFetch";
 import { toast } from 'react-toastify';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { TaxeFormSchema } from "../../Validation/Tax/TaxFormSchema";
@@ -66,8 +66,9 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                 toast.success('Modifications sauvegardées')
             }
         } catch (e: any) {
-            toast.error('Une erreur est survenue')
-            console.log(e)
+            if (e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
         }
     }
 
@@ -82,13 +83,25 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
     }
 
     const PostCodeSearch = async (query: any) => {
-        const codes = await apiFetch(`/codes_postaux/getbycode/${query}`)
-        setPostCodes(codes)
+        try {
+            const codes = await apiFetch(`/codes_postaux/getbycode/${query}`)
+            setPostCodes(codes)
+        } catch (e: any) {
+            if (e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
+        }
     }
 
     const LocalitySearch = async (query: any) => {
-        const codes = await apiFetch(`/codes_postaux/getbylocality/${query}`)
-        setPostCodes(codes)
+        try {
+            const codes = await apiFetch(`/codes_postaux/getbylocality/${query}`)
+            setPostCodes(codes)
+        } catch (e: any) {
+            if (e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
+        }
     }
 
     const SetValueOnChange = (type: 'cp' | 'localite', data: any) => {

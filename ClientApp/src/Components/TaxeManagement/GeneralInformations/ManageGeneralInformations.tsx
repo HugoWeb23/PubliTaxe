@@ -11,7 +11,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { GeneralInformationsSchema } from '../../../Validation/GeneralInformations/GeneralInformationsSchema'
 import { IInformation } from '../../../Types/IInformations'
 import { useEffect } from 'react'
-import { apiFetch } from '../../../Services/apiFetch'
+import { apiFetch, ApiErrors } from '../../../Services/apiFetch'
 import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
 
@@ -38,7 +38,9 @@ export const ManageGeneralInformations = ({ generalInformations, handleChange }:
             handleChange(infos)
             toast.success("Mise à jour effectuée")
         } catch (e: any) {
-            toast.error("Une erreur est survenue")
+            if (e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
         }
 
     }

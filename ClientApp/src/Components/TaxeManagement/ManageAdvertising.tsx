@@ -5,13 +5,10 @@ import {
     OverlayTrigger,
     Tooltip
 } from 'react-bootstrap'
-import { boolean } from 'yup/lib/locale'
-import { apiFetch } from '../../Services/apiFetch'
 import { IExercice } from '../../Types/IExercice'
 import { IPrice } from '../../Types/IPrice'
 import { IPublicite } from '../../Types/IPublicite'
 import { ConfirmModal } from '../UI/ConfirmModal'
-import { Eye } from '../UI/Eye'
 import { Pencil } from '../UI/Pencil'
 import { PlusIcon } from '../UI/PlusIcon'
 import { Trash } from '../UI/Trash'

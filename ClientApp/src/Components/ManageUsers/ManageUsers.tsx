@@ -4,11 +4,12 @@ import {
     Table,
     Button,
     OverlayTrigger,
-    Tooltip
+    Tooltip,
+    Alert
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { Pencil } from "../UI/Pencil"
-import { apiFetch } from "../../Services/apiFetch"
+import { ApiErrors } from "../../Services/apiFetch"
 import { toast } from 'react-toastify'
 import { IUser } from "../../Types/IUser"
 import { useAccounts } from "../Hooks/AccountsHook"
@@ -20,10 +21,17 @@ export const ManageUsers = () => {
     const { accounts, getAllAccounts, deleteAccount } = useAccounts()
     const [deleteModal, setDeleteModal] = useState<{ show: boolean, user: IUser }>({ show: false, user: {} as IUser })
     const [loader, setLoader] = useState<boolean>(true)
+    const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
 
     useEffect(() => {
         (async () => {
-            await getAllAccounts()
+            try {
+                await getAllAccounts()
+            } catch (e: any) {
+                if (e instanceof ApiErrors) {
+                    setErrorModal({ show: true, message: e.singleError.error })
+                }
+            }
             setTimeout(() => setLoader(false), 300)
         })()
     }, [])
@@ -31,10 +39,12 @@ export const ManageUsers = () => {
     const handleDeleteAccount = async (user: IUser) => {
         try {
             await deleteAccount(user)
-            setDeleteModal(d => ({...d, show: false}))
+            setDeleteModal(d => ({ ...d, show: false }))
             toast.success("Utilisateur supprimé")
         } catch (e) {
-            toast.error('Une erreur est survenue')
+            if (e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
         }
     }
 
@@ -55,6 +65,7 @@ export const ManageUsers = () => {
             </nav>
             <h2 className="mt-2">Gestion des utilisateurs</h2>
             <hr className="my-3" />
+            {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
             <Table striped bordered hover>
                 <thead>
                     <tr>
@@ -68,7 +79,7 @@ export const ManageUsers = () => {
                 </thead>
                 <tbody>
                     {(loader === false && accounts.length === 0) && <tr><td colSpan={6}>Aucun résultat</td></tr>}
-                    {loader == false ? accounts.map((user: IUser, index: number) => <UserRow user={user} onDelete={(user: IUser) => setDeleteModal({ show: true, user: user })} />) : <Loader/>}
+                    {loader == false ? accounts.map((user: IUser, index: number) => <UserRow user={user} onDelete={(user: IUser) => setDeleteModal({ show: true, user: user })} />) : <Loader />}
                 </tbody>
             </Table>
         </Container>

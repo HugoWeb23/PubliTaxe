@@ -75,7 +75,7 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
                     </ol>
                 </nav>
                 <div className="d-flex mt-2 justify-content-between align-items-center">
-                <h4 className="mt-0">Consulter les informations d'une entreprise {entreprise !== null && <span className="fw-bold">({entreprise.nom})</span>}</h4>
+                <h4 className="mt-0">Consulter les informations d'une entreprise {entreprise !== null && <>(<span className="fw-bold">{entreprise.nom}</span>)</>}</h4>
                 <Button variant="outline-primary" className="me-4" size="sm" onClick={() => setIndiviualPrint(true)}><Printer /> Impression individuelle</Button>
                 </div>
                 <hr className="my-3" />
@@ -88,10 +88,10 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
                     <Col><div>Reçu : <span className="fw-bold">{entreprise.recu ? "Oui" : "Non"}</span></div></Col>
                     <Col><div>Langue : <span className="fw-bold">{entreprise.role_linguistique === 1 ? "Français" : "Néerlandais"}</span></div></Col>
                 </Row>
-                <Row>
+                <Row className="mt-3">
                     <Col><div>Nom : <span className="fw-bold">{entreprise.nom}</span></div></Col>
                 </Row>
-                <Row>
+                <Row className="mt-3">
                     <Col><div>Code rue : <span className="fw-bold">{entreprise.code_rue}</span></div></Col>
                     <Col><div>Rue : <span className="fw-bold">{entreprise.adresse_rue}</span></div></Col>
                     <Col><div>Numéro : <span className="fw-bold">{entreprise.adresse_numero}</span></div></Col>
@@ -99,23 +99,23 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
                     <Col><div>Boite : <span className="fw-bold">{entreprise.adresse_boite}</span></div></Col>
                     <Col><div>Numéro : <span className="fw-bold">{entreprise.adresse_numero}</span></div></Col>
                 </Row>
-                <Row>
+                <Row className="mt-3">
                     <Col><div>Code postal : <span className="fw-bold">{entreprise.code_postal.cp}</span></div></Col>
                     <Col><div>Localité : <span className="fw-bold">{entreprise.code_postal.localite}</span></div></Col>
                 </Row>
-                <Row>
+                <Row className="mt-3">
                     <Col><div>Téléphone : <span className="fw-bold">{entreprise.numero_telephone}</span></div></Col>
                     <Col><div>Fax : <span className="fw-bold">{entreprise.numero_fax}</span></div></Col>
                     <Col><div>Personne de contact : <span className="fw-bold">{entreprise.personne_contact}</span></div></Col>
                     <Col><div>Téléphone : <span className="fw-bold">{entreprise.telephone_contact}</span></div></Col>
                     <Col><div>Adresse e-mail : <span className="fw-bold">{entreprise.mail_contact}</span></div></Col>
                 </Row>
-                <Row>
+                <Row className="mt-3">
                     <Col><div>Numéro de TVA : <span className="fw-bold">{entreprise.numero_tva}</span></div></Col>
                     <Col><div>% majoration : <span className="fw-bold">{entreprise.pourcentage_majoration}</span></div></Col>
-                    <Col><div>Motif majoration : <span className="fw-bold">{entreprise.motif_majoration}</span></div></Col>
-                </Row>
-                <div>Commentaire : <span className="fw-bold">{entreprise.commentaire_taxation}</span></div>
+                    <Col><div>Motif majoration : <span className="fw-bold">{motifs.find((motif: IMotif_majoration) => motif.id_motif == entreprise.motif_majorationId)?.libelle}</span></div></Col>
+                </Row >
+                <div className="mt-3">Commentaire : <span className="fw-bold">{entreprise.commentaire_taxation}</span></div>
                 <Card className="mt-3">
                     <Card.Header as="h6">Adresse de taxation</Card.Header>
                     <Card.Body>

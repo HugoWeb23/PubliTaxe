@@ -26,7 +26,7 @@ namespace Taxes.Handlers
         {
             // generate token that is valid for 7 days
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("THIS IS USED TO SIGN AND VERIFY JWT TOKENS, REPLACE IT WITH YOUR OWN SECRET, IT CAN BE ANY STRING");
+            var key = Encoding.ASCII.GetBytes("replacement trade abolish spit relate dealer monstrous");
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] { new Claim("id", request.User.Id.ToString()), new Claim("role", request.User.Role.ToString()) }),

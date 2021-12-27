@@ -16,6 +16,7 @@ using Taxes.Services;
 namespace Taxes.Controllers
 {
     [Route("api/informations")]
+    [AuthorizeRole(MinRole: 1)]
     [ErrorFormatter]
     [ApiController]
     public class InformationController : ControllerBase
@@ -43,6 +44,7 @@ namespace Taxes.Controllers
             
         }
 
+        [AuthorizeRole(MinRole: 3)]
         [HttpPut("updateinformations")]
         public async Task<IActionResult> UpdateInformations(Information Informations)
         {

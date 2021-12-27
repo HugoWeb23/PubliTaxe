@@ -1,10 +1,12 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import {
   BrowserRouter as Router,
-  Switch,
   Route,
   Redirect
 } from "react-router-dom";
+import {
+  Alert
+} from 'react-bootstrap'
 import { Navigation } from './Components/Navigation/Navigation';
 import { TaxManagement } from './Components/TaxeManagement/TaxManagement';
 import { ToastContainer } from 'react-toastify';
@@ -35,6 +37,7 @@ import { IInformation } from './Types/IInformations';
 import { IPrice } from './Types/IPrice';
 import { ManageInactiveAccounts } from './Components/ManageUsers/ManageInactiveAccounts';
 import { ManageAccount } from './Components/UserAccount/ManageAccount';
+import { AppLoader } from './Components/UI/AppLoader';
 
 export const App = () => {
   const [user, setUser] = useState<IUser | null>(null)
@@ -43,6 +46,7 @@ export const App = () => {
   const [exerciceCourant, setExerciceCourant] = useState<any>(null)
   const [informations, setInformations] = useState<IInformation | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<boolean>(false)
 
   useEffect(() => {
     (async () => {
@@ -56,24 +60,28 @@ export const App = () => {
 
       }
       if (user !== null) {
-        if (motifsMajoration === null) {
-          const motifs = await apiFetch('/motifs_majoration/getall')
-          setMotifsMajoration(motifs)
-        }
-        if (tarifs === null) {
-          const tarifs = await apiFetch('/prices/getall')
-          setTarifs(tarifs)
-        }
-        if (exerciceCourant === null) {
-          const exerciceCourant = await apiFetch('/fiscalyears/getcurrentfiscalyear')
-          setExerciceCourant(exerciceCourant)
-        }
-        if (informations === null) {
-          const informations = await apiFetch('/informations/getinformations')
-          setInformations(informations)
+        try {
+          if (motifsMajoration === null) {
+            const motifs = await apiFetch('/motifs_majoration/getall')
+            setMotifsMajoration(motifs)
+          }
+          if (tarifs === null) {
+            const tarifs = await apiFetch('/prices/getall')
+            setTarifs(tarifs)
+          }
+          if (exerciceCourant === null) {
+            const exerciceCourant = await apiFetch('/fiscalyears/getcurrentfiscalyear')
+            setExerciceCourant(exerciceCourant)
+          }
+          if (informations === null) {
+            const informations = await apiFetch('/informations/getinformations')
+            setInformations(informations)
+          }
+        } catch(e: any) {
+          setError(true)
         }
       }
-      setLoading(false)
+      setTimeout(() => setLoading(false), 800)
     })()
   }, [user])
 
@@ -99,12 +107,12 @@ export const App = () => {
   }, [user])
 
   return <>
-    {loading ? 'chargement' :
+    {loading ? <AppLoader /> :
       <Router>
         <UserContext.Provider value={value}>
           <ToastContainer autoClose={2500} />
           <Navigation />
-          <PrivateRoute path="/" exact component={TaxManagement} />
+          {error ? <Alert variant="danger" className="mt-3">Une erreur est survenue lors du chargement des données. Veuillez actualiser la page et contacter le service informatique si le problème persiste.</Alert> : <><PrivateRoute path="/" exact component={TaxManagement} />
           <PrivateRoute path="/entreprise/edit/:id" exact>
             <EditTax motifs={motifsMajoration} tarifs={tarifs} currentFiscalYear={exerciceCourant} informations={informations} />
           </PrivateRoute>
@@ -112,7 +120,7 @@ export const App = () => {
             <CreateTax motifs={motifsMajoration} tarifs={tarifs} currentFiscalYear={exerciceCourant} />
           </PrivateRoute>
           <PrivateRoute path="/entreprise/view/:id" exact>
-          {(tarifs != null && motifsMajoration != null && exerciceCourant != null && informations != null) ? <ViewTax motifs={motifsMajoration} tarifs={tarifs} currentFiscalYear={exerciceCourant} informations={informations}/> : <Loader/>}
+            {(tarifs != null && motifsMajoration != null && exerciceCourant != null && informations != null) ? <ViewTax motifs={motifsMajoration} tarifs={tarifs} currentFiscalYear={exerciceCourant} informations={informations} /> : <Loader />}
           </PrivateRoute>
           <PrivateRoute path="/notreceived" exact>
             {exerciceCourant != null ? <ManageNotReceived motifs={motifsMajoration} currentFiscalYear={exerciceCourant} /> : <Loader />}
@@ -150,7 +158,7 @@ export const App = () => {
           </PrivateRoute>
           <Route path="/passwordchange">
             {user?.changement_pass === 1 ? <PasswordChange /> : <Redirect to="/" />}
-          </Route>
+          </Route></>}
         </UserContext.Provider>
       </Router>
     }

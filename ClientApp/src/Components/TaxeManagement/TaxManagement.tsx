@@ -4,22 +4,19 @@ import {
     Row,
     Col,
     Table,
-    DropdownButton,
-    Dropdown,
     Container,
     Button,
     OverlayTrigger,
-    Tooltip
+    Tooltip,
+    Alert
 } from 'react-bootstrap'
-import { apiFetch } from '../../Services/apiFetch'
-import { Loader } from '../UI/Loader'
+import { ApiErrors } from '../../Services/apiFetch'
 import { Link } from 'react-router-dom'
 import { IApercu_entreprise } from '../../Types/IApercu_entreprise'
 import { Pencil } from '../UI/Pencil'
 import { Eye } from '../UI/Eye'
 import { Trash } from '../UI/Trash'
 import { useEntreprises } from '../Hooks/TaxManagementHook'
-import { boolean } from 'yup/lib/locale'
 import { ConfirmModal } from '../UI/ConfirmModal'
 import { toast } from 'react-toastify';
 import { SheetIcon } from '../UI/SheetIcon'
@@ -38,6 +35,7 @@ export const TaxManagement = () => {
     const [deleteModal, setDeleteModal] = useState<{ show: boolean, entreprise: IApercu_entreprise }>({ show: false, entreprise: {} as IApercu_entreprise })
     const [receivedModal, setReceivedModal] = useState<boolean>(false)
     const [searchModal, setSearchModal] = useState<boolean>(false)
+    const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
     const [filterOptions, setFilterOptions] = useState<any>({ matricule: "", nom: "", pubExoneration: false, pageCourante: 1, elementsParPage: 15 })
     const value = useContext(UserContext)
 
@@ -45,10 +43,12 @@ export const TaxManagement = () => {
         (async () => {
             try {
                 await getAll(filterOptions)
-            } catch (e) {
-                alert('error')
+                setTimeout(() => setLoader(false), 300)
+            } catch (e: any) {
+                if (e instanceof ApiErrors) {
+                    setErrorModal({ show: true, message: e.singleError.error })
+                }
             }
-            setTimeout(() => setLoader(false), 300)
         })()
     }, [filterOptions])
 
@@ -58,7 +58,9 @@ export const TaxManagement = () => {
             setDeleteModal(d => ({ ...d, show: false }))
             toast.success("L'entreprise a été supprimée")
         } catch (e: any) {
-            toast.error(e.error)
+            if (e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
         }
     }
 
@@ -77,7 +79,7 @@ export const TaxManagement = () => {
         <SearchModal
             show={searchModal}
             handleClose={() => setSearchModal(false)}
-            handleSearch={(options) => setFilterOptions((filters: any) => ({...options, pageCourante: 1, elementsParPage: filters.elementsParPage}))}
+            handleSearch={(options) => setFilterOptions((filters: any) => ({ ...options, pageCourante: 1, elementsParPage: filters.elementsParPage }))}
         />
         <Container fluid={true}>
             <div className="d-flex justify-content-between align-items-center">
@@ -96,14 +98,15 @@ export const TaxManagement = () => {
                             {value.user && value.user.role > 1 && <div className="d-grid gap-2 mb-3">
                                 <Link className="btn btn-primary btn-sm" to={'/entreprise/create'}>Nouvel enregistrement</Link>
                             </div>}
-                                {entreprises.length > 0 && <div>
-                                    <div className="fs-5 mb-2">Statistiques</div>
-                                    <span className="fw-bold">{totalRecus}</span> déclarations recues sur <span className="fw-bold">{totalEntreprises}</span> entreprises enregistrées ({Math.round((totalRecus * 100) / totalEntreprises)} %).
-                                </div>}
+                            {entreprises.length > 0 && <div>
+                                <div className="fs-5 mb-2">Statistiques</div>
+                                <span className="fw-bold">{totalRecus}</span> déclarations recues sur <span className="fw-bold">{totalEntreprises}</span> entreprises enregistrées ({Math.round((totalRecus * 100) / totalEntreprises)} %).
+                            </div>}
                         </Card.Body>
                     </Card>
                 </Col>
                 <Col md="9" xs="1" style={{ paddingRight: 0 }}>
+                    {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
                     <Table striped bordered hover size="sm">
                         <thead>
                             <tr>

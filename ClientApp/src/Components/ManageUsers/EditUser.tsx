@@ -12,7 +12,7 @@ import {
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { apiFetch } from '../../Services/apiFetch'
+import { apiFetch, ApiErrors } from '../../Services/apiFetch'
 import { IUser } from '../../Types/IUser'
 import { CheckCircle } from '../UI/CheckCircle'
 import { ErrorCircle } from '../UI/ErrorCircle'
@@ -32,7 +32,8 @@ export const EditUser = ({ location = {}, match }: IEditUser) => {
     const [modalInfos, setModalInfos] = useState<boolean>(false)
     const [newPasswordAlert, setNewPasswordAlert] = useState<{ show: boolean, password: string | null }>({ show: false, password: null })
     const [passwordLoading, setPasswordLoading] = useState<boolean>(false)
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm({resolver: yupResolver(EditUserFormSchema)})
+    const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm({ resolver: yupResolver(EditUserFormSchema) })
 
     const setInputsValues = (obj: Object) => {
         for (const [key, value] of Object.entries(obj)) {
@@ -43,9 +44,15 @@ export const EditUser = ({ location = {}, match }: IEditUser) => {
     useEffect(() => {
         (async () => {
             if (user === undefined) {
-                const user = await apiFetch(`/accounts/getbyid/${UserID}`)
-                setUser(user)
-                setInputsValues(user)
+                try {
+                    const user = await apiFetch(`/accounts/getbyid/${UserID}`)
+                    setUser(user)
+                    setInputsValues(user)
+                } catch (e: any) {
+                    if (e instanceof ApiErrors) {
+                        setErrorModal({ show: true, message: e.singleError.error })
+                    }
+                }
             } else {
                 setInputsValues(user)
             }
@@ -60,7 +67,9 @@ export const EditUser = ({ location = {}, match }: IEditUser) => {
             })
             toast.success("Le compte a été modifié")
         } catch (e: any) {
-            toast.error("Une erreur est survenue")
+            if (e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
         }
     }
 
@@ -86,6 +95,7 @@ export const EditUser = ({ location = {}, match }: IEditUser) => {
             </nav>
             <h2 className="mt-2">Modifier un compte</h2>
             <hr className="my-3" />
+            {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
             <Form onSubmit={handleSubmit(EditUser)}>
                 <div className="d-flex justify-content-end">
                     <Button variant="success" type="submit">Modifier l'utilisateur</Button>

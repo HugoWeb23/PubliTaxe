@@ -3,31 +3,31 @@ import {
     Container,
     Table,
     Button,
-    OverlayTrigger,
-    Tooltip
+    Alert
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import { Pencil } from "../UI/Pencil"
-import { ApiErrors, apiFetch } from "../../Services/apiFetch"
+import { ApiErrors } from "../../Services/apiFetch"
 import { toast } from 'react-toastify'
 import { IUser } from "../../Types/IUser"
 import { useInactiveAccounts } from "../Hooks/InactiveAccountsHook"
-import { Trash } from "../UI/Trash"
 import { ConfirmModal } from "../UI/ConfirmModal"
 import { Loader } from "../UI/Loader"
 
-interface IManageFiscalyears {
-    handleEdit: (fiscalYear: any) => void
-}
-
-export const ManageInactiveAccounts = ({ handleEdit }: IManageFiscalyears) => {
+export const ManageInactiveAccounts = () => {
     const { accounts, getAllAccounts, deleteAccount, activateAccount } = useInactiveAccounts()
     const [deleteModal, setDeleteModal] = useState<{ show: boolean, user: IUser }>({ show: false, user: {} as IUser })
     const [loader, setLoader] = useState<boolean>(true)
+    const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
 
     useEffect(() => {
         (async () => {
-            await getAllAccounts()
+            try {
+                await getAllAccounts()
+            } catch (e: any) {
+                if (e instanceof ApiErrors) {
+                    setErrorModal({ show: true, message: e.singleError.error })
+                }
+            }
             setTimeout(() => setLoader(false), 300)
         })()
     }, [])
@@ -35,19 +35,21 @@ export const ManageInactiveAccounts = ({ handleEdit }: IManageFiscalyears) => {
     const handleDeleteAccount = async (user: IUser) => {
         try {
             await deleteAccount(user)
-            setDeleteModal(d => ({...d, show: false}))
-            toast.success("Utilisateur supprimé")
-        } catch (e) {
-            toast.error('Une erreur est survenue')
+            setDeleteModal(d => ({ ...d, show: false }))
+            toast.success("Le compte a été supprimé")
+        } catch (e: any) {
+            if (e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
         }
     }
 
-    const handleActivateAccount = async(user: IUser) => {
+    const handleActivateAccount = async (user: IUser) => {
         try {
             await activateAccount(user)
             toast.success("Le compte a été activé")
-        } catch(e: any) {
-            if(e instanceof ApiErrors) {
+        } catch (e: any) {
+            if (e instanceof ApiErrors) {
                 toast.error(e.singleError.error)
             }
         }
@@ -70,6 +72,7 @@ export const ManageInactiveAccounts = ({ handleEdit }: IManageFiscalyears) => {
             </nav>
             <h2 className="mt-2">Utilisateurs en attente d'activation</h2>
             <hr className="my-3" />
+            {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
             <Table striped bordered hover>
                 <thead>
                     <tr>
@@ -87,7 +90,7 @@ export const ManageInactiveAccounts = ({ handleEdit }: IManageFiscalyears) => {
                         user={user}
                         onDelete={(user: IUser) => setDeleteModal({ show: true, user: user })}
                         onActivate={(user: IUser) => handleActivateAccount(user)}
-                    />) : <Loader/>}
+                    />) : <Loader />}
                 </tbody>
             </Table>
         </Container>
@@ -108,7 +111,7 @@ const UserRow = ({ user, onDelete, onActivate }: IUserRow) => {
         <td>{user.mail} {user.changement_pass === 1 && <span className="fs-6 text-danger fw-bold">(Changement de mot de passe en attente)</span>}</td>
         <td>{user.actif ? "Oui" : "Non"}</td>
         <td><div className="d-flex">
-            <Button variant="success" size="sm" className="me-2" onClick={() => onActivate({...user, actif: 1})}>Activer</Button>
+            <Button variant="success" size="sm" className="me-2" onClick={() => onActivate({ ...user, actif: 1 })}>Activer</Button>
             <Button variant="danger" size="sm" onClick={() => onDelete(user)}>Supprimer</Button>
         </div></td>
     </tr>

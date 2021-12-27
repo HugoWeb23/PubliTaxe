@@ -59,10 +59,7 @@ export const Login = ({handleLogin}: ILogin) => {
                             <Form.Label>Mot de passe</Form.Label>
                             <Form.Control type="password" placeholder="Mot de passe" {...register('pass')} />
                         </Form.Group>
-                        <div className="d-flex justify-content-between align-items-center mt-3">
-                            <Button variant="primary" type="submit">Se connecter</Button>
-                            <a className="link">Mot de passe oublié ?</a>
-                        </div>
+                            <Button variant="primary" type="submit" className="mt-3">Se connecter</Button>
                     </Form>
                 </Card.Body>
             </Card>

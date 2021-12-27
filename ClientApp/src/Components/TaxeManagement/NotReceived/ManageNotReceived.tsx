@@ -1,15 +1,9 @@
 import { useEffect, useState, memo } from 'react'
 import {
-    Card,
-    Row,
-    Col,
     Table,
-    DropdownButton,
-    Dropdown,
     Container,
     Button,
-    OverlayTrigger,
-    Tooltip
+    Alert
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { IApercu_entreprise } from '../../../Types/IApercu_entreprise'
@@ -22,6 +16,7 @@ import { ExclamationIcon } from '../../UI/ExclamationIcon'
 import { Loader } from '../../UI/Loader'
 import { NotReceivedModal } from './NotReceivedModal'
 import { toast } from 'react-toastify';
+import { ApiErrors } from '../../../Services/apiFetch'
 
 interface IManageNotReceived {
     motifs: IMotif_majoration[],
@@ -32,10 +27,17 @@ export const ManageNotReceived = ({ motifs, currentFiscalYear }: IManageNotRecei
     const [loader, setLoader] = useState<boolean>(true)
     const [selectedEntreprise, setSelectedEntreprise] = useState<{ entrepriseInfos: IApercu_entreprise, show: boolean }>({ entrepriseInfos: {} as IApercu_entreprise, show: false })
     const { notReceivedList, getAll, Insert } = useNotReceived()
+    const [errorModal, setErrorModal] = useState<{show: boolean, message: string}>({show: false, message: ""})
 
     useEffect(() => {
         (async () => {
-            await getAll(currentFiscalYear.id)
+            try {
+                await getAll(currentFiscalYear.id)
+            } catch(e: any) {
+                if(e instanceof ApiErrors) {
+                    setErrorModal({show: true, message: e.singleError.error})
+                }
+            }
             setTimeout(() => setLoader(false), 300)
         })()
     }, [])
@@ -47,7 +49,9 @@ export const ManageNotReceived = ({ motifs, currentFiscalYear }: IManageNotRecei
             setSelectedEntreprise(ent => ({ ...ent, show: false }))
             toast.success('Opération effectuée avec succès')
         } catch (e) {
-            toast.error('Une erreur est survenue')
+            if(e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
         }
 
     }
@@ -66,6 +70,7 @@ export const ManageNotReceived = ({ motifs, currentFiscalYear }: IManageNotRecei
             </nav>
             <h2 className="mt-2 mb-3">Encodage des déclarations non reçues (exercice {currentFiscalYear.annee_exercice})</h2>
             <hr className="my-3"/>
+            {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
             <Table striped bordered hover size="sm">
                 <thead>
                     <tr>

@@ -12,6 +12,7 @@ using Taxes.Filters;
 namespace Taxes.Controllers
 {
     [Route("api/prices")]
+    [AuthorizeRole(MinRole: 1)]
     [ApiController]
 
     public class TarifController : ControllerBase
@@ -36,6 +37,7 @@ namespace Taxes.Controllers
             
         }
 
+        [AuthorizeRole(MinRole: 3)]
         [HttpPost("new")]
         public async Task<IActionResult> New(Tarif Price)
         {
@@ -50,6 +52,7 @@ namespace Taxes.Controllers
             
         }
 
+        [AuthorizeRole(MinRole: 3)]
         [HttpPut("edit")]
         public async Task<IActionResult> Update(Tarif Price)
         {

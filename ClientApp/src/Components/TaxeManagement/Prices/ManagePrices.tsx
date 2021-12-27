@@ -6,7 +6,8 @@ import {
     Button,
     Row,
     Col,
-    Badge
+    Badge,
+    Alert
 } from 'react-bootstrap'
 import { PlusIcon } from "../../UI/PlusIcon"
 import { Pencil } from "../../UI/Pencil"
@@ -14,7 +15,7 @@ import { toast } from 'react-toastify';
 import { IPrice } from "../../../Types/IPrice"
 import { PriceModal } from "./PriceModal"
 import { IExercice } from "../../../Types/IExercice"
-import { apiFetch } from "../../../Services/apiFetch"
+import { ApiErrors, apiFetch } from "../../../Services/apiFetch"
 import { Link } from "react-router-dom"
 
 interface IManagePrices {
@@ -27,13 +28,20 @@ export const ManagePrices = ({ handleEdit, handleCreate }: IManagePrices) => {
     const [selectedPrice, setSelectedPrice] = useState<{ price: IPrice, show: boolean, type: string }>({ price: {} as IPrice, show: false, type: 'create' })
     const [fiscalYears, setFiscalYears] = useState<IExercice[]>([])
     const [loader, setLoader] = useState<boolean>(true)
+    const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
 
     useEffect(() => {
         (async () => {
-            await getAll()
-            if (fiscalYears.length == 0) {
-                const fiscalYears = await apiFetch('/fiscalyears/all')
-                setFiscalYears(fiscalYears)
+            try {
+                await getAll()
+                if (fiscalYears.length == 0) {
+                    const fiscalYears = await apiFetch('/fiscalyears/all')
+                    setFiscalYears(fiscalYears)
+                }
+            } catch (e: any) {
+                if (e instanceof ApiErrors) {
+                    setErrorModal({ show: true, message: e.singleError.error })
+                }
             }
             setLoader(false)
         })()
@@ -53,7 +61,9 @@ export const ManagePrices = ({ handleEdit, handleCreate }: IManagePrices) => {
                 toast.success("L'exercice a été modifié")
             }
         } catch (e: any) {
-            toast.error('Une erreur est survenue')
+            if (e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
         }
     }
 
@@ -75,7 +85,8 @@ export const ManagePrices = ({ handleEdit, handleCreate }: IManagePrices) => {
                 <h2 className="mb-0">Gestion des tarifs</h2>
                 <div className="link" onClick={() => setSelectedPrice(price => ({ ...price, show: true, type: 'create' }))}><PlusIcon /> Nouveau tarif</div>
             </div>
-            <hr className="my-3"/>
+            <hr className="my-3" />
+            {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
             <Table striped bordered hover style={{ verticalAlign: "middle", textAlign: "center" }}>
                 <thead>
                     <tr>
@@ -85,8 +96,9 @@ export const ManagePrices = ({ handleEdit, handleCreate }: IManagePrices) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {loader == false && prices.map((price: IPrice, index: number) => {
-                        return <tr>
+                    {(loader === false && prices.length === 0) && <tr><td colSpan={3}>Aucun résultat</td></tr>}
+                    {loader === false && prices.map((price: IPrice, index: number) => {
+                        return <tr key={price.id}>
                             <td>{fiscalYears.find((fisc: IExercice) => fisc.id == price.exerciceId)?.annee_exercice}</td>
                             <td>
                                 <div className="d-flex justify-content-around">

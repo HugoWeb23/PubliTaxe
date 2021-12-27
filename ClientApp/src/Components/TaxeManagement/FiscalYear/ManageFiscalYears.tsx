@@ -3,13 +3,14 @@ import { useFiscalYears } from "../../Hooks/FiscalYearsHook"
 import {
     Container,
     Table,
-    Button
+    Button,
+    Alert
 } from 'react-bootstrap'
 import { IExercice } from "../../../Types/IExercice"
 import { PlusIcon } from "../../UI/PlusIcon"
 import { Pencil } from "../../UI/Pencil"
 import { FiscalYearModal } from "./FiscalYearModal"
-import { apiFetch } from "../../../Services/apiFetch"
+import { ApiErrors } from "../../../Services/apiFetch"
 import { toast } from 'react-toastify';
 import { Link } from "react-router-dom"
 
@@ -21,10 +22,17 @@ export const ManageFiscalYears = ({ handleEdit }: IManageFiscalyears) => {
     const { fiscalYears, getAll, newFiscalYear, editFiscalYear } = useFiscalYears()
     const [selectedFiscalYear, setSelectedFiscalYear] = useState({ fiscalYear: {} as IExercice, show: false, type: 'create' })
     const [loader, setLoader] = useState<boolean>(true)
+    const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
 
     useEffect(() => {
         (async () => {
-            await getAll()
+            try {
+                await getAll()
+            } catch(e: any) {
+                if (e instanceof ApiErrors) {
+                    setErrorModal({ show: true, message: e.singleError.error })
+                }
+            }
             setLoader(false)
         })()
     }, [])
@@ -40,7 +48,9 @@ export const ManageFiscalYears = ({ handleEdit }: IManageFiscalyears) => {
                 toast.success("L'exercice a été modifié")
             }
         } catch (e) {
-            toast.error('Une erreur est survenue')
+            if (e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
         }
     }
 
@@ -58,6 +68,7 @@ export const ManageFiscalYears = ({ handleEdit }: IManageFiscalyears) => {
                 <div className="link" onClick={() => setSelectedFiscalYear(element => ({ ...element, show: true }))}><PlusIcon /> Nouvel exercice</div>
             </div>
             <hr className="my-3" />
+            {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
             <Table striped bordered hover>
                 <thead>
                     <tr>
@@ -68,6 +79,7 @@ export const ManageFiscalYears = ({ handleEdit }: IManageFiscalyears) => {
                     </tr>
                 </thead>
                 <tbody>
+                {(loader === false && fiscalYears.length === 0) && <tr><td colSpan={4}>Aucun résultat</td></tr>}
                     {loader == false && fiscalYears.map((year: IExercice, index: number) => {
                         return <tr>
                             <td>{year.annee_exercice}</td>

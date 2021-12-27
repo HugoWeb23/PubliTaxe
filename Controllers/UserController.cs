@@ -88,6 +88,7 @@ namespace Taxes.Controllers
 
         }
 
+        [AuthorizeRole(MinRole: 1)]
         [HttpPut("myaccount")]
         public async Task<IActionResult> UpdateMyAccount(Utilisateur Data)
         {

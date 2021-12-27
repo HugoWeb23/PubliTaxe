@@ -9,6 +9,7 @@ using Taxes.Queries;
 namespace Taxes.Controllers
 {
     [Route("api/motifs_majoration")]
+    [AuthorizeRole(MinRole: 1)]
     [ApiController]
     public class MotifMajorationController : ControllerBase
     {

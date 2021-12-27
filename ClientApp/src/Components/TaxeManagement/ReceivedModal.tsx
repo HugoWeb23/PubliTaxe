@@ -9,7 +9,7 @@ import {
 } from 'react-bootstrap'
 import { IApercu_entreprise } from '../../Types/IApercu_entreprise'
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead'
-import { apiFetch } from '../../Services/apiFetch'
+import { apiFetch, ApiErrors } from '../../Services/apiFetch'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
@@ -53,11 +53,17 @@ export const ReceivedModal = ({ show, handleClose, onSubmit }: IReceivedModal) =
 
     const SearchByName = async (name: string) => {
         if (name.length > 2) {
-            const fetch = await apiFetch(`/entreprises/searchbyname`, {
-                method: 'POST',
-                body: JSON.stringify({ name: name })
-            })
-            setEntpreview(fetch)
+            try {
+                const fetch = await apiFetch(`/entreprises/searchbyname`, {
+                    method: 'POST',
+                    body: JSON.stringify({ name: name })
+                })
+                setEntpreview(fetch)
+            } catch (e: any) {
+                if (e instanceof ApiErrors) {
+                    toast.error(e.singleError.error)
+                }
+            }
         }
     }
 
@@ -75,8 +81,10 @@ export const ReceivedModal = ({ show, handleClose, onSubmit }: IReceivedModal) =
             handleClose()
             setSelectedEntreprises([])
             toast.success("Opération effectuée")
-        } catch (e) {
-            toast.error('Une erreur est survenue')
+        } catch (e: any) {
+            if (e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
         }
     }
     return <>

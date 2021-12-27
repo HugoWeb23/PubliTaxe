@@ -76,11 +76,17 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
 
     const StreetSearch = async (query: string) => {
         setLoadingStreets(true)
-        const streets = await apiFetch(`/rues/getbyname`, {
-            method: 'POST',
-            body: JSON.stringify({ nom_rue: query })
-        })
-        setStreets(streets)
+        try {
+            const streets = await apiFetch(`/rues/getbyname`, {
+                method: 'POST',
+                body: JSON.stringify({ nom_rue: query })
+            })
+            setStreets(streets)
+        } catch (e: any) {
+            if (e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
+        }
         setLoadingStreets(false)
     }
 
@@ -151,7 +157,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
             setImagesLinks(links => links.filter((link: IPubliciteImage) => link.photo != imageName))
             setValue('photos', imagesLinks.filter((link: IPubliciteImage) => link.photo != imageName))
         } catch (e: any) {
-            if(e instanceof ApiErrors) {
+            if (e instanceof ApiErrors) {
                 toast.error(e.singleError.error)
             }
         }
@@ -346,7 +352,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
                         return <>
                             <div style={{ position: 'relative' }} className="me-4" key={index}>
                                 <Button className="btn-circle" onClick={() => deleteImage(image.photo)} style={{ position: 'absolute', top: "-7px", right: "-14px" }} variant="danger" size="sm"><Trash /></Button>
-                                <a href={"https://localhost:5001/api/images/" + image.photo} target="_blank"><Image src={"https://localhost:5001/api/images/" + image.photo} style={{ height: "100px", width: "100px" }} rounded /></a>
+                                <a href={`${process.env.NODE_ENV === 'development' ? 'https://localhost:5001' : ''}/api/images/` + image.photo} target="_blank"><Image src={`${process.env.NODE_ENV === 'development' ? 'https://localhost:5001' : ''}/api/images/` + image.photo} style={{ height: "100px", width: "100px" }} rounded /></a>
                             </div>
                         </>
                     })}

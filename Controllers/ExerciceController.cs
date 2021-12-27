@@ -11,6 +11,7 @@ using Taxes.Filters;
 namespace Taxes.Controllers
 {
     [Route("api/fiscalyears")]
+    [AuthorizeRole(MinRole: 1)]
     [ErrorFormatter]
     [ApiController]
     public class ExerciceController : ControllerBase
@@ -21,6 +22,7 @@ namespace Taxes.Controllers
             _mediator = mediator;
         }
 
+        [AuthorizeRole(MinRole: 3)]
         [HttpGet("all")]
         public async Task<IActionResult> GetAll()
         {
@@ -49,6 +51,7 @@ namespace Taxes.Controllers
            
         }
 
+        [AuthorizeRole(MinRole: 3)]
         [HttpPost("new")]
         public async Task<IActionResult> CreateYear(Exercice FiscalYear)
         {
@@ -62,6 +65,7 @@ namespace Taxes.Controllers
             }
         }
 
+        [AuthorizeRole(MinRole: 3)]
         [HttpPut("edit")]
         public async Task<IActionResult> UpdateYear(Exercice FiscalYear)
         {
@@ -76,6 +80,7 @@ namespace Taxes.Controllers
             }
         }
 
+        [AuthorizeRole(MinRole: 3)]
         [HttpGet("changecurrentfiscalyear/{FiscalYearId}")]
         public async Task<IActionResult> UpdateCurrentFiscalYear(long FiscalYearId)
         {

@@ -17,6 +17,7 @@ using Taxes.Services;
 namespace Taxes.Controllers
 {
     [Route("api/notreceived")]
+    [AuthorizeRole(MinRole: 2)]
     [ApiController]
     public class NotReceivedController : ControllerBase
     {

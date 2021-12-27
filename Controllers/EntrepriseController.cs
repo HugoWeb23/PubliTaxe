@@ -218,6 +218,7 @@ namespace Taxes.Controllers
             
         }
 
+        [AuthorizeRole(MinRole: 2)]
         [HttpGet("notreceived/{FiscalYear}")]
         public async Task<IActionResult> GetNotReceived(long FiscalYear)
         {

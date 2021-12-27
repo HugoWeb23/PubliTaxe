@@ -9,7 +9,7 @@ import {
     Table
 } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
-import { apiFetch } from '../../../Services/apiFetch'
+import { ApiErrors, apiFetch } from '../../../Services/apiFetch'
 import { IApercu_entreprise } from '../../../Types/IApercu_entreprise'
 import { Entreprise } from '../../../Types/IEntreprise'
 import { IMotif_majoration } from '../../../Types/IMotif_majoration'
@@ -20,6 +20,7 @@ import { EncodeNotReceivedSchema } from '../../../Validation/NotReceived/EncodeN
 import { INotReceivedHistory } from '../../../Types/INotReceivedHistory'
 import { SumIncrease } from '../../../Services/SumIncrease'
 import { IExercice } from '../../../Types/IExercice'
+import { toast } from 'react-toastify'
 
 
 interface INotReceivedModal {
@@ -37,26 +38,35 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
     const [history, setHistory] = useState<INotReceivedHistory[]>([])
     const [sumIncrease, setSumIncrease] = useState<number>()
     const [loader, setLoader] = useState<boolean>(false)
-    const isMounted = useRef(false)
+   const [error, setError] = useState<boolean>(false)
 
     useEffect(() => {
         (async () => {
             if (element.entrepriseInfos.matricule_ciger !== undefined) {
-                const history = await apiFetch(`/notreceived/gethistory/${element.entrepriseInfos.matricule_ciger}`)
-                setHistory(history)
-                const sum = await SumIncrease(history, currentFiscalYear)
-                setSumIncrease(sum)
-                setValue('pourcentage_majoration', sum)
-                if (element.entrepriseInfos.matricule_ciger !== entreprise.matricule_ciger) {
-                    setLoader(true)
-                    const fetch = await apiFetch(`/entreprises/id/${element.entrepriseInfos.matricule_ciger}`)
-                    setEntreprise(fetch)
-                    setValue('matricule_ciger', fetch.matricule_ciger)
-                    setTimeout(() => setLoader(false), 300)
+                try {
+                    setError(false)
+                    const history = await apiFetch(`/notreceived/gethistory/${element.entrepriseInfos.matricule_ciger}`)
+                    setHistory(history)
+                    const sum = await SumIncrease(history, currentFiscalYear)
+                    setSumIncrease(sum)
+                    setValue('pourcentage_majoration', sum)
+                    if (element.entrepriseInfos.matricule_ciger !== entreprise.matricule_ciger) {
+                        setLoader(true)
+                        const fetch = await apiFetch(`/entreprises/id/${element.entrepriseInfos.matricule_ciger}`)
+                        setEntreprise(fetch)
+                        setValue('matricule_ciger', fetch.matricule_ciger)
+                        setTimeout(() => setLoader(false), 300)
+                    }
+                } catch (e: any) {
+                    if (e instanceof ApiErrors) {
+                        toast.error(e.singleError.error)
+                        setError(true)
+                    }
                 }
+
             }
         })()
-    }, [element])
+    }, [element.entrepriseInfos])
 
     const OnFormSubmit = (data: any) => {
         onSubmit(data)
@@ -68,7 +78,7 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
                 <Modal.Title>Encoder un non reçu</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                {loader || Object.keys(entreprise).length == 0 ? <Loader /> :
+                {loader || Object.keys(entreprise).length == 0 || error ? <Loader /> :
                     <>
                         <Card>
                             <Card.Header as="h6">Informations sur l'entreprise</Card.Header>
@@ -95,10 +105,10 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
                                 <Form.Group controlId="pourcentage_majoration">
                                     <Form.Label column="sm">Pourcentage majoration</Form.Label>
                                     <Form.Select size="sm" isInvalid={errors.pourcentage_majoration} {...register('pourcentage_majoration')}>
-                                        <option value="10" style={{background : sumIncrease === 10 ? "#198754" : ""}}>10 %</option>
-                                        <option value="50" style={{background : sumIncrease === 50 ? "#198754" : ""}}>50 %</option>
-                                        <option value="100" style={{background : sumIncrease === 100 ? "#198754" : ""}}>100 %</option>
-                                        <option value="200" style={{background : sumIncrease === 200 ? "#198754" : ""}}>200 %</option>
+                                        <option value="10" style={{ background: sumIncrease === 10 ? "#198754" : "" }}>10 %</option>
+                                        <option value="50" style={{ background: sumIncrease === 50 ? "#198754" : "" }}>50 %</option>
+                                        <option value="100" style={{ background: sumIncrease === 100 ? "#198754" : "" }}>100 %</option>
+                                        <option value="200" style={{ background: sumIncrease === 200 ? "#198754" : "" }}>200 %</option>
                                     </Form.Select>
                                     <Form.Text className="text-muted">
                                         Ce pourcentage de majoration est proposé automatiquement (surligné en vert dans la liste déroulante) en fonction

@@ -90,13 +90,13 @@ export const ViewAdvertisingModal = ({ data, handleClose }: IViewAdvertisingModa
                <Col>Exonération : <span className="fw-bold">{data.publicite.exoneration ? "Oui" : "Non"}</span></Col>
            </Row>
            <Row className="mt-3">
-               <Col>Taxe : <span className="fw-bold">{data.publicite.taxe_totale}</span></Col>
+               <Col>Taxe : <span className="fw-bold">{data.publicite.taxe_totale} €</span></Col>
            </Row>
            <div className="d-flex justify-content-start mt-3">
                     {data.publicite.photos && data.publicite.photos.map((image: IPubliciteImage, index: number) => {
                         return <>
                             <div style={{ position: 'relative' }} className="me-4" key={index}>
-                                <a href={"https://localhost:5001/api/images/" + image.photo} target="_blank"><Image src={"https://localhost:5001/api/images/" + image.photo} style={{ height: "100px", width: "100px" }} rounded /></a>
+                                <a href={`${process.env.NODE_ENV === 'development' ? 'https://localhost:5001' : ''}/api/images/` + image.photo} target="_blank"><Image src={`${process.env.NODE_ENV === 'development' ? 'https://localhost:5001' : ''}/api/images/` + image.photo} style={{ height: "100px", width: "100px" }} rounded /></a>
                             </div>
                         </>
                     })}

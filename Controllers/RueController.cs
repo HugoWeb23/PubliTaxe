@@ -11,6 +11,7 @@ using Taxes.ViewModels;
 namespace Taxes.Controllers
 {
     [Route("api/rues")]
+    [AuthorizeRole(MinRole: 1)]
     [ApiController]
     public class RueController : ControllerBase
     {
