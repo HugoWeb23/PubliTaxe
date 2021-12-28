@@ -20,6 +20,7 @@ import { toast } from 'react-toastify';
 import { SumTax } from '../../Services/SumTax'
 import { IPrice } from '../../Types/IPrice';
 import { IExercice } from '../../Types/IExercice';
+import settings from '../../settings.json'
 
 
 interface IAdvertisingModal {
@@ -352,7 +353,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
                         return <>
                             <div style={{ position: 'relative' }} className="me-4" key={index}>
                                 <Button className="btn-circle" onClick={() => deleteImage(image.photo)} style={{ position: 'absolute', top: "-7px", right: "-14px" }} variant="danger" size="sm"><Trash /></Button>
-                                <a href={`${process.env.NODE_ENV === 'development' ? 'https://localhost:5001' : ''}/api/images/` + image.photo} target="_blank"><Image src={`${process.env.NODE_ENV === 'development' ? 'https://localhost:5001' : ''}/api/images/` + image.photo} style={{ height: "100px", width: "100px" }} rounded /></a>
+                                <a href={`${process.env.NODE_ENV === 'development' ? settings.Development_url : settings.Production_url}/api/images/` + image.photo} target="_blank"><Image src={`${process.env.NODE_ENV === 'development' ? settings.Development_url : settings.Production_url}/api/images/` + image.photo} style={{ height: "100px", width: "100px" }} rounded /></a>
                             </div>
                         </>
                     })}

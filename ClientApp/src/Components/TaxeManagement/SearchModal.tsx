@@ -79,7 +79,7 @@ export const SearchModal = ({show, handleClose, handleSearch}: ISearchModal) => 
                         <p className="mt-2 mb-2">Filtrer des entreprises en fonction des publicités</p>
                         <Col>
                         <Form.Group controlId="exoneration">
-                                <Form.Label column="sm">Exoneration</Form.Label>
+                                <Form.Label column="sm">Exonération</Form.Label>
                                 <Form.Check type="checkbox" isInvalid={errors.matricule} {...register('pubExoneration')} />
                             </Form.Group>
                             </Col>

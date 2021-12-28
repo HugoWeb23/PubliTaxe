@@ -1,3 +1,4 @@
+import settings from '../settings.json'
 interface IErrors {
     field: any,
     message: string
@@ -38,7 +39,7 @@ export const apiFetch = async (endpoint: string, options = {} as any) => {
     }
 
 
-    const response = await fetch(`${process.env.NODE_ENV === 'development' ? 'https://localhost:5001' : ''}/api${endpoint}`, options)
+    const response = await fetch(`${process.env.NODE_ENV === 'development' ? settings.Development_url : settings.Production_url}/api${endpoint}`, options)
 
     if (response.status == 204) {
         return null;
