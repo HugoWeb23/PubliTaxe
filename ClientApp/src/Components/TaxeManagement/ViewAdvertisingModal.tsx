@@ -11,7 +11,7 @@ import {
     Image
 } from 'react-bootstrap'
 import { IPublicite, IPubliciteImage } from '../../Types/IPublicite';
-import settings from '../../settings.json'
+import settings from '../../../settings.json'
 
 interface IViewAdvertisingModal {
     data: { show: boolean, publicite: IPublicite },

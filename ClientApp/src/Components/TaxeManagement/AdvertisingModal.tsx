@@ -20,7 +20,7 @@ import { toast } from 'react-toastify';
 import { SumTax } from '../../Services/SumTax'
 import { IPrice } from '../../Types/IPrice';
 import { IExercice } from '../../Types/IExercice';
-import settings from '../../settings.json'
+import settings from '../../../settings.json'
 
 
 interface IAdvertisingModal {
