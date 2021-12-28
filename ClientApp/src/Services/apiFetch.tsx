@@ -1,4 +1,4 @@
-import settings from '../../settings.json'
+import settings from '../settings.json'
 interface IErrors {
     field: any,
     message: string
