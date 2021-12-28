@@ -170,6 +170,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
             currentFiscalYear={currentFiscalYear}
             informations={informations}
             motifs={motifs}
+            notice={true}
         />
         <Container fluid="xl">
             <Form onSubmit={handleSubmit(OnSubmit)} className="mb-2">

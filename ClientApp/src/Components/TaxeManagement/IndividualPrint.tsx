@@ -15,17 +15,17 @@ import { IndividualPrintSchema } from '../../Validation/Tax/IndividualPrintSchem
 import { IPrintData } from '../../Types/IPrintData';
 import { Printer } from './PDF/Printer'
 
-export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalYear, informations, motifs }: any) => {
+export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalYear, informations, motifs, notice = false }: any) => {
   const date = new Date()
   const initialValues = ({
     ...informations,
     date_echeance: currentFiscalYear.date_echeance,
     date_impression: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
     options: {
-      print_letter: false,
-      print_declaration: false,
+      print_letter: (tax.code_postal.cp != 7700 && tax.code_postal.cp != 7711 && tax.code_postal.cp != 7712) ? true : false,
+      print_declaration: true,
       print_form: false,
-      print_minutes: true
+      print_minutes: tax.proces_verbal ? true : false
     }
   })
 
@@ -54,7 +54,7 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalY
         <Modal.Title>Impression individuelle</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Alert variant="secondary" >Veillez à bien sauvegarder les changements avant de générer un document.</Alert>
+        {notice && <Alert variant="secondary" >Veillez à bien sauvegarder les changements avant de générer un document.</Alert>}
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Row className="mb-3">
             <Col>
