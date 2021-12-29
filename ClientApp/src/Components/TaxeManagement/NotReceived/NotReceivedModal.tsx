@@ -137,6 +137,7 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
                                 <tr>
                                     <th>Exercice</th>
                                     <th>Motif</th>
+                                    <th>% Major.</th>
                                     <th>Remarque</th>
                                     <th>Date</th>
                                 </tr>
@@ -147,6 +148,7 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
                                     return <tr key={index}>
                                         <td>{history.exercice}</td>
                                         <td>{motifs.find((motif: IMotif_majoration) => motif.id_motif == history.motif_majorationId)?.libelle}</td>
+                                        <td>{history.pourcentage_majoration} %</td>
                                         <td>{history.remarque}</td>
                                         <td>{history.date}</td>
                                     </tr>

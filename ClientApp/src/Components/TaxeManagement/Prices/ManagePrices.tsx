@@ -58,7 +58,7 @@ export const ManagePrices = ({ handleEdit, handleCreate }: IManagePrices) => {
                 await editPrice(data)
                 setSelectedPrice(elem => ({ ...elem, show: false }))
                 handleEdit(data)
-                toast.success("L'exercice a été modifié")
+                toast.success("Le tarif a été modifié")
             }
         } catch (e: any) {
             if (e instanceof ApiErrors) {
