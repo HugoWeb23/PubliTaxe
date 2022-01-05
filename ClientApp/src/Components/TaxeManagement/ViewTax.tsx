@@ -78,7 +78,7 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
                 </nav>
                 <div className="d-flex mt-2 justify-content-between align-items-center">
                 <h4 className="mt-0">Consulter les informations d'une entreprise {entreprise !== null && <>(<span className="fw-bold">{entreprise.nom}</span>)</>}</h4>
-               <Button variant="outline-primary" className="me-4" size="sm" onClick={() => setIndiviualPrint(true)}><Printer /> Impression individuelle</Button>
+               {(loader === false && entreprise !== null) && <Button variant="outline-primary" className="me-4" size="sm" onClick={() => setIndiviualPrint(true)}><Printer /> Impression individuelle</Button>}
                 </div>
                 <hr className="my-3" />
             </div>

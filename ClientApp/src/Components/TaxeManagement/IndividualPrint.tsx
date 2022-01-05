@@ -22,7 +22,7 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalY
     date_echeance: currentFiscalYear.date_echeance,
     date_impression: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
     options: {
-      print_letter: (tax.code_postal.cp != 7700 && tax.code_postal.cp != 7711 && tax.code_postal.cp != 7712) ? true : false,
+      print_letter: (tax?.code_postal?.cp != 7700 && tax?.code_postal?.cp != 7711 && tax?.code_postal?.cp != 7712) ? true : false,
       print_declaration: true,
       print_form: false,
       print_minutes: tax.proces_verbal ? true : false
