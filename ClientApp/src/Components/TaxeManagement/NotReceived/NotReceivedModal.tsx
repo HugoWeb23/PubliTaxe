@@ -143,7 +143,7 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
                                 </tr>
                             </thead>
                             <tbody>
-                                {(loader === false && history.length === 0) && <td colSpan={4}>Aucun résultat</td>}
+                                {(loader === false && history.length === 0) && <td colSpan={5}>Aucun résultat</td>}
                                 {history.map((history: INotReceivedHistory, index: number) => {
                                     return <tr key={index}>
                                         <td>{history.exercice}</td>
