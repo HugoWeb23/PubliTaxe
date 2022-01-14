@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using FluentValidation;
 
 namespace Taxes.Entities
@@ -10,6 +11,8 @@ namespace Taxes.Entities
         public long Matricule_ciger { get; set; }
         public int Pourcentage_majoration { get; set; }
         public int Motif_majorationId { get; set; }
+        [NotMapped]
+        public bool Pv { get; set; }
         public long ExerciceId { get; set; }
         public string Date { get; set; }
         public string Remarque  { get; set; }

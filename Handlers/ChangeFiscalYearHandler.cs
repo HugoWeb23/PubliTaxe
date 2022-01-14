@@ -23,6 +23,7 @@ namespace Taxes.Handlers
 
         public async Task<Exercice> Handle(ChangeFiscalYearCommand request, CancellationToken cancellationToken)
         {
+            List<Entreprise> entreprises = _context.entreprises.ToList();
             List<Publicite> pubs = await _mediator.Send(new GetAllAdvertisingByFiscalYearQuery());
             Exercice Fiscalyear = await _mediator.Send(new GetFiscalYearByIdQuery(request.FiscalYearId), cancellationToken);
             List<Tarif> prices = await _mediator.Send(new GetAllPricesQuery());
@@ -38,6 +39,12 @@ namespace Taxes.Handlers
                 throw new Exception("Aucun tarif n'est lié à cet exercice");
             }
 
+            entreprises.ForEach(e =>
+            {
+                e.Proces_verbal = false;
+                e.Recu = false;
+            });
+
             pubs.ForEach(pub =>
             {
                 pub.Exercice_courant = request.FiscalYearId;
@@ -45,6 +52,7 @@ namespace Taxes.Handlers
 
             Informations.Exercice_courant = request.FiscalYearId;
 
+            _context.entreprises.UpdateRange(entreprises);
             _context.enseignes_publicitaires.UpdateRange(pubs);
             _context.informations.Update(Informations);
             _context.SaveChanges();

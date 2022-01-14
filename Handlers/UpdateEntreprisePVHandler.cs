@@ -26,12 +26,14 @@ namespace Taxes.Handlers
             {
                 Matricule_ciger = request.NotReceived.Matricule_ciger,
                 Pourcentage_majoration = request.NotReceived.Pourcentage_majoration,
-                Motif_majorationId = request.NotReceived.Motif_majorationId
+                Motif_majorationId = request.NotReceived.Motif_majorationId,
+                Proces_verbal = request.NotReceived.Pv
             };
 
             _context.entreprises.Attach(entreprise);
             _context.Entry(entreprise).Property(user => user.Pourcentage_majoration).IsModified = true;
             _context.Entry(entreprise).Property(user => user.Motif_majorationId).IsModified = true;
+            _context.Entry(entreprise).Property(user => user.Proces_verbal).IsModified = true;
             _context.SaveChanges();
             return Task.FromResult(true);
         }
