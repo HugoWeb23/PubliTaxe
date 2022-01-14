@@ -33,12 +33,12 @@ interface INotReceivedModal {
 
 export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClose, onSubmit }: INotReceivedModal) => {
 
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm({ resolver: yupResolver(EncodeNotReceivedSchema) })
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm<any>({ resolver: yupResolver(EncodeNotReceivedSchema), defaultValues: {pv: true} })
     const [entreprise, setEntreprise] = useState<Entreprise>({} as Entreprise)
     const [history, setHistory] = useState<INotReceivedHistory[]>([])
     const [sumIncrease, setSumIncrease] = useState<number>()
     const [loader, setLoader] = useState<boolean>(false)
-   const [error, setError] = useState<boolean>(false)
+    const [error, setError] = useState<boolean>(false)
 
     useEffect(() => {
         (async () => {
@@ -105,14 +105,13 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
                                 <Form.Group controlId="pourcentage_majoration">
                                     <Form.Label column="sm">Pourcentage majoration</Form.Label>
                                     <Form.Select size="sm" isInvalid={errors.pourcentage_majoration} {...register('pourcentage_majoration')}>
-                                        <option value="10" style={{ background: sumIncrease === 10 ? "#198754" : "" }}>10 %</option>
-                                        <option value="50" style={{ background: sumIncrease === 50 ? "#198754" : "" }}>50 %</option>
-                                        <option value="100" style={{ background: sumIncrease === 100 ? "#198754" : "" }}>100 %</option>
-                                        <option value="200" style={{ background: sumIncrease === 200 ? "#198754" : "" }}>200 %</option>
+                                        <option value="10">10 %</option>
+                                        <option value="50">50 %</option>
+                                        <option value="100">100 %</option>
+                                        <option value="200">200 %</option>
                                     </Form.Select>
                                     <Form.Text className="text-muted">
-                                        Ce pourcentage de majoration est proposé automatiquement (surligné en vert dans la liste déroulante) en fonction
-                                        des infractions précédentes.
+                                        Pourcentage recommandé : <span className="fw-bold">{sumIncrease} %</span>.
                                     </Form.Text>
                                     {errors.pourcentage_majoration && <Form.Control.Feedback type="invalid">{errors.pourcentage_majoration.message}</Form.Control.Feedback>}
                                 </Form.Group>
@@ -124,6 +123,12 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
                                         {motifs.map((motif: IMotif_majoration) => <option value={motif.id_motif}>{motif.libelle}</option>)}
                                     </Form.Select>
                                     {errors.motif_majorationId && <Form.Control.Feedback type="invalid">{errors.motif_majorationId.message}</Form.Control.Feedback>}
+                                </Form.Group>
+                            </Col>
+                            <Col>
+                                <Form.Group controlId="pv">
+                                    <Form.Label column="sm">Procès-verbal</Form.Label>
+                                    <Form.Check type="checkbox" {...register('pv')} />
                                 </Form.Group>
                             </Col>
                         </Row>
