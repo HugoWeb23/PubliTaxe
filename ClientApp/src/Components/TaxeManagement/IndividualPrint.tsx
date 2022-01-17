@@ -16,11 +16,17 @@ import { IPrintData } from '../../Types/IPrintData';
 import { Printer } from './PDF/Printer'
 
 export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalYear, informations, motifs, notice = false }: any) => {
-  const date = new Date()
+
+  const Today = () => {
+    const date = new Date()
+    const month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
+    return `${date.getFullYear()}-${month}-${date.getDate()}`
+
+  }
   const initialValues = ({
     ...informations,
     date_echeance: currentFiscalYear.date_echeance,
-    date_impression: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+    date_impression: Today(),
     options: {
       print_letter: (tax?.code_postal?.cp != 7700 && tax?.code_postal?.cp != 7711 && tax?.code_postal?.cp != 7712) ? true : false,
       print_declaration: true,
@@ -34,7 +40,7 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalY
   const onClose = () => {
     handleClose()
   }
-
+  
   const onSubmit = async (data: any) => {
     await generatePdfDocument(data as IPrintData)
   }

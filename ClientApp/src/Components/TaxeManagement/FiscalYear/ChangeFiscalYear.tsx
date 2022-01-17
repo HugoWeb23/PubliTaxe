@@ -104,6 +104,7 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
                 <h2 className="mb-0">Changement d'exercice</h2>
                 <Link to="/tools/managefiscalyears" className="link"><PlusIcon /> Créer un exercice</Link>
             </div>
+            <p>Le changement d'exercice remettra également les champs "reçu" et "procès-verbal" à zéro pour toutes les entreprises.</p>
             <hr className="my-3" />
             {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
             <Card body>

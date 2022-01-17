@@ -15,7 +15,7 @@ import { ApiErrors, apiFetch } from '../../Services/apiFetch'
 import { useState } from 'react';
 
 export const Register = () => {
-    const { register, handleSubmit, reset, formState: { errors } } = useForm({ resolver: yupResolver(RegisterFormSchema) })
+    const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(RegisterFormSchema) })
     const [alert, setAlert] = useState<{ type: string, message: string } | null>(null)
     const OnSubmit = async (data: any) => {
         try {
@@ -85,7 +85,7 @@ export const Register = () => {
                             </Col>
                         </Row>
                         <Form.Group className="mt-3">
-                            <Button variant="primary" type="submit">S'inscrire</Button>
+                            <Button variant="primary" type="submit" disabled={isSubmitting}>{isSubmitting ? "Chargement..." : "S'inscrire"}</Button>
                         </Form.Group>
                     </Form>
                 </Card.Body>

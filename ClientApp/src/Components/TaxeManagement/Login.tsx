@@ -17,11 +17,11 @@ interface ILogin {
     handleLogin: (user: IUser) => void
 }
 
-export const Login = ({handleLogin}: ILogin) => {
-    const { register, handleSubmit, reset, formState: { errors, isSubmitSuccessful } } = useForm({resolver: yupResolver(LoginFormSchema)})
+export const Login = ({ handleLogin }: ILogin) => {
+    const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(LoginFormSchema) })
     const [loginError, setLoginError] = useState<any>(null)
-    
-    const OnSubmit = async(data: any) => {
+
+    const OnSubmit = async (data: any) => {
         try {
             setLoginError(null)
             const user: IUser = await apiFetch('/user/login', {
@@ -30,18 +30,19 @@ export const Login = ({handleLogin}: ILogin) => {
             })
             localStorage.setItem('token', user.token)
             handleLogin(user)
-        } catch(e: any) {
-            if(e instanceof ApiErrors) {
+        } catch (e: any) {
+            if (e instanceof ApiErrors) {
                 setLoginError(e.singleError)
+                reset({pass: ''})
             }
         }
     }
-    
+
     return <>
         <div className="d-flex justify-content-center align-items-center flex-column login-container">
             <div className="login-image">
-            <img src={MouscronLogo}/>
-            <div className="login-title">PubliTaxe</div>
+                <img src={MouscronLogo} />
+                <div className="login-title">PubliTaxe</div>
             </div>
             <Card style={{ width: '40rem' }}>
                 <Card.Body>
@@ -53,13 +54,15 @@ export const Login = ({handleLogin}: ILogin) => {
                     <Form onSubmit={handleSubmit(OnSubmit)}>
                         <Form.Group controlId="mail" className="mt-3">
                             <Form.Label>Adresse e-mail</Form.Label>
-                            <Form.Control type="text" placeholder="Adresse email" {...register('mail')} />
+                            <Form.Control type="text" placeholder="Adresse email" isInvalid={errors.mail} {...register('mail')} />
+                            {errors.mail && <Form.Control.Feedback type="invalid">{errors.mail.message}</Form.Control.Feedback>}
                         </Form.Group>
                         <Form.Group controlId="password" className="mt-2">
                             <Form.Label>Mot de passe</Form.Label>
-                            <Form.Control type="password" placeholder="Mot de passe" {...register('pass')} />
+                            <Form.Control type="password" placeholder="Mot de passe" isInvalid={errors.pass} {...register('pass')} />
+                            {errors.pass && <Form.Control.Feedback type="invalid">{errors.pass.message}</Form.Control.Feedback>}
                         </Form.Group>
-                            <Button variant="primary" type="submit" className="mt-3">Se connecter</Button>
+                        <Button variant="primary" type="submit" className="mt-3" disabled={isSubmitting}>{isSubmitting ? 'Chargement...' : 'Se connecter'}</Button>
                     </Form>
                 </Card.Body>
             </Card>
