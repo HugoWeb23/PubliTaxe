@@ -62,7 +62,6 @@ namespace Taxes
             }
 
             app.UseMiddleware<JwtMiddleware>();
-            app.UseHttpsRedirection();
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Uploads/images")),
@@ -89,7 +88,7 @@ namespace Taxes
 
                 if (env.IsDevelopment())
                 {
-                    spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
+                    spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
         }

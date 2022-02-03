@@ -1,4 +1,4 @@
 {
-    "Development_url": "https://localhost:5001",
+    "Development_url": "http://localhost:5000",
     "Production_url": "https://localhost:5001"
 }
