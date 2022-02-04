@@ -109,7 +109,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
         }
         if (type == 'create') {
             data.matricule_ciger = matricule
-            data.exercice_courant = 1
+            data.exercice_courant = currentFiscalYear.id
         }
         onValidate(data, type)
         handleClose()

@@ -30,13 +30,16 @@ export const PrintAllTaxes = ({ tarifs, currentFiscalYear, informations }: IPrin
     const Today = () => {
         const date = new Date()
         const month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
-        return `${date.getFullYear()}-${month}-${date.getDate()}`
-    
-      }
+        const day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
+        return `${date.getFullYear()}-${month}-${day}`
 
-    const initialValues = ({ ...informations, 
-        date_echeance: currentFiscalYear.date_echeance, 
-        date_impression: Today() })
+    }
+
+    const initialValues = ({
+        ...informations,
+        date_echeance: currentFiscalYear.date_echeance,
+        date_impression: Today()
+    })
 
     const { register, handleSubmit, formState: { errors } } = useForm<any>({ resolver: yupResolver(PrintAllTaxesSchema), defaultValues: initialValues })
 

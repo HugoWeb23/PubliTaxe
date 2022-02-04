@@ -27,8 +27,16 @@ interface IPrintAllMinutes {
 }
 
 export const PrintAllMinutes = ({ tarifs, motifsMajoration, currentFiscalYear, informations }: IPrintAllMinutes) => {
-    const date = new Date()
-    const initialValues = ({ ...informations, date_echeance: currentFiscalYear.date_echeance, date_impression: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}` })
+
+    const Today = () => {
+        const date = new Date()
+        const month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
+        const day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
+        return `${date.getFullYear()}-${month}-${day}`
+
+    }
+    
+    const initialValues = ({ ...informations, date_echeance: currentFiscalYear.date_echeance, date_impression: Today() })
 
     const { register, handleSubmit, formState: { errors } } = useForm<any>({ resolver: yupResolver(PrintAllMinutesSchema), defaultValues: initialValues })
 
