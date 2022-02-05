@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useForm, Controller } from "react-hook-form"
+import { useForm, Controller, useWatch } from "react-hook-form"
 import {
     Form,
     Button,
@@ -17,25 +17,26 @@ import { IMotif_majoration } from "../../../Types/IMotif_majoration";
 import { apiFetch, ApiErrors } from "../../../Services/apiFetch";
 import { toast } from 'react-toastify';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { TaxeFormSchema } from "../../../Validation/Tax/TaxFormSchema";
 import { Link } from "react-router-dom";
 import { LeftArrow } from '../../UI/LeftArroy'
-import { ManageAdvertising } from '../ManageAdvertising'
 import { Printer } from "../../UI/Printer";
 import { IndividualPrint } from '../IndividualPrint';
 import { IExercice } from "../../../Types/IExercice";
 import { IPrintData } from "../../../Types/IPrintData";
+import { ManageAdvertisingSimulation } from "./ManageAdvertisingSimulation";
+import { SimulationFormSchema } from "../../../Validation/Tax/SimulationForm";
 
 
-export const SimulationForm = ({ data = {}, type, currentFiscalYear, onFormSubmit }: any) => {
+export const SimulationForm = ({ data = {}, type, tarifs, currentFiscalYear, allFiscalYears, onFormSubmit }: any) => {
     const defaultValues = data ? data : {}
     const [streetCodeModal, setStreetCodeModal] = useState<boolean>(false)
     const [postCodes, setPostCodes] = useState<any>(data.code_postal ? [data.code_postal] : [])
     const [codePostal, setCodePostal] = useState<any>(null)
-    const { register, reset, control, handleSubmit, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(TaxeFormSchema), defaultValues: defaultValues })
+    const [publicites, setPublicites] = useState(data.publicites ? data.publicites : [])
+    const { register, reset, control, handleSubmit, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(SimulationFormSchema), defaultValues: defaultValues })
 
     const OnSubmit = (data: any) => {
-        alert('ok')
+        onFormSubmit(data)
     }
 
     const handleSelectStreet = (street: IRue) => {
@@ -86,6 +87,11 @@ export const SimulationForm = ({ data = {}, type, currentFiscalYear, onFormSubmi
             }
         }
     }
+
+    const exercices = useWatch({
+        control,
+        name: "exercices"
+    })
 
     return <>
         <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet} />
@@ -281,7 +287,26 @@ export const SimulationForm = ({ data = {}, type, currentFiscalYear, onFormSubmi
                         </Form.Group>
                     </Col>
                 </Row>
+                <div className="d-flex mt-4 mb-3">
+                    {allFiscalYears.filter((f: IExercice) => f.annee_exercice >= currentFiscalYear.annee_exercice).map((f: IExercice) => {
+                        return <div className="form-check me-3" key={f.annee_exercice}>
+                            <input id={f.annee_exercice.toString()} className="form-check-input" type="checkbox" {...register('exercices')} value={f.id} />
+                            <label className="form-check-label" htmlFor={f.annee_exercice.toString()}>
+                                {f.annee_exercice}
+                            </label>
+                        </div>
+                    })}
+
+                </div>
             </Form>
+            <ManageAdvertisingSimulation
+                pubs={publicites}
+                tarifs={tarifs}
+                currentFiscalYear={currentFiscalYear}
+                allFiscalYears={allFiscalYears}
+                exos={exercices}
+                onSubmit={(pubs: any) => setValue('publicites', pubs)}
+            />
         </Container>
     </>
 }

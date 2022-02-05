@@ -7,39 +7,35 @@ import {
     InputGroup,
     Image
 } from 'react-bootstrap'
-import { IPubliciteImage } from "../../Types/IPublicite"
+import { IPubliciteImage } from "../../../Types/IPublicite"
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, Controller, useWatch } from "react-hook-form"
-import { AdvertisingFormSchema } from '../../Validation/Tax/AdvertisingFormSchema';
+import { AdvertisingFormSchema } from '../../../Validation/Tax/AdvertisingFormSchema';
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead'
-import { ApiErrors, apiFetch } from "../../Services/apiFetch";
+import { ApiErrors, apiFetch } from "../../../Services/apiFetch";
 import { useEffect, useState } from 'react';
-import { IRue } from '../../Types/IRue';
-import { Trash } from '../UI/Trash';
+import { IRue } from '../../../Types/IRue';
+import { Trash } from '../../UI/Trash';
 import { toast } from 'react-toastify';
-import { SumTax } from '../../Services/SumTax'
-import { IPrice } from '../../Types/IPrice';
-import { IExercice } from '../../Types/IExercice';
-import settings from '../../settings.json'
+import { SumTax } from '../../../Services/SumTax'
+import { IPrice } from '../../../Types/IPrice';
+import { IExercice } from '../../../Types/IExercice';
+import settings from '../../../settings.json'
 import { v1 as uuidv1 } from 'uuid'
 
 
-interface IAdvertisingModal {
+interface IAdvertisingSimulationModal {
     type: 'create' | 'edit',
     show: boolean,
     publicite: any,
-    matricule: number,
-    tarifs: IPrice[],
-    currentFiscalYear: IExercice,
     handleClose: () => void,
     onValidate: (daya: any, type: 'create' | 'edit') => void
 }
 
-export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, currentFiscalYear, handleClose, onValidate }: IAdvertisingModal) => {
+export const AdvertisingModalSimulation = ({ type, show, publicite, handleClose, onValidate }: IAdvertisingSimulationModal) => {
     const [streets, setStreets] = useState<IRue[]>(publicite?.rue ? [publicite.rue] : [])
     const [streetId, setStreetId] = useState<number>()
     const [loadingStreets, setLoadingStreets] = useState<boolean>(false)
-    const [imagesLinks, setImagesLinks] = useState<IPubliciteImage[]>(publicite?.photos && publicite.photos.length > 0 ? publicite.photos : [])
     const { register, control, reset, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(AdvertisingFormSchema), defaultValues: publicite ? publicite : { type_publicite: 1, face: 1, exoneration: false } });
 
     const quantite = useWatch({
@@ -51,30 +47,6 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
         control,
         name: "surface"
     })
-
-    const face = useWatch({
-        control,
-        name: "face"
-    })
-
-    const typePub = useWatch({
-        control,
-        name: "type_publicite"
-    })
-
-    const exoneration = useWatch({
-        control,
-        name: "exoneration"
-    })
-
-    useEffect(() => {
-        if (exoneration == false) {
-            const TaxValue = SumTax(currentFiscalYear.id, quantite, surface, face, typePub, tarifs)
-            setValue('taxe_totale', TaxValue)
-        } else {
-            setValue('taxe_totale', '0.00')
-        }
-    }, [quantite, surface, face, typePub, exoneration])
 
     const StreetSearch = async (query: string) => {
         setLoadingStreets(true)
@@ -108,62 +80,11 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
         if (streetId != undefined) {
             data.id_rue = streetId
         }
-        if (type == 'create') {
-            data.matricule_ciger = matricule
-            data.exercice_courant = currentFiscalYear.id
+        if(type == 'create') {
             data.uuid = uuidv1()
         }
         onValidate(data, type)
         handleClose()
-    }
-
-    const onFileChange = async (e: any) => {
-        const allowedFileTypes = ["image/png", "image/jpeg"]
-        const files = e.target.files
-        const formData = new FormData()
-        Array.from(files).forEach((image: any) => {
-            if (allowedFileTypes.includes(image.type)) {
-                formData.append(`images`, image)
-            } else {
-                toast.error(`${image.name} n'est pas un type de fichier autorisé`)
-            }
-        })
-
-        if (Array.from(formData).length > 0) {
-            try {
-                const link = await apiFetch(`/entreprises/publicite/uploadimage`, {
-                    method: 'POST',
-                    body: formData
-                })
-
-                const allImages = [...imagesLinks, ...link.map((l: any) => {
-                    return { photo: l }
-                })]
-                setValue('photos', allImages)
-
-                setImagesLinks(links => [...links, ...link.map((l: any) => {
-                    return { photo: l }
-                })])
-            } catch (e: any) {
-                if (e instanceof ApiErrors) {
-                    toast.error(e.singleError.error)
-                }
-            }
-        }
-    }
-
-    const deleteImage = async (imageName: string) => {
-        try {
-            await apiFetch(`/entreprises/publicite/deleteimage/${imageName}`, {
-                method: 'DELETE'
-            })
-            setImagesLinks(links => links.filter((link: IPubliciteImage) => link.photo != imageName))
-            setValue('photos', imagesLinks.filter((link: IPubliciteImage) => link.photo != imageName))
-        } catch (e: any) {
-            if (e instanceof ApiErrors) {
-                toast.error(e.singleError.error)
-            }
-        }
     }
 
     return <>
@@ -326,45 +247,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
                             </Form.Group>
                         </Col>
                     </Row>
-                    <Row>
-                        <Col>
-                            <Form.Group controlId="formFileSm" className="mb-3">
-                                <Form.Label>Photos du panneau</Form.Label>
-                                <Form.Control type="file" size="sm" accept="image/*" multiple onChange={onFileChange} />
-                                <Form.Text className="text-muted">
-                                    Maintenez la touche CTRL pour sélectionner plusieurs photos.
-                                </Form.Text>
-                            </Form.Group>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <Form.Group className="mb-3" controlId="taxe_totale">
-                                <Form.Label column="sm">Taxe</Form.Label>
-                                <InputGroup className="mb-2" size="sm">
-                                    <Form.Control type="text" disabled placeholder="Taxe totale" size="sm" isInvalid={errors.taxe_totale} {...register('taxe_totale')} />
-                                    <InputGroup.Text>€</InputGroup.Text>
-                                    {errors.taxe_totale && <Form.Control.Feedback type="invalid">{errors.taxe_totale.message}</Form.Control.Feedback>}
-                                </InputGroup>
-                            </Form.Group>
-                        </Col>
-                    </Row>
                 </Form>
-                <div className="d-flex justify-content-start">
-                    {imagesLinks.map((image: IPubliciteImage, index: number) => {
-                        return <>
-                            <div style={{ position: 'relative' }} className="me-4" key={index}>
-                                <Button className="btn-circle" onClick={() => deleteImage(image.photo)} style={{ position: 'absolute', top: "-7px", right: "-14px" }} variant="danger" size="sm"><Trash /></Button>
-                                <a href={`${process.env.NODE_ENV === 'development' ? settings.Development_url : settings.Production_url}/api/images/` + image.photo} target="_blank"><Image src={`${process.env.NODE_ENV === 'development' ? settings.Development_url : settings.Production_url}/api/images/` + image.photo} style={{ height: "100px", width: "100px" }} rounded /></a>
-                            </div>
-                        </>
-                    })}
-                </div>
-                {imagesLinks.length > 0 &&
-                    <Form.Text className="text-muted">
-                        Cliquez sur une photo pour la voir dans sa taille réelle.
-                    </Form.Text>
-                }
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>

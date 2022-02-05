@@ -19,7 +19,8 @@ export interface IPublicite {
     code_recu: number
     exoneration: boolean,
     pv: number,
-    photos: IPhoto[]
+    photos: IPhoto[],
+    uuid: string
 
 }
 
