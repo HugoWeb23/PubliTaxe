@@ -10,6 +10,7 @@ import { SumTax } from '../../../Services/SumTax'
 import { IExercice } from '../../../Types/IExercice'
 import { IPrice } from '../../../Types/IPrice'
 import { IPublicite } from '../../../Types/IPublicite'
+import { IPubliciteSimulation } from '../../../Types/IPubliciteSimulation'
 import { ConfirmModal } from '../../UI/ConfirmModal'
 import { Pencil } from '../../UI/Pencil'
 import { PlusIcon } from '../../UI/PlusIcon'
@@ -22,16 +23,16 @@ interface IManageAdvertisingSimulation {
     currentFiscalYear: IExercice,
     allFiscalYears: IExercice[],
     exos: any,
-    onSubmit: (publicites: IPublicite[]) => void
+    onSubmit: (publicites: IPubliciteSimulation[]) => void
 }
 
 export const ManageAdvertisingSimulation = memo(({ pubs = [], tarifs, currentFiscalYear, allFiscalYears, exos = [], onSubmit }: IManageAdvertisingSimulation) => {
     const isMounted = useRef(false)
     const [showEdit, setShowEdit] = useState<boolean>(false)
     const [type, setType] = useState<'edit' | 'create'>('edit')
-    const [publicites, setPublicites] = useState<IPublicite[]>(pubs)
-    const [publicite, setPublicite] = useState<IPublicite | null>(null)
-    const [deleteModal, setDeleteModal] = useState<{ show: boolean, element: IPublicite | null }>({ show: false, element: null })
+    const [publicites, setPublicites] = useState<IPubliciteSimulation[]>(pubs)
+    const [publicite, setPublicite] = useState<IPubliciteSimulation | null>(null)
+    const [deleteModal, setDeleteModal] = useState<{ show: boolean, element: IPubliciteSimulation | null }>({ show: false, element: null })
 
     useEffect(() => {
         if (isMounted.current == false) {
@@ -41,7 +42,21 @@ export const ManageAdvertisingSimulation = memo(({ pubs = [], tarifs, currentFis
         }
     }, [publicites])
 
-    const handleSelectPub = (pub: IPublicite) => {
+    useEffect(() => {
+        if (isMounted.current == false) {
+            isMounted.current = true
+        } else if (isMounted.current == true) {
+            if (pubs.length > 0) {
+                const test = [...publicites]
+                setPublicites(test.map((pub: IPubliciteSimulation, index: number) => ({ ...pub, id: pubs[index].id })))
+            } else {
+                setPublicites([])
+            }
+        }
+
+    }, [pubs])
+
+    const handleSelectPub = (pub: IPubliciteSimulation) => {
         setPublicite(pub)
         setType('edit')
         setShowEdit(true)
@@ -61,8 +76,8 @@ export const ManageAdvertisingSimulation = memo(({ pubs = [], tarifs, currentFis
 
     const handleSubmit = async (data: any, type: 'create' | 'edit') => {
         if (type == 'edit') {
-            setPublicites(publicites => publicites.map((pub: IPublicite) => {
-                if(pub.numero_panneau != undefined && pub.numero_panneau == publicite?.numero_panneau) {
+            setPublicites(publicites => publicites.map((pub: IPubliciteSimulation) => {
+                if(pub.id != undefined && pub.id == publicite?.id) {
                    return data
                 } else if(pub.uuid != undefined && pub.uuid == publicite?.uuid) {
                     return data
@@ -79,8 +94,8 @@ export const ManageAdvertisingSimulation = memo(({ pubs = [], tarifs, currentFis
         setDeleteModal({ show: false, element: null })
     }
 
-    const deletePub = (pub: IPublicite) => {
-        setPublicites(publicites => publicites.filter((publicite: IPublicite) => publicite != pub))
+    const deletePub = (pub: IPubliciteSimulation) => {
+        setPublicites(publicites => publicites.filter((publicite: IPubliciteSimulation) => publicite != pub))
         setDeleteModal({ show: false, element: null })
     }
 
@@ -112,7 +127,7 @@ export const ManageAdvertisingSimulation = memo(({ pubs = [], tarifs, currentFis
             </thead>
             <tbody>
                 {publicites.length == 0 && <tr><td colSpan={6}>Aucun panneau</td></tr>}
-                {publicites.map((publicite: IPublicite, index: number) => {
+                {publicites.map((publicite: IPubliciteSimulation, index: number) => {
                     return <tr key={index}>
                         <td>{publicite.rue.code_postal.cp}</td>
                         <td>{publicite.rue.code_rue}</td>
@@ -158,7 +173,7 @@ export const ManageAdvertisingSimulation = memo(({ pubs = [], tarifs, currentFis
                 <tr>
                     <td colSpan={3} className="fw-bold table-active">Exercice {exercice}</td>
                 </tr>
-                    {publicites.map((pub: IPublicite, index: number) => {
+                    {publicites.map((pub: IPubliciteSimulation, index: number) => {
                         return <tr>
                             <td>{index + 1}</td>
                             <td>{SumTax(e, pub.quantite, pub.surface, pub.face, pub.type_publicite, tarifs)}</td>
@@ -166,7 +181,7 @@ export const ManageAdvertisingSimulation = memo(({ pubs = [], tarifs, currentFis
                         </tr>
                     })}
                     <tr>
-                        <td colSpan={3}> Total : {publicites.reduce((acc: any, curr: IPublicite) => {
+                        <td colSpan={3}> Total : {publicites.reduce((acc: any, curr: IPubliciteSimulation) => {
                         if (curr.exoneration) {
                             return acc
                         } else {

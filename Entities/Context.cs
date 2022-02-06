@@ -10,6 +10,8 @@ namespace Taxes.Entities
 
         public DbSet<Code_postal> codes_postaux { get; set;}
         public DbSet<Publicite> enseignes_publicitaires { get; set; }
+        public DbSet<Simulation> simulations { get; set; }
+        public DbSet<PubliciteSimulation> enseignes_publicitaires_simulations { get; set; }
         public DbSet<PublicitesPhotos> photos_publicites { get; set; }
         public DbSet<Entreprise> entreprises { get; set; }
         public DbSet<Exercice> exercices { get; set; }

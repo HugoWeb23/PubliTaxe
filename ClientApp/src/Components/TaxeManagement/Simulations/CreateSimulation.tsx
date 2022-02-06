@@ -10,27 +10,20 @@ export const CreateSimulation = ({ tarifs, currentFiscalYear }: any) => {
 
     useEffect(() => {
         (async() => {
-            try {
                 const allFiscalYears = await apiFetch('/fiscalyears/all')
                 setFiscalYears(allFiscalYears)
-            } catch(e) {
-                alert('error')
-            }
         })()
     }, [])
 
     const handleCreate = async (data: any) => {
-        /*
-        data.matricule_ciger = Number.parseInt(data.matricule_ciger)
         delete data.code_postal
-        const newentreprise = await apiFetch('/entreprises/new', {
+        const newentreprise = await apiFetch('/simulations/new', {
             method: 'POST',
             body: JSON.stringify(data)
         })
         return newentreprise
-        */
-       console.log(data)
     }
+
     return <>
         {(tarifs != null && currentFiscalYear != null && fiscalYears.length > 0) ? <SimulationForm
             type="create"

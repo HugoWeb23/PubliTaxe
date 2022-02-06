@@ -22,7 +22,7 @@ namespace Taxes.Controllers
             _mediator = mediator;
         }
 
-        [AuthorizeRole(MinRole: 3)]
+        [AuthorizeRole(MinRole: 2)]
         [HttpGet("all")]
         public async Task<IActionResult> GetAll()
         {

@@ -25,18 +25,40 @@ import { IExercice } from "../../../Types/IExercice";
 import { IPrintData } from "../../../Types/IPrintData";
 import { ManageAdvertisingSimulation } from "./ManageAdvertisingSimulation";
 import { SimulationFormSchema } from "../../../Validation/Tax/SimulationForm";
+import { ConfirmModal } from "./ConfirmModal";
 
 
 export const SimulationForm = ({ data = {}, type, tarifs, currentFiscalYear, allFiscalYears, onFormSubmit }: any) => {
     const defaultValues = data ? data : {}
     const [streetCodeModal, setStreetCodeModal] = useState<boolean>(false)
+    const [confirmationModal, setConfirmationModal] = useState<boolean>(false)
     const [postCodes, setPostCodes] = useState<any>(data.code_postal ? [data.code_postal] : [])
     const [codePostal, setCodePostal] = useState<any>(null)
     const [publicites, setPublicites] = useState(data.publicites ? data.publicites : [])
     const { register, reset, control, handleSubmit, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(SimulationFormSchema), defaultValues: defaultValues })
 
-    const OnSubmit = (data: any) => {
-        onFormSubmit(data)
+    const OnSubmit = async(data: any) => {
+        try {
+            const form2 = { ...data }
+            const newArray = form2.publicites.map(({ rue, ...rest }: any) => rest)
+            form2.publicites = newArray
+            if (codePostal != null) {
+                form2.code_postalId = codePostal
+            }
+            const submit = await onFormSubmit(form2)
+            if(type == 'edit') {
+                setPublicites(submit.publicites)
+            } else {
+                reset()
+                setPublicites([])
+            }
+            setConfirmationModal(true)
+        } catch(e) {
+            if (e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
+        }
+       
     }
 
     const handleSelectStreet = (street: IRue) => {
@@ -94,6 +116,7 @@ export const SimulationForm = ({ data = {}, type, tarifs, currentFiscalYear, all
     })
 
     return <>
+        <ConfirmModal type={type} show={confirmationModal} onClose={() => setConfirmationModal(false)}/>
         <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet} />
         <Container fluid="xl">
             <Form onSubmit={handleSubmit(OnSubmit)} className="mb-2">
