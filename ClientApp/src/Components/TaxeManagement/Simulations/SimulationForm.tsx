@@ -28,13 +28,13 @@ import { SimulationFormSchema } from "../../../Validation/Tax/SimulationForm";
 import { ConfirmModal } from "./ConfirmModal";
 
 
-export const SimulationForm = ({ data = {}, type, tarifs, currentFiscalYear, allFiscalYears, onFormSubmit }: any) => {
+export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFiscalYears, onFormSubmit }: any) => {
     const defaultValues = data ? data : {}
     const [streetCodeModal, setStreetCodeModal] = useState<boolean>(false)
     const [confirmationModal, setConfirmationModal] = useState<boolean>(false)
-    const [postCodes, setPostCodes] = useState<any>(data.code_postal ? [data.code_postal] : [])
+    const [postCodes, setPostCodes] = useState<any>(data?.code_postal ? [data.code_postal] : [])
     const [codePostal, setCodePostal] = useState<any>(null)
-    const [publicites, setPublicites] = useState(data.publicites ? data.publicites : [])
+    const [publicites, setPublicites] = useState(data?.publicites ? data.publicites : [])
     const { register, reset, control, handleSubmit, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(SimulationFormSchema), defaultValues: defaultValues })
 
     const OnSubmit = async(data: any) => {
@@ -45,6 +45,7 @@ export const SimulationForm = ({ data = {}, type, tarifs, currentFiscalYear, all
             if (codePostal != null) {
                 form2.code_postalId = codePostal
             }
+            form2.exercices = data.exercices.join(';')
             const submit = await onFormSubmit(form2)
             if(type == 'edit') {
                 setPublicites(submit.publicites)
@@ -112,7 +113,8 @@ export const SimulationForm = ({ data = {}, type, tarifs, currentFiscalYear, all
 
     const exercices = useWatch({
         control,
-        name: "exercices"
+        name: "exercices",
+        defaultValue: defaultValues.exercices !== undefined ? defaultValues.exercices : []
     })
 
     return <>
@@ -311,7 +313,7 @@ export const SimulationForm = ({ data = {}, type, tarifs, currentFiscalYear, all
                     </Col>
                 </Row>
                 <div className="d-flex mt-4 mb-3">
-                    {allFiscalYears.filter((f: IExercice) => f.annee_exercice >= currentFiscalYear.annee_exercice).map((f: IExercice) => {
+                    {allFiscalYears.filter((f: IExercice) => f.annee_exercice >= currentFiscalYear.annee_exercice).map((f: IExercice, index: number) => {
                         return <div className="form-check me-3" key={f.annee_exercice}>
                             <input id={f.annee_exercice.toString()} className="form-check-input" type="checkbox" {...register('exercices')} value={f.id} />
                             <label className="form-check-label" htmlFor={f.annee_exercice.toString()}>

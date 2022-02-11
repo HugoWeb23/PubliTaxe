@@ -26,6 +26,7 @@ namespace Taxes.Entities
         public string Commentaire_taxation { get; set; }
         public int Role_linguistique { get; set; }
         public string Date_creation { get; set; }
+        public string Exercices { get; set; }
         public Code_postal Code_postal { get; set; }
         public ICollection<PubliciteSimulation> Publicites { get; set; }
 

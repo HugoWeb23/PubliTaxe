@@ -4,7 +4,8 @@ import {
     Form,
     Button,
     OverlayTrigger,
-    Tooltip
+    Tooltip,
+    Alert
 } from 'react-bootstrap'
 import { SumTax } from '../../../Services/SumTax'
 import { IExercice } from '../../../Types/IExercice'
@@ -194,5 +195,6 @@ export const ManageAdvertisingSimulation = memo(({ pubs = [], tarifs, currentFis
         })}
             </tbody>
         </Table>}
+        {(publicites.length > 0 && exos.length === 0) && <Alert variant="warning">Veuillez sélectionner au moins un exercice pour afficher la simulation.</Alert>}
     </>
 })
