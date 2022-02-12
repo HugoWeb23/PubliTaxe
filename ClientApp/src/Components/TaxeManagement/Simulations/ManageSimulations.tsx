@@ -1,3 +1,4 @@
+import { publicDecrypt } from "crypto"
 import { useState, useEffect, memo } from "react"
 import {
     Container,
@@ -6,14 +7,17 @@ import {
     Tooltip,
     Button
 } from "react-bootstrap"
-import { Link } from "react-router-dom"
-import { ApiErrors } from "../../../Services/apiFetch"
+import { Link, Redirect, useHistory } from "react-router-dom"
+import { ApiErrors, apiFetch } from "../../../Services/apiFetch"
 import { IApercuSimulation } from "../../../Types/IApercuSimulation"
+import { ISimulation } from "../../../Types/ISimulation"
 import { useSimulations } from "../../Hooks/SimulationsHook"
 import { ConfirmModal } from "../../UI/ConfirmModal"
+import { Exit } from "../../UI/Exit"
 import { Pencil } from "../../UI/Pencil"
 import { PlusIcon } from "../../UI/PlusIcon"
 import { Trash } from "../../UI/Trash"
+import { v1 as uuidv1 } from 'uuid'
 
 export const ManageSimulations = () => {
 
@@ -78,15 +82,24 @@ export const ManageSimulations = () => {
     </>
 }
 
-interface ISimulation {
+interface Simulation {
     simulation: IApercuSimulation,
     handleDelete: (simulation: IApercuSimulation) => void
 }
 
-const Simulation = memo(({ simulation, handleDelete }: ISimulation) => {
+const Simulation = memo(({ simulation, handleDelete }: Simulation) => {
+
+    const history = useHistory()
+
+    const handleCreateEntreprise = async() => {
+        let fetchSimulation: ISimulation = await apiFetch(`/simulations/id/${simulation.id_simulation}`)
+        fetchSimulation.publicites = fetchSimulation.publicites.map(({id, id_simulation, ...pub}: any) => pub).map((pub: any) => ({...pub, uuid: uuidv1()}))
+        history.push({ pathname: '/entreprise/create', state: { simulation: fetchSimulation } })
+    }
+
     return <>
         <tr key={simulation.id_simulation}>
-        <td>{simulation.id_simulation}</td>
+            <td>{simulation.id_simulation}</td>
             <td>{simulation.nom}</td>
             <td>{simulation.nombre_panneaux}</td>
             <td>{simulation.date_creation}</td>
@@ -96,6 +109,16 @@ const Simulation = memo(({ simulation, handleDelete }: ISimulation) => {
                         placement="top"
                         overlay={
                             <Tooltip id={`tooltip-1`}>
+                                Créer une entreprise
+                            </Tooltip>
+                        }
+                    >
+                        <div className="me-1 btn btn-success btn-sm" onClick={handleCreateEntreprise}><Exit /></div>
+                    </OverlayTrigger>
+                    <OverlayTrigger
+                        placement="top"
+                        overlay={
+                            <Tooltip id={`tooltip-2`}>
                                 Éditer
                             </Tooltip>
                         }
@@ -105,7 +128,7 @@ const Simulation = memo(({ simulation, handleDelete }: ISimulation) => {
                     <OverlayTrigger
                         placement="top"
                         overlay={
-                            <Tooltip id={`tooltip-2`}>
+                            <Tooltip id={`tooltip-3`}>
                                 Supprimer
                             </Tooltip>
                         }

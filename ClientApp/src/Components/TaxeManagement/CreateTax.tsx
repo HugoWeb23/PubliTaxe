@@ -2,7 +2,7 @@ import { apiFetch } from "../../Services/apiFetch"
 import { Loader } from "../UI/Loader"
 import { TaxeForm } from "./TaxeForm"
 
-export const CreateTax = ({ motifs, tarifs, currentFiscalYear }: any) => {
+export const CreateTax = ({ motifs, tarifs, currentFiscalYear, location = {} }: any) => {
     const handleCreate = async (data: any) => {
         data.matricule_ciger = Number.parseInt(data.matricule_ciger)
         delete data.code_postal
@@ -14,11 +14,13 @@ export const CreateTax = ({ motifs, tarifs, currentFiscalYear }: any) => {
     }
     return <>
         {(motifs != null && tarifs != null && currentFiscalYear != null) ? <TaxeForm
+            data={location.state?.simulation || {}}
             type="create"
             motifs={motifs}
             tarifs={tarifs}
             currentFiscalYear={currentFiscalYear}
             onFormSubmit={handleCreate}
+            formSimulation={location.state?.simulation !== undefined}
         /> : <Loader />}
     </>
 }

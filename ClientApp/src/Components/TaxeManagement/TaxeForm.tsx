@@ -6,7 +6,8 @@ import {
     Row,
     Col,
     Container,
-    Card
+    Card,
+    Alert
 } from 'react-bootstrap'
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead'
 import "react-bootstrap-typeahead/css/Typeahead.css";
@@ -33,10 +34,11 @@ interface TaxeForm {
     tarifs: any,
     currentFiscalYear: IExercice,
     informations?: IPrintData,
+    formSimulation?: boolean,
     onFormSubmit: (data: any) => Promise<void>
 }
 
-export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, informations, onFormSubmit }: TaxeForm) => {
+export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, informations, formSimulation = false, onFormSubmit }: TaxeForm) => {
     const defaultValues = data ? data : {}
     const [tax, setTax] = useState<Entreprise>(data as Entreprise)
     const [publicites, setPublicites] = useState(data.publicites ? data.publicites : [])
@@ -188,6 +190,13 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                         <Button variant="success" type="submit" disabled={isSubmitting}>{type == "create" ? "Créer l'entreprise" : "Modifier l'entreprise"}</Button>
                     </div>
                 </div>
+                {formSimulation && <div className="bd-callout bd-callout-default">
+                    <h5>Création d'une entreprise à partir d'une simulation</h5>
+                    Les informations générées automatiquement proviennent de la simulation n°{tax.id_simulation}. Si vous souhaitez effectuer des modifications, il est conseillé de les appliquer dans la simulation, et non dans ce formulaire.
+                    <div className="mt-3">
+                        <Link className="link" to={`/pricingsimulation/edit/${tax.id_simulation}`}>Modifier la simulation</Link>
+                    </div>
+                </div>}
                 <Row className="mb-3">
                     <Col>
                         <Form.Group controlId="matricule_ciger">
@@ -260,14 +269,14 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                     </Col>
                     <Col>
                         <Form.Group controlId="index">
-                            <Form.Label column="sm">Index</Form.Label>
+                            <Form.Label column="sm">Index <span className="fw-light">(optionnel)</span></Form.Label>
                             <Form.Control type="text" placeholder="Index" isInvalid={errors.adresse_index} {...register('adresse_index')} size="sm" />
                             {errors.adresse_index && <Form.Control.Feedback type="invalid">{errors.adresse_index.message}</Form.Control.Feedback>}
                         </Form.Group>
                     </Col>
                     <Col>
                         <Form.Group controlId="boite">
-                            <Form.Label column="sm">Boite</Form.Label>
+                            <Form.Label column="sm">Boite <span className="fw-light">(optionnel)</span></Form.Label>
                             <Form.Control type="text" placeholder="Boite" isInvalid={errors.adresse_boite} {...register('adresse_boite')} size="sm" />
                             {errors.adresse_boite && <Form.Control.Feedback type="invalid">{errors.adresse_boite.message}</Form.Control.Feedback>}
                         </Form.Group>
@@ -372,7 +381,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                     </Col>
                     <Col>
                         <Form.Group controlId="fax">
-                            <Form.Label column="sm">Fax</Form.Label>
+                            <Form.Label column="sm">Fax <span className="fw-light">(optionnel)</span></Form.Label>
                             <Form.Control type="text" placeholder="Fax" isInvalid={errors.numero_fax} {...register('numero_fax')} size="sm" />
                             {errors.numero_fax && <Form.Control.Feedback type="invalid">{errors.numero_fax.message}</Form.Control.Feedback>}
                         </Form.Group>
@@ -464,14 +473,14 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                             </Col>
                             <Col>
                                 <Form.Group controlId="adresse_index_taxation">
-                                    <Form.Label column="sm">Index</Form.Label>
+                                    <Form.Label column="sm">Index <span className="fw-light">(optionnel)</span></Form.Label>
                                     <Form.Control type="text" placeholder="Index" isInvalid={errors.adresse_index_taxation} disabled={autoTaxAdress} {...register('adresse_index_taxation')} size="sm" />
                                     {errors.adresse_index_taxation && <Form.Control.Feedback type="invalid">{errors.adresse_index_taxation.message}</Form.Control.Feedback>}
                                 </Form.Group>
                             </Col>
                             <Col>
                                 <Form.Group controlId="adresse_boite_taxation">
-                                    <Form.Label column="sm">Boite</Form.Label>
+                                    <Form.Label column="sm">Boite <span className="fw-light">(optionnel)</span></Form.Label>
                                     <Form.Control type="text" placeholder="Boite" isInvalid={errors.adresse_boite_taxation} disabled={autoTaxAdress} {...register('adresse_boite_taxation')} size="sm" />
                                     {errors.adresse_boite_taxation && <Form.Control.Feedback type="invalid">{errors.adresse_boite_taxation.message}</Form.Control.Feedback>}
                                 </Form.Group>
@@ -504,7 +513,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                 <Row>
                     <Col>
                         <Form.Group controlId="commentaire">
-                            <Form.Label column="sm">Commentaire</Form.Label>
+                            <Form.Label column="sm">Commentaire <span className="fw-light">(optionnel)</span></Form.Label>
                             <Form.Control as="textarea" placeholder="Commentaire" isInvalid={errors.commentaire_taxation} {...register('commentaire_taxation')} size="sm" />
                             {errors.commentaire_taxation && <Form.Control.Feedback type="invalid">{errors.commentaire_taxation.message}</Form.Control.Feedback>}
                         </Form.Group>

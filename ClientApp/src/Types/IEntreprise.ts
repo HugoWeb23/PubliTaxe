@@ -2,6 +2,7 @@ import { ICode_postal } from "./ICode_postal";
 import { IPublicite } from "./IPublicite";
 
 export interface Entreprise {
+        id_simulation?: number,
         matricule_ciger: number,
         numero_localite: number,
         nom: string,
