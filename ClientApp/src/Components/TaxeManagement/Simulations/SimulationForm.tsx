@@ -312,7 +312,9 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
                         </Form.Group>
                     </Col>
                 </Row>
-                <div className="d-flex mt-4 mb-3">
+                <Form.Group controlId="exercices">
+                <Form.Label column="sm">Sélection des exercices</Form.Label>
+                <div className="d-flex mb-3">
                     {allFiscalYears.filter((f: IExercice) => f.annee_exercice >= currentFiscalYear.annee_exercice).map((f: IExercice, index: number) => {
                         return <div className="form-check me-3" key={f.annee_exercice}>
                             <input id={f.annee_exercice.toString()} className="form-check-input" type="checkbox" {...register('exercices')} value={f.id} />
@@ -321,8 +323,8 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
                             </label>
                         </div>
                     })}
-
                 </div>
+                </Form.Group>
             </Form>
             <ManageAdvertisingSimulation
                 pubs={publicites}

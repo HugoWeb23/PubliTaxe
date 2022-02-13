@@ -177,7 +177,7 @@ export const ManageAdvertisingSimulation = memo(({ pubs = [], tarifs, currentFis
                     {publicites.map((pub: IPubliciteSimulation, index: number) => {
                         return <tr>
                             <td>{index + 1}</td>
-                            <td>{SumTax(e, pub.quantite, pub.surface, pub.face, pub.type_publicite, tarifs)}</td>
+                            <td>{SumTax(e, pub.quantite, pub.surface, pub.face, pub.type_publicite, pub.exoneration, tarifs)}</td>
                             <td>{pub.exoneration ? "Oui" : "Non"}</td>
                         </tr>
                     })}
@@ -186,7 +186,7 @@ export const ManageAdvertisingSimulation = memo(({ pubs = [], tarifs, currentFis
                         if (curr.exoneration) {
                             return acc
                         } else {
-                            const tax: any = SumTax(e, curr.quantite, curr.surface, curr.face, curr.type_publicite, tarifs)
+                            const tax: any = SumTax(e, curr.quantite, curr.surface, curr.face, curr.type_publicite, curr.exoneration, tarifs)
                             return acc + parseFloat(tax)
                         }
                     }, 0)} €</td>

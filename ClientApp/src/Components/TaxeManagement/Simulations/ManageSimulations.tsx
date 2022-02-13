@@ -18,8 +18,17 @@ import { Pencil } from "../../UI/Pencil"
 import { PlusIcon } from "../../UI/PlusIcon"
 import { Trash } from "../../UI/Trash"
 import { v1 as uuidv1 } from 'uuid'
+import { SumTax } from "../../../Services/SumTax"
+import { IExercice } from "../../../Types/IExercice"
+import { IPrice } from "../../../Types/IPrice"
+import { Loader } from "react-bootstrap-typeahead"
 
-export const ManageSimulations = () => {
+interface IManageSimulations {
+    currentFiscalYear: IExercice,
+    prices: IPrice[]
+}
+
+export const ManageSimulations = ({currentFiscalYear, prices}: IManageSimulations) => {
 
     const { simulations, totalPages, pageCourante, totalSimulations, getAll } = useSimulations()
     const [filterOptions, setFilterOptions] = useState<any>({ matricule: "", nom: "", pubExoneration: false, pageCourante: 1, elementsParPage: 15 })
@@ -75,7 +84,7 @@ export const ManageSimulations = () => {
                 </thead>
                 <tbody>
                     {loader && <div>Chargement...</div>}
-                    {(loader == false && simulations.length > 0) && simulations.map((simulation: IApercuSimulation) => <Simulation simulation={simulation} handleDelete={(simulation: IApercuSimulation) => setDeleteModal({ show: true, simulation: simulation })} />)}
+                    {(loader == false && simulations.length > 0) && simulations.map((simulation: IApercuSimulation) => <Simulation simulation={simulation} currentFiscalYear={currentFiscalYear} prices={prices} handleDelete={(simulation: IApercuSimulation) => setDeleteModal({ show: true, simulation: simulation })} />)}
                 </tbody>
             </Table>
         </Container>
@@ -84,16 +93,20 @@ export const ManageSimulations = () => {
 
 interface Simulation {
     simulation: IApercuSimulation,
+    currentFiscalYear: IExercice,
+    prices: IPrice[],
     handleDelete: (simulation: IApercuSimulation) => void
 }
 
-const Simulation = memo(({ simulation, handleDelete }: Simulation) => {
+const Simulation = memo(({ simulation, currentFiscalYear, prices, handleDelete }: Simulation) => {
 
     const history = useHistory()
+    const [loader, setLoader] = useState<boolean>(false)
 
-    const handleCreateEntreprise = async() => {
+    const handleCreateEntreprise = async () => {
+        setLoader(true)
         let fetchSimulation: ISimulation = await apiFetch(`/simulations/id/${simulation.id_simulation}`)
-        fetchSimulation.publicites = fetchSimulation.publicites.map(({id, id_simulation, ...pub}: any) => pub).map((pub: any) => ({...pub, uuid: uuidv1()}))
+        fetchSimulation.publicites = fetchSimulation.publicites.map(({ id, id_simulation, ...pub }: any) => pub).map((pub: any) => ({ ...pub, taxe_totale: SumTax(currentFiscalYear.id, pub.quantite, pub.surface, pub.face, pub.type_publicite, pub.exoneration, prices), exercice_courant: currentFiscalYear.id, uuid: uuidv1() }))
         history.push({ pathname: '/entreprise/create', state: { simulation: fetchSimulation } })
     }
 
@@ -113,7 +126,7 @@ const Simulation = memo(({ simulation, handleDelete }: Simulation) => {
                             </Tooltip>
                         }
                     >
-                        <div className="me-1 btn btn-success btn-sm" onClick={handleCreateEntreprise}><Exit /></div>
+                        <div className="me-1 btn btn-success btn-sm" onClick={handleCreateEntreprise}>{loader === false ? <Exit /> : <Loader/>}</div>
                     </OverlayTrigger>
                     <OverlayTrigger
                         placement="top"

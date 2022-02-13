@@ -68,12 +68,8 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
     })
 
     useEffect(() => {
-        if (exoneration == false) {
-            const TaxValue = SumTax(currentFiscalYear.id, quantite, surface, face, typePub, tarifs)
+            const TaxValue = SumTax(currentFiscalYear.id, quantite, surface, face, typePub, exoneration, tarifs)
             setValue('taxe_totale', TaxValue)
-        } else {
-            setValue('taxe_totale', '0.00')
-        }
     }, [quantite, surface, face, typePub, exoneration])
 
     const StreetSearch = async (query: string) => {

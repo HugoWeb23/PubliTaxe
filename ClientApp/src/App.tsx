@@ -129,7 +129,7 @@ export const App = () => {
             {exerciceCourant != null ? <ManageNotReceived motifs={motifsMajoration} currentFiscalYear={exerciceCourant} /> : <Loader />}
           </PrivateRoute>
           <PrivateRoute path="/tools/pricingsimulation" exact>
-            <ManageSimulations/>
+            {(tarifs != null && exerciceCourant != null) ? <ManageSimulations currentFiscalYear={exerciceCourant} prices={tarifs}/> : <Loader/>}
           </PrivateRoute>
           <PrivateRoute path="/pricingsimulation/create/" exact>
             <CreateSimulation tarifs={tarifs} currentFiscalYear={exerciceCourant} />
