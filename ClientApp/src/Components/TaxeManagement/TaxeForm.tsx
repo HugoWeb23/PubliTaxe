@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form"
 import {
     Form,
@@ -35,19 +35,29 @@ interface TaxeForm {
     currentFiscalYear: IExercice,
     informations?: IPrintData,
     formSimulation?: boolean,
+    simulationData?: any,
     onFormSubmit: (data: any) => Promise<void>
 }
 
-export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, informations, formSimulation = false, onFormSubmit }: TaxeForm) => {
+export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, informations, formSimulation = false, simulationData = {}, onFormSubmit }: TaxeForm) => {
     const defaultValues = data ? data : {}
+    const [formSimulationMode, setFormSimulationMode] = useState<boolean>(formSimulation)
     const [tax, setTax] = useState<Entreprise>(data as Entreprise)
-    const [publicites, setPublicites] = useState(data.publicites ? data.publicites : [])
+    const [publicites, setPublicites] = useState(data.publicites ? data.publicites : simulationData.publicites ? simulationData.publicites : [])
     const [streetCodeModal, setStreetCodeModal] = useState<boolean>(false)
     const [postCodes, setPostCodes] = useState<any>(data.code_postal ? [data.code_postal] : [])
     const [codePostal, setCodePostal] = useState<any>(null)
     const [autoTaxAdress, setAutoTaxAdress] = useState<boolean>(true)
     const [individualPrint, setIndiviualPrint] = useState<boolean>(false)
     const { register, reset, control, handleSubmit, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(TaxeFormSchema), defaultValues: defaultValues });
+
+    useEffect(() => {
+        if(formSimulation) {
+            for(const [key, value] of Object.entries(simulationData)) {
+                setValue(key, value)
+            }
+        }
+    }, [])
 
     const OnSubmit = async (form: any) => {
         try {
@@ -162,6 +172,12 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
         }
     }
 
+    const handleCancelSimulationMode = () => {
+        reset();
+        setPublicites([]);
+        setFormSimulationMode(false);
+    }
+
     return <>
         <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet} />
         {type === 'edit' && <IndividualPrint
@@ -190,11 +206,11 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                         <Button variant="success" type="submit" disabled={isSubmitting}>{type == "create" ? "Créer l'entreprise" : "Modifier l'entreprise"}</Button>
                     </div>
                 </div>
-                {formSimulation && <div className="bd-callout bd-callout-default">
+                {formSimulationMode && <div className="bd-callout bd-callout-default">
                     <h5>Création d'une entreprise à partir d'une simulation</h5>
-                    Les informations générées automatiquement proviennent de la simulation n°{tax.id_simulation}. Si vous souhaitez effectuer des modifications, il est conseillé de les appliquer dans la simulation, et non dans ce formulaire.
+                    Les informations générées automatiquement proviennent de la simulation n°{simulationData.id_simulation}. Si vous souhaitez effectuer des modifications, il est conseillé de les appliquer dans la simulation, et non dans ce formulaire.
                     <div className="mt-3">
-                        <Link className="link" to={`/pricingsimulation/edit/${tax.id_simulation}`}>Modifier la simulation</Link>
+                        <Link className="link" to={`/pricingsimulation/edit/${simulationData.id_simulation}`}>Modifier la simulation</Link> - <div className="link" onClick={handleCancelSimulationMode}>Annuler la création de l'entreprise</div>
                     </div>
                 </div>}
                 <Row className="mb-3">

@@ -14,13 +14,13 @@ export const CreateTax = ({ motifs, tarifs, currentFiscalYear, location = {} }: 
     }
     return <>
         {(motifs != null && tarifs != null && currentFiscalYear != null) ? <TaxeForm
-            data={location.state?.simulation || {}}
             type="create"
             motifs={motifs}
             tarifs={tarifs}
             currentFiscalYear={currentFiscalYear}
             onFormSubmit={handleCreate}
             formSimulation={location.state?.simulation !== undefined}
+            simulationData={location.state?.simulation}
         /> : <Loader />}
     </>
 }

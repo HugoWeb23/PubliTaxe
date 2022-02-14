@@ -1,4 +1,3 @@
-import { publicDecrypt } from "crypto"
 import { useState, useEffect, memo } from "react"
 import {
     Container,
@@ -22,6 +21,7 @@ import { SumTax } from "../../../Services/SumTax"
 import { IExercice } from "../../../Types/IExercice"
 import { IPrice } from "../../../Types/IPrice"
 import { Loader } from "react-bootstrap-typeahead"
+import { toast } from "react-toastify"
 
 interface IManageSimulations {
     currentFiscalYear: IExercice,
@@ -30,7 +30,7 @@ interface IManageSimulations {
 
 export const ManageSimulations = ({currentFiscalYear, prices}: IManageSimulations) => {
 
-    const { simulations, totalPages, pageCourante, totalSimulations, getAll } = useSimulations()
+    const { simulations, totalPages, pageCourante, totalSimulations, getAll, deleteOne } = useSimulations()
     const [filterOptions, setFilterOptions] = useState<any>({ matricule: "", nom: "", pubExoneration: false, pageCourante: 1, elementsParPage: 15 })
     const [loader, setLoader] = useState<boolean>(true)
     const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
@@ -49,8 +49,15 @@ export const ManageSimulations = ({currentFiscalYear, prices}: IManageSimulation
         })()
     }, [filterOptions])
 
-    const handleDelete = (element: IApercuSimulation) => {
-        alert('lol')
+    const handleDelete = async(element: IApercuSimulation) => {
+        try {
+            await deleteOne(element)
+            toast.success('La simulation a été supprimée')
+        } catch(e: any) {
+            if(e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
+        }
     }
 
     return <>

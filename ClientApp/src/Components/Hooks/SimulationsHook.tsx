@@ -1,11 +1,12 @@
 import { useReducer } from "react"
 import { apiFetch } from "../../Services/apiFetch";
+import { IApercuSimulation } from "../../Types/IApercuSimulation";
 import { IApercu_entreprise } from "../../Types/IApercu_entreprise";
 import { ITaxManagement } from "../../Types/ITaxManagement";
 
 
 interface Action {
-    type: 'FETCH_ALL',
+    type: 'FETCH_ALL' | 'DELETE',
     payLoad: any
 }
 
@@ -22,6 +23,8 @@ export const useSimulations = () => {
                     elementsParPage: action.payLoad.elementsParPage,
                     totalSimulations: action.payLoad.totalSimulations
                 }
+                case 'DELETE':
+                return { ...state, simulations: state.simulations.filter((sim: IApercuSimulation) => sim.id_simulation != action.payLoad.id_simulation) }
             default:
                 return state
         }
@@ -45,6 +48,15 @@ export const useSimulations = () => {
         totalSimulations: state.totalSimulations,
         getAll: async (options: any) => {
            await GetSimulations(options)
+        },
+        deleteOne: async (simulation: IApercuSimulation) => {
+            await apiFetch(`/simulations/delete/${simulation.id_simulation}`, {
+                method: 'DELETE'
+            })
+            if(state.simulations.length <= 1 && state.totalPages > 1 ) {
+                await GetSimulations({pageCourante: 1})
+            }
+            dispatch({ type: 'DELETE', payLoad: simulation })
         },
     }
 

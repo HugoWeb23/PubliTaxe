@@ -82,5 +82,24 @@ namespace Taxes.Controllers
             }
 
         }
+
+        [AuthorizeRole(MinRole: 2)]
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> Delete(long id)
+        {
+            try
+            {
+                bool isDeleted = await _mediator.Send(new DeleteSimulationCommand(id));
+                if (isDeleted == false)
+                {
+                    return BadRequest(new { error = "Une erreur est survenue lors de la suppression de la simulation" });
+                }
+                return Ok(new { success = "La simulation a été supprimée" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
     }
 }
