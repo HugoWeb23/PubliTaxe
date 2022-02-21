@@ -4,23 +4,16 @@ import {
     Form,
     Col,
     Row,
-    InputGroup,
-    Image
+    InputGroup
 } from 'react-bootstrap'
-import { IPubliciteImage } from "../../../Types/IPublicite"
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, Controller, useWatch } from "react-hook-form"
 import { AdvertisingFormSchema } from '../../../Validation/Tax/AdvertisingFormSchema';
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead'
 import { ApiErrors, apiFetch } from "../../../Services/apiFetch";
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { IRue } from '../../../Types/IRue';
-import { Trash } from '../../UI/Trash';
 import { toast } from 'react-toastify';
-import { SumTax } from '../../../Services/SumTax'
-import { IPrice } from '../../../Types/IPrice';
-import { IExercice } from '../../../Types/IExercice';
-import settings from '../../../settings.json'
 import { v1 as uuidv1 } from 'uuid'
 
 

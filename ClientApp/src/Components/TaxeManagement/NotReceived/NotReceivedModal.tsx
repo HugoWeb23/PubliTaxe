@@ -55,7 +55,7 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
                         const fetch = await apiFetch(`/entreprises/id/${element.entrepriseInfos.matricule_ciger}`)
                         setEntreprise(fetch)
                         setValue('matricule_ciger', fetch.matricule_ciger)
-                        setTimeout(() => setLoader(false), 300)
+                        setTimeout(() => setLoader(false), 100)
                     }
                 } catch (e: any) {
                     if (e instanceof ApiErrors) {
@@ -72,8 +72,13 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
         onSubmit(data)
     }
 
+    const onModalClose = () => {
+        setEntreprise({} as Entreprise)
+        handleClose()
+    }
+
     return <>
-        <Modal show={element.show} onHide={handleClose} size="xl" animation={false}>
+        <Modal show={element.show} onHide={() => onModalClose()} size="xl" animation={false}>
             <Modal.Header closeButton>
                 <Modal.Title>Encoder un non reçu</Modal.Title>
             </Modal.Header>
@@ -164,7 +169,7 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
                 }
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+                <Button variant="secondary" onClick={() => onModalClose()}>
                     Annuler
                 </Button>
                 <Button variant="danger" onClick={handleSubmit(OnFormSubmit)} disabled={loader}>

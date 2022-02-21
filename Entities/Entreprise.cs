@@ -26,6 +26,7 @@ namespace Taxes.Entities
         public bool Proces_verbal { get; set; }
         public bool Recu { get; set; }
         public bool Province { get; set; }
+        public bool Paiement_recu { get; set; }
         public string Personne_contact { get; set; }
         public string Telephone_contact { get; set; }
         public string Mail_contact { get; set; }

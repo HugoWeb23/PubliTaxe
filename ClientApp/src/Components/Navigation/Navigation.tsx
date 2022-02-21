@@ -17,14 +17,15 @@ export const Navigation = () => {
   }
 
   return <Navbar expand bg="dark" variant="dark" className="px-2">
-    <LinkContainer to="/"><Navbar.Brand>PubliTaxe</Navbar.Brand></LinkContainer>
+    <LinkContainer to="/business_management"><Navbar.Brand>PubliTaxe</Navbar.Brand></LinkContainer>
     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
     <Navbar.Collapse id="responsive-navbar-nav">
       {value.user && <>
         <Nav className="me-auto">
           <NavDropdown title="Gestion" id="collasible-nav-dropdown">
-            <LinkContainer to="/"><NavDropdown.Item>Gestion des entreprises</NavDropdown.Item></LinkContainer>
+            <LinkContainer to="/business_management"><NavDropdown.Item>Gestion des entreprises</NavDropdown.Item></LinkContainer>
             {value.user.role > 1 && <LinkContainer to="/notreceived"><NavDropdown.Item>Encodage des non reçus</NavDropdown.Item></LinkContainer>}
+            <LinkContainer to="/payment_management"><NavDropdown.Item>Gestion des paiements</NavDropdown.Item></LinkContainer>
           </NavDropdown>
           <NavDropdown title="Outils" id="collasible-nav-dropdown">
           <LinkContainer to="/tools/pricingsimulation"><NavDropdown.Item>Simulation de tarification</NavDropdown.Item></LinkContainer>

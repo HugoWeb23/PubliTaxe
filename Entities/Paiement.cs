@@ -1,0 +1,15 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Taxes.Entities
+{
+    public class Paiement
+    {
+        [Key]
+        public long Id_paiement { get; set; }
+        public long Matricule_ciger { get; set; }
+        public long ExerciceId { get; set; }
+        public decimal Montant { get; set; }
+        public string Remarque { get; set; }
+        public string Date { get; set; }
+    }
+}

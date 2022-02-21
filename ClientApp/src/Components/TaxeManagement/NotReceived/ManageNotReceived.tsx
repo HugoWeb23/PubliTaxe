@@ -62,7 +62,7 @@ export const ManageNotReceived = ({ motifs, currentFiscalYear }: IManageNotRecei
         return <Loader />
     }
     return <>
-        <NotReceivedModal element={selectedEntreprise} motifs={motifs} currentFiscalYear={currentFiscalYear} handleClose={() => setSelectedEntreprise(el => ({ ...el, show: false }))} onSubmit={EncodeNotReceived} />
+        <NotReceivedModal element={selectedEntreprise} motifs={motifs} currentFiscalYear={currentFiscalYear} handleClose={() => setSelectedEntreprise({entrepriseInfos: {} as IApercu_entreprise, show: false})} onSubmit={EncodeNotReceived} />
         <Container fluid={true}>
             <nav aria-label="breadcrumb" className="mt-3">
                 <ol className="breadcrumb">

@@ -1,7 +1,6 @@
 import { useEffect, useRef, memo, useState } from 'react'
 import {
     Table,
-    Form,
     Button,
     OverlayTrigger,
     Tooltip,
@@ -10,7 +9,6 @@ import {
 import { SumTax } from '../../../Services/SumTax'
 import { IExercice } from '../../../Types/IExercice'
 import { IPrice } from '../../../Types/IPrice'
-import { IPublicite } from '../../../Types/IPublicite'
 import { IPubliciteSimulation } from '../../../Types/IPubliciteSimulation'
 import { ConfirmModal } from '../../UI/ConfirmModal'
 import { Pencil } from '../../UI/Pencil'
@@ -177,7 +175,7 @@ export const ManageAdvertisingSimulation = memo(({ pubs = [], tarifs, currentFis
                     {publicites.map((pub: IPubliciteSimulation, index: number) => {
                         return <tr>
                             <td>{index + 1}</td>
-                            <td>{SumTax(e, pub.quantite, pub.surface, pub.face, pub.type_publicite, pub.exoneration, tarifs)}</td>
+                            <td>{SumTax(e, pub.quantite, pub.surface, pub.face, pub.type_publicite, pub.exoneration, tarifs)} €</td>
                             <td>{pub.exoneration ? "Oui" : "Non"}</td>
                         </tr>
                     })}

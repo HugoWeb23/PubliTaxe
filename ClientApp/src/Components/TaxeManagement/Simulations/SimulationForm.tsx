@@ -5,24 +5,17 @@ import {
     Button,
     Row,
     Col,
-    Container,
-    Card
+    Container
 } from 'react-bootstrap'
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead'
 import "react-bootstrap-typeahead/css/Typeahead.css";
-import { Entreprise } from '../../../Types/IEntreprise'
 import { StreetCodeModal } from "../StreetCodeModal";
 import { IRue } from "../../../Types/IRue";
-import { IMotif_majoration } from "../../../Types/IMotif_majoration";
 import { apiFetch, ApiErrors } from "../../../Services/apiFetch";
 import { toast } from 'react-toastify';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Link } from "react-router-dom";
-import { LeftArrow } from '../../UI/LeftArroy'
-import { Printer } from "../../UI/Printer";
-import { IndividualPrint } from '../IndividualPrint';
 import { IExercice } from "../../../Types/IExercice";
-import { IPrintData } from "../../../Types/IPrintData";
 import { ManageAdvertisingSimulation } from "./ManageAdvertisingSimulation";
 import { SimulationFormSchema } from "../../../Validation/Tax/SimulationForm";
 import { ConfirmModal } from "./ConfirmModal";

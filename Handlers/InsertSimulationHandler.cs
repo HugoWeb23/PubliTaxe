@@ -19,6 +19,7 @@ namespace Taxes.Handlers
 
         public Task<Simulation> Handle(InsertSimulationCommand request, CancellationToken cancellationToken)
         {
+            request.Simulation.Date_creation = DateTime.Now.ToString("dd/MM/yyyy");
             _context.simulations.Add(request.Simulation);
             _context.SaveChanges();
             return Task.FromResult(request.Simulation);

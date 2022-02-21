@@ -6,7 +6,7 @@ import {
     Tooltip,
     Button
 } from "react-bootstrap"
-import { Link, Redirect, useHistory } from "react-router-dom"
+import { Link, useHistory } from "react-router-dom"
 import { ApiErrors, apiFetch } from "../../../Services/apiFetch"
 import { IApercuSimulation } from "../../../Types/IApercuSimulation"
 import { ISimulation } from "../../../Types/ISimulation"
@@ -53,6 +53,7 @@ export const ManageSimulations = ({currentFiscalYear, prices}: IManageSimulation
         try {
             await deleteOne(element)
             toast.success('La simulation a été supprimée')
+            setDeleteModal(elem => ({...elem, show: false}))
         } catch(e: any) {
             if(e instanceof ApiErrors) {
                 toast.error(e.singleError.error)
@@ -91,6 +92,7 @@ export const ManageSimulations = ({currentFiscalYear, prices}: IManageSimulation
                 </thead>
                 <tbody>
                     {loader && <div>Chargement...</div>}
+                    {(simulations.length === 0 && loader === false) && <tr><td colSpan={5}>Aucun résultat</td></tr>}
                     {(loader == false && simulations.length > 0) && simulations.map((simulation: IApercuSimulation) => <Simulation simulation={simulation} currentFiscalYear={currentFiscalYear} prices={prices} handleDelete={(simulation: IApercuSimulation) => setDeleteModal({ show: true, simulation: simulation })} />)}
                 </tbody>
             </Table>

@@ -41,6 +41,7 @@ import { AppLoader } from './Components/UI/AppLoader';
 import { ManageSimulations } from './Components/TaxeManagement/Simulations/ManageSimulations';
 import { CreateSimulation } from './Components/TaxeManagement/Simulations/CreateSimulation';
 import { EditSimulation } from './Components/TaxeManagement/Simulations/EditSimulation';
+import { ManagePayment } from './Components/TaxeManagement/Payment/ManagePayments';
 
 export const App = () => {
   const [user, setUser] = useState<IUser | null>(null)
@@ -115,7 +116,10 @@ export const App = () => {
         <UserContext.Provider value={value}>
           <ToastContainer autoClose={2500} />
           <Navigation />
-          {error ? <Alert variant="danger" className="mt-3">Une erreur est survenue lors du chargement des données. Veuillez actualiser la page et contacter le service informatique si le problème persiste.</Alert> : <><PrivateRoute path="/" exact component={TaxManagement} />
+          {error ? <Alert variant="danger" className="mt-3">Une erreur est survenue lors du chargement des données. Veuillez actualiser la page et contacter le service informatique si le problème persiste.</Alert> : <><PrivateRoute path="/business_management" exact component={TaxManagement} />
+          <Route path="/" exact>
+            <Redirect to={{pathname: '/business_management'}}/>
+          </Route>
           <PrivateRoute path="/entreprise/edit/:id" exact>
             <EditTax motifs={motifsMajoration} tarifs={tarifs} currentFiscalYear={exerciceCourant} informations={informations} />
           </PrivateRoute>
@@ -127,6 +131,9 @@ export const App = () => {
           </PrivateRoute>
           <PrivateRoute path="/notreceived" exact>
             {exerciceCourant != null ? <ManageNotReceived motifs={motifsMajoration} currentFiscalYear={exerciceCourant} /> : <Loader />}
+          </PrivateRoute>
+          <PrivateRoute path="/payment_management" exact>
+            {exerciceCourant != null ? <ManagePayment currentFiscalYear={exerciceCourant} /> : <Loader />}
           </PrivateRoute>
           <PrivateRoute path="/tools/pricingsimulation" exact>
             {(tarifs != null && exerciceCourant != null) ? <ManageSimulations currentFiscalYear={exerciceCourant} prices={tarifs}/> : <Loader/>}

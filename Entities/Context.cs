@@ -22,6 +22,7 @@ namespace Taxes.Entities
         public DbSet<Pays> pays { get; set; }
         public DbSet<NotReceived> non_recus { get; set; }
         public DbSet<Utilisateur> utilisateurs { get; set; }
+        public DbSet<Paiement> paiements_recus { get; set; }
 
     }
 }

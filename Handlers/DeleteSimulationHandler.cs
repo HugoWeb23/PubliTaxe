@@ -23,7 +23,7 @@ namespace Taxes.Handlers
             Simulation simulation = _context.simulations.FirstOrDefault(ent => ent.Id_simulation == request.Id_simulation);
             if (simulation == null)
             {
-                throw new Exception("L'entreprise est introuvable");
+                throw new Exception("La simulation est introuvable");
             }
             _context.simulations.Remove(simulation);
             _context.SaveChanges();
