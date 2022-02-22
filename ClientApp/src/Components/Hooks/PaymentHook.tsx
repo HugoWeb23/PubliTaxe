@@ -28,8 +28,9 @@ export const usePayments = () => {
     const [state, dispatch] = useReducer(reducer, { paiements: [], totalPages: 1, pageCourante: 1, elementsParPage: 15 });
 
     const GetPayments = async(options: any) => {
-        const fetch: ITaxManagement = await apiFetch(`/paiements/getall/7`, {
-            method: 'GET'
+        const fetch: ITaxManagement = await apiFetch(`/paiements/getall`, {
+            method: 'POST',
+            body: JSON.stringify(options)
         })
         dispatch({ type: 'FETCH_ALL', payLoad: fetch })
     }

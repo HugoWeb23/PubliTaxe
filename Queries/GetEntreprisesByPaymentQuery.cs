@@ -5,6 +5,6 @@ using Taxes.ViewModels;
 
 namespace Taxes.Queries
 {
-    public record GetEntreprisesByPaymentQuery(long Fiscalyear, string Type) : IRequest<PaymentViewModel>;
+    public record GetEntreprisesByPaymentQuery(ManagePaymentsViewModel Filters) : IRequest<PaymentViewModel>;
 }
 

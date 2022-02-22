@@ -22,13 +22,12 @@ namespace Taxes.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("getall/{FiscalYear}")]
-        public async Task<IActionResult> PrintAllByCity(long FiscalYear, string Type)
+        [HttpPost("getall")]
+        public async Task<IActionResult> PrintAllByCity(ManagePaymentsViewModel Filters)
         {
             try
             {
-                Type = "payed";
-                PaymentViewModel entreprises = await _mediator.Send(new GetEntreprisesByPaymentQuery(FiscalYear, Type));
+                PaymentViewModel entreprises = await _mediator.Send(new GetEntreprisesByPaymentQuery(Filters));
                 return Ok(entreprises);
             }
             catch (Exception ex)

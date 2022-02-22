@@ -29,11 +29,12 @@ namespace Taxes.Handlers
             {
                 return 1;
             // Partially Paid
-            } else if(numberOfPayments > 0)
+            } else if(numberOfPayments > 0 && entreprise.Paiement_recu == false)
             {
                 return 2;
-            } else
-            {
+            } else if(entreprise.Paiement_recu == true) {
+                return 3;
+            } else {
                 return 0;
             }
         }
@@ -41,7 +42,7 @@ namespace Taxes.Handlers
         {
            List<Entreprise> filtered = new List<Entreprise>();
 
-            var total = _context.paiements_recus.Where(p => p.ExerciceId == request.Fiscalyear).GroupBy(p => p.Matricule_ciger).Select(p => new
+            var total = _context.paiements_recus.Where(p => p.ExerciceId == request.Filters.Exercice).GroupBy(p => p.Matricule_ciger).Select(p => new
             {
                 p.Key,
                 Total = p.Sum(g => g.Montant)
@@ -60,25 +61,28 @@ namespace Taxes.Handlers
                 }
             }
 
-            if (request.Type == "unpaid")
+            if (request.Filters.Type == "unpaid")
             {
                 var entreprises = allEntreprises
               .Where(ent => total.Where(t => t.Key == ent.Matricule_ciger).Select(t => t.Total).FirstOrDefault() == 0)
               .ToList();
                 filtered.AddRange(entreprises);
-            } else if (request.Type == "partially_paid")
+            } else if (request.Filters.Type == "partially_paid")
             {
                 var entreprises = allEntreprises
                 .Where(ent => total.Where(t => t.Key == ent.Matricule_ciger).Select(t => t.Total).FirstOrDefault() > 0)
                .Where(ent => (ent.Publicites.Sum(p => p.Taxe_totale)) > (total.Where(t => t.Key == ent.Matricule_ciger).Select(t => t.Total).FirstOrDefault()))
                .ToList();
                 filtered.AddRange(entreprises);
-            } else if(request.Type == "payed")
+            } else if(request.Filters.Type == "payed")
             {
                 var entreprises = allEntreprises
-               .Where(ent => (ent.Publicites.Sum(p => p.Taxe_totale)) <= (total.Where(t => t.Key == ent.Matricule_ciger).Select(t => t.Total).FirstOrDefault()))
+               .Where(ent => ent.Paiement_recu == true)
                .ToList();
                 filtered.AddRange(entreprises);
+            } else if(request.Filters.Type == "all")
+            {
+                filtered.AddRange(allEntreprises.Where(e => e.Publicites.Sum(p => p.Taxe_totale) > 0));
             }
 
 
@@ -89,7 +93,7 @@ namespace Taxes.Handlers
                     Matricule_ciger = ent.Matricule_ciger,
                     Nom = ent.Nom,
                     Nombre_panneaux = ent.Publicites.Count(),
-                    Statut_paiement = DeterminePaiementType(ent, request.Fiscalyear)
+                    Statut_paiement = DeterminePaiementType(ent, request.Filters.Exercice)
                 }).ToList(),
                 TotalPages = 1,
                 PageCourante = 1,
