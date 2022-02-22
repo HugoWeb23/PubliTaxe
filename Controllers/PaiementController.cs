@@ -27,7 +27,8 @@ namespace Taxes.Controllers
         {
             try
             {
-                List<PaiementInfos> entreprises = await _mediator.Send(new GetEntreprisesByPaymentQuery(FiscalYear, Type));
+                Type = "payed";
+                PaymentViewModel entreprises = await _mediator.Send(new GetEntreprisesByPaymentQuery(FiscalYear, Type));
                 return Ok(entreprises);
             }
             catch (Exception ex)
