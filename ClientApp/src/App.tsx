@@ -42,6 +42,7 @@ import { ManageSimulations } from './Components/TaxeManagement/Simulations/Manag
 import { CreateSimulation } from './Components/TaxeManagement/Simulations/CreateSimulation';
 import { EditSimulation } from './Components/TaxeManagement/Simulations/EditSimulation';
 import { ManagePayment } from './Components/TaxeManagement/Payment/ManagePayments';
+import { PaymentDetail } from './Components/TaxeManagement/Payment/PaymentDetail';
 
 export const App = () => {
   const [user, setUser] = useState<IUser | null>(null)
@@ -135,6 +136,7 @@ export const App = () => {
           <PrivateRoute path="/payment_management" exact>
             {exerciceCourant != null ? <ManagePayment currentFiscalYear={exerciceCourant} /> : <Loader />}
           </PrivateRoute>
+          <PrivateRoute path="/payment_management/details/:id" exact component={PaymentDetail} />
           <PrivateRoute path="/tools/pricingsimulation" exact>
             {(tarifs != null && exerciceCourant != null) ? <ManageSimulations currentFiscalYear={exerciceCourant} prices={tarifs}/> : <Loader/>}
           </PrivateRoute>

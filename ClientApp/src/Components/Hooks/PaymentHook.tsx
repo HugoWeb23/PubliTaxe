@@ -18,7 +18,10 @@ export const usePayments = () => {
                     paiements: action.payLoad.paiements,
                     totalPages: action.payLoad.totalPages,
                     pageCourante: action.payLoad.pageCourante,
-                    elementsParPage: action.payLoad.elementsParPage
+                    elementsParPage: action.payLoad.elementsParPage,
+                    total_non_payes: action.payLoad.total_non_payes,
+                    total_partiellement_payes: action.payLoad.total_partiellement_payes,
+                    total_payes: action.payLoad.total_payes
                 }
             default:
                 return state
@@ -40,8 +43,9 @@ export const usePayments = () => {
         totalPages: state.totalPages,
         pageCourante: state.pageCourante,
         elementsParPage: state.elementsParPage,
-        totalRecus: state.totalRecus,
-        totalEntreprises: state.totalEntreprises,
+        total_non_payes: state.total_non_payes,
+        total_partiellement_payes: state.total_partiellement_payes,
+        total_payes: state.total_payes,
         getAll: async (options: any) => {
            await GetPayments(options)
         },

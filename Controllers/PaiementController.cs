@@ -36,5 +36,20 @@ namespace Taxes.Controllers
             }
 
         }
+
+        [HttpGet("getpayments/{Matricule}")]
+        public async Task<IActionResult> GetPaymentsDetails(long Matricule)
+        {
+            try
+            {
+                PaymentDetailViewModel paiements = await _mediator.Send(new GetPaymentDetailQuery(Matricule));
+                return Ok(paiements);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
+        }
     }
 }

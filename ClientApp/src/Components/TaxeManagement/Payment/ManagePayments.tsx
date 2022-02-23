@@ -16,7 +16,7 @@ import { toast } from 'react-toastify';
 import { ApiErrors } from '../../../Services/apiFetch'
 import { usePayments } from '../../Hooks/PaymentHook'
 import { IApercu_paiement } from '../../../Types/IApercu_paiement'
-import { PlusIcon } from '../../UI/PlusIcon'
+import { SearchIcon } from '../../UI/SearchIcon'
 
 interface IManagePayment {
     currentFiscalYear: IExercice
@@ -34,7 +34,7 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
     const [filterOptions, setFilterOptions] = useState<IFilterOptions>({ exercice: currentFiscalYear.id, type: "all", elementsParPage: 15, pageCourante: 1 })
     const [selectedEntreprise, setSelectedEntreprise] = useState<{ entrepriseInfos: IApercu_entreprise, show: boolean }>({ entrepriseInfos: {} as IApercu_entreprise, show: false })
     const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
-    const { paiements, getAll } = usePayments()
+    const { paiements, total_non_payes, total_partiellement_payes, total_payes, getAll } = usePayments()
 
     useEffect(() => {
         (async () => {
@@ -58,13 +58,13 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
             <hr className="my-3" />
             <div className="d-flex justify-content-between">
                 <Card style={{ width: '100%' }} className="me-3">
-                    <PlusIcon/>
+                    {total_non_payes} non payés
                 </Card>
                 <Card style={{ width: '100%' }} className="me-3">
-                    Test
+                {total_partiellement_payes} partiellement payés
                 </Card>
                 <Card style={{ width: '100%' }} className="me-3">
-                    Test
+                {total_payes} payés
                 </Card>
             </div>
             <Form.Group controlId="status" className="mb-3">
@@ -84,6 +84,7 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
                         <th>Nom entreprise</th>
                         <th>Panneaux</th>
                         <th>Statut du paiement</th>
+                        <th>Taxe totale</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -108,7 +109,8 @@ const Entreprise = ({ entreprise }: IEntreprise) => {
         <td>{entreprise.nom}</td>
         <td>{entreprise.nombre_panneaux}</td>
         <td><PaymentStatus status={entreprise.statut_paiement}/></td>
-        <td><Button size="sm" variant="success" className="d-flex align-items-center" disabled={entreprise.statut_paiement === 3}><PlusIcon/> Encoder un paiement</Button></td>
+        <td>{entreprise.taxe_totale} €</td>
+        <td><Link to={`payment_management/details/${entreprise.matricule_ciger}`} className="btn btn-success btn-sm"><SearchIcon/> Consulter</Link></td>
     </tr>
 }
 
@@ -117,11 +119,11 @@ interface IPaymentStatus {
 }
 
 const PaymentStatus = ({ status }: IPaymentStatus) => {
-    if (status === 1) {
+    if (status === 0) {
         return <Badge bg="danger">Impayé</Badge>
-    } else if(status === 2) {
+    } else if(status === 1) {
         return <Badge bg="warning">Partiellement payé</Badge>
-    } else if(status === 3) {
+    } else if(status === 2) {
         return <Badge bg="success">Payé</Badge>
     } else {
         return <Badge></Badge>

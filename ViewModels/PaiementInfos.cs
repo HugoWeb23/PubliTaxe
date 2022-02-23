@@ -6,6 +6,7 @@
         public string Nom { get; set; }
         public int Nombre_panneaux { get; set; }
         public int Statut_paiement { get; set; }
+        public decimal Taxe_totale { get; set; }
     }
 }
 
