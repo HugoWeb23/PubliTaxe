@@ -13,10 +13,13 @@ import {
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { apiFetch, ApiErrors } from '../../../Services/apiFetch'
+import { PubInfos } from '../../../Services/PubInfos'
 import { IPayment } from '../../../Types/IPayment'
 import { IPaymentDetails } from '../../../Types/IPaymentDetails'
 import { IPublicite } from '../../../Types/IPublicite'
 import { Loader } from '../../UI/Loader'
+import { PlusIcon } from '../../UI/PlusIcon'
+import { EncodePaymentModal } from './EncodePaymentModal'
 
 interface IPaymentDetail {
     match: any
@@ -27,6 +30,7 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
     const matricule: number = match.params.id
     const [details, setDetails] = useState<IPaymentDetails>({} as IPaymentDetails)
     const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
+    const [paymentModal, setPaymentModal] = useState<{ show: boolean, type: 'create' | 'edit', payment?: IPayment }>({ show: false, type: 'create' })
     const [loader, setLoader] = useState<boolean>(true)
 
     useEffect(() => {
@@ -56,6 +60,13 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
     }
 
     return <>
+        <EncodePaymentModal
+            show={paymentModal.show}
+            type={paymentModal.type}
+            total_tax={LeftToPay() ? LeftToPay().toFixed(2) : 0}
+            payment={paymentModal.payment}
+            handleClose={() => setPaymentModal({show: false, type: 'create', payment: {} as IPayment})}
+        />
         <Container fluid="xl">
             <nav aria-label="breadcrumb" className="mt-3">
                 <ol className="breadcrumb">
@@ -93,16 +104,43 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
                 <Accordion.Item eventKey="0">
                     <Accordion.Header>Liste des enseignes publicitaires</Accordion.Header>
                     <Accordion.Body>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-                        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-                        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                        cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-                        est laborum.
+                        <Table striped bordered hover size="sm">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Type publicité</th>
+                                    <th>Quantité</th>
+                                    <th>Face</th>
+                                    <th>Mesure</th>
+                                    <th>Surface</th>
+                                    <th>Surface totale</th>
+                                    <th>Éxo.</th>
+                                    <th>Taxe totale</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {details.entreprise.publicites.map((pub: IPublicite) => {
+                                    const { type_pub, type_face } = PubInfos(pub.type_publicite, pub.face)
+                                    return <tr key={pub.numero_panneau}>
+                                        <td>{pub.numero_panneau}</td>
+                                        <td>{type_pub}</td>
+                                        <td>{pub.quantite}</td>
+                                        <td>{type_face}</td>
+                                        <td>{pub.mesure}</td>
+                                        <td>{pub.surface} dm²</td>
+                                        <td>{pub.surface_totale} dm²</td>
+                                        <td>{pub.exoneration ? "Oui" : "Non"}</td>
+                                        <td>{pub.taxe_totale} €</td>
+                                    </tr>
+                                })}
+                            </tbody>
+                        </Table>
                     </Accordion.Body>
                 </Accordion.Item>
             </Accordion>
+            <div className="d-flex justify-content-end mt-4 mb-4">
+                <Button size="sm" variant="success" onClick={() => setPaymentModal({show: true, type: 'create'})}><PlusIcon /> Nouveau paiement</Button>
+            </div>
             <Table>
                 <thead>
                     <tr>
@@ -114,7 +152,7 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {details.paiements.length === 0 && <tr><td colSpan={5}>Aucun paiement enregistré</td></tr>}
+                    {details.paiements.length === 0 && <tr><td colSpan={5} className="table-active">Aucun paiement enregistré</td></tr>}
                     {details.paiements.length > 0 && details.paiements.map((payment: IPayment) => <Payment payment={payment} />)}
                     <tr>
                         <td colSpan={5}>
