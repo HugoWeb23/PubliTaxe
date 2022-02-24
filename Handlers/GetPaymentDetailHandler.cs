@@ -27,6 +27,7 @@ namespace Taxes.Handlers
                 .Include(ent => ent.Code_postal)
                 .ThenInclude(cp => cp.Pays)
                 .Include(ent => ent.Publicites)
+                .OrderBy(ent => ent.Matricule_ciger)
                 .FirstOrDefault(e => e.Matricule_ciger == request.Matricule);
 
             if (entreprise == null)
@@ -43,7 +44,7 @@ namespace Taxes.Handlers
             decimal Taxe = entreprise.Publicites.Sum(p => p.Taxe_totale);
             decimal Montant_majoration = (entreprise.Publicites.Sum(p => p.Taxe_totale) * entreprise.Pourcentage_majoration / 100);
 
-            Information information = _context.informations.FirstOrDefault();
+            Information information = _context.informations.OrderBy(i => i.Id).FirstOrDefault();
 
             if(information == null)
             {

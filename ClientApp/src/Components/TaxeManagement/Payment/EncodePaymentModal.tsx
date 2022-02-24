@@ -14,12 +14,13 @@ interface IEncodePaymentModal {
     type: 'create' | 'edit',
     total_tax: number,
     payment?: IPayment,
+    onSubmit: (data: IPayment) => Promise<void>,
     handleClose: () => void
 }
 
-export const EncodePaymentModal = ({ show, type, total_tax, payment, handleClose }: IEncodePaymentModal) => {
+export const EncodePaymentModal = ({ show, type, total_tax, payment, onSubmit, handleClose }: IEncodePaymentModal) => {
 
-    const { register, handleSubmit, control, setValue, formState: { errors } } = useForm<any>()
+    const { register, handleSubmit, control, setValue, formState: { errors } } = useForm<any>({defaultValues: {montant: 0}})
 
     const paymentType = useWatch({
         control,
@@ -39,8 +40,8 @@ export const EncodePaymentModal = ({ show, type, total_tax, payment, handleClose
         defaultValue: 0
     })
 
-    const onSubmit = (data: any) => {
-        console.log(data)
+    const Submit = async(data: any) => {
+        await onSubmit(data)
     }
 
     return <>
@@ -49,7 +50,7 @@ export const EncodePaymentModal = ({ show, type, total_tax, payment, handleClose
                 <Modal.Title>{type === 'create' ? 'Créer' : 'Éditer'} un paiement</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form onSubmit={handleSubmit(onSubmit)}>
+                <Form onSubmit={handleSubmit(Submit)}>
                     <Form.Group controlId="type_paiement" className="mt-3">
                         <Form.Label column="sm">Type de paiement</Form.Label>
                         <Form.Select size="sm" {...register('type_paiement')}>
@@ -100,7 +101,7 @@ export const EncodePaymentModal = ({ show, type, total_tax, payment, handleClose
                 <Button variant="secondary" onClick={handleClose}>
                     Annuler
                 </Button>
-                <Button variant="success" onClick={handleSubmit(onSubmit)}>
+                <Button variant="success" onClick={handleSubmit(Submit)}>
                     {type === 'create' ? 'Créer' : 'Éditer'} le paiement
                 </Button>
             </Modal.Footer>

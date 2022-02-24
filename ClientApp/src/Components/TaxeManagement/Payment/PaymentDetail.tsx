@@ -48,6 +48,19 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
         })()
     }, [])
 
+    const SubmitPayment = async(data: IPayment) => {
+        try {
+            console.log('test')
+            data = {...data, matricule_ciger: details.entreprise.matricule_ciger}
+            const submitpayment: IPayment = await apiFetch(`/paiements/new`, {
+                method: 'POST',
+                body: JSON.stringify(data)
+            })
+        } catch(e) {
+            alert('error')
+        }
+    }
+
 
     const LeftToPay = (): any => {
         return (details.taxe_totale - details.paiements.reduce((acc: number, curr: IPayment) => {
@@ -65,6 +78,7 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
             type={paymentModal.type}
             total_tax={LeftToPay() ? LeftToPay().toFixed(2) : 0}
             payment={paymentModal.payment}
+            onSubmit={(data) => SubmitPayment(data)}
             handleClose={() => setPaymentModal({show: false, type: 'create', payment: {} as IPayment})}
         />
         <Container fluid="xl">

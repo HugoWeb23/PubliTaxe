@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Taxes.Commands;
 using Taxes.Entities;
 using Taxes.Queries;
 using Taxes.ViewModels;
@@ -44,6 +45,21 @@ namespace Taxes.Controllers
             {
                 PaymentDetailViewModel paiements = await _mediator.Send(new GetPaymentDetailQuery(Matricule));
                 return Ok(paiements);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
+        }
+
+        [HttpPost("new")]
+        public async Task<IActionResult> NewPayment(Paiement Paiement)
+        {
+            try
+            {
+                Paiement paiement = await _mediator.Send(new InsertPaymentCommand(Paiement));
+                return Ok(paiement);
             }
             catch (Exception ex)
             {
