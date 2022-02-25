@@ -22,6 +22,7 @@ import { PubInfos } from '../../../Services/PubInfos'
 import { IPayment } from '../../../Types/IPayment'
 import { IPaymentDetails } from '../../../Types/IPaymentDetails'
 import { IPublicite } from '../../../Types/IPublicite'
+import { ConfirmModal } from '../../UI/ConfirmModal'
 import { Loader } from '../../UI/Loader'
 import { Pencil } from '../../UI/Pencil'
 import { PlusIcon } from '../../UI/PlusIcon'
@@ -39,6 +40,7 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
     const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
     const [paymentModal, setPaymentModal] = useState<{ show: boolean, type: 'create' | 'edit', payment?: IPayment }>({ show: false, type: 'create' })
     const [loader, setLoader] = useState<boolean>(true)
+    const [deleteModal, setDeleteModal] = useState<{ show: boolean, payment: IPayment }>({ show: false, payment: {} as IPayment })
 
     useEffect(() => {
         (async () => {
@@ -76,7 +78,7 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
 
     const SubmitPayment = async (data: IPayment, type: 'create' | 'edit') => {
         try {
-            if(type === 'create') {
+            if (type === 'create') {
                 data = { ...data, matricule_ciger: details.entreprise.matricule_ciger }
                 const submitpayment: IPayment = await apiFetch(`/paiements/new`, {
                     method: 'POST',
@@ -100,6 +102,21 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
         }
     }
 
+    const DeletePayment = async(payment: IPayment) => {
+        try {
+            await apiFetch(`/paiements/delete/${payment.id_paiement}`, {
+                method: 'DELETE'
+            })
+            setDetails((details: IPaymentDetails) => ({...details, paiements: details.paiements.filter((p: IPayment) => p.id_paiement != payment.id_paiement)}))
+            setDeleteModal(modal => ({...modal, show: false}))
+            toast.success("Le paiement a été supprimé")
+        } catch(e) {
+            if(e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
+        }
+    }
+
     if (loader) {
         return <Loader />
     }
@@ -112,6 +129,13 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
             payment={paymentModal.payment}
             onSubmit={(data, type) => SubmitPayment(data, type)}
             handleClose={() => setPaymentModal({ show: false, type: 'create', payment: {} as IPayment })}
+        />
+        <ConfirmModal
+            show={deleteModal.show}
+            element={deleteModal.payment}
+            bodyText="Voulez-vous vraiment supprimer ce paiement ?"
+            onClose={() => setDeleteModal(e => ({ ...e, show: false }))}
+            onConfirm={DeletePayment}
         />
         <Container fluid="xl">
             <nav aria-label="breadcrumb" className="mt-3">
@@ -199,14 +223,14 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {details.paiements.length === 0 && <tr><td colSpan={5} className="table-active">Aucun paiement enregistré</td></tr>}
-                    {details.paiements.length > 0 && details.paiements.map((payment: IPayment) => <Payment 
-                    payment={payment} 
-                    handleEdit={(payment: IPayment) => setPaymentModal({type: 'edit', show: true, payment: payment})}
-                    handleDelete={(payment: IPayment) => {}}
+                    {details.paiements.length === 0 && <tr><td colSpan={6} className="table-active">Aucun paiement enregistré</td></tr>}
+                    {details.paiements.length > 0 && details.paiements.map((payment: IPayment) => <Payment
+                        payment={payment}
+                        handleEdit={(payment: IPayment) => setPaymentModal({ type: 'edit', show: true, payment: payment })}
+                        handleDelete={(payment: IPayment) => setDeleteModal(modal => ({ ...modal, show: true, payment: payment }))}
                     />)}
                     <tr>
-                        <td colSpan={5}>
+                        <td colSpan={6}>
                             <div className="d-flex justify-content-end">
                                 <div>
                                     <div><span className="fw-bold">Total sans majoration</span> : {details.taxe} €</div>
@@ -264,7 +288,7 @@ const Payment = ({ payment, handleEdit, handleDelete }: Payment) => {
                             </Tooltip>
                         }
                     >
-                        <Button size="sm" variant="secondary" onClick={() => handleEdit(payment)}><Pencil /></Button>
+                        <Button size="sm" variant="secondary" className="me-1" onClick={() => handleEdit(payment)}><Pencil /></Button>
                     </OverlayTrigger>
                     <OverlayTrigger
                         placement="top"
@@ -274,7 +298,7 @@ const Payment = ({ payment, handleEdit, handleDelete }: Payment) => {
                             </Tooltip>
                         }
                     >
-                        <Button size="sm" variant="danger" onClick={() => alert('delete')}><Trash /></Button>
+                        <Button size="sm" variant="danger" onClick={() => handleDelete(payment)}><Trash /></Button>
                     </OverlayTrigger>
                 </div>
             </td>
