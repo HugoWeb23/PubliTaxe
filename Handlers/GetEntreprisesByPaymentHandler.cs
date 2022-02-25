@@ -41,13 +41,6 @@ namespace Taxes.Handlers
         {
            List<Entreprise> filtered = new List<Entreprise>();
 
-            var totalOfPaymentsTypes = _context.entreprises.GroupBy(p => p.Statut_paiement).Select(p => new
-            {
-                Type = p.Key,
-                Total = p.Count()
-            })
-            .ToList();
-
             List<Entreprise> allEntreprises = _context.entreprises
                 .Include(ent => ent.Publicites)
                 .ToList();
@@ -64,23 +57,65 @@ namespace Taxes.Handlers
             {
                var entreprises = allEntreprises
               .Where(ent => ent.Statut_paiement == 0)
+              .Where(e => e.Publicites.Sum(p => p.Taxe_totale) > 0)
               .ToList();
                filtered.AddRange(entreprises);
             } else if (request.Filters.Type == "partially_paid")
             {
                 var entreprises = allEntreprises
                 .Where(ent => ent.Statut_paiement == 1)
+                .Where(e => e.Publicites.Sum(p => p.Taxe_totale) > 0)
                .ToList();
                 filtered.AddRange(entreprises);
             } else if(request.Filters.Type == "payed")
             {
                 var entreprises = allEntreprises
                .Where(ent => ent.Statut_paiement == 2)
+               .Where(e => e.Publicites.Sum(p => p.Taxe_totale) > 0)
                .ToList();
                 filtered.AddRange(entreprises);
             } else if(request.Filters.Type == "all")
             {
                 filtered.AddRange(allEntreprises.Where(e => e.Publicites.Sum(p => p.Taxe_totale) > 0));
+            }
+
+            var totalOfPaymentsTypes = allEntreprises
+                .Where(e => e.Publicites.Sum(p => p.Taxe_totale) > 0)
+                .GroupBy(p => p.Statut_paiement).Select(p => new
+                {
+                    Type = p.Key,
+                    Total = p.Count()
+                })
+                .ToList();
+
+            int TotalNonPayes()
+            {
+                var sum = totalOfPaymentsTypes.FirstOrDefault(t => t.Type == 0);
+                if (sum != null)
+                {
+                    return sum.Total;
+                }
+                return 0;
+            }
+
+            int TotalPartiellentPayes()
+            {
+                var sum = totalOfPaymentsTypes.FirstOrDefault(t => t.Type == 1);
+                if(sum != null)
+                {
+                    return sum.Total;
+                }
+                return 0;
+            }
+
+            int TotalPayes()
+            {
+                var sum = totalOfPaymentsTypes.FirstOrDefault(t => t.Type == 2);
+                if (sum != null)
+                {
+                    return sum.Total;
+                }
+                return 0;
             }
 
 
@@ -97,9 +132,9 @@ namespace Taxes.Handlers
                 TotalPages = 1,
                 PageCourante = 1,
                 ElementsParPage = 15,
-                Total_non_payes = totalOfPaymentsTypes.Find(t => t.Type == 0).Total,
-                Total_partiellement_payes = totalOfPaymentsTypes.Find(t => t.Type == 1).Total,
-                Total_payes = totalOfPaymentsTypes.Find(t => t.Type == 2).Total
+                Total_non_payes = TotalNonPayes(),
+                Total_partiellement_payes = TotalPartiellentPayes(),
+                Total_payes = TotalPayes()
             };
         }
     }

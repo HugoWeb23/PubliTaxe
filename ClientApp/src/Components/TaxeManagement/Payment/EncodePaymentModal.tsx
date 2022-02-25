@@ -8,19 +8,39 @@ import {
 import { IPayment } from '../../../Types/IPayment'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, useWatch } from 'react-hook-form'
+import { Loader } from 'react-bootstrap-typeahead'
+import { EncodePaymentFormSchema } from '../../../Validation/Payment/EncodePaymentFormSchema'
+import { useEffect } from 'react'
 
 interface IEncodePaymentModal {
     show: boolean,
     type: 'create' | 'edit',
     total_tax: number,
     payment?: IPayment,
-    onSubmit: (data: IPayment) => Promise<void>,
+    onSubmit: (data: IPayment, type: 'edit' | 'create') => Promise<void>,
     handleClose: () => void
 }
 
 export const EncodePaymentModal = ({ show, type, total_tax, payment, onSubmit, handleClose }: IEncodePaymentModal) => {
 
-    const { register, handleSubmit, control, setValue, formState: { errors } } = useForm<any>({defaultValues: {montant: 0}})
+    const Today = () => {
+        const date = new Date()
+        const month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
+        const day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
+        return `${date.getFullYear()}-${month}-${day}`
+    }
+
+    const { register, handleSubmit, control, setValue, setError, reset, formState: { errors, isSubmitting } } = useForm<any>({ defaultValues: { type_paiement: "1", mode_paiement: "1", montant: 0, date: Today() }, resolver: yupResolver(EncodePaymentFormSchema) })
+
+    useEffect(() => {
+        if(type === 'edit' && payment != undefined) {
+            for(const [key, value] of Object.entries(payment)) {
+                setValue(key, value)
+            }
+        } else {
+            reset()
+        }
+    }, [payment])
 
     const paymentType = useWatch({
         control,
@@ -40,8 +60,16 @@ export const EncodePaymentModal = ({ show, type, total_tax, payment, onSubmit, h
         defaultValue: 0
     })
 
-    const Submit = async(data: any) => {
-        await onSubmit(data)
+    const Submit = async (data: any) => {
+        if (parseInt(paymentType) == 1 && parseFloat(montant) < total_tax) {
+            setError("montant", {
+                type: "manual",
+                message: "S'agissant d'un paiement complet, le montant ne peut pas être inférieur au montant restant dû"
+            })
+        } else {
+            await onSubmit(data, type)
+            reset()
+        }
     }
 
     return <>
@@ -76,13 +104,15 @@ export const EncodePaymentModal = ({ show, type, total_tax, payment, onSubmit, h
                     </Form.Group>}
                     <Form.Group controlId="remarque" className="mt-3">
                         <Form.Label column="sm">Remarque</Form.Label>
-                        <Form.Control type="text" as="textarea" {...register('remarque')} />
+                        <Form.Control type="text" as="textarea" isInvalid={errors.remarque} {...register('remarque')} />
+                        {errors.remarque && <Form.Control.Feedback type="invalid">{errors.remarque.message}</Form.Control.Feedback>}
                     </Form.Group>
                     <Form.Group controlId="montant" className="mt-3">
                         <Form.Label column="sm">Montant payé</Form.Label>
                         <InputGroup size="sm">
-                            <Form.Control type="number" size="sm" {...register('montant')} />
+                            <Form.Control type="number" size="sm" isInvalid={errors.montant} {...register('montant')} />
                             <InputGroup.Text>€</InputGroup.Text>
+                            {errors.montant && <Form.Control.Feedback type="invalid">{errors.montant.message}</Form.Control.Feedback>}
                         </InputGroup>
                     </Form.Group>
                     {(paymentMode == 3 && paymentType == 1) &&
@@ -93,7 +123,8 @@ export const EncodePaymentModal = ({ show, type, total_tax, payment, onSubmit, h
                         </Card>}
                     <Form.Group controlId="date_paiement" className="mt-3">
                         <Form.Label column="sm">Date du paiement</Form.Label>
-                        <Form.Control type="date" size="sm" {...register('date')} />
+                        <Form.Control type="date" size="sm" isInvalid={errors.date} {...register('date')} />
+                        {errors.date && <Form.Control.Feedback type="invalid">{errors.date.message}</Form.Control.Feedback>}
                     </Form.Group>
                 </Form>
             </Modal.Body>
@@ -101,8 +132,8 @@ export const EncodePaymentModal = ({ show, type, total_tax, payment, onSubmit, h
                 <Button variant="secondary" onClick={handleClose}>
                     Annuler
                 </Button>
-                <Button variant="success" onClick={handleSubmit(Submit)}>
-                    {type === 'create' ? 'Créer' : 'Éditer'} le paiement
+                <Button variant="success" onClick={handleSubmit(Submit)} disabled={isSubmitting}>
+                    {isSubmitting && <Loader />} {type === 'create' ? 'Créer' : 'Éditer'} le paiement
                 </Button>
             </Modal.Footer>
         </Modal>

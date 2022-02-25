@@ -33,7 +33,7 @@ namespace Taxes.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { error = ex.Message });
+                return BadRequest(new { error = ex });
             }
 
         }
@@ -59,6 +59,21 @@ namespace Taxes.Controllers
             try
             {
                 Paiement paiement = await _mediator.Send(new InsertPaymentCommand(Paiement));
+                return Ok(paiement);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
+        }
+
+        [HttpPut("edit")]
+        public async Task<IActionResult> EditPayment(Paiement Paiement)
+        {
+            try
+            {
+                Paiement paiement = await _mediator.Send(new UpdatePaymentCommand(Paiement));
                 return Ok(paiement);
             }
             catch (Exception ex)
