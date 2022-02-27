@@ -32,6 +32,7 @@ namespace Taxes.Handlers
             {
                 return 1;
             } else if(entreprise.Statut_paiement == 2) {
+            // Payed
                 return 2;
             } else {
                 return 3;
@@ -118,6 +119,15 @@ namespace Taxes.Handlers
                 return 0;
             }
 
+            int TotalElements = filtered.Count();
+            int TotalPages = (int)Math.Ceiling(TotalElements / (double)request.Filters.ElementsParPage);
+            if (request.Filters.PageCourante > TotalPages)
+            {
+                request.Filters.PageCourante = TotalPages;
+            }
+            int Index = (request.Filters.PageCourante - 1) * request.Filters.ElementsParPage;
+            filtered = filtered.Skip(Index).Take(request.Filters.ElementsParPage).ToList();
+
 
             return new PaymentViewModel
             {
@@ -129,9 +139,9 @@ namespace Taxes.Handlers
                     Statut_paiement = DeterminePaiementType(ent, request.Filters.Exercice),
                     Taxe_totale = (ent.Publicites.Sum(p => p.Taxe_totale) + ent.Publicites.Sum(p => p.Taxe_totale) * ent.Pourcentage_majoration / 100)
                 }).ToList(),
-                TotalPages = 1,
-                PageCourante = 1,
-                ElementsParPage = 15,
+                TotalPages = TotalPages,
+                PageCourante = request.Filters.PageCourante,
+                ElementsParPage = request.Filters.ElementsParPage,
                 Total_non_payes = TotalNonPayes(),
                 Total_partiellement_payes = TotalPartiellentPayes(),
                 Total_payes = TotalPayes()

@@ -82,5 +82,20 @@ namespace Taxes.Controllers
             }
 
         }
+
+        [HttpDelete("delete/{PaymentId}")]
+        public async Task<IActionResult> DeletePayment(long PaymentId)
+        {
+            try
+            {
+                bool paiementOk = await _mediator.Send(new DeletePaymentCommand(PaymentId));
+                return Ok(paiementOk);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
+        }
     }
 }
