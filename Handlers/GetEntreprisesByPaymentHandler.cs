@@ -40,15 +40,15 @@ namespace Taxes.Handlers
         }
         public async Task<PaymentViewModel> Handle(GetEntreprisesByPaymentQuery request, CancellationToken cancellationToken)
         {
-           List<Entreprise> filtered = new List<Entreprise>();
+            List<Entreprise> filtered = new List<Entreprise>();
 
             List<Entreprise> allEntreprises = _context.entreprises
                 .Include(ent => ent.Publicites)
                 .ToList();
 
-            foreach(var ent in allEntreprises)
+            foreach (var ent in allEntreprises)
             {
-                foreach(var pub in ent.Publicites)
+                foreach (var pub in ent.Publicites)
                 {
                     pub.Taxe_totale = pub.Exoneration ? new Decimal(0.00) : await _mediator.Send(new SumTaxQuery(pub.Exercice_courant, pub.Type_publicite, pub.Quantite, pub.Face, pub.Surface));
                 }
@@ -56,11 +56,11 @@ namespace Taxes.Handlers
 
             if (request.Filters.Type == "unpaid")
             {
-               var entreprises = allEntreprises
-              .Where(ent => ent.Statut_paiement == 0)
-              .Where(e => e.Publicites.Sum(p => p.Taxe_totale) > 0)
-              .ToList();
-               filtered.AddRange(entreprises);
+                var entreprises = allEntreprises
+               .Where(ent => ent.Statut_paiement == 0)
+               .Where(e => e.Publicites.Sum(p => p.Taxe_totale) > 0)
+               .ToList();
+                filtered.AddRange(entreprises);
             } else if (request.Filters.Type == "partially_paid")
             {
                 var entreprises = allEntreprises
@@ -68,16 +68,21 @@ namespace Taxes.Handlers
                 .Where(e => e.Publicites.Sum(p => p.Taxe_totale) > 0)
                .ToList();
                 filtered.AddRange(entreprises);
-            } else if(request.Filters.Type == "payed")
+            } else if (request.Filters.Type == "payed")
             {
                 var entreprises = allEntreprises
                .Where(ent => ent.Statut_paiement == 2)
                .Where(e => e.Publicites.Sum(p => p.Taxe_totale) > 0)
                .ToList();
                 filtered.AddRange(entreprises);
-            } else if(request.Filters.Type == "all")
+            } else if (request.Filters.Type == "all")
             {
                 filtered.AddRange(allEntreprises.Where(e => e.Publicites.Sum(p => p.Taxe_totale) > 0));
+            }
+
+            if (request.Filters.Matricule != null)
+            {
+                filtered = filtered.Where(e => e.Matricule_ciger == request.Filters.Matricule).ToList();
             }
 
             var totalOfPaymentsTypes = allEntreprises

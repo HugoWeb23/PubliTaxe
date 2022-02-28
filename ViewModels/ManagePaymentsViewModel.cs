@@ -6,5 +6,6 @@
         public string Type { get; set; }
         public int PageCourante { get; set; }
         public int ElementsParPage { get; set; }
+        public long? Matricule { get; set; }
     }
 }

@@ -34,13 +34,14 @@ interface IManagePayment {
 interface IFilterOptions {
     exercice: number,
     type: string,
+    matricule: string,
     elementsParPage: number,
     pageCourante: number
 }
 
 export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
     const [loader, setLoader] = useState<boolean>(true)
-    const [filterOptions, setFilterOptions] = useState<IFilterOptions>({ exercice: currentFiscalYear.id, type: "all", elementsParPage: 15, pageCourante: 1 })
+    const [filterOptions, setFilterOptions] = useState<IFilterOptions>({ exercice: currentFiscalYear.id, type: "all", matricule: "", elementsParPage: 15, pageCourante: 1 })
     const [selectedEntreprise, setSelectedEntreprise] = useState<{ entrepriseInfos: IApercu_entreprise, show: boolean }>({ entrepriseInfos: {} as IApercu_entreprise, show: false })
     const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
     const { paiements, total_non_payes, total_partiellement_payes, total_payes, getAll, totalPages, pageCourante, elementsParPage } = usePayments()
@@ -51,6 +52,12 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
             setLoader(false)
         })()
     }, [filterOptions])
+
+    const SearchById = (e: any) => {
+        if (e.key === "Enter" && e.target.value.length >= 2) {
+            setFilterOptions((filters: IFilterOptions) => ({ ...filters, matricule: e.target.value }))
+        }
+    }
 
     if (loader === true || currentFiscalYear === null) {
         return <Loader />
@@ -108,13 +115,14 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
                                     <option value="payed">Paiements reçus</option>
                                 </Form.Select>
                             </Form.Group>
-                                <Form.Group controlId="matricule" className="mb-3 me-3">
-                                    <Form.Label>Recherche par matricule</Form.Label>
-                                    <Form.Control type="text" size="sm" placeholder="Recherche par matricule" />
-                                    <Form.Text className="text-muted">
-                                   Appuyez sur ENTER pour chercher.
+                            <Form.Group controlId="matricule" className="mb-3 me-3">
+                                <Form.Label>Recherche par matricule</Form.Label>
+                                <Form.Control type="text" size="sm" placeholder="Recherche par matricule" onKeyDown={(e) => SearchById(e)}/>
+                                <Form.Text className="text-muted">
+                                    Appuyez sur ENTER pour chercher.
                                 </Form.Text>
-                                </Form.Group>
+                                {filterOptions.matricule.length > 0 && <div className="link" onClick={() => setFilterOptions((filters: IFilterOptions) => ({ ...filters, matricule: "" }))}>(réinitialiser)</div>}
+                            </Form.Group>
                         </Card.Body>
                     </Card>
                 </Col>
