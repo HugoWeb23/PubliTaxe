@@ -57,5 +57,20 @@ namespace Taxes.Controllers
             }
             
         }
+
+        [HttpDelete("delete/{Id}")]
+        public async Task<IActionResult> DeleteNotReceived(long Id)
+        {
+            try
+            {
+                var DeleteNotReceived = await _mediator.Send(new DeleteNotReceivedCommand(Id));
+                return Ok(DeleteNotReceived);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
+        }
     }
 }

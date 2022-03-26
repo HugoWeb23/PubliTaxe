@@ -26,6 +26,8 @@ import { Printer } from "../UI/Printer";
 import { IndividualPrint } from './IndividualPrint';
 import { IExercice } from "../../Types/IExercice";
 import { IPrintData } from "../../Types/IPrintData";
+import { OffensesModal } from "./OffensesModal";
+import { INotReceivedHistory } from "../../Types/INotReceivedHistory";
 
 interface TaxeForm {
     data?: any,
@@ -49,6 +51,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
     const [codePostal, setCodePostal] = useState<any>(null)
     const [autoTaxAdress, setAutoTaxAdress] = useState<boolean>(true)
     const [individualPrint, setIndiviualPrint] = useState<boolean>(false)
+    const [offensesModal, setOffensesModal] = useState<boolean>(false)
     const { register, reset, control, handleSubmit, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(TaxeFormSchema), defaultValues: defaultValues });
 
     useEffect(() => {
@@ -178,8 +181,14 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
         setFormSimulationMode(false);
     }
 
+    const UpdateMajoration = (lastNotReceived: INotReceivedHistory) => {
+        setValue('pourcentage_majoration', lastNotReceived.pourcentage_majoration.toString())
+        setValue('motif_majorationId', lastNotReceived.motif_majorationId)
+    }
+
     return <>
         <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet} />
+        {type === 'edit' && <OffensesModal matricule={tax.matricule_ciger} motifs={motifs} currentFiscalYear={currentFiscalYear} isOpen={offensesModal} handleClose={() => setOffensesModal(false)} onDelete={UpdateMajoration}/>}
         {type === 'edit' && <IndividualPrint
             show={individualPrint}
             handleClose={() => setIndiviualPrint(false)}
@@ -435,7 +444,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                         </Form.Group>
                     </Col>
                 </Row>
-                <Row className="mb-3">
+                <Row className={`${type === 'create' ? 'mb-3' : ""}`}>
                     <Col>
                         <Form.Group controlId="pourcentage_majoration">
                             <Form.Label column="sm">% majoration</Form.Label>
@@ -462,6 +471,9 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                         </Form.Group>
                     </Col>
                 </Row>
+                {type === 'edit' && <Row className="mb-3">
+                    <Col><div className="link" onClick={() => setOffensesModal(true)}>Historique des infractions</div></Col>
+                </Row>}
                 <Card>
                     <Card.Header as="h6">Adresse de taxation</Card.Header>
                     <Card.Body>
