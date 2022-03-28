@@ -17,6 +17,7 @@ export interface Entreprise {
         proces_verbal: boolean,
         motif_majorationId: number,
         recu: boolean,
+        statut_paiement: number,
         province: boolean,
         personne_contact: string,
         telephone_contact: string,

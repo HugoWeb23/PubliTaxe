@@ -2,16 +2,13 @@ import { useEffect, useState } from "react"
 import { apiFetch } from "../../Services/apiFetch"
 import { Entreprise } from "../../Types/IEntreprise"
 import {
-    Form,
     Button,
     Row,
     Col,
     Card,
     Container,
     Table,
-    Modal,
-    Alert,
-    Image
+    Badge
 } from 'react-bootstrap'
 import { Link, Redirect } from 'react-router-dom'
 import { LeftArrow } from "../UI/LeftArroy"
@@ -33,6 +30,10 @@ interface IViewTax {
     informations?: IInformation
 }
 
+interface IPaymentStatus {
+    status: number
+}
+
 export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations }: IViewTax) => {
     const entrepriseID = match.params.id
     const [entreprise, setEntreprise] = useState<Entreprise | null>(null)
@@ -52,18 +53,31 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
 
         })()
     }, [])
+
+    const PaymentStatus = ({ status }: IPaymentStatus) => {
+        if (status === 0) {
+            return <Badge bg="danger">Impayé</Badge>
+        } else if (status === 1) {
+            return <Badge bg="warning">Partiellement payé</Badge>
+        } else if (status === 2) {
+            return <Badge bg="success">Payé</Badge>
+        } else {
+            return <Badge></Badge>
+        }
+    }
+
     return <>
-     {(loader === false && entreprise !== null) && 
-        <IndividualPrint
-            show={individualPrint}
-            handleClose={() => setIndiviualPrint(false)}
-            tax={entreprise}
-            tarifs={tarifs}
-            currentFiscalYear={currentFiscalYear}
-            informations={informations}
-            motifs={motifs}
-        />
-     }
+        {(loader === false && entreprise !== null) &&
+            <IndividualPrint
+                show={individualPrint}
+                handleClose={() => setIndiviualPrint(false)}
+                tax={entreprise}
+                tarifs={tarifs}
+                currentFiscalYear={currentFiscalYear}
+                informations={informations}
+                motifs={motifs}
+            />
+        }
         <ViewAdvertisingModal
             data={viewPubModal}
             handleClose={() => setViewPubModal(pub => ({ ...pub, show: false }))}
@@ -77,17 +91,20 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
                     </ol>
                 </nav>
                 <div className="d-flex mt-2 justify-content-between align-items-center">
-                <h4 className="mt-0">Consulter les informations d'une entreprise {entreprise !== null && <>(<span className="fw-bold">{entreprise.nom}</span>)</>}</h4>
-               {(loader === false && entreprise !== null) && <Button variant="outline-primary" className="me-4" size="sm" onClick={() => setIndiviualPrint(true)}><Printer /> Impression individuelle</Button>}
+                    <h4 className="mt-0">Consulter les informations d'une entreprise {entreprise !== null && <>(<span className="fw-bold">{entreprise.nom}</span>)</>}</h4>
+                    {(loader === false && entreprise !== null) && <Button variant="outline-primary" className="me-4" size="sm" onClick={() => setIndiviualPrint(true)}><Printer /> Impression individuelle</Button>}
                 </div>
                 <hr className="my-3" />
             </div>
             {(loader === false && entreprise !== null) ? <>
+                <div className="d-flex justify-content-between mb-3">
+                <div><h3>Déclaration <Badge bg={entreprise.recu ? 'success' : 'danger'}>{entreprise.recu ? "Reçue" : "Non reçue"}</Badge></h3></div>
+                <div><h3>Statut du paiement de la taxe <PaymentStatus status={entreprise.statut_paiement}/></h3></div>
+                </div>
                 <Row>
                     <Col><div>Matricule Ciger : <span className="fw-bold">{entreprise.matricule_ciger}</span></div></Col>
                     <Col><div>Procès-verbal : <span className="fw-bold">{entreprise.proces_verbal ? "Oui" : "Non"}</span></div></Col>
                     <Col><div>Province : <span className="fw-bold">{entreprise.province ? "Oui" : "Non"}</span></div></Col>
-                    <Col><div>Reçu : <span className="fw-bold">{entreprise.recu ? "Oui" : "Non"}</span></div></Col>
                     <Col><div>Langue : <span className="fw-bold">{entreprise.role_linguistique === 1 ? "Français" : "Néerlandais"}</span></div></Col>
                 </Row>
                 <Row className="mt-3">

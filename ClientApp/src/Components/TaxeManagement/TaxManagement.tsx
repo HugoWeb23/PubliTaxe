@@ -113,7 +113,8 @@ export const TaxManagement = () => {
                                 <th>Matricule</th>
                                 <th>Nom entreprise</th>
                                 <th>Panneaux</th>
-                                <th>Déclaration reçue</th>
+                                <th>Statut déclaration</th>
+                                <th>Statut paiement</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -148,6 +149,22 @@ interface ITax {
     handleDelete: (entreprise: IApercu_entreprise) => void
 }
 
+interface IPaymentStatus {
+    status: number
+}
+
+const PaymentStatus = ({status}: IPaymentStatus) => {
+    if (status === 0) {
+        return <td className="table-error">Impayé</td>
+    } else if (status === 1) {
+        return <td className="table-warning">Partiellement payé</td>
+    } else if (status === 2) {
+        return <td className="table-success">Payé</td>
+    } else {
+        return <td className="table-secondary"></td>
+    }
+}
+
 
 const Tax = memo(({ apercu_entreprise, handleDelete }: ITax) => {
     const value = useContext(UserContext)
@@ -156,7 +173,8 @@ const Tax = memo(({ apercu_entreprise, handleDelete }: ITax) => {
             <td>{apercu_entreprise.matricule_ciger}</td>
             <td>{apercu_entreprise.nom}</td>
             <td>{apercu_entreprise.nombre_panneaux}</td>
-            <td className={apercu_entreprise.recu ? "table-success" : "table-danger"}>{apercu_entreprise.recu ? "Oui" : "Non"}</td>
+            <td className={apercu_entreprise.recu ? "table-success" : "table-danger"}>{apercu_entreprise.recu ? "Reçue" : "Non reçue"}</td>
+            <td></td>
             <td>
                 <div className="d-flex">
                     {value.user && value.user.role > 1 && <OverlayTrigger
