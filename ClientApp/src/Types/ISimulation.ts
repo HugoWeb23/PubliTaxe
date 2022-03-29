@@ -15,5 +15,6 @@ export interface ISimulation {
         commentaire_taxation: string,
         role_linguistique: number
         code_postal: ICode_postal,
+        exercices: [],
         publicites: IPubliciteSimulation[]
 }

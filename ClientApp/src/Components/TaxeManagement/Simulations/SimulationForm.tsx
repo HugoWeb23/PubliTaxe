@@ -19,18 +19,22 @@ import { IExercice } from "../../../Types/IExercice";
 import { ManageAdvertisingSimulation } from "./ManageAdvertisingSimulation";
 import { SimulationFormSchema } from "../../../Validation/Tax/SimulationForm";
 import { ConfirmModal } from "./ConfirmModal";
+import { ISimulation } from "../../../Types/ISimulation";
+import { SimulationPrinter } from "../PDF/SimulationPrinter";
+import { pdf } from '@react-pdf/renderer';
+import { saveAs } from 'file-saver';
 
 
 export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFiscalYears, onFormSubmit }: any) => {
     const defaultValues = data ? data : {}
     const [streetCodeModal, setStreetCodeModal] = useState<boolean>(false)
-    const [confirmationModal, setConfirmationModal] = useState<boolean>(false)
+    const [confirmationModal, setConfirmationModal] = useState<{ show: boolean, simulation: ISimulation }>({ show: false, simulation: {} as ISimulation })
     const [postCodes, setPostCodes] = useState<any>(data?.code_postal ? [data.code_postal] : [])
     const [codePostal, setCodePostal] = useState<any>(null)
     const [publicites, setPublicites] = useState(data?.publicites ? data.publicites : [])
     const { register, reset, control, handleSubmit, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(SimulationFormSchema), defaultValues: defaultValues })
 
-    const OnSubmit = async(data: any) => {
+    const OnSubmit = async (data: any) => {
         try {
             const form2 = { ...data }
             const newArray = form2.publicites.map(({ rue, ...rest }: any) => rest)
@@ -40,19 +44,20 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
             }
             form2.exercices = data.exercices.join(';')
             const submit = await onFormSubmit(form2)
-            if(type == 'edit') {
+            if (type == 'edit') {
                 setPublicites(submit.publicites)
             } else {
                 reset()
                 setPublicites([])
             }
-            setConfirmationModal(true)
-        } catch(e) {
+            setConfirmationModal({show: true, simulation: data})
+            console.log(data)
+        } catch (e) {
             if (e instanceof ApiErrors) {
                 toast.error(e.singleError.error)
             }
         }
-       
+
     }
 
     const handleSelectStreet = (street: IRue) => {
@@ -110,8 +115,25 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
         defaultValue: defaultValues.exercices !== undefined ? defaultValues.exercices : []
     })
 
+    const generatePdfDocument = async (simulation: ISimulation) => {
+        const blob = await pdf((
+            <SimulationPrinter simulation={simulation} allFiscalYears={allFiscalYears} tarifs={tarifs} />
+        )).toBlob();
+        saveAs(blob, `${simulation.nom.split(' ').join('_')}.pdf`);
+    }
+
+    const handleGeneratePDF = async() => {
+        await generatePdfDocument(confirmationModal.simulation)
+    }
+
     return <>
-        <ConfirmModal type={type} show={confirmationModal} onClose={() => setConfirmationModal(false)}/>
+        <ConfirmModal
+            type={type}
+            show={confirmationModal.show}
+            data={confirmationModal.simulation}
+            onConfirm={handleGeneratePDF}
+            onClose={() => setConfirmationModal({ show: false, simulation: {} as ISimulation })}
+        />
         <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet} />
         <Container fluid="xl">
             <Form onSubmit={handleSubmit(OnSubmit)} className="mb-2">
@@ -306,17 +328,17 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
                     </Col>
                 </Row>
                 <Form.Group controlId="exercices">
-                <Form.Label column="sm">Sélection des exercices</Form.Label>
-                <div className="d-flex mb-3">
-                    {allFiscalYears.filter((f: IExercice) => f.annee_exercice >= currentFiscalYear.annee_exercice).map((f: IExercice, index: number) => {
-                        return <div className="form-check me-3" key={f.annee_exercice}>
-                            <input id={f.annee_exercice.toString()} className="form-check-input" type="checkbox" {...register('exercices')} value={f.id} />
-                            <label className="form-check-label" htmlFor={f.annee_exercice.toString()}>
-                                {f.annee_exercice}
-                            </label>
-                        </div>
-                    })}
-                </div>
+                    <Form.Label column="sm">Sélection des exercices</Form.Label>
+                    <div className="d-flex mb-3">
+                        {allFiscalYears.filter((f: IExercice) => f.annee_exercice >= currentFiscalYear.annee_exercice).map((f: IExercice, index: number) => {
+                            return <div className="form-check me-3" key={f.annee_exercice}>
+                                <input id={f.annee_exercice.toString()} className="form-check-input" type="checkbox" {...register('exercices')} value={f.id} />
+                                <label className="form-check-label" htmlFor={f.annee_exercice.toString()}>
+                                    {f.annee_exercice}
+                                </label>
+                            </div>
+                        })}
+                    </div>
                 </Form.Group>
             </Form>
             <ManageAdvertisingSimulation

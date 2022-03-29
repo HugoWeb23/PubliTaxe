@@ -25,7 +25,7 @@ interface IManageAdvertisingSimulation {
     onSubmit: (publicites: IPubliciteSimulation[]) => void
 }
 
-export const ManageAdvertisingSimulation = memo(({ pubs = [], tarifs, currentFiscalYear, allFiscalYears, exos = [], onSubmit }: IManageAdvertisingSimulation) => {
+export const ManageAdvertisingSimulation = memo(({ pubs = [], tarifs, allFiscalYears, exos = [], onSubmit }: IManageAdvertisingSimulation) => {
     const isMounted = useRef(false)
     const [showEdit, setShowEdit] = useState<boolean>(false)
     const [type, setType] = useState<'edit' | 'create'>('edit')

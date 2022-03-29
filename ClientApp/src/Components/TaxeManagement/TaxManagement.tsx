@@ -27,10 +27,12 @@ import { SearchModal } from './SearchModal'
 import { UserContext } from '../Contexts/UserContext'
 import { Paginate } from '../../Services/Paginate'
 import { ElementsPerPage } from '../../Services/ElementsPerPage'
+import { Loader } from 'react-bootstrap-typeahead'
 
 export const TaxManagement = () => {
 
     const [loader, setLoader] = useState<boolean>(true)
+    const [optionsLoader, setOptionsLoader] = useState<boolean>(false)
     const { entreprises, totalPages, pageCourante, totalRecus, totalEntreprises, getAll, deleteOne, setReceived } = useEntreprises()
     const [deleteModal, setDeleteModal] = useState<{ show: boolean, entreprise: IApercu_entreprise }>({ show: false, entreprise: {} as IApercu_entreprise })
     const [receivedModal, setReceivedModal] = useState<boolean>(false)
@@ -42,8 +44,10 @@ export const TaxManagement = () => {
     useEffect(() => {
         (async () => {
             try {
+                setOptionsLoader(true)
                 await getAll(filterOptions)
                 setTimeout(() => setLoader(false), 300)
+                setOptionsLoader(false)
             } catch (e: any) {
                 if (e instanceof ApiErrors) {
                     setErrorModal({ show: true, message: e.singleError.error })
@@ -102,6 +106,9 @@ export const TaxManagement = () => {
                                 <div className="fs-5 mb-2">Statistiques</div>
                                 <span className="fw-bold">{totalRecus}</span> déclarations recues sur <span className="fw-bold">{totalEntreprises}</span> entreprises enregistrées ({Math.round((totalRecus * 100) / totalEntreprises)} %).
                             </div>}
+                            {(filterOptions.matricule !== "" || filterOptions.nom !== "" || filterOptions.pubExoneration !== false || filterOptions.rue !== undefined) && <div className="mt-3">
+                                <Button size="sm" variant="danger" onClick={() => setSearchModal(true)}>Supprimer les filtres</Button>
+                            </div>}
                         </Card.Body>
                     </Card>
                 </Col>
@@ -125,6 +132,7 @@ export const TaxManagement = () => {
                     </Table>
                     {(loader == false && entreprises.length > 0) && <>
                         <div className="d-flex justify-content-end align-items-center">
+                            {optionsLoader && <div className="me-2"><Loader/></div>}
                             <div className="me-2">
                                 <ElementsPerPage
                                     elementsPerPage={filterOptions.elementsParPage}
@@ -153,9 +161,9 @@ interface IPaymentStatus {
     status: number
 }
 
-const PaymentStatus = ({status}: IPaymentStatus) => {
+const PaymentStatus = ({ status }: IPaymentStatus) => {
     if (status === 0) {
-        return <td className="table-error">Impayé</td>
+        return <td className="table-danger">Impayé</td>
     } else if (status === 1) {
         return <td className="table-warning">Partiellement payé</td>
     } else if (status === 2) {
@@ -174,7 +182,7 @@ const Tax = memo(({ apercu_entreprise, handleDelete }: ITax) => {
             <td>{apercu_entreprise.nom}</td>
             <td>{apercu_entreprise.nombre_panneaux}</td>
             <td className={apercu_entreprise.recu ? "table-success" : "table-danger"}>{apercu_entreprise.recu ? "Reçue" : "Non reçue"}</td>
-            <td></td>
+            <PaymentStatus status={apercu_entreprise.statut_paiement} />
             <td>
                 <div className="d-flex">
                     {value.user && value.user.role > 1 && <OverlayTrigger
