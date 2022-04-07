@@ -23,11 +23,11 @@ namespace Taxes.Controllers
 
         [AuthorizeRole(MinRole: 2)]
         [HttpPost("getall")]
-        public async Task<IActionResult> GetAllSimulations(PaginationViewModel Filters)
+        public async Task<IActionResult> GetAllSimulations(SimulationFilters Filters)
         {
             try
             {
-                SimulationsViewModel Simulations = await _mediator.Send(new GetAllSimulationsQuery());
+                SimulationsViewModel Simulations = await _mediator.Send(new GetAllSimulationsQuery(Filters));
                 return Ok(Simulations);
             } catch(Exception ex)
             {

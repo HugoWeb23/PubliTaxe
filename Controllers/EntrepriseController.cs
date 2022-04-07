@@ -219,14 +219,13 @@ namespace Taxes.Controllers
         }
 
         [AuthorizeRole(MinRole: 2)]
-        [HttpGet("notreceived/{FiscalYear}")]
-        public async Task<IActionResult> GetNotReceived(long FiscalYear)
+        [HttpPost("notreceived")]
+        public async Task<IActionResult> GetNotReceived(NotReceivedFilters Filters)
         {
             try
             {
-                List<Entreprise> entreprises = await _mediator.Send(new GetNotReceivedQuery(FiscalYear));
-                var filtered = entreprises.Select(x => new { x.Matricule_ciger, x.Nom, nombre_panneaux = x.Publicites.Count }).ToList();
-                return Ok(filtered);
+                NotReceivedViewModel entreprises = await _mediator.Send(new GetNotReceivedQuery(Filters));
+                return Ok(entreprises);
             } catch(Exception ex)
             {
                 return BadRequest(new { error = ex.Message});

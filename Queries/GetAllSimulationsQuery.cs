@@ -5,5 +5,5 @@ using Taxes.ViewModels;
 
 namespace Taxes.Queries
 {
-    public record GetAllSimulationsQuery() : IRequest<SimulationsViewModel>;
+    public record GetAllSimulationsQuery(SimulationFilters Filters) : IRequest<SimulationsViewModel>;
 }

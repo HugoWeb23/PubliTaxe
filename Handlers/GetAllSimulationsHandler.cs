@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -29,13 +30,23 @@ namespace Taxes.Handlers
                 .ThenInclude(s => s.Pays)
                 .OrderBy(t => t.Id_simulation)
                 .ToList();
+
+            int TotalElements = Simulations.Count();
+            int TotalPages = (int)Math.Ceiling(TotalElements / (double)request.Filters.ElementsParPage);
+            if (request.Filters.PageCourante > TotalPages)
+            {
+                request.Filters.PageCourante = TotalPages;
+            }
+            int Index = (request.Filters.PageCourante - 1) * request.Filters.ElementsParPage;
+            Simulations = Simulations.Skip(Index).Take(request.Filters.ElementsParPage).ToList();
+
             return Task.FromResult(new SimulationsViewModel
             {
                 Simulations = Simulations.Select(sim => new SimulationInfos { Id_simulation = sim.Id_simulation, Nom = sim.Nom, Nombre_panneaux = sim.Publicites.Count(), Date_creation = sim.Date_creation }).ToList(),
-                TotalPages = 1,
-                PageCourante = 1,
-                TotalSimulations = 5,
-                ElementsParPage = 15
+                TotalPages = TotalPages,
+                PageCourante = request.Filters.PageCourante,
+                TotalSimulations = TotalElements,
+                ElementsParPage = request.Filters.ElementsParPage
             });
         }
     }

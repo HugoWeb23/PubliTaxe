@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form'
 import { UserContext } from '../Contexts/UserContext'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { ChangePasswordSchema } from '../../Validation/ChangePassword/ChangePasswordSchema'
-import { apiFetch } from '../../Services/apiFetch'
+import { ApiErrors, apiFetch } from '../../Services/apiFetch'
 import { toast } from 'react-toastify'
 
 export const PasswordChange = () => {
@@ -25,7 +25,9 @@ export const PasswordChange = () => {
                 value.toggleUser({ ...value.user, changement_pass: 0 })
             }
         } catch (e: any) {
-            toast.error("Une erreur est survenue")
+            if (e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
         }
     }
     return <>

@@ -22,24 +22,29 @@ import { IExercice } from "../../../Types/IExercice"
 import { IPrice } from "../../../Types/IPrice"
 import { Loader } from "react-bootstrap-typeahead"
 import { toast } from "react-toastify"
+import { ElementsPerPage } from "../../../Services/ElementsPerPage"
+import { Paginate } from "../../../Services/Paginate"
 
 interface IManageSimulations {
     currentFiscalYear: IExercice,
     prices: IPrice[]
 }
 
-export const ManageSimulations = ({currentFiscalYear, prices}: IManageSimulations) => {
+export const ManageSimulations = ({ currentFiscalYear, prices }: IManageSimulations) => {
 
-    const { simulations, totalPages, pageCourante, totalSimulations, getAll, deleteOne } = useSimulations()
-    const [filterOptions, setFilterOptions] = useState<any>({ matricule: "", nom: "", pubExoneration: false, pageCourante: 1, elementsParPage: 15 })
+    const { simulations, totalPages, pageCourante, elementsParPage, totalSimulations, getAll, deleteOne } = useSimulations()
+    const [filterOptions, setFilterOptions] = useState<any>({ pageCourante: 1, elementsParPage: 15 })
     const [loader, setLoader] = useState<boolean>(true)
+    const [optionsLoader, setOptionsLoader] = useState<boolean>(false)
     const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
     const [deleteModal, setDeleteModal] = useState<{ show: boolean, simulation: IApercuSimulation }>({ show: false, simulation: {} as IApercuSimulation })
 
     useEffect(() => {
         (async () => {
             try {
+                setOptionsLoader(true)
                 await getAll(filterOptions)
+                setOptionsLoader(false)
                 setTimeout(() => setLoader(false), 300)
             } catch (e: any) {
                 if (e instanceof ApiErrors) {
@@ -49,13 +54,13 @@ export const ManageSimulations = ({currentFiscalYear, prices}: IManageSimulation
         })()
     }, [filterOptions])
 
-    const handleDelete = async(element: IApercuSimulation) => {
+    const handleDelete = async (element: IApercuSimulation) => {
         try {
             await deleteOne(element)
             toast.success('La simulation a été supprimée')
-            setDeleteModal(elem => ({...elem, show: false}))
-        } catch(e: any) {
-            if(e instanceof ApiErrors) {
+            setDeleteModal(elem => ({ ...elem, show: false }))
+        } catch (e: any) {
+            if (e instanceof ApiErrors) {
                 toast.error(e.singleError.error)
             }
         }
@@ -96,6 +101,20 @@ export const ManageSimulations = ({currentFiscalYear, prices}: IManageSimulation
                     {(loader == false && simulations.length > 0) && simulations.map((simulation: IApercuSimulation) => <Simulation simulation={simulation} currentFiscalYear={currentFiscalYear} prices={prices} handleDelete={(simulation: IApercuSimulation) => setDeleteModal({ show: true, simulation: simulation })} />)}
                 </tbody>
             </Table>
+            {simulations.length > 0 && <div className="d-flex justify-content-end align-items-center">
+            {optionsLoader && <div className="me-2"><Loader/></div>}
+                <div className="me-2">
+                    <ElementsPerPage
+                        elementsPerPage={elementsParPage}
+                        onChange={(elements) => setFilterOptions((filters: any) => ({ ...filters, elementsParPage: elements }))}
+                    />
+                </div>
+                <Paginate
+                    totalPages={totalPages}
+                    pageCourante={pageCourante}
+                    pageChange={(page) => setFilterOptions((filters: any) => ({ ...filters, pageCourante: page }))}
+                />
+            </div>}
         </Container>
     </>
 }
@@ -135,7 +154,7 @@ const Simulation = memo(({ simulation, currentFiscalYear, prices, handleDelete }
                             </Tooltip>
                         }
                     >
-                        <div className="me-1 btn btn-success btn-sm" onClick={handleCreateEntreprise}>{loader === false ? <Exit /> : <Loader/>}</div>
+                        <div className="me-1 btn btn-success btn-sm" onClick={handleCreateEntreprise}>{loader === false ? <Exit /> : <Loader />}</div>
                     </OverlayTrigger>
                     <OverlayTrigger
                         placement="top"

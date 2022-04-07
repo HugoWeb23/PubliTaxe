@@ -17,32 +17,45 @@ import { Loader } from '../../UI/Loader'
 import { NotReceivedModal } from './NotReceivedModal'
 import { toast } from 'react-toastify';
 import { ApiErrors } from '../../../Services/apiFetch'
+import { ElementsPerPage } from '../../../Services/ElementsPerPage'
+import { Paginate } from '../../../Services/Paginate'
+import { Loader as SmallLoader } from 'react-bootstrap-typeahead'
 
 interface IManageNotReceived {
     motifs: IMotif_majoration[],
     currentFiscalYear: IExercice
 }
 
+interface IFilterOptions {
+    fiscalYear: number,
+    elementsParPage: number,
+    pageCourante: number
+}
+
 export const ManageNotReceived = ({ motifs, currentFiscalYear }: IManageNotReceived) => {
     const [loader, setLoader] = useState<boolean>(true)
+    const [optionsLoader, setOptionsLoader] = useState<boolean>(false)
     const [selectedEntreprise, setSelectedEntreprise] = useState<{ entrepriseInfos: IApercu_entreprise, show: boolean }>({ entrepriseInfos: {} as IApercu_entreprise, show: false })
-    const { notReceivedList, getAll, Insert } = useNotReceived()
-    const [errorModal, setErrorModal] = useState<{show: boolean, message: string}>({show: false, message: ""})
+    const [filterOptions, setFilterOptions] = useState<IFilterOptions>({ fiscalYear: currentFiscalYear.id, elementsParPage: 15, pageCourante: 1 })
+    const { notReceivedList, totalPages, pageCourante, elementsParPage, getAll, Insert } = useNotReceived()
+    const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
     const currentDate = new Date().getTime()
     const expirationDate = new Date(currentFiscalYear.date_echeance).getTime()
 
     useEffect(() => {
         (async () => {
             try {
-                await getAll(currentFiscalYear.id)
-            } catch(e: any) {
-                if(e instanceof ApiErrors) {
-                    setErrorModal({show: true, message: e.singleError.error})
+                setOptionsLoader(true)
+                await getAll(filterOptions)
+                setOptionsLoader(false)
+            } catch (e: any) {
+                if (e instanceof ApiErrors) {
+                    setErrorModal({ show: true, message: e.singleError.error })
                 }
             }
             setTimeout(() => setLoader(false), 300)
         })()
-    }, [])
+    }, [filterOptions])
 
     const EncodeNotReceived = async (data: INotReceived) => {
         try {
@@ -51,7 +64,7 @@ export const ManageNotReceived = ({ motifs, currentFiscalYear }: IManageNotRecei
             setSelectedEntreprise(ent => ({ ...ent, show: false }))
             toast.success('Opération effectuée avec succès')
         } catch (e) {
-            if(e instanceof ApiErrors) {
+            if (e instanceof ApiErrors) {
                 toast.error(e.singleError.error)
             }
         }
@@ -62,7 +75,7 @@ export const ManageNotReceived = ({ motifs, currentFiscalYear }: IManageNotRecei
         return <Loader />
     }
     return <>
-        <NotReceivedModal element={selectedEntreprise} motifs={motifs} currentFiscalYear={currentFiscalYear} handleClose={() => setSelectedEntreprise({entrepriseInfos: {} as IApercu_entreprise, show: false})} onSubmit={EncodeNotReceived} />
+        <NotReceivedModal element={selectedEntreprise} motifs={motifs} currentFiscalYear={currentFiscalYear} handleClose={() => setSelectedEntreprise({ entrepriseInfos: {} as IApercu_entreprise, show: false })} onSubmit={EncodeNotReceived} />
         <Container fluid={true}>
             <nav aria-label="breadcrumb" className="mt-3">
                 <ol className="breadcrumb">
@@ -71,9 +84,9 @@ export const ManageNotReceived = ({ motifs, currentFiscalYear }: IManageNotRecei
                 </ol>
             </nav>
             <h2 className="mt-2 mb-3">Encodage des déclarations non reçues (exercice {currentFiscalYear.annee_exercice})</h2>
-            <hr className="my-3"/>
+            <hr className="my-3" />
             {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
-            {(errorModal.show === false && currentDate < expirationDate)  && <Alert variant="warning">Attention, la date d'échéance de l'exercice {currentFiscalYear.annee_exercice} n'a pas encore été dépassée (<span className="fw-bold">{new Date(currentFiscalYear.date_echeance).toLocaleDateString('fr-FR')}</span>).</Alert>}
+            {(errorModal.show === false && currentDate < expirationDate) && <Alert variant="warning">Attention, la date d'échéance de l'exercice {currentFiscalYear.annee_exercice} n'a pas encore été dépassée (<span className="fw-bold">{new Date(currentFiscalYear.date_echeance).toLocaleDateString('fr-FR')}</span>).</Alert>}
             <Table striped bordered hover size="sm">
                 <thead>
                     <tr>
@@ -88,6 +101,20 @@ export const ManageNotReceived = ({ motifs, currentFiscalYear }: IManageNotRecei
                     {notReceivedList.map((notreceived: any, index: number) => <NotReceived element={notreceived} index={index} handleSelect={(element: IApercu_entreprise) => setSelectedEntreprise({ entrepriseInfos: element, show: true })} />)}
                 </tbody>
             </Table>
+            {notReceivedList.length > 0 && <div className="d-flex justify-content-end align-items-center">
+                {optionsLoader && <div className="me-2"><SmallLoader /></div>}
+                <div className="me-2">
+                    <ElementsPerPage
+                        elementsPerPage={elementsParPage}
+                        onChange={(elements) => setFilterOptions((filters: any) => ({ ...filters, elementsParPage: elements }))}
+                    />
+                </div>
+                <Paginate
+                    totalPages={totalPages}
+                    pageCourante={pageCourante}
+                    pageChange={(page) => setFilterOptions((filters: any) => ({ ...filters, pageCourante: page }))}
+                />
+            </div>}
         </Container>
     </>
 }

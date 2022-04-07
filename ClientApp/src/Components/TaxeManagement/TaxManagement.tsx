@@ -104,7 +104,7 @@ export const TaxManagement = () => {
                             </div>}
                             {entreprises.length > 0 && <div>
                                 <div className="fs-5 mb-2">Statistiques</div>
-                                <span className="fw-bold">{totalRecus}</span> déclarations recues sur <span className="fw-bold">{totalEntreprises}</span> entreprises enregistrées ({Math.round((totalRecus * 100) / totalEntreprises)} %).
+                                <div><span className="fw-bold">{totalRecus}</span> déclarations recues sur <span className="fw-bold">{totalEntreprises}</span> entreprises enregistrées ({Math.round((totalRecus * 100) / totalEntreprises)} %).</div>
                             </div>}
                             {(filterOptions.matricule !== "" || filterOptions.nom !== "" || filterOptions.pubExoneration !== false || filterOptions.rue !== undefined) && <div className="mt-3">
                                 <Button size="sm" variant="danger" onClick={() => setSearchModal(true)}>Supprimer les filtres</Button>
