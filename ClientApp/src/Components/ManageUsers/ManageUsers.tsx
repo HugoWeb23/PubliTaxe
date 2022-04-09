@@ -16,6 +16,7 @@ import { useAccounts } from "../Hooks/AccountsHook"
 import { Trash } from "../UI/Trash"
 import { ConfirmModal } from "../UI/ConfirmModal"
 import { Loader } from "../UI/Loader"
+import { ExclamationIcon } from "../UI/ExclamationIcon"
 
 export const ManageUsers = () => {
     const { accounts, getAllAccounts, deleteAccount } = useAccounts()
@@ -96,8 +97,18 @@ const UserRow = ({ user, onDelete }: IUserRow) => {
         <td>{user.id}</td>
         <td>{user.prenom}</td>
         <td>{user.nom}</td>
-        <td>{user.mail} {user.changement_pass === 1 && <span className="fs-6 text-danger fw-bold">(Changement de mot de passe en attente)</span>}</td>
-        <td>{user.actif ? "Oui" : "Non"}</td>
+        <td>{user.mail}</td>
+        <td>{user.actif ? "Oui" : "Non"} {user.changement_pass === 1 && <OverlayTrigger
+            placement="top"
+            overlay={
+                <Tooltip id={`tooltip-2`}>
+                    Changement de mot de passe en attente
+                </Tooltip>
+            }
+        >
+            <span className="ms-1"><ExclamationIcon width="20" height="20" fill="red" /></span>
+        </OverlayTrigger>
+        }</td>
         <td><div className="d-flex">
             <OverlayTrigger
                 placement="top"

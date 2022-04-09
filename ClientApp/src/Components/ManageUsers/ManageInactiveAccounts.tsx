@@ -3,7 +3,9 @@ import {
     Container,
     Table,
     Button,
-    Alert
+    Alert,
+    OverlayTrigger,
+    Tooltip
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { ApiErrors } from "../../Services/apiFetch"
@@ -12,6 +14,7 @@ import { IUser } from "../../Types/IUser"
 import { useInactiveAccounts } from "../Hooks/InactiveAccountsHook"
 import { ConfirmModal } from "../UI/ConfirmModal"
 import { Loader } from "../UI/Loader"
+import { ExclamationIcon } from "../UI/ExclamationIcon"
 
 export const ManageInactiveAccounts = () => {
     const { accounts, getAllAccounts, deleteAccount, activateAccount } = useInactiveAccounts()
@@ -108,7 +111,16 @@ const UserRow = ({ user, onDelete, onActivate }: IUserRow) => {
         <td>{user.id}</td>
         <td>{user.prenom}</td>
         <td>{user.nom}</td>
-        <td>{user.mail} {user.changement_pass === 1 && <span className="fs-6 text-danger fw-bold">(Changement de mot de passe en attente)</span>}</td>
+        <td>{user.mail} {user.changement_pass === 1 && <OverlayTrigger
+            placement="top"
+            overlay={
+                <Tooltip id={`tooltip-2`}>
+                    Changement de mot de passe en attente
+                </Tooltip>
+            }
+        >
+            <span className="ms-1"><ExclamationIcon width="20" height="20" fill="red" /></span>
+        </OverlayTrigger>}</td>
         <td>{user.actif ? "Oui" : "Non"}</td>
         <td><div className="d-flex">
             <Button variant="success" size="sm" className="me-2" onClick={() => onActivate({ ...user, actif: 1 })}>Activer</Button>

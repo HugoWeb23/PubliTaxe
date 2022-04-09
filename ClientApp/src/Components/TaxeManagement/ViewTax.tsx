@@ -98,8 +98,8 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
             </div>
             {(loader === false && entreprise !== null) ? <>
                 <div className="d-flex justify-content-between mb-3">
-                <div><h3>Déclaration <Badge bg={entreprise.recu ? 'success' : 'danger'}>{entreprise.recu ? "Reçue" : "Non reçue"}</Badge></h3></div>
-                <div><h3>Statut du paiement de la taxe <PaymentStatus status={entreprise.statut_paiement}/></h3></div>
+                <div><h4>Déclaration <Badge bg={entreprise.recu ? 'success' : 'danger'}>{entreprise.recu ? "Reçue" : "Non reçue"}</Badge></h4></div>
+                <div><h4>Paiement de la taxe <PaymentStatus status={entreprise.statut_paiement}/></h4></div>
                 </div>
                 <Row>
                     <Col><div>Matricule Ciger : <span className="fw-bold">{entreprise.matricule_ciger}</span></div></Col>
