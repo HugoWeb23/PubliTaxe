@@ -28,8 +28,11 @@ export const useAccounts = () => {
 
     return {
         accounts: state.accounts,
-        getAllAccounts: async () => {
-            const accounts: IUser[] = await apiFetch('/accounts/getallusers')
+        getAllAccounts: async (filters: any) => {
+            const accounts: IUser[] = await apiFetch('/accounts/getallusers', {
+                method: 'POST',
+                body: JSON.stringify(filters)
+            })
             dispatch({ type: 'FETCH_ALL_ACCOUNTS', payLoad: accounts })
         },
         deleteAccount: async (data: IUser) => {

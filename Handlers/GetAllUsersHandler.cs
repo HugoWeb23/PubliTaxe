@@ -21,20 +21,41 @@ namespace Taxes.Handlers
         }
         public Task<List<UserWithoutPassViewModel>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
         {
-            List<UserWithoutPassViewModel> Utilisateurs = _context.utilisateurs
-                .Select(user => new UserWithoutPassViewModel
-                {
-                    Id = user.Id,
-                    Nom = user.Nom,
-                    Prenom = user.Prenom,
-                    Mail = user.Mail,
-                    Actif = user.Actif,
-                    Role = user.Role,
-                    Changement_pass = user.Changement_pass
-                })
-                .ToList();
+            List<Utilisateur> data = new List<Utilisateur>();
+            if(request.Filters.Text.Length == 0)
+            {
+                data = _context.utilisateurs.ToList();
+            }
+            if (request.Filters.Text.Length > 0 && request.Filters.Type == "1")
+            {
+                data = _context.utilisateurs
+               .Where(u => u.Nom.Contains(request.Filters.Text))
+               .ToList();
+            } else if (request.Filters.Text.Length > 0 && request.Filters.Type == "2")
+            {
+                data = _context.utilisateurs
+               .Where(u => u.Prenom.Contains(request.Filters.Text))
+               .ToList();
+            } else if (request.Filters.Text.Length > 0 && request.Filters.Type == "3")
+            {
+                data = _context.utilisateurs
+               .Where(u => u.Mail.Contains(request.Filters.Text))
+               .ToList();
+            }
 
-            return Task.FromResult(Utilisateurs);
+            List<UserWithoutPassViewModel> Users = data.Select(user => new UserWithoutPassViewModel
+            {
+                Id = user.Id,
+                Nom = user.Nom,
+                Prenom = user.Prenom,
+                Mail = user.Mail,
+                Actif = user.Actif,
+                Role = user.Role,
+                Changement_pass = user.Changement_pass
+            }).ToList();
+
+
+            return Task.FromResult(Users);
         }
     }
 }

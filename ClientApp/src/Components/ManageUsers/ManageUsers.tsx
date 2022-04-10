@@ -5,7 +5,8 @@ import {
     Button,
     OverlayTrigger,
     Tooltip,
-    Alert
+    Alert,
+    Form
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { Pencil } from "../UI/Pencil"
@@ -17,17 +18,22 @@ import { Trash } from "../UI/Trash"
 import { ConfirmModal } from "../UI/ConfirmModal"
 import { Loader } from "../UI/Loader"
 import { ExclamationIcon } from "../UI/ExclamationIcon"
+import { SearchIcon } from "../UI/SearchIcon"
+import { useForm } from "react-hook-form"
 
 export const ManageUsers = () => {
     const { accounts, getAllAccounts, deleteAccount } = useAccounts()
     const [deleteModal, setDeleteModal] = useState<{ show: boolean, user: IUser }>({ show: false, user: {} as IUser })
     const [loader, setLoader] = useState<boolean>(true)
     const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
+    const { register, setValue, handleSubmit } = useForm();
+    const [searchOptions, setSearchOptions] = useState<{ text: string, type: string }>({ text: "", type: "nom" })
 
     useEffect(() => {
         (async () => {
             try {
-                await getAllAccounts()
+                setLoader(true)
+                await getAllAccounts(searchOptions)
             } catch (e: any) {
                 if (e instanceof ApiErrors) {
                     setErrorModal({ show: true, message: e.singleError.error })
@@ -35,7 +41,7 @@ export const ManageUsers = () => {
             }
             setTimeout(() => setLoader(false), 300)
         })()
-    }, [])
+    }, [searchOptions.text])
 
     const handleDeleteAccount = async (user: IUser) => {
         try {
@@ -47,6 +53,11 @@ export const ManageUsers = () => {
                 toast.error(e.singleError.error)
             }
         }
+    }
+
+    const handleSearch = (data: any) => {
+        setSearchOptions({ text: data.text, type: data.type })
+        setValue('text', '')
     }
 
     return <>
@@ -66,8 +77,21 @@ export const ManageUsers = () => {
             </nav>
             <h2 className="mt-2">Gestion des utilisateurs</h2>
             <hr className="my-3" />
+            <Form onSubmit={handleSubmit(handleSearch)} className="mb-3">
+                <Form.Control type="text" placeholder="Rechercher..." className="me-1" style={{ display: 'inline-block', width: '250px' }} {...register('text')} />
+                <Form.Select className="me-1" style={{ display: 'inline-block', width: '125px' }} {...register('type')}>
+                    <option value={2}>Prénom</option>
+                    <option value={1}>Nom</option>
+                    <option value={3}>E-mail</option>
+                </Form.Select>
+            </Form>
+            {searchOptions.text.length > 0 && <div className="mt-3">Recherche par
+                {searchOptions.type == '1' && " nom"}
+                {searchOptions.type == '2' && " prénom"}
+                {searchOptions.type == '3' && " adresse e-mail"} : {searchOptions.text}</div>}
+            {searchOptions.text.length > 0 && <div className="link" onClick={() => setSearchOptions(options => ({ ...options, text: "" }))}>Supprimer le filtre</div>}
             {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
-            <Table striped bordered hover>
+            <Table striped bordered hover className="mt-3">
                 <thead>
                     <tr>
                         <th>ID</th>
