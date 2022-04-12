@@ -9,10 +9,12 @@ using Taxes.Commands;
 using Taxes.Entities;
 using Taxes.Queries;
 using Taxes.ViewModels;
+using Taxes.Filters;
 
 namespace Taxes.Controllers
 {
     [Route("api/paiements")]
+    [AuthorizeRole(MinRole: 2)]
     [ApiController]
     public class PaiementController : ControllerBase
     {

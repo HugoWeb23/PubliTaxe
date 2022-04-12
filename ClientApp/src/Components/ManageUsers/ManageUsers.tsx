@@ -78,12 +78,15 @@ export const ManageUsers = () => {
             <h2 className="mt-2">Gestion des utilisateurs</h2>
             <hr className="my-3" />
             <Form onSubmit={handleSubmit(handleSearch)} className="mb-3">
+                <div className="d-flex align-items-center">
                 <Form.Control type="text" placeholder="Rechercher..." className="me-1" style={{ display: 'inline-block', width: '250px' }} {...register('text')} />
-                <Form.Select className="me-1" style={{ display: 'inline-block', width: '125px' }} {...register('type')}>
+                <Form.Select className="me-2" style={{ display: 'inline-block', width: '125px' }} {...register('type')}>
                     <option value={2}>Prénom</option>
                     <option value={1}>Nom</option>
                     <option value={3}>E-mail</option>
                 </Form.Select>
+                <Button variant="secondary" type="submit"><SearchIcon/></Button>
+                </div>
             </Form>
             {searchOptions.text.length > 0 && <div className="mt-3">Recherche par
                 {searchOptions.type == '1' && " nom"}
