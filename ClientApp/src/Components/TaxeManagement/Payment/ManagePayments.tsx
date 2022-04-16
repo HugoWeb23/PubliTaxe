@@ -70,7 +70,7 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
                     <li className="breadcrumb-item active" aria-current="page">Gestion des paiements</li>
                 </ol>
             </nav>
-            <h2 className="mt-2 mb-3">Gestion des paiements (exercice {currentFiscalYear.annee_exercice})</h2>
+            <h2 className="mt-2 mb-3">Gestion des paiements <span className="fw-bold">(exercice {currentFiscalYear.annee_exercice})</span></h2>
             <hr className="my-3" />
             <div className="show_payments_status">
                 <Card className="payment_status_card">

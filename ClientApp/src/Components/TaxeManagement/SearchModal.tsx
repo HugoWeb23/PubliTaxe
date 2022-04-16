@@ -76,7 +76,7 @@ export const SearchModal = ({show, handleClose, handleSearch}: ISearchModal) => 
                                 <Form.Control type="text" size="sm" placeholder="Nom" isInvalid={errors.matricule} {...register('nom')} />
                             </Form.Group>
                         </Col>
-                        <p className="mt-2 mb-2">Filtrer des entreprises en fonction des publicités</p>
+                        <p className="mt-3 mb-1 fw-bold">Filtrer des entreprises en fonction des publicités</p>
                         <Col>
                         <Form.Group controlId="exoneration">
                                 <Form.Label column="sm">Exonération</Form.Label>

@@ -83,7 +83,7 @@ export const ManageNotReceived = ({ motifs, currentFiscalYear }: IManageNotRecei
                     <li className="breadcrumb-item active" aria-current="page">Encodage des non reçus</li>
                 </ol>
             </nav>
-            <h2 className="mt-2 mb-3">Encodage des déclarations non reçues (exercice {currentFiscalYear.annee_exercice})</h2>
+            <h2 className="mt-2 mb-3">Encodage des déclarations non reçues <span className="fw-bold">(exercice {currentFiscalYear.annee_exercice})</span></h2>
             <hr className="my-3" />
             {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
             {(errorModal.show === false && currentDate < expirationDate) && <Alert variant="warning">Attention, la date d'échéance de l'exercice {currentFiscalYear.annee_exercice} n'a pas encore été dépassée (<span className="fw-bold">{new Date(currentFiscalYear.date_echeance).toLocaleDateString('fr-FR')}</span>).</Alert>}

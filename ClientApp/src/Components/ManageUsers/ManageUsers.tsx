@@ -79,13 +79,13 @@ export const ManageUsers = () => {
             <hr className="my-3" />
             <Form onSubmit={handleSubmit(handleSearch)} className="mb-3">
                 <div className="d-flex align-items-center">
-                <Form.Control type="text" placeholder="Rechercher..." className="me-1" style={{ display: 'inline-block', width: '250px' }} {...register('text')} />
-                <Form.Select className="me-2" style={{ display: 'inline-block', width: '125px' }} {...register('type')}>
+                <Form.Control type="text" placeholder="Rechercher..." size="sm" className="me-1" style={{ display: 'inline-block', width: '250px' }} {...register('text')} />
+                <Form.Select className="me-2" size="sm" style={{ display: 'inline-block', width: '125px' }} {...register('type')}>
                     <option value={2}>Prénom</option>
                     <option value={1}>Nom</option>
                     <option value={3}>E-mail</option>
                 </Form.Select>
-                <Button variant="secondary" type="submit"><SearchIcon/></Button>
+                <Button variant="secondary" size="sm" type="submit"><SearchIcon/></Button>
                 </div>
             </Form>
             {searchOptions.text.length > 0 && <div className="mt-3">Recherche par
@@ -94,7 +94,7 @@ export const ManageUsers = () => {
                 {searchOptions.type == '3' && " adresse e-mail"} : {searchOptions.text}</div>}
             {searchOptions.text.length > 0 && <div className="link" onClick={() => setSearchOptions(options => ({ ...options, text: "" }))}>Supprimer le filtre</div>}
             {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
-            <Table striped bordered hover className="mt-3">
+            <Table striped bordered hover size="sm" className="mt-3">
                 <thead>
                     <tr>
                         <th>ID</th>

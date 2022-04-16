@@ -74,13 +74,13 @@ export const OffensesModal = ({ matricule, motifs, currentFiscalYear, isOpen, ha
                 {confirmDelete.show && <Card border="danger" className="mb-3">
                     <Card.Header>Confirmation de suppression</Card.Header>
                     <Card.Body>
-                        Voulez-vous vraiment supprimer l'infraction de l'exercice 2022 ?
+                        Voulez-vous vraiment supprimer l'infraction de l'exercice {currentFiscalYear.annee_exercice} ?
                         <div className="mt-3">
                             <Button size="sm" variant="success" onClick={() => handleDelete(confirmDelete.notReceived)}>Oui</Button> - <Button size="sm" variant="danger" onClick={() => setConfirmDelete({show: false, notReceived: {} as INotReceivedHistory})}>Non</Button>
                         </div>
                     </Card.Body>
                 </Card>}
-                    <Table striped bordered hover>
+                    <Table striped bordered hover size="sm">
                         <thead>
                             <tr>
                                 <th>Exercice</th>

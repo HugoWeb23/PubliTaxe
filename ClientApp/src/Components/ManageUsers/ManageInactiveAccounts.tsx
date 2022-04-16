@@ -76,7 +76,7 @@ export const ManageInactiveAccounts = () => {
             <h2 className="mt-2">Utilisateurs en attente d'activation</h2>
             <hr className="my-3" />
             {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
-            <Table striped bordered hover>
+            <Table striped bordered hover size="sm">
                 <thead>
                     <tr>
                         <th>ID</th>
