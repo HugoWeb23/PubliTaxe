@@ -114,7 +114,7 @@ export const ManageAdvertising = memo(({ pubs = [], matricule, tarifs, currentFi
             onConfirm={deletePub}
             bodyText="Voulez-vous vraiment supprimer ce panneau ?"
         />
-        <Table striped bordered hover>
+        <Table striped bordered hover size="sm">
             <thead>
                 <tr>
                     <th>Exercice</th>

@@ -102,9 +102,8 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
                 <div><h4>Paiement de la taxe <PaymentStatus status={entreprise.statut_paiement}/></h4></div>
                 </div>
                 <Row>
-                    <Col><div>Matricule Ciger : <span className="fw-bold">{entreprise.matricule_ciger}</span></div></Col>
+                    <Col><div>Matricule : <span className="fw-bold">{entreprise.matricule_ciger}</span></div></Col>
                     <Col><div>Procès-verbal : <span className="fw-bold">{entreprise.proces_verbal ? "Oui" : "Non"}</span></div></Col>
-                    <Col><div>Province : <span className="fw-bold">{entreprise.province ? "Oui" : "Non"}</span></div></Col>
                     <Col><div>Langue : <span className="fw-bold">{entreprise.role_linguistique === 1 ? "Français" : "Néerlandais"}</span></div></Col>
                 </Row>
                 <Row className="mt-3">
@@ -165,7 +164,7 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
                         </Row>
                     </Card.Body>
                 </Card>
-                <Table striped bordered hover className="mt-3">
+                <Table striped bordered hover size="sm" className="mt-3">
                     <thead>
                         <tr>
                             <th>Exercice</th>

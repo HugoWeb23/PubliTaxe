@@ -69,7 +69,7 @@ export const ManageFiscalYears = ({ handleEdit }: IManageFiscalyears) => {
             </div>
             <hr className="my-3" />
             {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
-            <Table striped bordered hover>
+            <Table striped bordered hover size="sm">
                 <thead>
                     <tr>
                         <th>Exercice</th>

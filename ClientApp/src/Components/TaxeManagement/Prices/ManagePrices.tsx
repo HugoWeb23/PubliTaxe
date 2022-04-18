@@ -87,7 +87,7 @@ export const ManagePrices = ({ handleEdit, handleCreate }: IManagePrices) => {
             </div>
             <hr className="my-3" />
             {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
-            <Table striped bordered hover style={{ verticalAlign: "middle", textAlign: "center" }}>
+            <Table striped bordered hover size="sm" style={{ verticalAlign: "middle", textAlign: "center" }}>
                 <thead>
                     <tr>
                         <th>Exercice</th>

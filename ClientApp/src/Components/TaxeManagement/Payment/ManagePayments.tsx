@@ -103,7 +103,7 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
             </div>
             {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
             <Row className="me-0 mt-0 mt-3">
-                <Col md="2" xs="12">
+                <Col lg="3" xl="2">
                     <Card>
                         <Card.Body>
                             <Form.Group controlId="status" className="mb-3 me-3">
@@ -126,7 +126,7 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col md="10" xs="1" style={{ paddingRight: 0 }}>
+                <Col lg="9" xl="10" style={{ paddingRight: 0 }}>
                     <Table striped bordered hover size="sm">
                         <thead>
                             <tr>

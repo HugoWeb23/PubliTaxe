@@ -225,7 +225,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                 <Row className="mb-3">
                     <Col>
                         <Form.Group controlId="matricule_ciger">
-                            <Form.Label column="sm">Matricule Ciger</Form.Label>
+                            <Form.Label column="sm">Matricule</Form.Label>
                             <Form.Control type="text" placeholder="Matricule Ciger" isInvalid={errors.matricule_ciger} disabled={type == 'edit'} size="sm" {...register('matricule_ciger')} />
                             {errors.matricule_ciger && <Form.Control.Feedback type="invalid">{errors.matricule_ciger.message}</Form.Control.Feedback>}
                         </Form.Group>
@@ -235,13 +235,6 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                             <Form.Label column="sm">Procès-verbal</Form.Label>
                             <Form.Check type="checkbox" isInvalid={errors.proces_verbal} {...register('proces_verbal')} />
                             {errors.proces_verbal && <Form.Control.Feedback type="invalid">{errors.proces_verbal.message}</Form.Control.Feedback>}
-                        </Form.Group>
-                    </Col>
-                    <Col>
-                        <Form.Group controlId="province">
-                            <Form.Label column="sm">Province</Form.Label>
-                            <Form.Check type="checkbox" isInvalid={errors.province} {...register('province')} />
-                            {errors.province && <Form.Control.Feedback type="invalid">{errors.province.message}</Form.Control.Feedback>}
                         </Form.Group>
                     </Col>
                     <Col>
