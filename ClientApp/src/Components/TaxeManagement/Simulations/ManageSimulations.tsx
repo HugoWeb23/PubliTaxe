@@ -72,6 +72,7 @@ export const ManageSimulations = ({ currentFiscalYear, prices }: IManageSimulati
             element={deleteModal.simulation}
             onClose={() => setDeleteModal(d => ({ ...d, show: false }))}
             onConfirm={(element: IApercuSimulation) => handleDelete(element)}
+            bodyText="Voulez-vous vraiment supprimer cette simulation ?"
         />
         <Container fluid={true}>
             <nav aria-label="breadcrumb" className="mt-3">

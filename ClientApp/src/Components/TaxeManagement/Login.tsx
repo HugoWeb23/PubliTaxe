@@ -53,16 +53,16 @@ export const Login = ({ handleLogin }: ILogin) => {
                     {loginError && <Alert className="mt-3" variant="danger">{loginError.error}</Alert>}
                     <Form onSubmit={handleSubmit(OnSubmit)}>
                         <Form.Group controlId="mail" className="mt-3">
-                            <Form.Label>Adresse e-mail</Form.Label>
-                            <Form.Control type="text" placeholder="Adresse email" isInvalid={errors.mail} {...register('mail')} />
+                            <Form.Label column="sm">Adresse e-mail</Form.Label>
+                            <Form.Control type="text" placeholder="Adresse email" isInvalid={errors.mail} size="sm" {...register('mail')} />
                             {errors.mail && <Form.Control.Feedback type="invalid">{errors.mail.message}</Form.Control.Feedback>}
                         </Form.Group>
                         <Form.Group controlId="password" className="mt-2">
-                            <Form.Label>Mot de passe</Form.Label>
-                            <Form.Control type="password" placeholder="Mot de passe" isInvalid={errors.pass} {...register('pass')} />
+                            <Form.Label column="sm">Mot de passe</Form.Label>
+                            <Form.Control type="password" placeholder="Mot de passe" isInvalid={errors.pass} size="sm" {...register('pass')} />
                             {errors.pass && <Form.Control.Feedback type="invalid">{errors.pass.message}</Form.Control.Feedback>}
                         </Form.Group>
-                        <Button variant="primary" type="submit" className="mt-3" disabled={isSubmitting}>{isSubmitting ? 'Chargement...' : 'Se connecter'}</Button>
+                        <Button variant="primary" size="sm" type="submit" className="mt-3" disabled={isSubmitting}>{isSubmitting ? 'Chargement...' : 'Se connecter'}</Button>
                     </Form>
                 </Card.Body>
             </Card>

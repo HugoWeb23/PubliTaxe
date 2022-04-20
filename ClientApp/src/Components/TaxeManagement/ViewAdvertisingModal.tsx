@@ -63,7 +63,7 @@ export const ViewAdvertisingModal = ({ data, handleClose }: IViewAdvertisingModa
     }
     return <Modal show={data.show} onHide={handleClose} size="xl" animation={false}>
         <Modal.Header closeButton>
-            <Modal.Title>Visionner une publicité</Modal.Title>
+            <Modal.Title as="h5">Visionner une publicité</Modal.Title>
         </Modal.Header>
         <Modal.Body>
            <Row>
@@ -109,7 +109,7 @@ export const ViewAdvertisingModal = ({ data, handleClose }: IViewAdvertisingModa
                 }
         </Modal.Body>
         <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
+            <Button variant="secondary" size="sm" onClick={handleClose}>
                 Fermer
             </Button>
         </Modal.Footer>

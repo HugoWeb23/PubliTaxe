@@ -118,7 +118,7 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
                         </Form.Select>
                         {errors.id && <Form.Control.Feedback type="invalid">{errors.id.message}</Form.Control.Feedback>}
                         <div className="mt-3">
-                            <Button variant="danger" onClick={() => setConfirmModal(true)}>
+                            <Button variant="danger" size="sm" onClick={() => setConfirmModal(true)}>
                                 Changer d'exercice
                             </Button>
                         </div>

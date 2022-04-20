@@ -2,7 +2,9 @@ import { useForm } from 'react-hook-form'
 import {
   Modal,
   Button,
-  Form
+  Form,
+  Row,
+  Col
 } from 'react-bootstrap'
 import { useEffect, useRef } from 'react'
 import { IPrice } from '../../../Types/IPrice'
@@ -38,7 +40,7 @@ export const PriceModal = ({ element, fiscalYears, fiscalYearsUsed, handleClose,
   return <>
     <Modal show={element.show} onHide={handleClose} animation={false}>
       <Modal.Header closeButton>
-        <Modal.Title>{element.type == "create" ? "Créer" : "Éditer"} un tarif</Modal.Title>
+        <Modal.Title as="h5">{element.type == "create" ? "Créer" : "Éditer"} un tarif</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit(formSubmit)}>
@@ -52,43 +54,51 @@ export const PriceModal = ({ element, fiscalYears, fiscalYearsUsed, handleClose,
             </Form.Text>
             {errors.exerciceId && <Form.Control.Feedback type="invalid">{errors.exerciceId.message}</Form.Control.Feedback>}
           </Form.Group>
+          <Row>
+          <Col>
           <Form.Group controlId="ENL" className="mb-1">
-            <Form.Label column="sm">P.U. enseigne non lumineuse</Form.Label>
+            <Form.Label column="sm">ENL</Form.Label>
             <Form.Control type="text" size="sm" placeholder="0.00" isInvalid={errors.prix_unitaire_enseigne_non_lumineuse} {...register('prix_unitaire_enseigne_non_lumineuse')} />
             {errors.prix_unitaire_enseigne_non_lumineuse && <Form.Control.Feedback type="invalid">{errors.prix_unitaire_enseigne_non_lumineuse.message}</Form.Control.Feedback>}
           </Form.Group>
           <Form.Group controlId="EL" className="mb-1">
-            <Form.Label column="sm">P.U. enseigne lumineuse</Form.Label>
+            <Form.Label column="sm">EL</Form.Label>
             <Form.Control type="text" size="sm" placeholder="0.00" isInvalid={errors.prix_unitaire_enseigne_lumineuse} {...register('prix_unitaire_enseigne_lumineuse')} />
             {errors.prix_unitaire_enseigne_lumineuse && <Form.Control.Feedback type="invalid">{errors.prix_unitaire_enseigne_lumineuse.message}</Form.Control.Feedback>}
           </Form.Group>
+          </Col>
+          <Col>
           <Form.Group controlId="EC" className="mb-1">
-            <Form.Label column="sm">P.U. enseigne clignotante</Form.Label>
+            <Form.Label column="sm">EC</Form.Label>
             <Form.Control type="text" size="sm" placeholder="0.00" isInvalid={errors.prix_unitaire_enseigne_clignotante} {...register('prix_unitaire_enseigne_clignotante')} />
             {errors.prix_unitaire_enseigne_clignotante && <Form.Control.Feedback type="invalid">{errors.prix_unitaire_enseigne_clignotante.message}</Form.Control.Feedback>}
           </Form.Group>
           <Form.Group controlId="PNN" className="mb-1">
-            <Form.Label column="sm">P.U. panneau non lumineux</Form.Label>
+            <Form.Label column="sm">PNL</Form.Label>
             <Form.Control type="text" size="sm" placeholder="0.00" isInvalid={errors.prix_unitaire_panneau_non_lumineux} {...register('prix_unitaire_panneau_non_lumineux')} />
             {errors.prix_unitaire_panneau_non_lumineux && <Form.Control.Feedback type="invalid">{errors.prix_unitaire_panneau_non_lumineux.message}</Form.Control.Feedback>}
           </Form.Group>
+          </Col>
+          <Col>
           <Form.Group controlId="PL" className="mb-1">
-            <Form.Label column="sm">P.U. panneau lumineux</Form.Label>
+            <Form.Label column="sm">PL</Form.Label>
             <Form.Control type="text" size="sm" placeholder="0.00" isInvalid={errors.prix_unitaire_panneau_lumineux} {...register('prix_unitaire_panneau_lumineux')} />
             {errors.prix_unitaire_panneau_lumineux && <Form.Control.Feedback type="invalid">{errors.prix_unitaire_panneau_lumineux.message}</Form.Control.Feedback>}
           </Form.Group>
           <Form.Group controlId="PAD">
-            <Form.Label column="sm">P.U. panneau à défilement</Form.Label>
+            <Form.Label column="sm">PAD</Form.Label>
             <Form.Control type="text" size="sm" placeholder="0.00" isInvalid={errors.prix_unitaire_panneau_a_defilement} {...register('prix_unitaire_panneau_a_defilement')} />
             {errors.prix_unitaire_panneau_a_defilement && <Form.Control.Feedback type="invalid">{errors.prix_unitaire_panneau_a_defilement.message}</Form.Control.Feedback>}
           </Form.Group>
+          </Col>
+          </Row>
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
+        <Button variant="secondary" size="sm" onClick={handleClose}>
           Annuler
         </Button>
-        <Button variant="success" onClick={handleSubmit(formSubmit)}>
+        <Button variant="success" size="sm" onClick={handleSubmit(formSubmit)}>
           {element.type == "create" ? "Créer le tarif" : "Modifier le tarif"}
         </Button>
       </Modal.Footer>

@@ -47,7 +47,7 @@ export const FiscalYearModal = ({ fiscalYear, handleClose, onSubmit }: FiscalYea
   return <>
     <Modal show={fiscalYear.show} onHide={handleClose} animation={false}>
       <Modal.Header closeButton>
-        <Modal.Title>{fiscalYear.type == "create" ? "Créer" : "Éditer"} un exercice</Modal.Title>
+        <Modal.Title as="h5">{fiscalYear.type == "create" ? "Créer" : "Éditer"} un exercice</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit(formSubmit)}>
@@ -71,10 +71,10 @@ export const FiscalYearModal = ({ fiscalYear, handleClose, onSubmit }: FiscalYea
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
+        <Button variant="secondary" size="sm" onClick={handleClose}>
           Annuler
         </Button>
-        <Button variant="success" onClick={handleSubmit(formSubmit)}>
+        <Button variant="success" size="sm" onClick={handleSubmit(formSubmit)}>
           {fiscalYear.type == "create" ? "Créer l'exercice" : "Modifier l'exercice"}
         </Button>
       </Modal.Footer>

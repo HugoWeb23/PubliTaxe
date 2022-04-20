@@ -22,14 +22,14 @@ export const ConfirmModal = ({ show, element, size = undefined, titleText = "Con
     return <>
         <Modal show={show} onHide={onClose} size={size} animation={false}>
             <Modal.Header closeButton>
-                <Modal.Title>{titleText}</Modal.Title>
+                <Modal.Title as="h5">{titleText}</Modal.Title>
             </Modal.Header>
             <Modal.Body>{bodyText}</Modal.Body>
             <Modal.Footer>
-                <Button variant={leaveButtonVariant} onClick={onClose}>
+                <Button variant={leaveButtonVariant} size="sm" onClick={onClose}>
                     {leaveButtonText}
                 </Button>
-                <Button variant={confirmButtonVariant} onClick={() => onConfirm(element)}>
+                <Button variant={confirmButtonVariant} size="sm" onClick={() => onConfirm(element)}>
                     {confirmButtonText}
                 </Button>
             </Modal.Footer>

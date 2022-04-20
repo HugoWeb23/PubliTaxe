@@ -61,7 +61,7 @@ export const OffensesModal = ({ matricule, motifs, currentFiscalYear, isOpen, ha
 
     return <Modal show={isOpen} onHide={handleClose} size="xl" animation={false}>
         <Modal.Header closeButton>
-            <Modal.Title>Historique des infractions</Modal.Title>
+            <Modal.Title as="h5">Historique des infractions</Modal.Title>
         </Modal.Header>
         <Modal.Body>
             <div className="d-flex justify-content-end mb-3">
@@ -108,7 +108,7 @@ export const OffensesModal = ({ matricule, motifs, currentFiscalYear, isOpen, ha
             }
         </Modal.Body>
         <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
+            <Button variant="secondary" size="sm" onClick={handleClose}>
                 Fermer
             </Button>
         </Modal.Footer>

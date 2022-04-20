@@ -75,7 +75,7 @@ export const EncodePaymentModal = ({ show, type, total_tax, payment, onSubmit, h
     return <>
         <Modal show={show} onHide={handleClose} size="xl" animation={false}>
             <Modal.Header closeButton>
-                <Modal.Title>{type === 'create' ? 'Créer' : 'Éditer'} un paiement</Modal.Title>
+                <Modal.Title as="h5">{type === 'create' ? 'Créer' : 'Éditer'} un paiement</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form onSubmit={handleSubmit(Submit)}>
@@ -129,10 +129,10 @@ export const EncodePaymentModal = ({ show, type, total_tax, payment, onSubmit, h
                 </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+                <Button variant="secondary" size="sm" onClick={handleClose}>
                     Annuler
                 </Button>
-                <Button variant="success" onClick={handleSubmit(Submit)} disabled={isSubmitting}>
+                <Button variant="success" size="sm" onClick={handleSubmit(Submit)} disabled={isSubmitting}>
                     {isSubmitting && <Loader />} {type === 'create' ? 'Créer' : 'Éditer'} le paiement
                 </Button>
             </Modal.Footer>

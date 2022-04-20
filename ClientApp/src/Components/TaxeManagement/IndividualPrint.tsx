@@ -58,12 +58,12 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalY
   return <>
     <Modal show={show} onHide={onClose} size="xl" animation={false}>
       <Modal.Header closeButton>
-        <Modal.Title>Impression individuelle</Modal.Title>
+        <Modal.Title as="h5">Impression individuelle</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {notice && <Alert variant="secondary" >Veillez à bien sauvegarder les changements avant de générer un document.</Alert>}
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <Row className="mb-3">
+          <Row>
             <Col>
               <Form.Group controlId="echeance" className="mb-3">
                 <Form.Label column="sm">Date d'échéance</Form.Label>
@@ -129,7 +129,7 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalY
             {errors.options && <Form.Text className="text-danger">
               {errors.options.message}
             </Form.Text>}
-            <Form.Group controlId="submit" className="mt-5">
+            <Form.Group controlId="submit" className="mt-3">
               <div className="d-grid gap-2">
                 <Button variant="outline-dark" className="mb-1" type="submit">Générer les documents</Button>
               </div>
@@ -141,7 +141,7 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalY
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onClose}>
+        <Button variant="secondary" size="sm" onClick={onClose}>
           Fermer
         </Button>
       </Modal.Footer>

@@ -58,7 +58,7 @@ export const SearchModal = ({show, handleClose, handleSearch}: ISearchModal) => 
     return <>
         <Modal show={show} onHide={handleClose} size="lg" animation={false}>
             <Modal.Header closeButton>
-                <Modal.Title>Recherche</Modal.Title>
+                <Modal.Title as="h5">Recherche</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>
@@ -136,10 +136,10 @@ export const SearchModal = ({show, handleClose, handleSearch}: ISearchModal) => 
                 </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+                <Button variant="secondary" size="sm" onClick={handleClose}>
                     Annuler
                 </Button>
-                <Button variant="success" onClick={handleSubmit(onSearch)}>
+                <Button variant="success" size="sm" onClick={handleSubmit(onSearch)}>
                     Rechercher
                 </Button>
             </Modal.Footer>

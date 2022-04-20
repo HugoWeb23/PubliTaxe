@@ -80,14 +80,14 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
     return <>
         <Modal show={element.show} onHide={() => onModalClose()} size="xl" animation={false}>
             <Modal.Header closeButton>
-                <Modal.Title>Encoder un non reçu</Modal.Title>
+                <Modal.Title as="h5">Encoder un non reçu</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 {loader || Object.keys(entreprise).length == 0 || error ? <Loader /> :
                     <>
                         <Card>
                             <Card.Header as="h6">Informations sur l'entreprise</Card.Header>
-                            <Card.Body>
+                            <Card.Body style={{padding: "0.5rem 0.5rem"}}>
                                 <Row>
                                     <Col>
                                         <div>Matricule : {entreprise.matricule_ciger}</div>
@@ -169,10 +169,10 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
                 }
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={() => onModalClose()}>
+                <Button variant="secondary" size="sm" onClick={() => onModalClose()}>
                     Annuler
                 </Button>
-                <Button variant="danger" onClick={handleSubmit(OnFormSubmit)} disabled={loader}>
+                <Button variant="danger" size="sm" onClick={handleSubmit(OnFormSubmit)} disabled={loader}>
                     Valider
                 </Button>
             </Modal.Footer>

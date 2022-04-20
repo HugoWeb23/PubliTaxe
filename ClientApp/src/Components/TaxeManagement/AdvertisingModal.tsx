@@ -165,7 +165,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
     return <>
         <Modal show={show} onHide={handleClose} size="xl" animation={false}>
             <Modal.Header closeButton>
-                <Modal.Title>{type == 'edit' ? `Éditer un panneau` : 'Créer un panneau'}</Modal.Title>
+                <Modal.Title as="h5">{type == 'edit' ? `Éditer un panneau` : 'Créer un panneau'}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form onSubmit={handleSubmit(onSubmit)}>
@@ -363,10 +363,10 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
                 }
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+                <Button variant="secondary" size="sm" onClick={handleClose}>
                     Annuler
                 </Button>
-                <Button variant="success" onClick={handleSubmit(onSubmit)}>
+                <Button variant="success" size="sm" onClick={handleSubmit(onSubmit)}>
                     {type == 'create' ? 'Créer' : 'Modifier'}
                 </Button>
             </Modal.Footer>
