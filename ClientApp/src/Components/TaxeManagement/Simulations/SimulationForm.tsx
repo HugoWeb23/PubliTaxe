@@ -50,6 +50,8 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
                 reset()
                 setPublicites([])
             }
+            let test = { ...data }
+            test.code_postal.pays = {code_pays: "150", nom_pays: "BELGIQUE", paysId: 5} // A changer
             setConfirmationModal({show: true, simulation: data})
             console.log(data)
         } catch (e) {

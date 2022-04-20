@@ -21,14 +21,14 @@ export const ConfirmModal = ({ show, data, type, onClose, onConfirm }: IConfirmM
     return <>
         <Modal show={show} onHide={onClose} animation={false}>
             <Modal.Header closeButton>
-                <Modal.Title>Confirmation</Modal.Title>
+                <Modal.Title as="h5">Confirmation</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 La simuation a bien été {type == 'create' ? 'créée' : 'modifiée'}.
-                <div className="mt-3"><Button variant="success" onClick={handleConfirm}>Générer le reçu</Button></div>
+                <div className="mt-3"><Button size="sm" variant="success" onClick={handleConfirm}>Générer le reçu</Button></div>
                 </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={onClose}>
+                <Button variant="secondary" size="sm" onClick={onClose}>
                     Fermer
                 </Button>
             </Modal.Footer>

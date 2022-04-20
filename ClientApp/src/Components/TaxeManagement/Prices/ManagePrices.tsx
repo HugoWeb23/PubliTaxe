@@ -43,7 +43,7 @@ export const ManagePrices = ({ handleEdit, handleCreate }: IManagePrices) => {
                     setErrorModal({ show: true, message: e.singleError.error })
                 }
             }
-            setLoader(false)
+            setTimeout(() => setLoader(false), 300)
         })()
     }, [])
 
@@ -96,6 +96,7 @@ export const ManagePrices = ({ handleEdit, handleCreate }: IManagePrices) => {
                     </tr>
                 </thead>
                 <tbody>
+                    {loader && <tr><td align="left" colSpan={3}>Chargement...</td></tr>}
                     {(loader === false && prices.length === 0) && <tr><td colSpan={3}>Aucun résultat</td></tr>}
                     {loader === false && prices.map((price: IPrice, index: number) => {
                         return <tr key={price.id}>

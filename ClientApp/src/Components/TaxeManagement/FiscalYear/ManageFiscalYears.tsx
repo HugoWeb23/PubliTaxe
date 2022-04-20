@@ -33,7 +33,7 @@ export const ManageFiscalYears = ({ handleEdit }: IManageFiscalyears) => {
                     setErrorModal({ show: true, message: e.singleError.error })
                 }
             }
-            setLoader(false)
+            setTimeout(() => setLoader(false), 300)
         })()
     }, [])
 
@@ -79,6 +79,7 @@ export const ManageFiscalYears = ({ handleEdit }: IManageFiscalyears) => {
                     </tr>
                 </thead>
                 <tbody>
+                {loader && <tr><td colSpan={4}>Chargement...</td></tr>}
                 {(loader === false && fiscalYears.length === 0) && <tr><td colSpan={4}>Aucun résultat</td></tr>}
                     {loader == false && fiscalYears.map((year: IExercice, index: number) => {
                         return <tr>
