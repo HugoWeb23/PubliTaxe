@@ -28,7 +28,7 @@ export const useNotReceived = () => {
                     elementsParPage: action.payLoad.elementsParPage,
                 }
             case 'INSERT':
-                return { ...state, entreprises: state.entreprises.filter((elem: INotReceived) => elem.matricule_ciger != action.payLoad.matricule_ciger) }
+                return { ...state, entreprises: state.entreprises.filter((elem: INotReceived) => elem.id_entreprise != action.payLoad.id_entreprise) }
             default:
                 return state
         }

@@ -1,6 +1,6 @@
 export interface INotReceived {
     id: number,
-    matricule_ciger: number,
+    id_entreprise: number,
     motif_majorationId: number,
     exerciceId: number,
     remarque: string,
