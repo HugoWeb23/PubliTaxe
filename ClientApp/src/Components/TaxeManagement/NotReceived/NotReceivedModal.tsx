@@ -133,7 +133,7 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
                             <Col>
                                 <Form.Group controlId="pv">
                                     <Form.Label column="sm">Procès-verbal</Form.Label>
-                                    <Form.Check type="checkbox" {...register('pv')} />
+                                    <Form.Check type="checkbox" disabled {...register('pv')} />
                                 </Form.Group>
                             </Col>
                         </Row>

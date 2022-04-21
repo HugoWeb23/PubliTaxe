@@ -325,7 +325,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
                     <Row>
                         <Col>
                             <Form.Group controlId="formFileSm" className="mb-3">
-                                <Form.Label>Photos du panneau</Form.Label>
+                                <Form.Label column="sm">Photos du panneau</Form.Label>
                                 <Form.Control type="file" size="sm" accept="image/*" multiple onChange={onFileChange} />
                                 <Form.Text className="text-muted">
                                     Maintenez la touche CTRL pour sélectionner plusieurs photos.
