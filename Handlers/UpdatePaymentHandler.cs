@@ -42,12 +42,12 @@ namespace Taxes.Handlers
 
             request.Payment.ExerciceId = information.Exercice_courant;
 
-            Entreprise Entreprise = await _mediator.Send(new GetEntrepriseById(request.Payment.Matricule_ciger));
+            Entreprise Entreprise = await _mediator.Send(new GetEntrepriseById(request.Payment.Id_entreprise));
             decimal SumTax = Entreprise.Publicites.Sum(p => p.Taxe_totale);
             decimal Montant_majoration = (SumTax * Entreprise.Pourcentage_majoration / 100);
             decimal TotalTax = SumTax + Montant_majoration;
             decimal AlreadyPayed = _context.paiements_recus
-                .Where(p => p.Matricule_ciger == request.Payment.Matricule_ciger)
+                .Where(p => p.Id_entreprise == request.Payment.Id_entreprise)
                 .Where(p => p.ExerciceId == information.Exercice_courant)
                 .Sum(p => p.Montant);
             string UpOrDown = "";
@@ -65,7 +65,7 @@ namespace Taxes.Handlers
             {
                 Entreprise ent = new Entreprise
                 {
-                    Matricule_ciger = request.Payment.Matricule_ciger,
+                    Id_entreprise = request.Payment.Id_entreprise,
                     Statut_paiement = 1
                 };
                 _context.entreprises.Attach(ent);
@@ -74,7 +74,7 @@ namespace Taxes.Handlers
             {
                 Entreprise ent = new Entreprise
                 {
-                    Matricule_ciger = request.Payment.Matricule_ciger,
+                    Id_entreprise = request.Payment.Id_entreprise,
                     Statut_paiement = 2
                 };
                 _context.entreprises.Attach(ent);

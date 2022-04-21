@@ -51,9 +51,10 @@ namespace Taxes.Controllers
         {
             try
             {
-                Entreprise entreprise = await _mediator.Send(new GetEntrepriseById(Matricule));
+                Entreprise entreprise = await _mediator.Send(new GetEntrepriseByMatricule(Matricule));
                 var filtered = new
                 {
+                    Id_entreprise = entreprise.Id_entreprise,
                     Matricule_ciger = entreprise.Matricule_ciger,
                     Nom = entreprise.Nom,
                     Nombre_panneaux = entreprise.Publicites.Count,
@@ -88,12 +89,12 @@ namespace Taxes.Controllers
 
         }
 
-        [HttpGet("id/{matricule}")]
-        public async Task<IActionResult> GetById(long matricule)
+        [HttpGet("id/{ID}")]
+        public async Task<IActionResult> GetById(long ID)
         {
             try
             {
-                Entreprise entreprise = await _mediator.Send(new GetEntrepriseById(matricule));
+                Entreprise entreprise = await _mediator.Send(new GetEntrepriseById(ID));
                 if (entreprise == null)
                 {
                     return BadRequest(new { error = "Aucun enregistrement ne correspond à ce matricule" });
@@ -123,7 +124,7 @@ namespace Taxes.Controllers
         }
 
         [AuthorizeRole(MinRole: 2)]
-        [HttpPut("edit/{matricule_ciger}")]
+        [HttpPut("edit/{ID}")]
         public async Task<IActionResult> EditEntreprise(Entreprise entreprise)
         {
             try
@@ -234,12 +235,12 @@ namespace Taxes.Controllers
         }
 
         [AuthorizeRole(MinRole: 2)]
-        [HttpDelete("delete/{Matricule}")]
-        public async Task<IActionResult> Delete(long Matricule)
+        [HttpDelete("delete/{ID}")]
+        public async Task<IActionResult> Delete(long ID)
         {
             try
             {
-                bool isDeleted = await _mediator.Send(new DeleteEntrepriseCommand(Matricule));
+                bool isDeleted = await _mediator.Send(new DeleteEntrepriseCommand(ID));
                 if(isDeleted == false)
                 {
                     return BadRequest(new { error = "Une erreur est survenue lors de la suppression de l'entreprise" });
@@ -253,17 +254,32 @@ namespace Taxes.Controllers
 
         [AuthorizeRole(MinRole: 2)]
         [HttpPost("encodereceived")]
-        public async Task<IActionResult> EncodeReceived(EncodeReceivedViewModel Matricules)
+        public async Task<IActionResult> EncodeReceived(EncodeReceivedViewModel Entreprises)
         {
             try
             {
-                List<Entreprise> entreprises = await _mediator.Send(new EncodeReceivedCommand(Matricules.Matricules));
-                return Ok(entreprises.Select(ent => new { Matricule_ciger = ent.Matricule_ciger, Recu = ent.Recu}));
+                List<Entreprise> entreprises = await _mediator.Send(new EncodeReceivedCommand(Entreprises.Entreprises));
+                return Ok(entreprises.Select(ent => new { Id_entreprise = ent.Id_entreprise, Recu = ent.Recu}));
             } catch(Exception ex)
             {
                 return BadRequest(new { erreur = ex.Message });
             }
             
+        }
+
+        [AuthorizeRole(MinRole: 1)]
+        [HttpGet("checkmatricule/{Matricule}")]
+        public async Task<IActionResult> CheckMatricule(long Matricule)
+        {
+            try
+            {
+                return Ok(await _mediator.Send(new MatriculAavailabilityCheckQuery(Matricule)));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { erreur = ex.Message });
+            }
+
         }
 
     }

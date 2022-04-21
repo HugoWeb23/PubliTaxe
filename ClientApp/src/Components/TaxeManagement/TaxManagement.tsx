@@ -117,6 +117,7 @@ export const TaxManagement = () => {
                     <Table striped bordered hover size="sm">
                         <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>Matricule</th>
                                 <th>Nom entreprise</th>
                                 <th>Panneaux</th>
@@ -178,6 +179,7 @@ const Tax = memo(({ apercu_entreprise, handleDelete }: ITax) => {
     const value = useContext(UserContext)
     return <>
         <tr key={apercu_entreprise.matricule_ciger}>
+            <td>{apercu_entreprise.id_entreprise}</td>
             <td>{apercu_entreprise.matricule_ciger}</td>
             <td>{apercu_entreprise.nom}</td>
             <td>{apercu_entreprise.nombre_panneaux}</td>
@@ -193,7 +195,7 @@ const Tax = memo(({ apercu_entreprise, handleDelete }: ITax) => {
                             </Tooltip>
                         }
                     >
-                        <Link className="me-1 btn btn-secondary btn-sm" to={`/entreprise/edit/${apercu_entreprise.matricule_ciger}`}><Pencil /></Link>
+                        <Link className="me-1 btn btn-secondary btn-sm" to={`/entreprise/edit/${apercu_entreprise.id_entreprise}`}><Pencil /></Link>
                     </OverlayTrigger>}
                     <OverlayTrigger
                         placement="top"
@@ -203,7 +205,7 @@ const Tax = memo(({ apercu_entreprise, handleDelete }: ITax) => {
                             </Tooltip>
                         }
                     >
-                        <Link className="me-1 btn btn-info btn-sm" to={`/entreprise/view/${apercu_entreprise.matricule_ciger}`}><Eye /></Link>
+                        <Link className="me-1 btn btn-info btn-sm" to={`/entreprise/view/${apercu_entreprise.id_entreprise}`}><Eye /></Link>
                     </OverlayTrigger>
                     {value.user && value.user.role > 1 && <OverlayTrigger
                         placement="top"

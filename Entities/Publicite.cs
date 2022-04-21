@@ -19,7 +19,7 @@ namespace Taxes.Entities
                 return false;
 
             return this.Numero_panneau == other.Numero_panneau &&
-                   this.Matricule_ciger == other.Matricule_ciger &&
+                   this.Id_entreprise == other.Id_entreprise &&
                    this.Id_rue == other.Id_rue &&
                    this.Exercice_courant == other.Exercice_courant &&
                    this.Type_publicite == other.Type_publicite &&
@@ -40,7 +40,7 @@ namespace Taxes.Entities
 
         public override bool Equals(object obj) => Equals(obj as Publicite);
         public override int GetHashCode() => (Numero_panneau,
-                                              Matricule_ciger,
+                                              Id_entreprise,
                                               Id_rue,
                                               Exercice_courant,
                                               Type_publicite,
@@ -61,7 +61,7 @@ namespace Taxes.Entities
 
         [Key]
         public long Numero_panneau { get; set; }
-        public long Matricule_ciger { get; set; }
+        public long Id_entreprise { get; set; }
         [ForeignKey("Rue")]
         public int Id_rue { get; set; }
         public long Exercice_courant { get; set; }
@@ -80,7 +80,7 @@ namespace Taxes.Entities
         public short Code_recu { get; set; }
         public bool Exoneration { get; set; }
         public short Pv { get; set; }
-        [ForeignKey("Matricule_ciger")]
+        [ForeignKey("Id_entreprise")]
         public Entreprise Entreprise { get; set; }
         public Rue Rue { get; set; }
         public ICollection<PublicitesPhotos> Photos { get; set; }

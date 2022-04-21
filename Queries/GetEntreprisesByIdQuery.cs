@@ -4,5 +4,5 @@ using Taxes.Entities;
 
 namespace Taxes.Queries
 {
-    public record GetEntreprisesByIdQuery(List<long> Matricules) : IRequest<List<Entreprise>>;
+    public record GetEntreprisesByIdQuery(List<long> ID) : IRequest<List<Entreprise>>;
 }

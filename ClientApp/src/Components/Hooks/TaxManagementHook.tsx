@@ -28,7 +28,7 @@ export const useEntreprises = () => {
             case 'RECEIVED':
                 return {
                     ...state, entreprises: state.entreprises.map((ent: IApercu_entreprise) => {
-                        if (action.payLoad.map((ent: IApercu_entreprise) => ent.matricule_ciger).includes(ent.matricule_ciger)) {
+                        if (action.payLoad.map((ent: IApercu_entreprise) => ent.id_entreprise).includes(ent.id_entreprise)) {
                             return { ...ent, recu: true }
                         }
                         return ent
@@ -60,7 +60,7 @@ export const useEntreprises = () => {
            await GetTaxes(options)
         },
         deleteOne: async (entreprise: IApercu_entreprise) => {
-            await apiFetch(`/entreprises/delete/${entreprise.matricule_ciger}`, {
+            await apiFetch(`/entreprises/delete/${entreprise.id_entreprise}`, {
                 method: 'DELETE'
             })
             if(state.entreprises.length <= 1 && state.totalPages > 1 ) {
@@ -69,11 +69,11 @@ export const useEntreprises = () => {
             dispatch({ type: 'DELETE', payLoad: entreprise })
         },
         setReceived: async (selected: IApercu_entreprise[]) => {
-            const matricules: number[] = []
-            selected.forEach((ent: IApercu_entreprise) => matricules.push(ent.matricule_ciger))
+            const IDs: number[] = []
+            selected.forEach((ent: IApercu_entreprise) => IDs.push(ent.id_entreprise))
             const encode = await apiFetch('/entreprises/encodereceived', {
                 method: 'POST',
-                body: JSON.stringify({ matricules: matricules })
+                body: JSON.stringify({ entreprises: IDs })
             })
             dispatch({ type: 'RECEIVED', payLoad: encode })
         }

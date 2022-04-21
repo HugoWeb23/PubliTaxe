@@ -12,6 +12,7 @@ namespace Taxes.Entities
     public class Entreprise
     {
         [Key]
+        public long Id_entreprise { get; set; }
         public long Matricule_ciger { get; set; }
         public int Code_postalId { get; set; }
         public string Nom { get; set; }
@@ -52,7 +53,6 @@ namespace Taxes.Entities
     {
         public EntrepriseValidator()
         {
-            RuleFor(entreprise => entreprise.Matricule_ciger).NotEmpty().WithMessage("Veuillez saisir un matricule Ciger");
             RuleFor(entreprise => entreprise.Nom).NotEmpty().WithMessage("Veuillez saisir un nom");
             RuleFor(entreprise => entreprise.Adresse_rue).NotEmpty().WithMessage("Veuillez saisir une adresse");
             RuleFor(entreprise => entreprise.Adresse_numero).NotEmpty().WithMessage("Veuillez saisir un numéro");

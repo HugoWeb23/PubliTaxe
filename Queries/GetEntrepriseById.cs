@@ -3,5 +3,5 @@ using Taxes.Entities;
 
 namespace Taxes.Queries
 {
-    public record GetEntrepriseById(long matricule) : IRequest<Entreprise>;
+    public record GetEntrepriseById(long ID) : IRequest<Entreprise>;
 }

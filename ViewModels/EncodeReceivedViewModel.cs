@@ -4,6 +4,6 @@ namespace Taxes.ViewModels
 {
     public class EncodeReceivedViewModel
     {
-        public List<long> Matricules { get; set; }
+        public List<long> Entreprises { get; set; }
     }
 }

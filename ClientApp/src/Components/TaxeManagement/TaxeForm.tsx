@@ -52,11 +52,12 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
     const [autoTaxAdress, setAutoTaxAdress] = useState<boolean>(true)
     const [individualPrint, setIndiviualPrint] = useState<boolean>(false)
     const [offensesModal, setOffensesModal] = useState<boolean>(false)
+    const [matriculeAvailable, setMatriculeAvailable] = useState<boolean>(false)
     const { register, reset, control, handleSubmit, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(TaxeFormSchema), defaultValues: defaultValues });
 
     useEffect(() => {
-        if(formSimulation) {
-            for(const [key, value] of Object.entries(simulationData)) {
+        if (formSimulation) {
+            for (const [key, value] of Object.entries(simulationData)) {
                 setValue(key, value)
             }
         }
@@ -186,9 +187,22 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
         setValue('motif_majorationId', lastNotReceived.motif_majorationId)
     }
 
+    const CheckMatricule = async (e: any) => {
+        clearErrors('matricule_ciger')
+        setMatriculeAvailable(false)
+        if (e.target.value.length > 0) {
+            const isAvailable = await apiFetch(`/entreprises/checkmatricule/${e.target.value}`)
+            if (isAvailable === false) {
+                setError('matricule_ciger', { type: "manual", message: "Ce matricule est déjà utilisé" })
+            } else {
+                setMatriculeAvailable(true)
+            }
+        }
+    }
+
     return <>
         <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet} />
-        {type === 'edit' && <OffensesModal matricule={tax.matricule_ciger} motifs={motifs} currentFiscalYear={currentFiscalYear} isOpen={offensesModal} handleClose={() => setOffensesModal(false)} onDelete={UpdateMajoration}/>}
+        {type === 'edit' && <OffensesModal id_entreprise={tax.id_entreprise} motifs={motifs} currentFiscalYear={currentFiscalYear} isOpen={offensesModal} handleClose={() => setOffensesModal(false)} onDelete={UpdateMajoration} />}
         {type === 'edit' && <IndividualPrint
             show={individualPrint}
             handleClose={() => setIndiviualPrint(false)}
@@ -226,7 +240,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                     <Col>
                         <Form.Group controlId="matricule_ciger">
                             <Form.Label column="sm">Matricule</Form.Label>
-                            <Form.Control type="text" placeholder="Matricule Ciger" isInvalid={errors.matricule_ciger} disabled={type == 'edit'} size="sm" {...register('matricule_ciger')} />
+                            <Form.Control type="text" placeholder="Matricule Ciger" isInvalid={errors.matricule_ciger} isValid={matriculeAvailable} size="sm" {...register('matricule_ciger')} onChange={(e) => CheckMatricule(e)} />
                             {errors.matricule_ciger && <Form.Control.Feedback type="invalid">{errors.matricule_ciger.message}</Form.Control.Feedback>}
                         </Form.Group>
                     </Col>

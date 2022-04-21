@@ -90,6 +90,7 @@ export const ManageNotReceived = ({ motifs, currentFiscalYear }: IManageNotRecei
             <Table striped bordered hover size="sm">
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>Matricule</th>
                         <th>Nom entreprise</th>
                         <th>Panneaux</th>
@@ -97,8 +98,8 @@ export const ManageNotReceived = ({ motifs, currentFiscalYear }: IManageNotRecei
                     </tr>
                 </thead>
                 <tbody>
-                    {notReceivedList.length === 0 && <tr><td colSpan={4}>Aucun résultat</td></tr>}
-                    {notReceivedList.map((notreceived: any, index: number) => <NotReceived element={notreceived} index={index} handleSelect={(element: IApercu_entreprise) => setSelectedEntreprise({ entrepriseInfos: element, show: true })} />)}
+                    {notReceivedList.length === 0 && <tr><td colSpan={5}>Aucun résultat</td></tr>}
+                    {notReceivedList.map((notreceived: any, index: number) => <NotReceived element={notreceived} handleSelect={(element: IApercu_entreprise) => setSelectedEntreprise({ entrepriseInfos: element, show: true })} />)}
                 </tbody>
             </Table>
             {notReceivedList.length > 0 && <div className="d-flex justify-content-end align-items-center">
@@ -121,13 +122,13 @@ export const ManageNotReceived = ({ motifs, currentFiscalYear }: IManageNotRecei
 
 interface NotReceived {
     element: IApercu_entreprise,
-    index: number,
     handleSelect: (entreprise: IApercu_entreprise) => void
 }
 
-const NotReceived = memo(({ element, index, handleSelect }: NotReceived) => {
+const NotReceived = memo(({ element, handleSelect }: NotReceived) => {
     return <>
-        <tr key={index}>
+        <tr key={element.id_entreprise}>
+            <td>{element.id_entreprise}</td>
             <td>{element.matricule_ciger}</td>
             <td>{element.nom}</td>
             <td>{element.nombre_panneaux}</td>

@@ -25,7 +25,7 @@ namespace Taxes.Handlers
                 .Include(ent => ent.Publicites)
                  .Where(ent => ent.Recu == false)
                 // Sélectionne les entreprises qui n'ont pas encore un non recu d'encodé
-                .Where(ent => !_context.non_recus.Where(n => n.ExerciceId == request.Filters.FiscalYear).Select(n => n.Matricule_ciger).Contains(ent.Matricule_ciger))
+                .Where(ent => !_context.non_recus.Where(n => n.ExerciceId == request.Filters.FiscalYear).Select(n => n.Id_entreprise).Contains(ent.Id_entreprise))
                 .ToList();
 
             int TotalElements = entreprises.Count();
@@ -41,6 +41,7 @@ namespace Taxes.Handlers
             {
                 Entreprises = entreprises.Select(ent => new NotReceivedInfos
                 {
+                    Id_entreprise = ent.Id_entreprise,
                     Matricule_ciger = ent.Matricule_ciger,
                     Nom = ent.Nom,
                     Nombre_panneaux = ent.Publicites.Count()

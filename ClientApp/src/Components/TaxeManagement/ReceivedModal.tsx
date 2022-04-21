@@ -28,7 +28,7 @@ export const ReceivedModal = ({ show, handleClose, onSubmit }: IReceivedModal) =
     const SearchNameRef: any = useRef()
 
     const UnSelectEntreprise = (ent: IApercu_entreprise) => {
-        setSelectedEntreprises(entreprises => entreprises.filter((entreprise: IApercu_entreprise) => entreprise.matricule_ciger != ent.matricule_ciger))
+        setSelectedEntreprises(entreprises => entreprises.filter((entreprise: IApercu_entreprise) => entreprise.id_entreprise != ent.id_entreprise))
     }
 
     const CheckEntIsNotSelected = (matricule: number): boolean => {
@@ -69,7 +69,7 @@ export const ReceivedModal = ({ show, handleClose, onSubmit }: IReceivedModal) =
 
     const SelectEntName = (value: any) => {
         value = { ...value[0] }
-        if (CheckEntIsNotSelected(value.matricule_ciger)) {
+        if (CheckEntIsNotSelected(value.id_entreprise)) {
             setSelectedEntreprises(ent => ([...ent, value]))
         }
         SearchNameRef.current.clear()
@@ -146,6 +146,7 @@ export const ReceivedModal = ({ show, handleClose, onSubmit }: IReceivedModal) =
                 <Table striped bordered hover size="sm">
                     <thead>
                         <tr>
+                            <th>ID</th>
                             <th>Matricule</th>
                             <th>Nom</th>
                             <th>Nombre de panneaux</th>
@@ -153,8 +154,8 @@ export const ReceivedModal = ({ show, handleClose, onSubmit }: IReceivedModal) =
                         </tr>
                     </thead>
                     <tbody>
-                        {selectedEntreprises.length === 0 && <tr><td colSpan={4}>Aucun élément</td></tr>}
-                        {selectedEntreprises.map((ent: IApercu_entreprise, index: number) => <Entreprise entreprise={ent} index={index} handleDelete={UnSelectEntreprise} />)}
+                        {selectedEntreprises.length === 0 && <tr><td colSpan={5}>Aucun élément</td></tr>}
+                        {selectedEntreprises.map((ent: IApercu_entreprise, index: number) => <Entreprise entreprise={ent} handleDelete={UnSelectEntreprise} />)}
                     </tbody>
                 </Table>
             </Modal.Body>
@@ -172,12 +173,12 @@ export const ReceivedModal = ({ show, handleClose, onSubmit }: IReceivedModal) =
 
 interface IEntreprise {
     entreprise: IApercu_entreprise,
-    index: number,
     handleDelete: (entreprise: IApercu_entreprise) => void
 }
 
-const Entreprise = memo(({ entreprise, index, handleDelete }: IEntreprise) => {
-    return <tr>
+const Entreprise = memo(({ entreprise, handleDelete }: IEntreprise) => {
+    return <tr key={entreprise.id_entreprise}>
+         <td>{entreprise.id_entreprise}</td>
         <td>{entreprise.matricule_ciger}</td>
         <td>{entreprise.nom}</td>
         <td>{entreprise.nombre_panneaux}</td>

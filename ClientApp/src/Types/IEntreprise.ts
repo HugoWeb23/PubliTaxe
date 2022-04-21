@@ -4,6 +4,7 @@ import { IPublicite } from "./IPublicite";
 export interface Entreprise {
         id_simulation?: number,
         matricule_ciger: number,
+        id_entreprise: number,
         numero_localite: number,
         nom: string,
         code_rue: number,

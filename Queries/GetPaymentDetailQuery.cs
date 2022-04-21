@@ -5,5 +5,5 @@ using Taxes.ViewModels;
 
 namespace Taxes.Queries
 {
-    public record GetPaymentDetailQuery(long Matricule) : IRequest<PaymentDetailViewModel>;
+    public record GetPaymentDetailQuery(long ID) : IRequest<PaymentDetailViewModel>;
 }

@@ -4,5 +4,5 @@ using Taxes.Entities;
 
 namespace Taxes.Queries
 {
-    public record GetAdvertisingListByMatriculeQuery(long ID) : IRequest<List<Publicite>>;
+    public record MatriculAavailabilityCheckQuery(long Matricule) : IRequest<bool>;
 }

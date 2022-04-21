@@ -23,7 +23,7 @@ namespace Taxes.Handlers
                  .Join(_context.exercices, n => n.ExerciceId, e => e.Id, (n, e) => new
                  {
                      Id = n.Id,
-                     Matricule_ciger = n.Matricule_ciger,
+                     Id_entreprise = n.Id_entreprise,
                      Motif_majorationId = n.Motif_majorationId,
                      ExerciceId = n.ExerciceId,
                      Remarque = n.Remarque,
@@ -31,7 +31,7 @@ namespace Taxes.Handlers
                      Date = n.Date,
                      Exercice = e.Annee_exercice
                  })
-                 .Where(n => n.Matricule_ciger == request.Matricule)
+                 .Where(n => n.Id_entreprise == request.ID)
                  .OrderByDescending(n => n.Exercice);
 
             return Task.FromResult(NotReceivedList);

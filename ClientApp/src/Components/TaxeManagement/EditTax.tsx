@@ -24,7 +24,7 @@ export const EditTax = ({match, motifs, tarifs, currentFiscalYear, informations}
 
     const handleEditTax = async(data: any) => {
             const {code_postal, ...data2} = data
-            const editTax = await apiFetch(`/entreprises/edit/${data.matricule_ciger}`, {
+            const editTax = await apiFetch(`/entreprises/edit/${data.id_entreprise}`, {
                 method: 'PUT',
                 body: JSON.stringify(data2)
             })

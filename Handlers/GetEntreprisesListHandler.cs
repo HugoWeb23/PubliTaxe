@@ -69,7 +69,7 @@ namespace Taxes.Handlers
 
             return Task.FromResult(new EntreprisesViewModel
             {
-                Entreprises = entreprises.Select(e => new EntrepriseInfos {  Matricule_ciger = e.Matricule_ciger, Nom = e.Nom, Nombre_panneaux = e.Publicites.Count, Recu = e.Recu, Statut_paiement = e.Statut_paiement}).ToList(),
+                Entreprises = entreprises.Select(e => new EntrepriseInfos {  Matricule_ciger = e.Matricule_ciger, Id_entreprise = e.Id_entreprise, Nom = e.Nom, Nombre_panneaux = e.Publicites.Count, Recu = e.Recu, Statut_paiement = e.Statut_paiement}).ToList(),
                 TotalPages = TotalPages,
                 TotalRecus = TotalRecus,
                 TotalEntreprises = TotalEntreprises,

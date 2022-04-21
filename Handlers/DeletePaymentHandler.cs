@@ -40,12 +40,12 @@ namespace Taxes.Handlers
                 throw new Exception("Impossible de récupérer l'exercice courant");
             }
 
-            Entreprise Entreprise = await _mediator.Send(new GetEntrepriseById(CheckPayment.Matricule_ciger));
+            Entreprise Entreprise = await _mediator.Send(new GetEntrepriseById(CheckPayment.Id_entreprise));
             decimal SumTax = Entreprise.Publicites.Sum(p => p.Taxe_totale);
             decimal Montant_majoration = (SumTax * Entreprise.Pourcentage_majoration / 100);
             decimal TotalTax = SumTax + Montant_majoration;
             decimal AlreadyPayed = _context.paiements_recus
-                .Where(p => p.Matricule_ciger == CheckPayment.Matricule_ciger)
+                .Where(p => p.Id_entreprise == CheckPayment.Id_entreprise)
                 .Where(p => p.ExerciceId == information.Exercice_courant)
                 .Sum(p => p.Montant);
 
@@ -53,7 +53,7 @@ namespace Taxes.Handlers
             {
                 Entreprise ent = new Entreprise
                 {
-                    Matricule_ciger = CheckPayment.Matricule_ciger,
+                    Id_entreprise = CheckPayment.Id_entreprise,
                     Statut_paiement = 1
                 };
                 _context.entreprises.Attach(ent);
@@ -62,7 +62,7 @@ namespace Taxes.Handlers
             {
                 Entreprise ent = new Entreprise
                 {
-                    Matricule_ciger = CheckPayment.Matricule_ciger,
+                    Id_entreprise = CheckPayment.Id_entreprise,
                     Statut_paiement = 0
                 };
                 _context.entreprises.Attach(ent);

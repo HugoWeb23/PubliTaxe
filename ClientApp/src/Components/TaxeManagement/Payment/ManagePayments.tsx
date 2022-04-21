@@ -2,15 +2,12 @@ import { useEffect, useState, memo } from 'react'
 import {
     Table,
     Container,
-    Button,
     Alert,
     Form,
     Card,
     Badge,
     Col,
-    Row,
-    Tooltip,
-    OverlayTrigger
+    Row
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { IApercu_entreprise } from '../../../Types/IApercu_entreprise'
@@ -130,6 +127,7 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
                     <Table striped bordered hover size="sm">
                         <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>Matricule</th>
                                 <th>Nom entreprise</th>
                                 <th>Panneaux</th>
@@ -139,7 +137,7 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {(loader == false && paiements.length == 0) && <tr><td colSpan={6}>Aucun résultat</td></tr>}
+                            {(loader == false && paiements.length == 0) && <tr><td colSpan={7}>Aucun résultat</td></tr>}
                             {(loader == false && paiements.length > 0) && paiements.map((paiement: IApercu_paiement) => {
                                 return <Entreprise entreprise={paiement} />
                             })}
@@ -170,12 +168,13 @@ interface IEntreprise {
 
 const Entreprise = ({ entreprise }: IEntreprise) => {
     return <tr>
+        <td>{entreprise.id_entreprise}</td>
         <td>{entreprise.matricule_ciger}</td>
         <td>{entreprise.nom}</td>
         <td>{entreprise.nombre_panneaux}</td>
         <td><PaymentStatus status={entreprise.statut_paiement} /></td>
         <td>{entreprise.taxe_totale} €</td>
-        <td><Link to={`payment_management/details/${entreprise.matricule_ciger}`} className="btn btn-success btn-sm"><SearchIcon /> Consulter</Link></td>
+        <td><Link to={`payment_management/details/${entreprise.id_entreprise}`} className="btn btn-success btn-sm"><SearchIcon /> Consulter</Link></td>
     </tr>
 }
 

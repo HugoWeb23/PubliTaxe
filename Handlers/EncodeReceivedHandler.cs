@@ -22,7 +22,7 @@ namespace Taxes.Handlers
         }
         public async Task<List<Entreprise>> Handle(EncodeReceivedCommand request, CancellationToken cancellationToken)
         {
-            List<Entreprise> entreprises = await _mediator.Send(new GetEntreprisesByIdQuery(request.Matricules));
+            List<Entreprise> entreprises = await _mediator.Send(new GetEntreprisesByIdQuery(request.Entreprises));
             entreprises.ForEach(entreprise =>
             {
                 entreprise.Recu = true;

@@ -28,7 +28,7 @@ namespace Taxes.Handlers
                 .ThenInclude(cp => cp.Pays)
                 .Include(ent => ent.Publicites)
                 .OrderBy(ent => ent.Matricule_ciger)
-                .FirstOrDefault(e => e.Matricule_ciger == request.Matricule);
+                .FirstOrDefault(e => e.Id_entreprise == request.ID);
 
             if (entreprise == null)
             {
@@ -52,7 +52,7 @@ namespace Taxes.Handlers
             }
 
             List<Paiement> paiements = _context.paiements_recus
-                .Where(p => p.Matricule_ciger == request.Matricule && p.ExerciceId == information.Exercice_courant)
+                .Where(p => p.Id_entreprise == request.ID && p.ExerciceId == information.Exercice_courant)
                 .ToList();
 
             return new PaymentDetailViewModel

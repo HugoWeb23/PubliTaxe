@@ -44,12 +44,12 @@ namespace Taxes.Controllers
             
         }
 
-        [HttpGet("gethistory/{Matricule}")]
-        public async Task<IActionResult> GetHistory(long Matricule)
+        [HttpGet("gethistory/{ID}")]
+        public async Task<IActionResult> GetHistory(long ID)
         {
             try
             {
-                var NotReceivedHistory = await _mediator.Send(new GetNotReceivedHistoryQuery(Matricule));
+                var NotReceivedHistory = await _mediator.Send(new GetNotReceivedHistoryQuery(ID));
                 return Ok(NotReceivedHistory);
             } catch(Exception ex)
             {

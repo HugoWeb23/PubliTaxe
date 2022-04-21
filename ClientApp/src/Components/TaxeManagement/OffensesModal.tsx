@@ -15,7 +15,7 @@ import { IExercice } from '../../Types/IExercice'
 import { RefreshIcon } from '../UI/RefreshIcon'
 
 interface IOffensesModal {
-    matricule: number,
+    id_entreprise: number,
     motifs: IMotif_majoration[],
     currentFiscalYear: IExercice,
     isOpen: boolean
@@ -23,7 +23,7 @@ interface IOffensesModal {
     onDelete: (notReceived: INotReceivedHistory) => void
 }
 
-export const OffensesModal = ({ matricule, motifs, currentFiscalYear, isOpen, handleClose, onDelete }: IOffensesModal) => {
+export const OffensesModal = ({ id_entreprise, motifs, currentFiscalYear, isOpen, handleClose, onDelete }: IOffensesModal) => {
 
     const [history, setHistory] = useState<INotReceivedHistory[]>([])
     const [confirmDelete, setConfirmDelete] = useState<{ show: boolean, notReceived: INotReceivedHistory }>({ show: false, notReceived: {} as INotReceivedHistory })
@@ -31,7 +31,7 @@ export const OffensesModal = ({ matricule, motifs, currentFiscalYear, isOpen, ha
 
     const fetchData = async () => {
         setLoader(true)
-        const history = await apiFetch(`/notreceived/gethistory/${matricule}`)
+        const history = await apiFetch(`/notreceived/gethistory/${id_entreprise}`)
         setHistory(history)
         setTimeout(() => setLoader(false), 300)
     }

@@ -45,16 +45,16 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
             if (element.entrepriseInfos.matricule_ciger !== undefined) {
                 try {
                     setError(false)
-                    const history = await apiFetch(`/notreceived/gethistory/${element.entrepriseInfos.matricule_ciger}`)
+                    const history = await apiFetch(`/notreceived/gethistory/${element.entrepriseInfos.id_entreprise}`)
                     setHistory(history)
                     const sum = await SumIncrease(history, currentFiscalYear)
                     setSumIncrease(sum)
                     setValue('pourcentage_majoration', sum)
-                    if (element.entrepriseInfos.matricule_ciger !== entreprise.matricule_ciger) {
+                    if (element.entrepriseInfos.id_entreprise !== entreprise.id_entreprise) {
                         setLoader(true)
-                        const fetch = await apiFetch(`/entreprises/id/${element.entrepriseInfos.matricule_ciger}`)
+                        const fetch = await apiFetch(`/entreprises/id/${element.entrepriseInfos.id_entreprise}`)
                         setEntreprise(fetch)
-                        setValue('matricule_ciger', fetch.matricule_ciger)
+                        setValue('id_entreprise', fetch.id_entreprise)
                         setTimeout(() => setLoader(false), 100)
                     }
                 } catch (e: any) {
@@ -90,6 +90,7 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
                             <Card.Body style={{padding: "0.5rem 0.5rem"}}>
                                 <Row>
                                     <Col>
+                                        <div>ID : {entreprise.id_entreprise}</div>
                                         <div>Matricule : {entreprise.matricule_ciger}</div>
                                         <div>Nom : {entreprise.nom}</div>
                                         <div>Tél. : {entreprise.numero_telephone}</div>

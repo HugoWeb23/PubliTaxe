@@ -35,7 +35,7 @@ interface IPaymentDetail {
 
 export const PaymentDetail = ({ match }: IPaymentDetail) => {
 
-    const matricule: number = match.params.id
+    const id: number = match.params.id
     const [details, setDetails] = useState<IPaymentDetails>({} as IPaymentDetails)
     const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
     const [paymentModal, setPaymentModal] = useState<{ show: boolean, type: 'create' | 'edit', payment?: IPayment }>({ show: false, type: 'create' })
@@ -45,7 +45,7 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
     useEffect(() => {
         (async () => {
             try {
-                const paymentDetails: IPaymentDetails = await apiFetch(`/paiements/getpayments/${matricule}`)
+                const paymentDetails: IPaymentDetails = await apiFetch(`/paiements/getpayments/${id}`)
                 setDetails(paymentDetails)
                 setLoader(false)
             } catch (e: any) {
@@ -79,7 +79,7 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
     const SubmitPayment = async (data: IPayment, type: 'create' | 'edit') => {
         try {
             if (type === 'create') {
-                data = { ...data, matricule_ciger: details.entreprise.matricule_ciger }
+                data = { ...data, id_entreprise: details.entreprise.id_entreprise }
                 const submitpayment: IPayment = await apiFetch(`/paiements/new`, {
                     method: 'POST',
                     body: JSON.stringify(data)
@@ -92,8 +92,9 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
                     method: 'PUT',
                     body: JSON.stringify(data)
                 })
-                setDetails((details: IPaymentDetails) => ({ ...details, paiements: details.paiements.map((p: IPayment) => p.matricule_ciger === data.matricule_ciger ? editpayment : p) }))
+                setDetails((details: IPaymentDetails) => ({ ...details, paiements: details.paiements.map((p: IPayment) => p.id_paiement === data.id_paiement ? editpayment : p) }))
                 setPaymentModal({ show: false, type: 'create', payment: {} as IPayment })
+                toast.success("Le paiement a été modifié")
             }
         } catch (e) {
             if (e instanceof ApiErrors) {
@@ -142,7 +143,7 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
                 <ol className="breadcrumb">
                     <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
                     <li className="breadcrumb-item"><Link to="/payment_management">Gestion des paiements</Link></li>
-                    <li className="breadcrumb-item active" aria-current="page">Détails #{matricule}</li>
+                    <li className="breadcrumb-item active" aria-current="page">Détails #{id}</li>
                 </ol>
             </nav>
             <h2 className="mt-2">Détails des paiements de {details.entreprise.nom}</h2>
@@ -155,6 +156,7 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
                 <Card.Body>
                     <Row>
                         <Col>
+                            <div>ID : {details.entreprise.id_entreprise}</div>
                             <div>Matricule : {details.entreprise.matricule_ciger}</div>
                             <div>Nom : {details.entreprise.nom}</div>
                             <div>Tél. : {details.entreprise.numero_telephone}</div>

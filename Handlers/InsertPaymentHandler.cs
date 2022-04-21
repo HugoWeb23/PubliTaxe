@@ -22,7 +22,7 @@ namespace Taxes.Handlers
 
         public async Task<Paiement> Handle(InsertPaymentCommand request, CancellationToken cancellationToken)
         {
-            Entreprise Entreprise = await _mediator.Send(new GetEntrepriseById(request.Payment.Matricule_ciger));
+            Entreprise Entreprise = await _mediator.Send(new GetEntrepriseById(request.Payment.Id_entreprise));
             decimal SumTax = Entreprise.Publicites.Sum(p => p.Taxe_totale);
 
             if(Entreprise.Statut_paiement == 2)
@@ -38,7 +38,7 @@ namespace Taxes.Handlers
             }
 
             var AlreadyPayed = _context.paiements_recus
-                .Where(p => p.Matricule_ciger == request.Payment.Matricule_ciger)
+                .Where(p => p.Id_entreprise == request.Payment.Id_entreprise)
                 .Where(p => p.ExerciceId == information.Exercice_courant)
                 .Sum(p => p.Montant);
 
@@ -51,7 +51,7 @@ namespace Taxes.Handlers
             {
                 Entreprise ent = new Entreprise
                 {
-                    Matricule_ciger = request.Payment.Matricule_ciger,
+                    Id_entreprise = request.Payment.Id_entreprise,
                     Statut_paiement = 2
                 };
                 _context.entreprises.Attach(ent);
@@ -60,7 +60,7 @@ namespace Taxes.Handlers
             {
                 Entreprise ent = new Entreprise
                 {
-                    Matricule_ciger = request.Payment.Matricule_ciger,
+                    Id_entreprise = request.Payment.Id_entreprise,
                     Statut_paiement = 1
                 };
                 _context.entreprises.Attach(ent);

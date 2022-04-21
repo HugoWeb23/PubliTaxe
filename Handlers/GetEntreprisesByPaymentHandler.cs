@@ -138,6 +138,7 @@ namespace Taxes.Handlers
             {
                 Paiements = filtered.Select(ent => new PaiementInfos
                 {
+                    Id_entreprise = ent.Id_entreprise,
                     Matricule_ciger = ent.Matricule_ciger,
                     Nom = ent.Nom,
                     Nombre_panneaux = ent.Publicites.Count(),

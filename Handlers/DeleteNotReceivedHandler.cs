@@ -29,9 +29,9 @@ namespace Taxes.Handlers
                 throw new Exception("L'ID n'existe pas");
             }
 
-            long EntrepriseID = notReceived.Matricule_ciger;
-            Entreprise entreprise = _context.entreprises.AsNoTracking().Where(e => e.Matricule_ciger == EntrepriseID).FirstOrDefault();
-            NotReceived LastNotReceived = _context.non_recus.Where(n => n.Matricule_ciger == EntrepriseID && n.Id != notReceived.Id).OrderByDescending(n => n.Id).FirstOrDefault();
+            long EntrepriseID = notReceived.Id_entreprise;
+            Entreprise entreprise = _context.entreprises.AsNoTracking().Where(e => e.Id_entreprise == EntrepriseID).FirstOrDefault();
+            NotReceived LastNotReceived = _context.non_recus.Where(n => n.Id_entreprise == EntrepriseID && n.Id != notReceived.Id).OrderByDescending(n => n.Id).FirstOrDefault();
             if(LastNotReceived == null)
             {
                 LastNotReceived = new NotReceived
@@ -42,7 +42,7 @@ namespace Taxes.Handlers
             }
             Entreprise editentreprise = new Entreprise
             {
-                Matricule_ciger = EntrepriseID,
+                Id_entreprise = EntrepriseID,
                 Pourcentage_majoration = LastNotReceived.Pourcentage_majoration,
                 Motif_majorationId = LastNotReceived.Motif_majorationId,
             };

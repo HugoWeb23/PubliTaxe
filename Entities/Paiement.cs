@@ -6,7 +6,7 @@ namespace Taxes.Entities
     {
         [Key]
         public long Id_paiement { get; set; }
-        public long Matricule_ciger { get; set; }
+        public long Id_entreprise { get; set; }
         public long ExerciceId { get; set; }
         public decimal Montant { get; set; }
         public short Type_paiement { get; set; }

@@ -21,7 +21,7 @@ namespace Taxes.Handlers
         {
             List<Publicite> pubs = _context.enseignes_publicitaires
                 .AsNoTracking()
-                .Where(p => p.Matricule_ciger == request.Mat)
+                .Where(p => p.Id_entreprise == request.ID)
                 .ToList();
 
             return Task.FromResult(pubs);
