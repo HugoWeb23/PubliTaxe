@@ -26,7 +26,13 @@ export const useEntreprises = () => {
                     totalEntreprises: action.payLoad.totalEntreprises
                 }
             case 'DELETE':
-                return { ...state, entreprises: state.entreprises.filter((elem: IApercu_entreprise) => elem.matricule_ciger != action.payLoad.matricule_ciger) }
+                return { ...state, entreprises: state.entreprises.map((elem: IApercu_entreprise) => {
+                    if (elem.id_entreprise == action.payLoad.id_entreprise) {
+                        return {...elem, suppression: true}
+                    } else {
+                        return elem
+                    }
+                }) }
             case 'RECEIVED':
                 return {
                     ...state, entreprises: state.entreprises.map((ent: IApercu_entreprise) => {
@@ -67,9 +73,6 @@ export const useEntreprises = () => {
             await apiFetch(`/entreprises/delete/${entreprise.id_entreprise}`, {
                 method: 'DELETE'
             })
-            if(state.entreprises.length <= 1 && state.totalPages > 1 ) {
-                await GetTaxes({pageCourante: 1})
-            }
             dispatch({ type: 'DELETE', payLoad: entreprise })
         },
         setReceived: async (selected: IApercu_entreprise[]) => {

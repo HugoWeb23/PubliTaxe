@@ -9,5 +9,6 @@
         public bool Proces_verbal { get; set; }
         public bool Recu { get; set; }
         public int Statut_paiement { get; set; }
+        public bool Suppression { get; set; }
     }
 }

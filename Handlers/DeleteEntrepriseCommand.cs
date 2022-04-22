@@ -25,11 +25,13 @@ namespace Taxes.Handlers
             {
                 throw new Exception("L'entreprise est introuvable");
             }
-            if (entreprise.Proces_verbal == true) throw new Exception("L'entreprise ne peut pas être supprimée car elle est en infraction");
 
-                _context.entreprises.Remove(entreprise);
-                _context.SaveChanges();
-                return Task.FromResult(true);
+            if (entreprise.Suppression) throw new Exception("La suppression de cette entreprise est déjà programmée");
+
+            entreprise.Suppression = true;
+
+            _context.SaveChanges();
+            return Task.FromResult(true);
            
         }
     }

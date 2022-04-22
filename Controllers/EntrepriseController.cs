@@ -243,9 +243,9 @@ namespace Taxes.Controllers
                 bool isDeleted = await _mediator.Send(new DeleteEntrepriseCommand(ID));
                 if(isDeleted == false)
                 {
-                    return BadRequest(new { error = "Une erreur est survenue lors de la suppression de l'entreprise" });
+                    return BadRequest(new { error = "Une erreur est survenue lors de la demande de suppression de l'entreprise" });
                 }
-                return Ok(new { success = "L'entreprise a été supprimée"});
+                return Ok(new { success = "La suppression a été programmée"});
             } catch(Exception ex)
             {
                 return BadRequest(new { error = ex.Message });

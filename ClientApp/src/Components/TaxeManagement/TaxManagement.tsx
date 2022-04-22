@@ -28,6 +28,7 @@ import { UserContext } from '../Contexts/UserContext'
 import { Paginate } from '../../Services/Paginate'
 import { ElementsPerPage } from '../../Services/ElementsPerPage'
 import { Loader } from 'react-bootstrap-typeahead'
+import { ExclamationTriangle } from '../UI/ExclamationTriangle'
 
 export const TaxManagement = () => {
 
@@ -60,7 +61,7 @@ export const TaxManagement = () => {
         try {
             await deleteOne(entreprise)
             setDeleteModal(d => ({ ...d, show: false }))
-            toast.success("L'entreprise a été supprimée")
+            toast.success("La suppression a été programmée")
         } catch (e: any) {
             if (e instanceof ApiErrors) {
                 toast.error(e.singleError.error)
@@ -136,7 +137,7 @@ export const TaxManagement = () => {
                     </Table>
                     {(loader == false && entreprises.length > 0) && <>
                         <div className="d-flex justify-content-end align-items-center">
-                            {optionsLoader && <div className="me-2"><Loader/></div>}
+                            {optionsLoader && <div className="me-2"><Loader /></div>}
                             <div className="me-2">
                                 <ElementsPerPage
                                     elementsPerPage={filterOptions.elementsParPage}
@@ -182,7 +183,20 @@ const Tax = memo(({ apercu_entreprise, handleDelete }: ITax) => {
     const value = useContext(UserContext)
     return <>
         <tr key={apercu_entreprise.matricule_ciger}>
-            <td>{apercu_entreprise.id_entreprise}</td>
+            <td>{apercu_entreprise.id_entreprise}
+                {apercu_entreprise.suppression &&
+                    <OverlayTrigger
+                        placement="top"
+                        overlay={
+                            <Tooltip id={`tooltip-2`}>
+                               Suppression programmée
+                            </Tooltip>
+                        }
+                    >
+                        <span style={{ float: 'right' }}><ExclamationTriangle /></span>
+                    </OverlayTrigger>
+                }
+            </td>
             <td>{apercu_entreprise.matricule_ciger}</td>
             <td>{apercu_entreprise.nom}</td>
             <td>{apercu_entreprise.nombre_panneaux}</td>
@@ -218,7 +232,7 @@ const Tax = memo(({ apercu_entreprise, handleDelete }: ITax) => {
                             </Tooltip>
                         }
                     >
-                        <Button size="sm" variant="danger" onClick={() => handleDelete(apercu_entreprise)}><Trash /></Button>
+                        <Button size="sm" variant="danger" disabled={apercu_entreprise.suppression} onClick={() => handleDelete(apercu_entreprise)}><Trash /></Button>
                     </OverlayTrigger>}
                 </div>
             </td>
