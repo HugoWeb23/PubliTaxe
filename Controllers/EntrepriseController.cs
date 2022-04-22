@@ -133,7 +133,7 @@ namespace Taxes.Controllers
                 return Ok(entr);
             } catch (Exception ex)
             {
-                return BadRequest(new { error = ex.Message });
+                return BadRequest(new { error = ex });
             }
 
         }

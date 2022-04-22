@@ -21,6 +21,8 @@ export const useEntreprises = () => {
                     pageCourante: action.payLoad.pageCourante,
                     elementsParPage: action.payLoad.elementsParPage,
                     totalRecus: action.payLoad.totalRecus,
+                    totalPaiementsRecus: action.payLoad.totalPaiementsRecus,
+                    totalInfractions: action.payLoad.totalInfractions,
                     totalEntreprises: action.payLoad.totalEntreprises
                 }
             case 'DELETE':
@@ -55,6 +57,8 @@ export const useEntreprises = () => {
         pageCourante: state.pageCourante,
         elementsParPage: state.elementsParPage,
         totalRecus: state.totalRecus,
+        totalPaiementsRecus: state.totalPaiementsRecus,
+        totalInfractions: state.totalInfractions,
         totalEntreprises: state.totalEntreprises,
         getAll: async (options: any) => {
            await GetTaxes(options)

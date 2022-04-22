@@ -182,9 +182,10 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
         setFormSimulationMode(false);
     }
 
-    const UpdateMajoration = (lastNotReceived: INotReceivedHistory) => {
-        setValue('pourcentage_majoration', lastNotReceived.pourcentage_majoration.toString())
-        setValue('motif_majorationId', lastNotReceived.motif_majorationId)
+    const UpdateMajoration = () => {
+        setValue('proces_verbal', false)
+        setValue('pourcentage_majoration', "0")
+        setValue('motif_majorationId', null)
     }
 
     const CheckMatricule = async (e: any) => {
@@ -197,6 +198,17 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
             } else {
                 setMatriculeAvailable(true)
             }
+        }
+    }
+
+    const ProcesVerbalChange = (e: any) => {
+        const value: boolean = e.target.checked
+        if (value) {
+            setValue('pourcentage_majoration', data.pourcentage_majoration)
+            setValue('motif_majorationId', data.motif_majorationId)
+        } else {
+            setValue('pourcentage_majoration', "0")
+            setValue('motif_majorationId', null)
         }
     }
 
@@ -247,7 +259,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                     <Col>
                         <Form.Group controlId="proces_verbal">
                             <Form.Label column="sm">Procès-verbal</Form.Label>
-                            <Form.Check type="checkbox" isInvalid={errors.proces_verbal} {...register('proces_verbal')} />
+                            <Form.Check type="checkbox" disabled={type == 'create'} isInvalid={errors.proces_verbal} {...register('proces_verbal')} onChange={(e) => ProcesVerbalChange(e)} />
                             {errors.proces_verbal && <Form.Control.Feedback type="invalid">{errors.proces_verbal.message}</Form.Control.Feedback>}
                         </Form.Group>
                     </Col>

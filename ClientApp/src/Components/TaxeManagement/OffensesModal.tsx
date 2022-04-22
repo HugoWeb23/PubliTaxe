@@ -8,11 +8,11 @@ import {
 } from 'react-bootstrap'
 import { useEffect, useState } from 'react'
 import { ApiErrors, apiFetch } from '../../Services/apiFetch'
-import { Loader } from 'react-bootstrap-typeahead'
 import { IMotif_majoration } from '../../Types/IMotif_majoration'
 import { toast } from 'react-toastify'
 import { IExercice } from '../../Types/IExercice'
 import { RefreshIcon } from '../UI/RefreshIcon'
+import { Loader } from '../UI/Loader'
 
 interface IOffensesModal {
     id_entreprise: number,
@@ -20,7 +20,7 @@ interface IOffensesModal {
     currentFiscalYear: IExercice,
     isOpen: boolean
     handleClose: () => void,
-    onDelete: (notReceived: INotReceivedHistory) => void
+    onDelete: () => void
 }
 
 export const OffensesModal = ({ id_entreprise, motifs, currentFiscalYear, isOpen, handleClose, onDelete }: IOffensesModal) => {
@@ -47,8 +47,8 @@ export const OffensesModal = ({ id_entreprise, motifs, currentFiscalYear, isOpen
             const deleteNotReceived = await apiFetch(`/notreceived/delete/${notReceived.id}`, {
                 method: 'DELETE'
             })
-            onDelete(deleteNotReceived)
-            setHistory(history => history.filter((h: INotReceivedHistory) => h.id !== notReceived.id))
+            onDelete()
+            setHistory(history => history.filter((h: INotReceivedHistory) => h.id !== deleteNotReceived.id))
             setConfirmDelete({show: false, notReceived: {} as INotReceivedHistory})
             toast.success("L'infraction a été supprimée")
         } catch (e) {
@@ -74,7 +74,7 @@ export const OffensesModal = ({ id_entreprise, motifs, currentFiscalYear, isOpen
                 {confirmDelete.show && <Card border="danger" className="mb-3">
                     <Card.Header>Confirmation de suppression</Card.Header>
                     <Card.Body>
-                        Voulez-vous vraiment supprimer l'infraction de l'exercice {currentFiscalYear.annee_exercice} ?
+                        Voulez-vous vraiment supprimer l'infraction de l'exercice {confirmDelete.notReceived.exercice} ?
                         <div className="mt-3">
                             <Button size="sm" variant="success" onClick={() => handleDelete(confirmDelete.notReceived)}>Oui</Button> - <Button size="sm" variant="danger" onClick={() => setConfirmDelete({show: false, notReceived: {} as INotReceivedHistory})}>Non</Button>
                         </div>

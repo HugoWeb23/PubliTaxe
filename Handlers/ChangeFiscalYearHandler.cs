@@ -43,6 +43,9 @@ namespace Taxes.Handlers
             {
                 e.Proces_verbal = false;
                 e.Recu = false;
+                e.Statut_paiement = 0;
+                e.Pourcentage_majoration = 0;
+                e.Motif_majorationId = null;
             });
 
             pubs.ForEach(pub =>

@@ -33,7 +33,7 @@ export const TaxManagement = () => {
 
     const [loader, setLoader] = useState<boolean>(true)
     const [optionsLoader, setOptionsLoader] = useState<boolean>(false)
-    const { entreprises, totalPages, pageCourante, totalRecus, totalEntreprises, getAll, deleteOne, setReceived } = useEntreprises()
+    const { entreprises, totalPages, pageCourante, totalRecus, totalPaiementsRecus, totalInfractions, totalEntreprises, getAll, deleteOne, setReceived } = useEntreprises()
     const [deleteModal, setDeleteModal] = useState<{ show: boolean, entreprise: IApercu_entreprise }>({ show: false, entreprise: {} as IApercu_entreprise })
     const [receivedModal, setReceivedModal] = useState<boolean>(false)
     const [searchModal, setSearchModal] = useState<boolean>(false)
@@ -104,7 +104,10 @@ export const TaxManagement = () => {
                             </div>}
                             {entreprises.length > 0 && <div>
                                 <div className="fs-5 mb-2">Statistiques</div>
-                                <div><span className="fw-bold">{totalRecus}</span> déclarations recues sur <span className="fw-bold">{totalEntreprises}</span> entreprises enregistrées ({Math.round((totalRecus * 100) / totalEntreprises)} %).</div>
+                                <div><span className="fw-bold">{totalEntreprises}</span> entreprises enregistrées</div>
+                                <div><span className="fw-bold">{totalRecus}</span> entreprises en ordre de déclaration ({Math.round((totalRecus * 100) / totalEntreprises)} %)</div>
+                                <div><span className="fw-bold">{totalPaiementsRecus}</span> entreprises en ordre de paiement ({Math.round((totalPaiementsRecus * 100) / totalEntreprises)} %)</div>
+                                <div><span className="fw-bold">{totalInfractions}</span> entreprises en infraction ({Math.round((totalInfractions * 100) / totalEntreprises)} %)</div>
                             </div>}
                             {(filterOptions.matricule !== "" || filterOptions.nom !== "" || filterOptions.pubExoneration !== false || filterOptions.rue !== undefined) && <div className="mt-3">
                                 <Button size="sm" variant="danger" onClick={() => setSearchModal(true)}>Supprimer les filtres</Button>
@@ -183,7 +186,7 @@ const Tax = memo(({ apercu_entreprise, handleDelete }: ITax) => {
             <td>{apercu_entreprise.matricule_ciger}</td>
             <td>{apercu_entreprise.nom}</td>
             <td>{apercu_entreprise.nombre_panneaux}</td>
-            <td className={apercu_entreprise.recu ? "table-success" : "table-danger"}>{apercu_entreprise.recu ? "Reçue" : "Non reçue"}</td>
+            <td className={apercu_entreprise.proces_verbal ? "table-dark" : apercu_entreprise.recu ? "table-success" : "table-danger"}>{apercu_entreprise.proces_verbal ? "Procès-verbal" : apercu_entreprise.recu ? "Reçue" : "Non reçue"}</td>
             <PaymentStatus status={apercu_entreprise.statut_paiement} />
             <td>
                 <div className="d-flex">

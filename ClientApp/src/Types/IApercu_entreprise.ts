@@ -4,5 +4,6 @@ export interface IApercu_entreprise {
     nom: string,
     nombre_panneaux: number,
     recu: boolean,
+    proces_verbal: boolean,
     statut_paiement: number
 }

@@ -22,7 +22,7 @@ namespace Taxes.Handlers
         }
         public async Task<NotReceived> Handle(DeleteNotReceivedCommand request, CancellationToken cancellationToken)
         {
-            NotReceived notReceived = _context.non_recus.Where(n => n.Id == request.Id).FirstOrDefault();
+            NotReceived notReceived = _context.non_recus.AsNoTracking().Where(n => n.Id == request.Id).FirstOrDefault();
 
             if(notReceived == null)
             {
@@ -30,31 +30,28 @@ namespace Taxes.Handlers
             }
 
             long EntrepriseID = notReceived.Id_entreprise;
-            Entreprise entreprise = _context.entreprises.AsNoTracking().Where(e => e.Id_entreprise == EntrepriseID).FirstOrDefault();
-            NotReceived LastNotReceived = _context.non_recus.Where(n => n.Id_entreprise == EntrepriseID && n.Id != notReceived.Id).OrderByDescending(n => n.Id).FirstOrDefault();
-            if(LastNotReceived == null)
-            {
-                LastNotReceived = new NotReceived
-                {
-                    Pourcentage_majoration = 0,
-                    Motif_majorationId = 1
-                };
-            }
-            Entreprise editentreprise = new Entreprise
-            {
-                Id_entreprise = EntrepriseID,
-                Pourcentage_majoration = LastNotReceived.Pourcentage_majoration,
-                Motif_majorationId = LastNotReceived.Motif_majorationId,
-            };
 
-            _context.entreprises.Attach(editentreprise);
-            _context.Entry(editentreprise).Property(user => user.Pourcentage_majoration).IsModified = true;
-            _context.Entry(editentreprise).Property(user => user.Motif_majorationId).IsModified = true;
+            if(request.UpdateEntreprise)
+            {
+                Entreprise editentreprise = new Entreprise
+                {
+                    Id_entreprise = EntrepriseID,
+                    Pourcentage_majoration = 0,
+                    Motif_majorationId = null,
+                    Proces_verbal = false
+                };
+
+                _context.entreprises.Attach(editentreprise);
+                _context.Entry(editentreprise).Property(user => user.Pourcentage_majoration).IsModified = true;
+                _context.Entry(editentreprise).Property(user => user.Motif_majorationId).IsModified = true;
+                _context.Entry(editentreprise).Property(user => user.Proces_verbal).IsModified = true;
+            }
+          
             _context.non_recus.Remove(notReceived);
 
             _context.SaveChanges();
 
-            return LastNotReceived;
+            return notReceived;
         }
 
     }

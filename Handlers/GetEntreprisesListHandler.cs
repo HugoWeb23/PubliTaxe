@@ -57,6 +57,8 @@ namespace Taxes.Handlers
             int TotalEntreprises = _context.entreprises.Count();
             int TotalElements = entreprises.Count();
             int TotalRecus = _context.entreprises.Where(e => e.Recu == true).Count();
+            int TotalPaiementsRecus = _context.entreprises.Where(e => e.Statut_paiement == 2).Count();
+            int TotalInfractions = _context.entreprises.Where(e => e.Proces_verbal == true).Count();
 
             int TotalPages = (int)Math.Ceiling(TotalElements / (double)request.Filters.ElementsParPage);
             if(request.Filters.PageCourante > TotalPages)
@@ -69,10 +71,12 @@ namespace Taxes.Handlers
 
             return Task.FromResult(new EntreprisesViewModel
             {
-                Entreprises = entreprises.Select(e => new EntrepriseInfos {  Matricule_ciger = e.Matricule_ciger, Id_entreprise = e.Id_entreprise, Nom = e.Nom, Nombre_panneaux = e.Publicites.Count, Recu = e.Recu, Statut_paiement = e.Statut_paiement}).ToList(),
+                Entreprises = entreprises.Select(e => new EntrepriseInfos {  Matricule_ciger = e.Matricule_ciger, Id_entreprise = e.Id_entreprise, Nom = e.Nom, Nombre_panneaux = e.Publicites.Count, Recu = e.Recu, Proces_verbal = e.Proces_verbal, Statut_paiement = e.Statut_paiement}).ToList(),
                 TotalPages = TotalPages,
                 TotalRecus = TotalRecus,
+                TotalPaiementsRecus = TotalPaiementsRecus,
                 TotalEntreprises = TotalEntreprises,
+                TotalInfractions = TotalInfractions,
                 TotalElements = TotalElements,
                 PageCourante = request.Filters.PageCourante,
                 ElementsParPage = request.Filters.ElementsParPage

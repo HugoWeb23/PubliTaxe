@@ -3,5 +3,5 @@ using Taxes.Entities;
 
 namespace Taxes.Commands
 {
-    public record DeleteNotReceivedCommand(long Id) : IRequest<NotReceived>;
+    public record DeleteNotReceivedCommand(long Id, bool UpdateEntreprise) : IRequest<NotReceived>;
 }

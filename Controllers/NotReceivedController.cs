@@ -63,7 +63,7 @@ namespace Taxes.Controllers
         {
             try
             {
-                var DeleteNotReceived = await _mediator.Send(new DeleteNotReceivedCommand(Id));
+                var DeleteNotReceived = await _mediator.Send(new DeleteNotReceivedCommand(Id, true));
                 return Ok(DeleteNotReceived);
             }
             catch (Exception ex)
