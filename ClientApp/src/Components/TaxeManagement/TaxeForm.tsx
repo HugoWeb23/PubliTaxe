@@ -20,14 +20,12 @@ import { toast } from 'react-toastify';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { TaxeFormSchema } from "../../Validation/Tax/TaxFormSchema";
 import { Link } from "react-router-dom";
-import { LeftArrow } from '../UI/LeftArroy'
 import { ManageAdvertising } from './ManageAdvertising'
 import { Printer } from "../UI/Printer";
 import { IndividualPrint } from './IndividualPrint';
 import { IExercice } from "../../Types/IExercice";
 import { IPrintData } from "../../Types/IPrintData";
 import { OffensesModal } from "./OffensesModal";
-import { INotReceivedHistory } from "../../Types/INotReceivedHistory";
 
 interface TaxeForm {
     data?: any,
@@ -212,6 +210,20 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
         }
     }
 
+    const handleTest = async () => {
+        try {
+            await apiFetch(`/entreprises/canceldelete/${tax.id_entreprise}`, {
+                method: 'PUT'
+            })
+            setTax((tax: Entreprise) => ({...tax, suppression: false}))
+            toast.success('La demande de suppression a été annulée')
+        } catch(e: any) {
+            if(e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
+        }
+    }
+
     return <>
         <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet} />
         {type === 'edit' && <OffensesModal id_entreprise={tax.id_entreprise} motifs={motifs} currentFiscalYear={currentFiscalYear} isOpen={offensesModal} handleClose={() => setOffensesModal(false)} onDelete={UpdateMajoration} />}
@@ -235,7 +247,8 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                         </ol>
                     </nav>
                 </div>
-                <div className="d-flex justify-content-end align-items-center mb-3">
+                <div className={`d-flex justify-content-${(type === 'edit' && tax?.suppression === true) ? 'between' : 'end'} align-items-center mb-3`}>
+                    {type === 'edit' && tax?.suppression === true && <><div><Button size="sm" variant="outline-danger" onClick={handleTest}>Annuler la demande de suppression</Button></div></>}
                     <div>
                         {type == 'edit' && <Button variant="outline-primary" className="me-4" size="sm" onClick={() => setIndiviualPrint(true)}><Printer /> Impression individuelle</Button>}
                         <Button variant="success" type="submit" disabled={isSubmitting}>{type == "create" ? "Créer l'entreprise" : "Modifier l'entreprise"}</Button>

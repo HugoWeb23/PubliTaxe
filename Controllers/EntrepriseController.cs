@@ -253,6 +253,21 @@ namespace Taxes.Controllers
         }
 
         [AuthorizeRole(MinRole: 2)]
+        [HttpPut("canceldelete/{ID}")]
+        public async Task<IActionResult> CancelDelete(long ID)
+        {
+            try
+            {
+                long Id_entreprise = await _mediator.Send(new CancelDeleteCommand(ID));
+                return Ok(new { success = "La demande de suppression a été annulée", Id_entreprise = Id_entreprise });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [AuthorizeRole(MinRole: 2)]
         [HttpPost("encodereceived")]
         public async Task<IActionResult> EncodeReceived(EncodeReceivedViewModel Entreprises)
         {
@@ -282,5 +297,20 @@ namespace Taxes.Controllers
 
         }
 
+        [AuthorizeRole(MinRole: 2)]
+        [HttpPost("getallbydeletionrequest")]
+        public async Task<IActionResult> GetByDeletionRequest(EntreprisesDeletionViewModel Filters)
+        {
+            try
+            {
+                NotReceivedViewModel entreprises = await _mediator.Send(new GetAllEntreprisesByDeletionRequestQuery(Filters));
+                return Ok(entreprises);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { erreur = ex });
+            }
+
+        }
     }
 }

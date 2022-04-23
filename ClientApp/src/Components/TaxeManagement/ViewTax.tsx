@@ -10,14 +10,12 @@ import {
     Table,
     Badge
 } from 'react-bootstrap'
-import { Link, Redirect } from 'react-router-dom'
-import { LeftArrow } from "../UI/LeftArroy"
+import { Link } from 'react-router-dom'
 import { Loader } from "../UI/Loader"
-import { IPublicite, IPubliciteImage } from "../../Types/IPublicite"
+import { IPublicite } from "../../Types/IPublicite"
 import { ViewAdvertisingModal } from "./ViewAdvertisingModal"
 import { IMotif_majoration } from "../../Types/IMotif_majoration"
 import { IExercice } from "../../Types/IExercice"
-import { IPrintData } from "../../Types/IPrintData"
 import { IInformation } from "../../Types/IInformations"
 import { IndividualPrint } from "./IndividualPrint"
 import { Printer } from "../UI/Printer"
@@ -91,15 +89,15 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
                     </ol>
                 </nav>
                 <div className="d-flex mt-2 justify-content-between align-items-center">
-                    <h4 className="mt-0">Consulter les informations d'une entreprise {entreprise !== null && <>(<span className="fw-bold">{entreprise.nom}</span>)</>}</h4>
+                    <div className="mt-0"><span className="fs-4">Consulter les informations d'une entreprise {entreprise !== null && <>(<span className="fw-bold">{entreprise.nom}</span>) {entreprise.suppression && <>- <span className="fw-bold text-danger fs-6">Suppression programmée</span></>}</>}</span></div>
                     {(loader === false && entreprise !== null) && <Button variant="outline-primary" size="sm" onClick={() => setIndiviualPrint(true)}><Printer /> Impression individuelle</Button>}
                 </div>
                 <hr className="my-3" />
             </div>
             {(loader === false && entreprise !== null) ? <>
                 <div className="d-flex justify-content-between mb-3">
-                <div><h4>Déclaration <Badge bg={entreprise.recu ? 'success' : 'danger'}>{entreprise.recu ? "Reçue" : "Non reçue"}</Badge></h4></div>
-                <div><h4>Paiement de la taxe <PaymentStatus status={entreprise.statut_paiement}/></h4></div>
+                <div><h5>Déclaration <Badge bg={entreprise.proces_verbal ? 'dark' : entreprise.recu ? 'success' : 'danger'}>{entreprise.proces_verbal ? "Procès-verbal" : entreprise.recu ? "Reçue" : "Non reçue"}</Badge></h5></div>
+                <div><h5>Paiement de la taxe <PaymentStatus status={entreprise.statut_paiement}/></h5></div>
                 </div>
                 <Row>
                     <Col><div>Matricule : <span className="fw-bold">{entreprise.matricule_ciger}</span></div></Col>

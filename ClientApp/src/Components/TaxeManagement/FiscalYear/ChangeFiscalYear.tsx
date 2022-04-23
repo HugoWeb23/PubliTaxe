@@ -4,7 +4,8 @@ import {
     Card,
     Form,
     Button,
-    Alert
+    Alert,
+    Table
 } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -16,6 +17,11 @@ import { PlusIcon } from '../../UI/PlusIcon'
 import { ConfirmModal } from '../../UI/ConfirmModal'
 import { toast } from 'react-toastify'
 import { ChangeFiscalYearFormSchema } from '../../../Validation/ChangeFiscalYear/ChangeFiscalYearFormSchema'
+import { useChangeFiscalYear } from '../../Hooks/ChangeFiscalYearHook'
+import { IApercu_entreprise } from '../../../Types/IApercu_entreprise'
+import { ElementsPerPage } from '../../../Services/ElementsPerPage'
+import { Paginate } from '../../../Services/Paginate'
+import { Loader as SmallLoader } from 'react-bootstrap-typeahead'
 
 interface IChangeFiscalYear {
     currentFiscalYear: IExercice,
@@ -26,7 +32,10 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
     const [allYears, setAllYears] = useState<IExercice[]>([])
     const [loader, setLoader] = useState<boolean>(true)
     const [confirmModal, setConfirmModal] = useState<boolean>(false)
+    const [filterOptions, setFilterOptions] = useState<any>({ elementsParPage: 15, pageCourante: 1 })
     const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
+    const [optionsLoader, setOptionsLoader] = useState<boolean>(false)
+    const { entreprises, totalPages, elementsParPage, pageCourante, getAll } = useChangeFiscalYear()
     const { register, handleSubmit, setValue, formState: { errors } } = useForm({ resolver: yupResolver(ChangeFiscalYearFormSchema) })
 
     const defaultFiscalyearChecked = (allFiscalYears: IExercice[]): number => {
@@ -53,9 +62,12 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
     useEffect(() => {
         (async () => {
             try {
+                setOptionsLoader(true)
+                await getAll(filterOptions)
                 const years: IExercice[] = await apiFetch('/fiscalyears/all/')
                 setAllYears(years)
                 setValue('id', defaultFiscalyearChecked(years))
+                setOptionsLoader(false)
             } catch (e: any) {
                 if (e instanceof ApiErrors) {
                     setErrorModal({ show: true, message: e.singleError.error })
@@ -63,7 +75,7 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
             }
             setLoader(false)
         })()
-    }, [])
+    }, [filterOptions])
 
     const ChangeYear = async (data: any) => {
         try {
@@ -107,6 +119,42 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
             <p>Le changement d'exercice remettra également les champs "reçu" et "procès-verbal" à zéro pour toutes les entreprises.</p>
             <hr className="my-3" />
             {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
+            <Card className="mb-3" body>
+                <span className="fw-bold">Ces entreprises vont être supprimées lors du changement d'exercice</span>
+                <Table striped bordered hover size="sm">
+                    <thead>
+                        <th>ID</th>
+                        <th>Matricule</th>
+                        <th>Nom</th>
+                    </thead>
+                    <tbody>
+                        {entreprises.legth === 0 && <tr><td colSpan={3}>Aucun résultat</td></tr>}
+                        {entreprises.length > 0 && entreprises.map((ent: IApercu_entreprise) => {
+                            return <>
+                                <tr>
+                                <td>{ent.id_entreprise}</td>
+                                <td>{ent.matricule_ciger}</td>
+                                <td>{ent.nom}</td>
+                                </tr>
+                            </>
+                        })}
+                    </tbody>
+                </Table>
+                {entreprises.length > 0 && <div className="d-flex justify-content-end align-items-center">
+                {optionsLoader && <div className="me-2"><SmallLoader /></div>}
+                <div className="me-2">
+                    <ElementsPerPage
+                        elementsPerPage={elementsParPage}
+                        onChange={(elements) => setFilterOptions((filters: any) => ({ ...filters, elementsParPage: elements }))}
+                    />
+                </div>
+                <Paginate
+                    totalPages={totalPages}
+                    pageCourante={pageCourante}
+                    pageChange={(page) => setFilterOptions((filters: any) => ({ ...filters, pageCourante: page }))}
+                />
+            </div>}
+            </Card>
             <Card body>
                 <Form>
                     <Form.Group controlId="exercice">

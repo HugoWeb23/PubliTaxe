@@ -20,6 +20,7 @@ export interface Entreprise {
         recu: boolean,
         statut_paiement: number,
         province: boolean,
+        suppression: boolean,
         personne_contact: string,
         telephone_contact: string,
         mail_contact: string,
