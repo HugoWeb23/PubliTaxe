@@ -75,6 +75,9 @@ export const TaxManagement = () => {
             element={deleteModal.entreprise}
             onClose={() => setDeleteModal(d => ({ ...d, show: false }))}
             onConfirm={(element: IApercu_entreprise) => handleDelete(element)}
+            bodyText="Voulez-vous vraiment effectuer une demande de suppression pour cette entreprise ?"
+            confirmButtonText="Oui"
+            leaveButtonText="Non"
         />
         <ReceivedModal
             show={receivedModal}

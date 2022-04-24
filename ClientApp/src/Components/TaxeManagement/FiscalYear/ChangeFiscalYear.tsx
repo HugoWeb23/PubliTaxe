@@ -35,7 +35,7 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
     const [filterOptions, setFilterOptions] = useState<any>({ elementsParPage: 15, pageCourante: 1 })
     const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
     const [optionsLoader, setOptionsLoader] = useState<boolean>(false)
-    const { entreprises, totalPages, elementsParPage, pageCourante, getAll } = useChangeFiscalYear()
+    const { entreprises, totalPages, elementsParPage, pageCourante, getAll, deleteOne, clearAll } = useChangeFiscalYear()
     const { register, handleSubmit, setValue, formState: { errors } } = useForm({ resolver: yupResolver(ChangeFiscalYearFormSchema) })
 
     const defaultFiscalyearChecked = (allFiscalYears: IExercice[]): number => {
@@ -81,6 +81,7 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
         try {
             const currentFiscalYear: IExercice = await apiFetch(`/fiscalyears/changecurrentfiscalyear/${data.id}`)
             handleChange(currentFiscalYear)
+
             toast.success(`Passage à l'exercice ${currentFiscalYear.annee_exercice} effectué avec succès`)
         } catch (e) {
             if (e instanceof ApiErrors) {
@@ -88,6 +89,21 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
             }
         }
         setConfirmModal(false)
+    }
+
+    const CancelDeletionRequest = async (id_entreprise: number) => {
+        try {
+            await apiFetch(`/entreprises/canceldelete/${id_entreprise}`, {
+                method: 'PUT'
+            })
+            await deleteOne(id_entreprise)
+            await clearAll()
+            toast.success('La demande de suppression a été annulée')
+        } catch(e: any) {
+            if(e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
+        }
     }
 
     if (loader || Object.keys(currentFiscalYear ? currentFiscalYear : []).length === 0) {
@@ -99,7 +115,7 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
             onConfirm={handleSubmit(ChangeYear)}
             onClose={() => setConfirmModal(false)}
             size="lg"
-            bodyText="Vous êtes sur le point de changer d'exercice courant, voulez-vous continuer ?"
+            bodyText="Vous êtes sur le point de changer d'exercice courant et de supprimer les entreprises en attente de suppression, voulez-vous continuer ?"
             confirmButtonText="Oui"
             confirmButtonVariant="success"
             leaveButtonText="Non"
@@ -116,44 +132,48 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
                 <h2 className="mb-0">Changement d'exercice</h2>
                 <Link to="/tools/managefiscalyears" className="link"><PlusIcon /> Créer un exercice</Link>
             </div>
-            <p>Le changement d'exercice remettra également les champs "reçu" et "procès-verbal" à zéro pour toutes les entreprises.</p>
+            <p>Le changement d'exercice remet à zéro les champs "reçu", "procès-verbal" et "pourcentage majoration". Les entreprises en attente de suppression seront également supprimées.</p>
             <hr className="my-3" />
             {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
             <Card className="mb-3" body>
-                <span className="fw-bold">Ces entreprises vont être supprimées lors du changement d'exercice</span>
-                <Table striped bordered hover size="sm">
+                <div className="fw-bold mb-2">Ces entreprises vont être supprimées lors du changement d'exercice</div>
+                {(entreprises.length === 0 && loader === false) && <Alert variant="secondary">Aucune entreprise n'est en attente de suppression</Alert>}
+                {entreprises.length > 0 && <Table striped bordered hover size="sm">
                     <thead>
                         <th>ID</th>
                         <th>Matricule</th>
                         <th>Nom</th>
+                        <th>Panneaux</th>
+                        <th>Action</th>
                     </thead>
                     <tbody>
-                        {entreprises.legth === 0 && <tr><td colSpan={3}>Aucun résultat</td></tr>}
                         {entreprises.length > 0 && entreprises.map((ent: IApercu_entreprise) => {
                             return <>
                                 <tr>
-                                <td>{ent.id_entreprise}</td>
-                                <td>{ent.matricule_ciger}</td>
-                                <td>{ent.nom}</td>
+                                    <td>{ent.id_entreprise}</td>
+                                    <td>{ent.matricule_ciger}</td>
+                                    <td>{ent.nom}</td>
+                                    <td>{ent.nombre_panneaux}</td>
+                                    <td><Button size="sm" variant="secondary" onClick={() => CancelDeletionRequest(ent.id_entreprise)}>Annuler la suppression</Button></td>
                                 </tr>
                             </>
                         })}
                     </tbody>
-                </Table>
+                </Table>}
                 {entreprises.length > 0 && <div className="d-flex justify-content-end align-items-center">
-                {optionsLoader && <div className="me-2"><SmallLoader /></div>}
-                <div className="me-2">
-                    <ElementsPerPage
-                        elementsPerPage={elementsParPage}
-                        onChange={(elements) => setFilterOptions((filters: any) => ({ ...filters, elementsParPage: elements }))}
+                    {optionsLoader && <div className="me-2"><SmallLoader /></div>}
+                    <div className="me-2">
+                        <ElementsPerPage
+                            elementsPerPage={elementsParPage}
+                            onChange={(elements) => setFilterOptions((filters: any) => ({ ...filters, elementsParPage: elements }))}
+                        />
+                    </div>
+                    <Paginate
+                        totalPages={totalPages}
+                        pageCourante={pageCourante}
+                        pageChange={(page) => setFilterOptions((filters: any) => ({ ...filters, pageCourante: page }))}
                     />
-                </div>
-                <Paginate
-                    totalPages={totalPages}
-                    pageCourante={pageCourante}
-                    pageChange={(page) => setFilterOptions((filters: any) => ({ ...filters, pageCourante: page }))}
-                />
-            </div>}
+                </div>}
             </Card>
             <Card body>
                 <Form>
@@ -165,12 +185,17 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
                             })}
                         </Form.Select>
                         {errors.id && <Form.Control.Feedback type="invalid">{errors.id.message}</Form.Control.Feedback>}
-                        <div className="mt-3">
-                            <Button variant="danger" size="sm" onClick={() => setConfirmModal(true)}>
-                                Changer d'exercice
-                            </Button>
-                        </div>
                     </Form.Group>
+                    <Form.Group controlId="confirm_delete" className="mt-2">
+                        <Form.Check type="checkbox" isInvalid={errors.confirm_delete} label="Je confirme avoir pris connaissance des entreprises qui seront supprimées" {...register('confirm_delete')} />
+                        {errors.confirm_delete && <Form.Control.Feedback type="invalid">{errors.confirm_delete.message}</Form.Control.Feedback>}
+                    </Form.Group>
+                    <div className="mt-3">
+                        <Button variant="danger" size="sm" onClick={() => setConfirmModal(true)}>
+                            Changer d'exercice
+                        </Button>
+                    </div>
+
                 </Form>
             </Card>
         </Container>

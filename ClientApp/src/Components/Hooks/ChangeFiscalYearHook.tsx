@@ -2,6 +2,7 @@ import { useReducer } from "react"
 import { apiFetch } from "../../Services/apiFetch";
 import { IPrice } from "../../Types/IPrice";
 import { INotReceived } from "../../Types/INotReceived";
+import { IApercu_entreprise } from "../../Types/IApercu_entreprise";
 
 interface State {
     entreprises: any[],
@@ -11,7 +12,7 @@ interface State {
 }
 
 interface Action {
-    type: 'FETCH_ALL' | 'INSERT',
+    type: 'FETCH_ALL' | 'DELETE' | 'CLEAR',
     payLoad: any
 }
 
@@ -27,8 +28,10 @@ export const useChangeFiscalYear = () => {
                     pageCourante: action.payLoad.pageCourante,
                     elementsParPage: action.payLoad.elementsParPage,
                 }
-            case 'INSERT':
-                return { ...state, entreprises: state.entreprises.filter((elem: INotReceived) => elem.id_entreprise != action.payLoad.id_entreprise) }
+            case 'DELETE':
+                return { ...state, entreprises: state.entreprises.filter((ent: IApercu_entreprise) => ent.id_entreprise != action.payLoad) }
+            case 'CLEAR':
+                return { ...state, entreprises: [] }
             default:
                 return state
         }
@@ -48,12 +51,14 @@ export const useChangeFiscalYear = () => {
             })
             dispatch({ type: 'FETCH_ALL', payLoad: fetch })
         },
-        Insert: async (data: INotReceived) => {
-            const insert: INotReceived = await apiFetch('/notreceived/new', {
-                method: 'POST',
-                body: JSON.stringify(data)
+        deleteOne: async (id_entreprise: number) => {
+            const insert: INotReceived = await apiFetch(`/entreprises/canceldelete/${id_entreprise}`, {
+                method: 'PUT'
             })
-            dispatch({ type: 'INSERT', payLoad: insert })
+            dispatch({ type: 'DELETE', payLoad: insert.id_entreprise })
+        },
+        clearAll: async () => {
+            dispatch({ type: 'CLEAR', payLoad: {} })
         }
     }
 

@@ -210,7 +210,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
         }
     }
 
-    const handleTest = async () => {
+    const CancelDeletionRequest = async () => {
         try {
             await apiFetch(`/entreprises/canceldelete/${tax.id_entreprise}`, {
                 method: 'PUT'
@@ -248,7 +248,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                     </nav>
                 </div>
                 <div className={`d-flex justify-content-${(type === 'edit' && tax?.suppression === true) ? 'between' : 'end'} align-items-center mb-3`}>
-                    {type === 'edit' && tax?.suppression === true && <><div><Button size="sm" variant="outline-danger" onClick={handleTest}>Annuler la demande de suppression</Button></div></>}
+                    {type === 'edit' && tax?.suppression === true && <><div><Button size="sm" variant="outline-danger" onClick={CancelDeletionRequest}>Annuler la demande de suppression</Button></div></>}
                     <div>
                         {type == 'edit' && <Button variant="outline-primary" className="me-4" size="sm" onClick={() => setIndiviualPrint(true)}><Printer /> Impression individuelle</Button>}
                         <Button variant="success" type="submit" disabled={isSubmitting}>{type == "create" ? "Créer l'entreprise" : "Modifier l'entreprise"}</Button>
