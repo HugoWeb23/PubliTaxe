@@ -6,6 +6,7 @@ import { ITaxManagement } from "../../Types/ITaxManagement";
 
 interface Action {
     type: 'FETCH_ALL' | 'DELETE' | 'RECEIVED',
+    hidden?: any,
     payLoad: any
 }
 
@@ -26,13 +27,19 @@ export const useEntreprises = () => {
                     totalEntreprises: action.payLoad.totalEntreprises
                 }
             case 'DELETE':
-                return { ...state, entreprises: state.entreprises.map((elem: IApercu_entreprise) => {
-                    if (elem.id_entreprise == action.payLoad.id_entreprise) {
-                        return {...elem, suppression: true}
-                    } else {
-                        return elem
+                if (action.hidden === true) {
+                    return { ...state, entreprises: state.entreprises.filter((elem: IApercu_entreprise) => elem.id_entreprise != action.payLoad.id_entreprise) }
+                } else {
+                    return {
+                        ...state, entreprises: state.entreprises.map((elem: IApercu_entreprise) => {
+                            if (elem.id_entreprise == action.payLoad.id_entreprise) {
+                                return { ...elem, suppression: true }
+                            } else {
+                                return elem
+                            }
+                        })
                     }
-                }) }
+                }
             case 'RECEIVED':
                 return {
                     ...state, entreprises: state.entreprises.map((ent: IApercu_entreprise) => {
@@ -49,7 +56,7 @@ export const useEntreprises = () => {
 
     const [state, dispatch] = useReducer(reducer, { entreprises: [], totalPages: 1, pageCourante: 1, elementsParPage: 15 });
 
-    const GetTaxes = async(options: any) => {
+    const GetTaxes = async (options: any) => {
         const fetch: ITaxManagement = await apiFetch(`/entreprises/names`, {
             method: 'POST',
             body: JSON.stringify(options)
@@ -67,13 +74,13 @@ export const useEntreprises = () => {
         totalInfractions: state.totalInfractions,
         totalEntreprises: state.totalEntreprises,
         getAll: async (options: any) => {
-           await GetTaxes(options)
+            await GetTaxes(options)
         },
-        deleteOne: async (entreprise: IApercu_entreprise) => {
+        deleteOne: async (showDelete: boolean, entreprise: IApercu_entreprise) => {
             await apiFetch(`/entreprises/delete/${entreprise.id_entreprise}`, {
                 method: 'DELETE'
             })
-            dispatch({ type: 'DELETE', payLoad: entreprise })
+            dispatch({ type: 'DELETE', hidden: !showDelete, payLoad: entreprise })
         },
         setReceived: async (selected: IApercu_entreprise[]) => {
             const IDs: number[] = []

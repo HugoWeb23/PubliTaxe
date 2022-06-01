@@ -33,6 +33,7 @@ import { ExclamationTriangle } from '../UI/ExclamationTriangle'
 
 export const TaxManagement = () => {
 
+    const showDelete = (localStorage.getItem('showDelete') === 'true');
     const [loader, setLoader] = useState<boolean>(true)
     const [optionsLoader, setOptionsLoader] = useState<boolean>(false)
     const { entreprises, totalPages, pageCourante, totalRecus, totalPaiementsRecus, totalInfractions, totalEntreprises, getAll, deleteOne, setReceived } = useEntreprises()
@@ -40,8 +41,9 @@ export const TaxManagement = () => {
     const [receivedModal, setReceivedModal] = useState<boolean>(false)
     const [searchModal, setSearchModal] = useState<boolean>(false)
     const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
-    const [filterOptions, setFilterOptions] = useState<any>({ matricule: "", nom: "", pubExoneration: false, showDelete: true, pageCourante: 1, elementsParPage: 15 })
+    const [filterOptions, setFilterOptions] = useState<any>({ matricule: "", nom: "", pubExoneration: false, showDelete: showDelete, pageCourante: 1, elementsParPage: 15 })
     const value = useContext(UserContext)
+    console.log(showDelete)
 
     useEffect(() => {
         (async () => {
@@ -60,7 +62,7 @@ export const TaxManagement = () => {
 
     const handleDelete = async (entreprise: IApercu_entreprise) => {
         try {
-            await deleteOne(entreprise)
+            await deleteOne(filterOptions.showDelete, entreprise)
             setDeleteModal(d => ({ ...d, show: false }))
             toast.success("La suppression a été programmée")
         } catch (e: any) {
@@ -71,6 +73,7 @@ export const TaxManagement = () => {
     }
 
     const ChangeShowDelete = (e: any) => {
+        localStorage.setItem('showDelete', e.target.checked);
         setFilterOptions((options: any) => ({...options, showDelete: e.target.checked}))
     }
 
@@ -122,7 +125,7 @@ export const TaxManagement = () => {
                                 <Button size="sm" variant="danger" onClick={() => setSearchModal(true)}>Supprimer les filtres</Button>
                             </div>}
                             <Form.Group controlId="show_delete" className="mt-3">
-                            <Form.Check type="checkbox" label="Afficher les entreprises en attente de suppression" onChange={ChangeShowDelete} defaultChecked />
+                            <Form.Check type="checkbox" label="Afficher les entreprises en attente de suppression" onChange={ChangeShowDelete} defaultChecked={filterOptions.showDelete} />
                             </Form.Group>
                         </Card.Body>
                     </Card>

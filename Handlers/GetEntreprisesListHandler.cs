@@ -45,6 +45,11 @@ namespace Taxes.Handlers
                 predicate = predicate.And(ent => ent.Publicites.Any(p => p.Id_rue == request.Filters.Rue));
             }
 
+            if (request.Filters.ShowDelete == false)
+            {
+                predicate = predicate.And(ent => ent.Suppression == false);
+            }
+
             List<Entreprise> entreprises = _context.entreprises
                 .Include(ent => ent.Publicites)
                 .Where(predicate)
