@@ -8,7 +8,8 @@ import {
     Button,
     OverlayTrigger,
     Tooltip,
-    Alert
+    Alert,
+    Form
 } from 'react-bootstrap'
 import { ApiErrors } from '../../Services/apiFetch'
 import { Link } from 'react-router-dom'
@@ -39,7 +40,7 @@ export const TaxManagement = () => {
     const [receivedModal, setReceivedModal] = useState<boolean>(false)
     const [searchModal, setSearchModal] = useState<boolean>(false)
     const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
-    const [filterOptions, setFilterOptions] = useState<any>({ matricule: "", nom: "", pubExoneration: false, pageCourante: 1, elementsParPage: 15 })
+    const [filterOptions, setFilterOptions] = useState<any>({ matricule: "", nom: "", pubExoneration: false, showDelete: true, pageCourante: 1, elementsParPage: 15 })
     const value = useContext(UserContext)
 
     useEffect(() => {
@@ -67,6 +68,10 @@ export const TaxManagement = () => {
                 toast.error(e.singleError.error)
             }
         }
+    }
+
+    const ChangeShowDelete = (e: any) => {
+        setFilterOptions((options: any) => ({...options, showDelete: e.target.checked}))
     }
 
     return <>
@@ -116,6 +121,9 @@ export const TaxManagement = () => {
                             {(filterOptions.matricule !== "" || filterOptions.nom !== "" || filterOptions.pubExoneration !== false || filterOptions.rue !== undefined) && <div className="mt-3">
                                 <Button size="sm" variant="danger" onClick={() => setSearchModal(true)}>Supprimer les filtres</Button>
                             </div>}
+                            <Form.Group controlId="show_delete" className="mt-3">
+                            <Form.Check type="checkbox" label="Afficher les entreprises en attente de suppression" onChange={ChangeShowDelete} defaultChecked />
+                            </Form.Group>
                         </Card.Body>
                     </Card>
                 </Col>
