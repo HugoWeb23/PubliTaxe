@@ -42,6 +42,7 @@ interface TaxeForm {
 export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, informations, formSimulation = false, simulationData = {}, onFormSubmit }: TaxeForm) => {
     const defaultValues = data ? data : {}
     const [formSimulationMode, setFormSimulationMode] = useState<boolean>(formSimulation)
+    const [deleteSimulation, setDeleteSimulation] = useState<boolean>(true)
     const [tax, setTax] = useState<Entreprise>(data as Entreprise)
     const [publicites, setPublicites] = useState(data.publicites ? data.publicites : simulationData.publicites ? simulationData.publicites : [])
     const [streetCodeModal, setStreetCodeModal] = useState<boolean>(false)
@@ -215,10 +216,10 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
             await apiFetch(`/entreprises/canceldelete/${tax.id_entreprise}`, {
                 method: 'PUT'
             })
-            setTax((tax: Entreprise) => ({...tax, suppression: false}))
+            setTax((tax: Entreprise) => ({ ...tax, suppression: false }))
             toast.success('La demande de suppression a été annulée')
-        } catch(e: any) {
-            if(e instanceof ApiErrors) {
+        } catch (e: any) {
+            if (e instanceof ApiErrors) {
                 toast.error(e.singleError.error)
             }
         }
@@ -257,9 +258,17 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                 {formSimulationMode && <div className="bd-callout bd-callout-default">
                     <h5>Création d'une entreprise à partir d'une simulation</h5>
                     Les informations générées automatiquement proviennent de la simulation n°{simulationData.id_simulation}. Si vous souhaitez effectuer des modifications, il est conseillé de les appliquer dans la simulation, et non dans ce formulaire.
-                    <div className="mt-3">
+                    <div className="mt-2">
                         <Link className="link" to={`/pricingsimulation/edit/${simulationData.id_simulation}`}>Modifier la simulation</Link> - <div className="link" onClick={handleCancelSimulationMode}>Annuler la création de l'entreprise</div>
                     </div>
+                    <Form.Group controlId="delete_after_create" className="mt-2">
+                        <Form.Check 
+                        type="checkbox" 
+                        label="Supprimer la simulation après la création de l'entreprise" 
+                        checked={deleteSimulation}
+                        onChange={() => setDeleteSimulation(!deleteSimulation)}
+                        />
+                    </Form.Group>
                 </div>}
                 <Row className="mb-3">
                     <Col>

@@ -33,7 +33,7 @@ import { ExclamationTriangle } from '../UI/ExclamationTriangle'
 
 export const TaxManagement = () => {
 
-    const showDelete = (localStorage.getItem('showDelete') === 'true');
+    const showDelete = (localStorage.getItem('showDelete') === 'true')
     const [loader, setLoader] = useState<boolean>(true)
     const [optionsLoader, setOptionsLoader] = useState<boolean>(false)
     const { entreprises, totalPages, pageCourante, totalRecus, totalPaiementsRecus, totalInfractions, totalEntreprises, getAll, deleteOne, setReceived } = useEntreprises()
