@@ -90,7 +90,8 @@ namespace Taxes.Handlers
                     Recu = e.Recu, 
                     Proces_verbal = e.Proces_verbal, 
                     Statut_paiement = e.Statut_paiement,
-                    Suppression = e.Suppression
+                    Suppression = e.Suppression,
+                    Desactive = e.Desactive
                 }).ToList(),
                 TotalPages = TotalPages,
                 TotalRecus = TotalRecus,

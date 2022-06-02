@@ -231,6 +231,28 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
         }
     }
 
+    const EntrepriseStatus = async (type: string) => {
+        try {
+            if (type === 'disable') {
+                await apiFetch(`/entreprises/disable/${tax?.id_entreprise}`, {
+                    method: 'PUT'
+                })
+                setTax((tax: Entreprise) => ({...tax, desactive: true}))
+                toast.success("L'entreprise a été désactivée")
+            } else if(type === 'enable') {
+                await apiFetch(`/entreprises/enable/${tax?.id_entreprise}`, {
+                    method: 'PUT'
+                })
+                setTax((tax: Entreprise) => ({...tax, desactive: false}))
+                toast.success("L'entreprise a été activée")
+            }
+        } catch (e: any) {
+            if (e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
+        }
+    }
+
     return <>
         <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet} />
         {type === 'edit' && <OffensesModal id_entreprise={tax.id_entreprise} motifs={motifs} currentFiscalYear={currentFiscalYear} isOpen={offensesModal} handleClose={() => setOffensesModal(false)} onDelete={UpdateMajoration} />}
@@ -268,18 +290,18 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                         <Link className="link" to={`/pricingsimulation/edit/${simulationData.id_simulation}`}>Modifier la simulation</Link> - <div className="link" onClick={handleCancelSimulationMode}>Annuler la création de l'entreprise</div>
                     </div>
                     <Form.Group controlId="delete_after_create" className="mt-2">
-                        <Form.Check 
-                        type="checkbox" 
-                        label="Supprimer la simulation après la création de l'entreprise" 
-                        checked={deleteSimulation}
-                        onChange={() => setDeleteSimulation(!deleteSimulation)}
+                        <Form.Check
+                            type="checkbox"
+                            label="Supprimer la simulation après la création de l'entreprise"
+                            checked={deleteSimulation}
+                            onChange={() => setDeleteSimulation(!deleteSimulation)}
                         />
                     </Form.Group>
                 </div>}
                 {tax?.desactive && <div className="bd-callout bd-callout-danger">
                     <h5>Cette entreprise est désactivée</h5>
                     <div className="mt-3">
-                        <Button size="sm" variant="outline-success">Activer l'entreprise</Button>
+                        <Button size="sm" variant="outline-success" onClick={() => EntrepriseStatus("enable")}>Activer l'entreprise</Button>
                     </div>
                 </div>}
                 <Row className="mb-3">
@@ -602,7 +624,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                 </Row>
             </Form>
             <ManageAdvertising pubs={publicites} matricule={defaultValues.matricule_ciger} tarifs={tarifs} currentFiscalYear={currentFiscalYear} onSubmit={UpdatePubs} />
-            {tax?.desactive === false && <div className="mt-3"><Button size="sm" variant="outline-danger">Désactiver l'entreprise</Button></div>}
+            {tax?.desactive === false && <div className="mt-3 mb-3"><Button size="sm" variant="outline-danger" onClick={() => EntrepriseStatus("disable")}>Désactiver l'entreprise</Button></div>}
         </Container>
     </>
 }

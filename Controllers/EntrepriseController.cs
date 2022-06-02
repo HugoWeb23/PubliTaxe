@@ -312,5 +312,35 @@ namespace Taxes.Controllers
             }
 
         }
+
+        [AuthorizeRole(MinRole: 2)]
+        [HttpPut("disable/{ID}")]
+        public async Task<IActionResult> DisableEntreprise(long ID)
+        {
+            try
+            {
+                bool Update = await _mediator.Send(new EntrepriseStatusCommand(ID, 1));
+                return Ok(new { success = "L'entreprise a été désactivée" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [AuthorizeRole(MinRole: 2)]
+        [HttpPut("enable/{ID}")]
+        public async Task<IActionResult> EnableEntreprise(long ID)
+        {
+            try
+            {
+                bool Update = await _mediator.Send(new EntrepriseStatusCommand(ID, 2));
+                return Ok(new { success = "L'entreprise a été activée" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
     }
 }

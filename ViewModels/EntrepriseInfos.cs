@@ -10,5 +10,6 @@
         public bool Recu { get; set; }
         public int Statut_paiement { get; set; }
         public bool Suppression { get; set; }
+        public bool Desactive { get; set; }
     }
 }

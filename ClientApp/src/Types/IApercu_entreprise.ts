@@ -6,5 +6,6 @@ export interface IApercu_entreprise {
     recu: boolean,
     proces_verbal: boolean,
     statut_paiement: number,
-    suppression: boolean
+    suppression: boolean,
+    desactive: boolean
 }

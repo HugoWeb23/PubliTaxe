@@ -141,7 +141,7 @@ export const TaxManagement = () => {
                 </Col>
                 <Col md="9" xs="1" style={{ paddingRight: 0 }}>
                     {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
-                    <Table striped bordered hover size="sm">
+                    <Table bordered hover size="sm">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -205,7 +205,7 @@ const PaymentStatus = ({ status }: IPaymentStatus) => {
 const Tax = memo(({ apercu_entreprise, handleDelete }: ITax) => {
     const value = useContext(UserContext)
     return <>
-        <tr key={apercu_entreprise.matricule_ciger}>
+        <tr key={apercu_entreprise.matricule_ciger} className={apercu_entreprise.desactive ? "table-secondary" : ""}>
             <td>{apercu_entreprise.id_entreprise}
                 {apercu_entreprise.suppression &&
                     <OverlayTrigger
