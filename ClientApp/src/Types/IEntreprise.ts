@@ -36,5 +36,6 @@ export interface Entreprise {
         commentaire_taxation: string,
         role_linguistique: number
         code_postal: ICode_postal,
-        publicites: IPublicite[]
+        publicites: IPublicite[],
+        desactive: boolean
 }

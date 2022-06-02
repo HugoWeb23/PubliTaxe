@@ -50,6 +50,11 @@ namespace Taxes.Handlers
                 predicate = predicate.And(ent => ent.Suppression == false);
             }
 
+            if (request.Filters.ShowDisable == false)
+            {
+                predicate = predicate.And(ent => ent.Desactive == false);
+            }
+
             List<Entreprise> entreprises = _context.entreprises
                 .Include(ent => ent.Publicites)
                 .Where(predicate)
@@ -60,6 +65,7 @@ namespace Taxes.Handlers
 
 
             int TotalEntreprises = _context.entreprises.Count();
+            int TotalDesactives = _context.entreprises.Where(ent => ent.Desactive == true).Count();
             int TotalElements = entreprises.Count();
             int TotalRecus = _context.entreprises.Where(e => e.Recu == true).Count();
             int TotalPaiementsRecus = _context.entreprises.Where(e => e.Statut_paiement == 2).Count();
@@ -90,6 +96,7 @@ namespace Taxes.Handlers
                 TotalRecus = TotalRecus,
                 TotalPaiementsRecus = TotalPaiementsRecus,
                 TotalEntreprises = TotalEntreprises,
+                TotalDesactives = TotalDesactives,
                 TotalInfractions = TotalInfractions,
                 TotalElements = TotalElements,
                 PageCourante = request.Filters.PageCourante,

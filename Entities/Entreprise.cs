@@ -43,6 +43,7 @@ namespace Taxes.Entities
         public string Adresse_localite_taxation { get; set; }
         public string Commentaire_taxation { get; set; }
         public int Role_linguistique { get; set; }
+        public bool Desactive { get; set; }
         public Code_postal Code_postal { get; set; }
         [ForeignKey("Motif_majorationId")]
         public MotifMajoration MotifMajoration { get; set; }

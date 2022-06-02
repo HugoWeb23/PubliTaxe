@@ -99,8 +99,8 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
             await deleteOne(id_entreprise)
             await clearAll()
             toast.success('La demande de suppression a été annulée')
-        } catch(e: any) {
-            if(e instanceof ApiErrors) {
+        } catch (e: any) {
+            if (e instanceof ApiErrors) {
                 toast.error(e.singleError.error)
             }
         }
@@ -187,7 +187,14 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
                         {errors.id && <Form.Control.Feedback type="invalid">{errors.id.message}</Form.Control.Feedback>}
                     </Form.Group>
                     <Form.Group controlId="confirm_delete" className="mt-2">
-                        <Form.Check type="checkbox" isInvalid={errors.confirm_delete} label="Je confirme avoir pris connaissance des entreprises qui seront supprimées" {...register('confirm_delete')} />
+                        <Form.Check
+                            type="checkbox"
+                            isInvalid={errors.confirm_delete}
+                            label="Je confirme avoir pris connaissance des entreprises qui seront supprimées"
+                            feedback={errors.confirm_delete && errors.confirm_delete.message}
+                            feedbackType="invalid"
+                            {...register('confirm_delete')}
+                        />
                         {errors.confirm_delete && <Form.Control.Feedback type="invalid">{errors.confirm_delete.message}</Form.Control.Feedback>}
                     </Form.Group>
                     <div className="mt-3">

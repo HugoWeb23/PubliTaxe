@@ -75,6 +75,12 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
             if (type == 'create') {
                 reset()
                 setPublicites([])
+                if (formSimulationMode === true && deleteSimulation === true) {
+                    await apiFetch(`/simulations/delete/${simulationData.id_simulation}`, {
+                        method: 'DELETE'
+                    })
+                }
+                setFormSimulationMode(false)
                 toast.success("Entreprise créée avec succès")
             } else {
                 setPublicites(test.publicites)
@@ -269,6 +275,12 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                         onChange={() => setDeleteSimulation(!deleteSimulation)}
                         />
                     </Form.Group>
+                </div>}
+                {tax?.desactive && <div className="bd-callout bd-callout-danger">
+                    <h5>Cette entreprise est désactivée</h5>
+                    <div className="mt-3">
+                        <Button size="sm" variant="outline-success">Activer l'entreprise</Button>
+                    </div>
                 </div>}
                 <Row className="mb-3">
                     <Col>
@@ -590,6 +602,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                 </Row>
             </Form>
             <ManageAdvertising pubs={publicites} matricule={defaultValues.matricule_ciger} tarifs={tarifs} currentFiscalYear={currentFiscalYear} onSubmit={UpdatePubs} />
+            {tax?.desactive === false && <div className="mt-3"><Button size="sm" variant="outline-danger">Désactiver l'entreprise</Button></div>}
         </Container>
     </>
 }

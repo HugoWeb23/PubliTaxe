@@ -34,14 +34,15 @@ import { ExclamationTriangle } from '../UI/ExclamationTriangle'
 export const TaxManagement = () => {
 
     const showDelete = (localStorage.getItem('showDelete') === 'true')
+    const showDisable = (localStorage.getItem('showDisable') === 'true')
     const [loader, setLoader] = useState<boolean>(true)
     const [optionsLoader, setOptionsLoader] = useState<boolean>(false)
-    const { entreprises, totalPages, pageCourante, totalRecus, totalPaiementsRecus, totalInfractions, totalEntreprises, getAll, deleteOne, setReceived } = useEntreprises()
+    const { entreprises, totalPages, pageCourante, totalRecus, totalPaiementsRecus, totalInfractions, totalEntreprises, totalDesactives, getAll, deleteOne, setReceived } = useEntreprises()
     const [deleteModal, setDeleteModal] = useState<{ show: boolean, entreprise: IApercu_entreprise }>({ show: false, entreprise: {} as IApercu_entreprise })
     const [receivedModal, setReceivedModal] = useState<boolean>(false)
     const [searchModal, setSearchModal] = useState<boolean>(false)
     const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
-    const [filterOptions, setFilterOptions] = useState<any>({ matricule: "", nom: "", pubExoneration: false, showDelete: showDelete, pageCourante: 1, elementsParPage: 15 })
+    const [filterOptions, setFilterOptions] = useState<any>({ matricule: "", nom: "", pubExoneration: false, showDelete: showDelete, showDisable: showDisable, pageCourante: 1, elementsParPage: 15 })
     const value = useContext(UserContext)
     console.log(showDelete)
 
@@ -75,6 +76,11 @@ export const TaxManagement = () => {
     const ChangeShowDelete = (e: any) => {
         localStorage.setItem('showDelete', e.target.checked);
         setFilterOptions((options: any) => ({...options, showDelete: e.target.checked}))
+    }
+
+    const ChangeShowDisable = (e: any) => {
+        localStorage.setItem('showDisable', e.target.checked);
+        setFilterOptions((options: any) => ({...options, showDisable: e.target.checked}))
     }
 
     return <>
@@ -116,7 +122,7 @@ export const TaxManagement = () => {
                             </div>}
                             {entreprises.length > 0 && <div>
                                 <div className="fs-5 mb-2">Statistiques</div>
-                                <div><span className="fw-bold">{totalEntreprises}</span> entreprises enregistrées</div>
+                                <div><span className="fw-bold">{totalEntreprises}</span> entreprises enregistrées {totalDesactives > 0 && `(dont ${totalDesactives} désactivée${totalDesactives > 1 ? "s" : ""})`}</div>
                                 <div><span className="fw-bold">{totalRecus}</span> entreprises en ordre de déclaration ({Math.round((totalRecus * 100) / totalEntreprises)} %)</div>
                                 <div><span className="fw-bold">{totalPaiementsRecus}</span> entreprises en ordre de paiement ({Math.round((totalPaiementsRecus * 100) / totalEntreprises)} %)</div>
                                 <div><span className="fw-bold">{totalInfractions}</span> entreprises en infraction ({Math.round((totalInfractions * 100) / totalEntreprises)} %)</div>
@@ -126,6 +132,9 @@ export const TaxManagement = () => {
                             </div>}
                             <Form.Group controlId="show_delete" className="mt-3">
                             <Form.Check type="checkbox" label="Afficher les entreprises en attente de suppression" onChange={ChangeShowDelete} defaultChecked={filterOptions.showDelete} />
+                            </Form.Group>
+                            <Form.Group controlId="show_disable" className="mt-2">
+                            <Form.Check type="checkbox" label="Afficher les entreprises désactivées" onChange={ChangeShowDisable} defaultChecked={filterOptions.showDisable} />
                             </Form.Group>
                         </Card.Body>
                     </Card>
