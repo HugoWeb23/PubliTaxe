@@ -44,6 +44,7 @@ namespace Taxes.Handlers
 
             List<Entreprise> allEntreprises = _context.entreprises
                 .Include(ent => ent.Publicites)
+                .Where(ent => ent.Desactive == false)
                 .ToList();
 
             foreach (var ent in allEntreprises)
@@ -124,6 +125,11 @@ namespace Taxes.Handlers
                 return 0;
             }
 
+            int TotalAValider = allEntreprises
+                .Where(ent => ent.Publicites.Sum(p => p.Taxe_totale) == 0)
+                .Where(ent => ent.Statut_paiement == 0)
+                .Count();
+
             int TotalElements = filtered.Count();
             int TotalPages = (int)Math.Ceiling(TotalElements / (double)request.Filters.ElementsParPage);
             if (request.Filters.PageCourante > TotalPages)
@@ -150,7 +156,8 @@ namespace Taxes.Handlers
                 ElementsParPage = request.Filters.ElementsParPage,
                 Total_non_payes = TotalNonPayes(),
                 Total_partiellement_payes = TotalPartiellentPayes(),
-                Total_payes = TotalPayes()
+                Total_payes = TotalPayes(),
+                Total_a_valider = TotalAValider
             };
         }
     }

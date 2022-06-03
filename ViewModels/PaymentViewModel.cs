@@ -12,5 +12,6 @@ namespace Taxes.ViewModels
         public int Total_non_payes { get; set; }
         public int Total_partiellement_payes { get; set; }
         public int Total_payes { get; set; }
+        public int Total_a_valider { get; set; }
     }
 }

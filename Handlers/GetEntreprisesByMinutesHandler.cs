@@ -24,6 +24,7 @@ namespace Taxes.Handlers
         {
             List<Entreprise> Entreprises = _context.entreprises
                 .Where(ent => ent.Proces_verbal == true)
+                .Where(ent => ent.Desactive == false)
                 .Include(ent => ent.Publicites)
                 .ThenInclude(rue => rue.Rue)
                 .ThenInclude(rue => rue.Code_postal)

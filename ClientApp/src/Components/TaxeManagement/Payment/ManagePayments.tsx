@@ -7,7 +7,8 @@ import {
     Card,
     Badge,
     Col,
-    Row
+    Row,
+    Button
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { IApercu_entreprise } from '../../../Types/IApercu_entreprise'
@@ -41,7 +42,7 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
     const [filterOptions, setFilterOptions] = useState<IFilterOptions>({ exercice: currentFiscalYear.id, type: "all", matricule: "", elementsParPage: 15, pageCourante: 1 })
     const [selectedEntreprise, setSelectedEntreprise] = useState<{ entrepriseInfos: IApercu_entreprise, show: boolean }>({ entrepriseInfos: {} as IApercu_entreprise, show: false })
     const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
-    const { paiements, total_non_payes, total_partiellement_payes, total_payes, getAll, totalPages, pageCourante, elementsParPage } = usePayments()
+    const { paiements, total_non_payes, total_partiellement_payes, total_payes, total_a_valider, getAll, totalPages, pageCourante, elementsParPage } = usePayments()
 
     useEffect(() => {
         (async () => {
@@ -99,6 +100,12 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
                 </Card>
             </div>
             {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
+            <div className="mt-3 mb-3">
+                <Button variant="primary">
+                    Situations à valider <Badge bg="danger">{total_a_valider}</Badge>
+                    <span className="visually-hidden">Situations à valider</span>
+                </Button>
+            </div>
             <Row className="me-0 mt-0 mt-3">
                 <Col lg="3" xl="2">
                     <Card>
@@ -114,7 +121,7 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
                             </Form.Group>
                             <Form.Group controlId="matricule" className="mb-3 me-3">
                                 <Form.Label>Recherche par matricule</Form.Label>
-                                <Form.Control type="text" size="sm" placeholder="Recherche par matricule" onKeyDown={(e) => SearchById(e)}/>
+                                <Form.Control type="text" size="sm" placeholder="Recherche par matricule" onKeyDown={(e) => SearchById(e)} />
                                 <Form.Text className="text-muted">
                                     Appuyez sur ENTER pour chercher.
                                 </Form.Text>

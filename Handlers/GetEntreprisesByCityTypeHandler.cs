@@ -26,6 +26,7 @@ namespace Taxes.Handlers
                 {
                 List<Entreprise> entreprises = _context.entreprises
                .Where(ent => ent.Code_postal.CP == "7700" || ent.Code_postal.CP == "7711" || ent.Code_postal.CP == "7712")
+               .Where(ent => ent.Desactive == false)
                .Include(ent => ent.Publicites)
                .ThenInclude(rue => rue.Rue)
                .ThenInclude(rue => rue.Code_postal)
@@ -45,6 +46,7 @@ namespace Taxes.Handlers
                 {
                 List<Entreprise> entreprises = _context.entreprises
                .Where(ent => ent.Code_postal.CP != "7700" && ent.Code_postal.CP != "7711" && ent.Code_postal.CP != "7712")
+               .Where(ent => ent.Desactive == false)
                .Include(ent => ent.Publicites)
                .ThenInclude(rue => rue.Rue)
                .ThenInclude(rue => rue.Code_postal)

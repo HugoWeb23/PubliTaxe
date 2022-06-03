@@ -24,6 +24,7 @@ namespace Taxes.Handlers
             List<Entreprise> entreprises = _context.entreprises
                 .Include(ent => ent.Publicites)
                  .Where(ent => ent.Recu == false)
+                 .Where(ent => ent.Desactive == false)
                 // Sélectionne les entreprises qui n'ont pas encore un non recu d'encodé
                 .Where(ent => !_context.non_recus.Where(n => n.ExerciceId == request.Filters.FiscalYear).Select(n => n.Id_entreprise).Contains(ent.Id_entreprise))
                 .ToList();

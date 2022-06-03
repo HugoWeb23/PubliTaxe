@@ -21,7 +21,8 @@ export const usePayments = () => {
                     elementsParPage: action.payLoad.elementsParPage,
                     total_non_payes: action.payLoad.total_non_payes,
                     total_partiellement_payes: action.payLoad.total_partiellement_payes,
-                    total_payes: action.payLoad.total_payes
+                    total_payes: action.payLoad.total_payes,
+                    total_a_valider: action.payLoad.total_a_valider
                 }
             default:
                 return state
@@ -46,6 +47,7 @@ export const usePayments = () => {
         total_non_payes: state.total_non_payes,
         total_partiellement_payes: state.total_partiellement_payes,
         total_payes: state.total_payes,
+        total_a_valider: state.total_a_valider,
         getAll: async (options: any) => {
            await GetPayments(options)
         },
