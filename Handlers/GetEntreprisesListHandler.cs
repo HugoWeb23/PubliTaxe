@@ -67,9 +67,9 @@ namespace Taxes.Handlers
             int TotalEntreprises = _context.entreprises.Count();
             int TotalDesactives = _context.entreprises.Where(ent => ent.Desactive == true).Count();
             int TotalElements = entreprises.Count();
-            int TotalRecus = _context.entreprises.Where(e => e.Recu == true).Count();
-            int TotalPaiementsRecus = _context.entreprises.Where(e => e.Statut_paiement == 2).Count();
-            int TotalInfractions = _context.entreprises.Where(e => e.Proces_verbal == true).Count();
+            int TotalRecus = _context.entreprises.Where(e => e.Recu == true && e.Desactive == false).Count();
+            int TotalPaiementsRecus = _context.entreprises.Where(e =>e.Desactive == false && (e.Statut_paiement == 2 || e.Statut_paiement == 3)).Count();
+            int TotalInfractions = _context.entreprises.Where(e => e.Proces_verbal == true && e.Desactive == false).Count();
 
             int TotalPages = (int)Math.Ceiling(TotalElements / (double)request.Filters.ElementsParPage);
             if(request.Filters.PageCourante > TotalPages)
