@@ -59,6 +59,8 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
             return <Badge bg="warning">Partiellement payé</Badge>
         } else if (status === 2) {
             return <Badge bg="success">Payé</Badge>
+        } else if (status === 3) {
+            return <Badge bg="primary">Rien à payer</Badge>
         } else {
             return <Badge></Badge>
         }
@@ -96,8 +98,8 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
             </div>
             {(loader === false && entreprise !== null) ? <>
                 <div className="d-flex justify-content-between mb-3">
-                <div><h5>Déclaration <Badge bg={entreprise.proces_verbal ? 'dark' : entreprise.recu ? 'success' : 'danger'}>{entreprise.proces_verbal ? "Procès-verbal" : entreprise.recu ? "Reçue" : "Non reçue"}</Badge></h5></div>
-                <div><h5>Paiement de la taxe <PaymentStatus status={entreprise.statut_paiement}/></h5></div>
+                    <div><h5>Déclaration <Badge bg={entreprise.proces_verbal ? 'dark' : entreprise.recu ? 'success' : 'danger'}>{entreprise.proces_verbal ? "Procès-verbal" : entreprise.recu ? "Reçue" : "Non reçue"}</Badge></h5></div>
+                    <div><h5>Paiement de la taxe <PaymentStatus status={entreprise.statut_paiement} /></h5></div>
                 </div>
                 <Row>
                     <Col><div>Matricule : <span className="fw-bold">{entreprise.matricule_ciger}</span></div></Col>

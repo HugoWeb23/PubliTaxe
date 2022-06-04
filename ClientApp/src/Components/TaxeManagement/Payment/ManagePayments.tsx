@@ -131,7 +131,7 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
                     </Card>
                 </Col>
                 <Col lg="9" xl="10" style={{ paddingRight: 0 }}>
-                    <Table striped bordered hover size="sm">
+                    <Table striped bordered size="sm">
                         <thead>
                             <tr>
                                 <th>ID</th>

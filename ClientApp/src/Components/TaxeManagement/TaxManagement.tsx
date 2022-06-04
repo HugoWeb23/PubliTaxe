@@ -74,12 +74,12 @@ export const TaxManagement = () => {
 
     const ChangeShowDelete = (e: any) => {
         localStorage.setItem('showDelete', e.target.checked);
-        setFilterOptions((options: any) => ({...options, showDelete: e.target.checked}))
+        setFilterOptions((options: any) => ({ ...options, showDelete: e.target.checked }))
     }
 
     const ChangeShowDisable = (e: any) => {
         localStorage.setItem('showDisable', e.target.checked);
-        setFilterOptions((options: any) => ({...options, showDisable: e.target.checked}))
+        setFilterOptions((options: any) => ({ ...options, showDisable: e.target.checked }))
     }
 
     return <>
@@ -130,17 +130,17 @@ export const TaxManagement = () => {
                                 <Button size="sm" variant="danger" onClick={() => setSearchModal(true)}>Supprimer les filtres</Button>
                             </div>}
                             <Form.Group controlId="show_delete" className="mt-3">
-                            <Form.Check type="checkbox" label="Afficher les entreprises en attente de suppression" onChange={ChangeShowDelete} defaultChecked={filterOptions.showDelete} />
+                                <Form.Check type="checkbox" label="Afficher les entreprises en attente de suppression" onChange={ChangeShowDelete} defaultChecked={filterOptions.showDelete} />
                             </Form.Group>
                             <Form.Group controlId="show_disable" className="mt-2">
-                            <Form.Check type="checkbox" label="Afficher les entreprises désactivées" onChange={ChangeShowDisable} defaultChecked={filterOptions.showDisable} />
+                                <Form.Check type="checkbox" label="Afficher les entreprises désactivées" onChange={ChangeShowDisable} defaultChecked={filterOptions.showDisable} />
                             </Form.Group>
                         </Card.Body>
                     </Card>
                 </Col>
                 <Col md="9" xs="1" style={{ paddingRight: 0 }}>
                     {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
-                    <Table bordered hover size="sm">
+                    <Table bordered size="sm">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -195,9 +195,9 @@ const PaymentStatus = ({ status }: IPaymentStatus) => {
         return <td className="table-warning">Partiellement payé</td>
     } else if (status === 2) {
         return <td className="table-success">Payé</td>
-    }  else if (status === 3) {
+    } else if (status === 3) {
         return <td className="table-primary">Rien à payer</td>
-    }  else {
+    } else {
         return <td className="table-secondary"></td>
     }
 }
@@ -213,7 +213,7 @@ const Tax = memo(({ apercu_entreprise, handleDelete }: ITax) => {
                         placement="top"
                         overlay={
                             <Tooltip id={`tooltip-2`}>
-                               Suppression programmée
+                                Suppression programmée
                             </Tooltip>
                         }
                     >

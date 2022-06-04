@@ -87,7 +87,7 @@ export const ManageNotReceived = ({ motifs, currentFiscalYear }: IManageNotRecei
             <hr className="my-3" />
             {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
             {(errorModal.show === false && currentDate < expirationDate) && <Alert variant="warning">Attention, la date d'échéance de l'exercice {currentFiscalYear.annee_exercice} n'a pas encore été dépassée (<span className="fw-bold">{new Date(currentFiscalYear.date_echeance).toLocaleDateString('fr-FR')}</span>).</Alert>}
-            <Table striped bordered hover size="sm">
+            <Table striped bordered size="sm">
                 <thead>
                     <tr>
                         <th>ID</th>

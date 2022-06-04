@@ -1,7 +1,7 @@
 import { useReducer } from "react"
 import { apiFetch } from "../../Services/apiFetch";
-import { IPrice } from "../../Types/IPrice";
 import { INotReceived } from "../../Types/INotReceived";
+import { NothingToPay } from "../../Types/NothingToPay";
 
 interface State {
     entreprises: any[],
@@ -11,7 +11,7 @@ interface State {
 }
 
 interface Action {
-    type: 'FETCH_ALL' | 'INSERT',
+    type: 'FETCH_ALL' | 'UPDATEALL' | 'UPDATEONE',
     payLoad: any
 }
 
@@ -27,8 +27,10 @@ export const useNothingToPay = () => {
                     pageCourante: action.payLoad.pageCourante,
                     elementsParPage: action.payLoad.elementsParPage,
                 }
-            case 'INSERT':
-                return { ...state, entreprises: state.entreprises.filter((elem: INotReceived) => elem.id_entreprise != action.payLoad.id_entreprise) }
+            case 'UPDATEALL':
+                return { ...state, entreprises: [] }
+            case 'UPDATEONE':
+                return { ...state, entreprises: state.entreprises.filter((ent: NothingToPay) => ent.id_entreprise != action.payLoad) }
             default:
                 return state
         }
@@ -36,24 +38,41 @@ export const useNothingToPay = () => {
 
     const [state, dispatch] = useReducer(reducer, { entreprises: [], totalPages: 1, pageCourante: 1, elementsParPage: 15 });
 
+    const GetData = async (options: any) => {
+        const fetch: NothingToPay[] = await apiFetch(`/entreprises/nothingtopay`, {
+            method: 'POST',
+            body: JSON.stringify(options)
+        })
+        dispatch({ type: 'FETCH_ALL', payLoad: fetch })
+    }
+
     return {
         totalPages: state.totalPages,
         pageCourante: state.pageCourante,
         elementsParPage: state.elementsParPage,
         entreprises: state.entreprises,
         getAll: async (options: any) => {
-            const fetch: IPrice[] = await apiFetch(`/entreprises/nothingtopay`, {
-                method: 'POST',
-                body: JSON.stringify(options)
-            })
-            dispatch({ type: 'FETCH_ALL', payLoad: fetch })
+            await GetData(options)
         },
-        Insert: async (data: INotReceived) => {
-            const insert: INotReceived = await apiFetch('/notreceived/new', {
+        UpdateOne: async (id: number) => {
+            const updateone: INotReceived = await apiFetch('/paiements/editnothingtopaystatus', {
                 method: 'POST',
-                body: JSON.stringify(data)
+                body: JSON.stringify({ entreprises: [id] })
             })
-            dispatch({ type: 'INSERT', payLoad: insert })
+            dispatch({ type: 'UPDATEONE', payLoad: id })
+            if (state.totalPages > 1 && state.entreprises.length === 1) {
+                await GetData({ pageCourante: state.pageCourante > 1 ? state.pageCourante - 1 : 1, elementsParPage: state.elementsParPage })
+            }
+        },
+        UpdateAll: async () => {
+            const updateall: INotReceived = await apiFetch('/paiements/editnothingtopaystatus', {
+                method: 'POST',
+                body: JSON.stringify({ entreprises: state.entreprises.map((ent: NothingToPay) => ent.id_entreprise) })
+            })
+            dispatch({ type: 'UPDATEALL', payLoad: updateall })
+            if (state.totalPages > 1) {
+                await GetData({ pageCourante: state.pageCourante > 1 ? state.pageCourante - 1 : 1, elementsParPage: state.elementsParPage })
+            }
         }
     }
 

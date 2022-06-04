@@ -99,5 +99,21 @@ namespace Taxes.Controllers
             }
 
         }
+
+        [AuthorizeRole(MinRole: 2)]
+        [HttpPost("editnothingtopaystatus")]
+        public async Task<IActionResult> EncodeReceived(UpdateNothingToPayStatusViewModel Entreprises)
+        {
+            try
+            {
+                List<long> entreprises = await _mediator.Send(new UpdateNothingToPayStatusCommand(Entreprises.Entreprises));
+                return Ok(entreprises);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { erreur = ex.Message });
+            }
+
+        }
     }
 }
