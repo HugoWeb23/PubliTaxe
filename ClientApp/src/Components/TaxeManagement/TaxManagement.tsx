@@ -195,7 +195,9 @@ const PaymentStatus = ({ status }: IPaymentStatus) => {
         return <td className="table-warning">Partiellement payé</td>
     } else if (status === 2) {
         return <td className="table-success">Payé</td>
-    } else {
+    }  else if (status === 3) {
+        return <td className="table-primary">Rien à payer</td>
+    }  else {
         return <td className="table-secondary"></td>
     }
 }

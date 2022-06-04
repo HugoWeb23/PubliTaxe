@@ -342,5 +342,21 @@ namespace Taxes.Controllers
                 return BadRequest(new { error = ex.Message });
             }
         }
+
+        [AuthorizeRole(MinRole: 2)]
+        [HttpPost("nothingtopay")]
+        public async Task<IActionResult> GetNothingToPayList(NothingToPayFilters Filters)
+        {
+            try
+            {
+                NothingToPayViewModel entreprises = await _mediator.Send(new NothingToPayListQuery(Filters));
+                return Ok(entreprises);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
+        }
     }
 }

@@ -101,10 +101,10 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
             </div>
             {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
             <div className="mt-3 mb-3">
-                <Button variant="primary">
+                <Link className="btn btn-primary" to={"/payment_management/nothingtopay"}>
                     Situations à valider <Badge bg="danger">{total_a_valider}</Badge>
                     <span className="visually-hidden">Situations à valider</span>
-                </Button>
+                </Link>
             </div>
             <Row className="me-0 mt-0 mt-3">
                 <Col lg="3" xl="2">
