@@ -264,10 +264,10 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
         <ConfirmModal
             show={confirmModal}
             titleText="Avertissement"
-            bodyText={`Le statut du paiement est passé de "rien à payer" à impayé étant donné que la taxe totale n'est plus égale à 0`}
+            bodyText={`Le statut du paiement est passé de "rien à payer" à impayé étant donné que la taxe totale n'est plus égale à 0.`}
             hiddenConfirmButton={true}
-            leaveButtonText="J'ai compris"
-            leaveButtonVariant="success"
+            leaveButtonText="Fermer"
+            leaveButtonVariant="secondary"
             onClose={() => setConfirmModal(false)}
             onConfirm={() => { }}
         />
