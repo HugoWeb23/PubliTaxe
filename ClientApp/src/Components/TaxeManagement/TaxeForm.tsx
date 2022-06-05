@@ -26,6 +26,7 @@ import { IndividualPrint } from './IndividualPrint';
 import { IExercice } from "../../Types/IExercice";
 import { IPrintData } from "../../Types/IPrintData";
 import { OffensesModal } from "./OffensesModal";
+import { ConfirmModal } from "../UI/ConfirmModal";
 
 interface TaxeForm {
     data?: any,
@@ -52,6 +53,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
     const [individualPrint, setIndiviualPrint] = useState<boolean>(false)
     const [offensesModal, setOffensesModal] = useState<boolean>(false)
     const [matriculeAvailable, setMatriculeAvailable] = useState<boolean>(false)
+    const [confirmModal, setConfirmModal] = useState<boolean>(false)
     const { register, reset, control, handleSubmit, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(TaxeFormSchema), defaultValues: defaultValues });
 
     useEffect(() => {
@@ -84,6 +86,11 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                 toast.success("Entreprise créée avec succès")
             } else {
                 setPublicites(test.publicites)
+                if (test.publicites.reduce((acc: number, p: any) => {
+                    return acc + p.taxe_totale
+                }, 0) > 0 && form2.statut_paiement === 3) {
+                    setConfirmModal(true)
+                }
                 toast.success('Modifications sauvegardées')
             }
         } catch (e: any) {
@@ -237,13 +244,13 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                 await apiFetch(`/entreprises/disable/${tax?.id_entreprise}`, {
                     method: 'PUT'
                 })
-                setTax((tax: Entreprise) => ({...tax, desactive: true}))
+                setTax((tax: Entreprise) => ({ ...tax, desactive: true }))
                 toast.success("L'entreprise a été désactivée")
-            } else if(type === 'enable') {
+            } else if (type === 'enable') {
                 await apiFetch(`/entreprises/enable/${tax?.id_entreprise}`, {
                     method: 'PUT'
                 })
-                setTax((tax: Entreprise) => ({...tax, desactive: false}))
+                setTax((tax: Entreprise) => ({ ...tax, desactive: false }))
                 toast.success("L'entreprise a été activée")
             }
         } catch (e: any) {
@@ -254,6 +261,16 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
     }
 
     return <>
+        <ConfirmModal
+            show={confirmModal}
+            titleText="Avertissement"
+            bodyText={`Le statut du paiement est passé de "rien à payer" à impayé étant donné que la taxe totale n'est plus égale à 0`}
+            hiddenConfirmButton={true}
+            leaveButtonText="J'ai compris"
+            leaveButtonVariant="success"
+            onClose={() => setConfirmModal(false)}
+            onConfirm={() => { }}
+        />
         <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet} />
         {type === 'edit' && <OffensesModal id_entreprise={tax.id_entreprise} motifs={motifs} currentFiscalYear={currentFiscalYear} isOpen={offensesModal} handleClose={() => setOffensesModal(false)} onDelete={UpdateMajoration} />}
         {type === 'edit' && <IndividualPrint

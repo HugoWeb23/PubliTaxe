@@ -18,46 +18,11 @@ namespace Taxes.Entities
             if (other is null)
                 return false;
 
-            return this.Numero_panneau == other.Numero_panneau &&
-                   this.Id_entreprise == other.Id_entreprise &&
-                   this.Id_rue == other.Id_rue &&
-                   this.Exercice_courant == other.Exercice_courant &&
-                   this.Type_publicite == other.Type_publicite &&
-                   this.Adresse_numero == other.Adresse_numero &&
-                   this.Situation == other.Situation &&
-                   this.Quantite == other.Quantite &&
-                   this.Face == other.Face &&
-                   this.Mesure == other.Mesure &&
-                   this.Surface == other.Surface &&
-                   this.Surface_totale == other.Surface_totale &&
-                   this.Taxe_totale == other.Taxe_totale &&
-                   this.Code_recu == other.Code_recu &&
-                   this.Exoneration == other.Exoneration &&
-                   this.Pv == other.Pv &&
-                   this.Entreprise == other.Entreprise &&
-                   this.Rue == other.Rue;
+            return this.Numero_panneau == other.Numero_panneau;    
         }
 
         public override bool Equals(object obj) => Equals(obj as Publicite);
-        public override int GetHashCode() => (Numero_panneau,
-                                              Id_entreprise,
-                                              Id_rue,
-                                              Exercice_courant,
-                                              Type_publicite,
-                                              Adresse_numero,
-                                              Situation,
-                                              Quantite,
-                                              Face,
-                                              Mesure,
-                                              Surface,
-                                              Surface_totale,
-                                              Taxe_totale,
-                                              Code_recu,
-                                              Exoneration,
-                                              Pv,
-                                              Entreprise,
-                                              Rue)
-                                              .GetHashCode();
+        public override int GetHashCode() => (Numero_panneau).GetHashCode();
 
         [Key]
         public long Numero_panneau { get; set; }

@@ -61,6 +61,11 @@ namespace Taxes.Handlers
                 await _mediator.Send(new InsertNotReceivedCommand(NotReceived, false));
             }
 
+            if(request.Entreprise.Publicites.Sum(p => p.Taxe_totale) > 0 && entreprise.Statut_paiement == 3)
+            {
+                request.Entreprise.Statut_paiement = 0;
+            }
+
             IEnumerable<Publicite> pubs = await _mediator.Send(new GetAdvertisingListByMatriculeQuery(request.Entreprise.Id_entreprise));
             IEnumerable<Publicite> test = pubs.Except(request.Entreprise.Publicites).ToList();
             _context.enseignes_publicitaires.RemoveRange(test);

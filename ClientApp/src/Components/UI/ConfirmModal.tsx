@@ -13,11 +13,12 @@ interface IConfirmModal {
     confirmButtonVariant?: string,
     leaveButtonText?: string,
     leaveButtonVariant?: string,
+    hiddenConfirmButton?: boolean,
     onClose: () => void,
     onConfirm: (element: any) => void
 }
 
-export const ConfirmModal = ({ show, element, size = undefined, titleText = "Confirmation", bodyText = "Voulez-vous vraiment supprimer cet élément ?", confirmButtonText = "Supprimer", confirmButtonVariant = "danger", leaveButtonText = "Annuler", leaveButtonVariant = "secondary", onClose, onConfirm }: IConfirmModal) => {
+export const ConfirmModal = ({ show, element, size = undefined, titleText = "Confirmation", bodyText = "Voulez-vous vraiment supprimer cet élément ?", confirmButtonText = "Supprimer", confirmButtonVariant = "danger", leaveButtonText = "Annuler", leaveButtonVariant = "secondary", hiddenConfirmButton = false, onClose, onConfirm }: IConfirmModal) => {
 
     return <>
         <Modal show={show} onHide={onClose} size={size} animation={false}>
@@ -29,9 +30,9 @@ export const ConfirmModal = ({ show, element, size = undefined, titleText = "Con
                 <Button variant={leaveButtonVariant} size="sm" onClick={onClose}>
                     {leaveButtonText}
                 </Button>
-                <Button variant={confirmButtonVariant} size="sm" onClick={() => onConfirm(element)}>
+                {hiddenConfirmButton === false && <Button variant={confirmButtonVariant} size="sm" onClick={() => onConfirm(element)}>
                     {confirmButtonText}
-                </Button>
+                </Button>}
             </Modal.Footer>
         </Modal>
     </>
