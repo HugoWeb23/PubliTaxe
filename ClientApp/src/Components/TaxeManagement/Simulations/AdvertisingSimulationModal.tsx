@@ -76,6 +76,7 @@ export const AdvertisingModalSimulation = ({ type, show, publicite, handleClose,
         if(type == 'create') {
             data.uuid = uuidv1()
         }
+        data.face = parseInt(data.face, 10)
         onValidate(data, type)
         handleClose()
     }

@@ -106,6 +106,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
         setValue('adresse_rue', street.nom_rue)
         setValue('code_postal.cp', street.code_postal.cp)
         setValue('code_postal.localite', street.code_postal.localite)
+        setValue('code_postal.pays.nom_pays', street.code_postal.pays.nom_pays)
         setPostCodes([street.code_postal])
         clearErrors(['code_postal.cp', 'code_postal.localite', 'adresse_rue'])
     }
@@ -139,6 +140,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
             setCodePostal(code_postal.code_postalId)
             setValue('code_postal.cp', code_postal.cp)
             setValue('code_postal.localite', code_postal.localite)
+            setValue('code_postal.pays.nom_pays', code_postal.pays.nom_pays)
             clearErrors(['code_postal.cp', 'code_postal.localite'])
         } else {
             if (type == 'cp') {

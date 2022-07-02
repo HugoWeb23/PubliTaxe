@@ -32,7 +32,7 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
     const [postCodes, setPostCodes] = useState<any>(data?.code_postal ? [data.code_postal] : [])
     const [codePostal, setCodePostal] = useState<any>(null)
     const [publicites, setPublicites] = useState(data?.publicites ? data.publicites : [])
-    const { register, reset, control, handleSubmit, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(SimulationFormSchema), defaultValues: defaultValues })
+    const { register, reset, control, handleSubmit, setValue, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(SimulationFormSchema), defaultValues: defaultValues })
 
     const OnSubmit = async (data: any) => {
         try {
@@ -50,9 +50,7 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
                 reset()
                 setPublicites([])
             }
-            let test = { ...data }
-            test.code_postal.pays = {code_pays: "150", nom_pays: "BELGIQUE", paysId: 5} // A changer
-            setConfirmationModal({show: true, simulation: data})
+            setConfirmationModal({ show: true, simulation: data })
             console.log(data)
         } catch (e) {
             if (e instanceof ApiErrors) {
@@ -68,6 +66,7 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
         setValue('adresse_rue', street.nom_rue)
         setValue('code_postal.cp', street.code_postal.cp)
         setValue('code_postal.localite', street.code_postal.localite)
+        setValue('code_postal.pays.nom_pays', street.code_postal.pays.nom_pays)
         setPostCodes([street.code_postal])
         clearErrors(['code_postal.cp', 'code_postal.localite', 'adresse_rue'])
     }
@@ -101,6 +100,7 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
             setCodePostal(code_postal.code_postalId)
             setValue('code_postal.cp', code_postal.cp)
             setValue('code_postal.localite', code_postal.localite)
+            setValue('code_postal.pays.nom_pays', code_postal.pays.nom_pays)
             clearErrors(['code_postal.cp', 'code_postal.localite'])
         } else {
             if (type == 'cp') {
@@ -124,8 +124,10 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
         saveAs(blob, `${simulation.nom.split(' ').join('_')}.pdf`);
     }
 
-    const handleGeneratePDF = async() => {
+    const handleGeneratePDF = async () => {
         await generatePdfDocument(confirmationModal.simulation)
+        console.log(confirmationModal.simulation);
+        
     }
 
     return <>
@@ -226,7 +228,7 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
                                 control={control}
                                 name="code_postal.cp"
                                 render={({
-                                    field: { onChange, onBlur, value, name, ref }
+                                    field: { value }
                                 }) => (
                                     <AsyncTypeahead
                                         filterBy={() => true}
@@ -269,7 +271,7 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
                                 control={control}
                                 name="code_postal.localite"
                                 render={({
-                                    field: { onChange, onBlur, value, name, ref }
+                                    field: { value }
                                 }) => (
                                     <AsyncTypeahead
                                         filterBy={() => true}

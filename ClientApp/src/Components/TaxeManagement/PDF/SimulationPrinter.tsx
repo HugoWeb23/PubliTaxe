@@ -139,7 +139,7 @@ export const SimulationPrinter = ({ simulation, allFiscalYears, tarifs }: ISimul
         },
         ColPricesHead: {
             flex: 1,
-            fontSize: '11px',
+            fontSize: '10px',
             fontFamily: 'Tahoma',
             paddingTop: '1.8mm',
             paddingBottom: '1.5mm',
@@ -147,23 +147,21 @@ export const SimulationPrinter = ({ simulation, allFiscalYears, tarifs }: ISimul
         },
         ColPricesBody: {
             flex: 1,
-            fontSize: '11px',
+            fontSize: '10px',
             fontFamily: 'Tahoma',
             paddingTop: '1.5mm',
         },
         Exercice: {
-            fontSize: '13px',
+            fontSize: '10px',
             fontFamily: 'Tahoma',
-            padding: '3px',
-            backgroundColor: 'grey'
+            padding: '2px',
+            border: '0.5px solid #000'
         },
         ExerciceTotalTax: {
-            fontSize: '11px',
+            fontSize: '10px',
             fontFamily: 'Tahoma',
             fontWeight: 'bold',
-            paddingTop: '10px',
             textTransform: 'uppercase',
-            borderTop: '0.5px solid #000',
         }
     });
 
@@ -288,8 +286,8 @@ export const SimulationPrinter = ({ simulation, allFiscalYears, tarifs }: ISimul
                                 <Text style={styles.ColPricesBody}>{pub.exoneration ? "Oui" : "Non"}</Text>
                             </View>
                         })}
-                        <View style={{marginTop: '15px', marginBottom: '7px'}}>
-                        <Text style={styles.ExerciceTotalTax}>Taxe totale : {simulation.publicites.reduce((acc: any, curr: IPubliciteSimulation) => {
+                        <View style={{marginTop: '5px', marginBottom: '7px'}}>
+                        <Text style={styles.ExerciceTotalTax}>Taxe totale {exercice} : {simulation.publicites.reduce((acc: any, curr: IPubliciteSimulation) => {
                             if (curr.exoneration) {
                                 return acc
                             } else {
