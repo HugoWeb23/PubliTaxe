@@ -186,7 +186,7 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
                                 <td><Button size="sm" variant="info" onClick={() => setViewPubModal({ show: true, publicite: pub })}>Consulter</Button></td>
                             </tr>
                         })}
-                        <tr><td colSpan={6} className="text-end">Taxe totale (hors majoration) : <span className="fw-bold">{entreprise.publicites.reduce((acc: any, curr: any) => acc + parseFloat(curr.taxe_totale), 0)} €</span></td></tr>
+                        <tr><td colSpan={6} className="text-end">Taxe totale (hors majoration) : <span className="fw-bold">{entreprise.publicites.reduce((acc: any, curr: any) => acc + parseFloat(curr.taxe_totale), 0).toFixed(2)} €</span></td></tr>
                     </tbody>
                 </Table>
             </> : <Loader />}

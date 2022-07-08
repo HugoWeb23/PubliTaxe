@@ -250,8 +250,8 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs, currentFisca
                             <Text style={styles.Col}>{pub.surface}</Text>
                             <Text style={styles.Col}>{pub.surface_totale}</Text>
                             <Text style={styles.Col}>{pub.exoneration ? 'Oui' : 'Non'}</Text>
-                            <Text style={styles.Col}>{prices[pub.type_publicite]}</Text>
-                            <Text style={styles.Col}>{pub.exoneration ? '0.00' : pub.taxe_totale}</Text>
+                            <Text style={styles.Col}>{prices[pub.type_publicite].toFixed(2)}</Text>
+                            <Text style={styles.Col}>{pub.exoneration ? '0.00' : pub.taxe_totale.toFixed(2)}</Text>
                         </View>
                     })}
                 </View>
@@ -261,7 +261,7 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs, currentFisca
                         return acc
                     }
                     return acc + value.taxe_totale
-                }, 0)} €</Text>
+                }, 0).toFixed(2)} €</Text>
                 </View>
                 <View wrap={false}>
                 <View style={styles.Remark}>
@@ -284,27 +284,27 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs, currentFisca
                     <View style={styles.Prices}>
                         <View style={styles.PriceDetail}>
                             <Text style={styles.NormalText}>Enseignes non lumineuses (ENL) :</Text>
-                            <Text style={styles.NormalText}>{prices[1]} €</Text>
+                            <Text style={styles.NormalText}>{prices[1].toFixed(2)} €</Text>
                         </View>
                         <View style={[styles.PriceDetail, { marginTop: '0.5mm' }]}>
                             <Text style={styles.NormalText}>Enseignes lumineuses (EL) :</Text>
-                            <Text style={styles.NormalText}>{prices[2]} €</Text>
+                            <Text style={styles.NormalText}>{prices[2].toFixed(2)} €</Text>
                         </View>
                         <View style={[styles.PriceDetail, { marginTop: '0.5mm' }]}>
                             <Text style={styles.NormalText}>Enseignes clignotantes (EC) :</Text>
-                            <Text style={styles.NormalText}>{prices[3]} €</Text>
+                            <Text style={styles.NormalText}>{prices[3].toFixed(2)} €</Text>
                         </View>
                         <View style={[styles.PriceDetail, { marginTop: '0.5mm' }]}>
                             <Text style={styles.NormalText}>Panneaux non lumineux (PNL) :</Text>
-                            <Text style={styles.NormalText}>{prices[4]} €</Text>
+                            <Text style={styles.NormalText}>{prices[4].toFixed(2)} €</Text>
                         </View>
                         <View style={[styles.PriceDetail, { marginTop: '0.5mm' }]}>
                             <Text style={styles.NormalText}>Panneaux lumineux (PL) :</Text>
-                            <Text style={styles.NormalText}>{prices[5]} €</Text>
+                            <Text style={styles.NormalText}>{prices[5].toFixed(2)} €</Text>
                         </View>
                         <View style={[styles.PriceDetail, { marginTop: '0.5mm' }]}>
                             <Text style={styles.NormalText}>Panneaux à défilement (PD) : </Text>
-                            <Text style={styles.NormalText}>{prices[6]} €</Text>
+                            <Text style={styles.NormalText}>{prices[6].toFixed(2)} €</Text>
                         </View>
                         <View style={[styles.TypeDetail, { marginTop: '1mm' }]}>
                             <Text style={[styles.NormalText, { marginRight: '2mm' }]}>(S) Simple face</Text>

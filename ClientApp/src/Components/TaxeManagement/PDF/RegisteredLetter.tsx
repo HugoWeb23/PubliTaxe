@@ -191,7 +191,7 @@ export const RegisteredLetter = ({ entreprise, printData, currentFiscalYear, mot
             <Text style={styles.NormalText}>Montant de la taxe <Text style={{ fontWeight: 'bold' }}>{(taxe_totale).toFixed(2)} €</Text></Text>
         </View>
         <View style={{ marginTop: '5mm' }}>
-            <Text style={styles.NormalText}>Le montant dû est majoré de <Text style={{ fontWeight: 'bold' }}>{entreprise.pourcentage_majoration} %</Text>, conformément à la délibération du Conseil communal du 24 octobre 2016.</Text>
+            <Text style={styles.NormalText}>Le montant dû est majoré de <Text style={{ fontWeight: 'bold' }}>{entreprise.pourcentage_majoration} %</Text>, conformément à la délibération du Conseil communal du 09 octobre 2019.</Text>
         </View>
         <View style={{ marginTop: '5mm' }}>
             <Text style={styles.NormalText}>Soit <Text style={{ fontWeight: 'bold' }}>{(taxe_totale * entreprise.pourcentage_majoration / 100).toFixed(2)} €</Text></Text>
