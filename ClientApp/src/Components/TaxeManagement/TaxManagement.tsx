@@ -98,9 +98,10 @@ export const TaxManagement = () => {
             onSubmit={setReceived}
         />
         <SearchModal
+            options={filterOptions}
             show={searchModal}
             handleClose={() => setSearchModal(false)}
-            handleSearch={(options) => setFilterOptions((filters: any) => ({ ...options, pageCourante: 1, elementsParPage: filters.elementsParPage }))}
+            handleSearch={(options) => setFilterOptions((filters: any) => ({ ...options, pageCourante: 1, elementsParPage: filters.elementsParPage, showDisable: showDisable, showDelete: showDelete }))}
         />
         <Container fluid={true}>
             <div className="d-flex justify-content-between align-items-center">
@@ -126,8 +127,8 @@ export const TaxManagement = () => {
                                 <div><span className="fw-bold">{totalPaiementsRecus}</span> entreprises en ordre de paiement ({Math.round((totalPaiementsRecus * 100) / (totalEntreprises - totalDesactives))} %)</div>
                                 <div><span className="fw-bold">{totalInfractions}</span> entreprises en infraction ({Math.round((totalInfractions * 100) / (totalEntreprises - totalDesactives))} %)</div>
                             </div>}
-                            {(filterOptions.matricule !== "" || filterOptions.nom !== "" || filterOptions.pubExoneration !== false || filterOptions.rue !== undefined) && <div className="mt-3">
-                                <Button size="sm" variant="danger" onClick={() => setSearchModal(true)}>Supprimer les filtres</Button>
+                            {(filterOptions.matricule !== "" || filterOptions.nom !== "" || filterOptions.pubExoneration !== false || (filterOptions.rue !== null && filterOptions.rue !== undefined)) && <div className="mt-3">
+                                <Button size="sm" variant="danger" onClick={() => setFilterOptions((options: any) => ({ ...options, matricule: "", nom: "", pubExoneration: false, rue: null }))}>Supprimer les filtres</Button>
                             </div>}
                             <Form.Group controlId="show_delete" className="mt-3">
                                 <Form.Check type="checkbox" label="Afficher les entreprises en attente de suppression" onChange={ChangeShowDelete} defaultChecked={filterOptions.showDelete} />

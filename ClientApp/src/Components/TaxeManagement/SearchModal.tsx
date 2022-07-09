@@ -1,7 +1,6 @@
 import { useEffect, useState, memo, useRef } from 'react'
 import {
     Modal,
-    Table,
     Col,
     Row,
     Button,
@@ -13,19 +12,37 @@ import { IRue } from '../../Types/IRue'
 import { apiFetch } from '../../Services/apiFetch'
 
 interface ISearchModal {
+    options: { matricule: string, nom: string, pubExoneration: boolean, rue: number }
     show: boolean,
     handleClose: () => void,
     handleSearch: (data: any) => void
 }
 
-export const SearchModal = ({show, handleClose, handleSearch}: ISearchModal) => {
+export const SearchModal = ({ options, show, handleClose, handleSearch }: ISearchModal) => {
     const { register, handleSubmit, control, setValue, setError, clearErrors, formState: { errors } } = useForm()
     const [streets, setStreets] = useState<IRue[]>([])
     const [loadingStreets, setLoadingStreets] = useState<boolean>(false)
     const streetRef: any = useRef()
 
+    useEffect(() => {
+        (async () => {
+           if(options.matricule === "") {
+            setValue('matricule', '')
+           }
+           if(options.nom === "") {
+            setValue('nom', '')
+           }
+           if(options.pubExoneration === false) {
+            setValue('pubExoneration', false)
+           }
+           if(options.rue === undefined || options.rue === null) {
+            setValue('rue', '')
+           }
+        })()
+    }, [options])
+
     const onSearch = (data: any) => {
-        data = ({...data, rue: data.rue.rueId})
+        data = ({ ...data, rue: data.rue.rueId })
         handleSearch(data)
         handleClose()
     }
@@ -78,12 +95,12 @@ export const SearchModal = ({show, handleClose, handleSearch}: ISearchModal) => 
                         </Col>
                         <p className="mt-3 mb-1 fw-bold">Filtrer des entreprises en fonction des publicités</p>
                         <Col>
-                        <Form.Group controlId="exoneration">
+                            <Form.Group controlId="exoneration">
                                 <Form.Label column="sm">Exonération</Form.Label>
                                 <Form.Check type="checkbox" isInvalid={errors.matricule} {...register('pubExoneration')} />
                             </Form.Group>
-                            </Col>
-                            <Col>
+                        </Col>
+                        <Col>
                             <Form.Group className="mb-3" controlId="adresse_rue">
                                 <Form.Label column="sm">Rue</Form.Label>
                                 <Controller

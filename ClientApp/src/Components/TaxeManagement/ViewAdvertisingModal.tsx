@@ -3,11 +3,7 @@ import {
     Button,
     Row,
     Col,
-    Card,
-    Container,
-    Table,
     Modal,
-    Alert,
     Image
 } from 'react-bootstrap'
 import { IPublicite, IPubliciteImage } from '../../Types/IPublicite';
@@ -91,7 +87,7 @@ export const ViewAdvertisingModal = ({ data, handleClose }: IViewAdvertisingModa
                <Col>Exonération : <span className="fw-bold">{data.publicite.exoneration ? "Oui" : "Non"}</span></Col>
            </Row>
            <Row className="mt-3">
-               <Col>Taxe : <span className="fw-bold">{data.publicite.taxe_totale} €</span></Col>
+               <Col>Taxe : <span className="fw-bold">{data.publicite.taxe_totale ? data.publicite.taxe_totale.toFixed(2) : 0.00} €</span></Col>
            </Row>
            <div className="d-flex justify-content-start mt-3">
                     {data.publicite.photos && data.publicite.photos.map((image: IPubliciteImage, index: number) => {
