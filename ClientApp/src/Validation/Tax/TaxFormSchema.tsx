@@ -21,7 +21,7 @@ export const TaxeFormSchema = yup.object().shape({
     numero_tva: yup.string().required('Veuillez saisir un numéro de TVA').min(5, "Le numéro est trop court").max(50, "Le numéro est trop long"),
     pourcentage_majoration: yup.string().typeError("Le pourcentage de majoration n'est pas correct"),
     motif_majorationId: yup.mixed().when('pourcentage_majoration', {
-        is: (value: string) => value != "0",
+        is: (value: string) => value != "0" && value != undefined,
         then: yup.string().nullable().required('Vous avez sélectionné un % de majoration, veuillez saisir un motif')
     }),
     code_rue_taxation: yup.string().required("Veuillez saisir un code de rue").min(3, "Le code rue est trop court").max(5, "Le code rue est trop long"),

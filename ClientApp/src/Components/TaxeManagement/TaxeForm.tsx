@@ -6,8 +6,7 @@ import {
     Row,
     Col,
     Container,
-    Card,
-    Alert
+    Card
 } from 'react-bootstrap'
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead'
 import "react-bootstrap-typeahead/css/Typeahead.css";
@@ -217,10 +216,11 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
 
     const ProcesVerbalChange = (e: any) => {
         const value: boolean = e.target.checked
-        if (value) {
+        console.log(data.pourcentage_majoration, data.motif_majorationId)
+        if (value && data.pourcentage_majoration !== 0 && data.motif_majorationId !== null) {
             setValue('pourcentage_majoration', data.pourcentage_majoration)
             setValue('motif_majorationId', data.motif_majorationId)
-        } else {
+        } else if (!value) {
             setValue('pourcentage_majoration', "0")
             setValue('motif_majorationId', null)
         }
@@ -542,7 +542,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                     <Col>
                         <Form.Group controlId="pourcentage_majoration">
                             <Form.Label column="sm">% majoration</Form.Label>
-                            <Form.Select {...register('pourcentage_majoration')} isInvalid={errors.pourcentage_majoration} size="sm">
+                            <Form.Select {...register('pourcentage_majoration')} isInvalid={errors.pourcentage_majoration} disabled={type == 'create'} size="sm">
                                 <option value="0">Aucun</option>
                                 <option value="10">10 %</option>
                                 <option value="50">50 %</option>
@@ -555,7 +555,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                     <Col>
                         <Form.Group controlId="motif_majorationId">
                             <Form.Label column="sm">Motif de la majoration</Form.Label>
-                            <Form.Select {...register('motif_majorationId')} isInvalid={errors.motif_majorationId} size="sm">
+                            <Form.Select {...register('motif_majorationId')} isInvalid={errors.motif_majorationId} disabled={type == 'create'} size="sm">
                                 <option value="">Aucun motif</option>
                                 {motifs.map((reason: IMotif_majoration, index: number) => {
                                     return <option key={index} value={reason.id_motif}>{reason.libelle}</option>
