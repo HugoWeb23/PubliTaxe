@@ -3,6 +3,7 @@ import * as yup from 'yup'
 export const TaxeFormSchema = yup.object().shape({
     matricule_ciger: yup.number().typeError("Le matricule doit être composé exclusivement de chiffres"),
     nom: yup.string().required('Veuillez saisir un nom').min(3, "Le nom est trop court").max(50, "Le nom est trop long"),
+    desactive: yup.boolean().typeError('Valeur invalide'),
     proces_verbal: yup.boolean().typeError('Valeur invalide'),
     province: yup.boolean().typeError('Valeur invalide'),
     recu: yup.boolean().typeError('Valeur invalide'),

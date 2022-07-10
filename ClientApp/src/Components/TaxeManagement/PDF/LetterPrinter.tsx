@@ -164,6 +164,7 @@ export const LetterPrinter = ({ entreprise, printData, tarifs, currentFiscalYear
                 <Text style={styles.NormalText}>{entreprise.nom}</Text>
                 <Text style={styles.NormalText}>{entreprise.adresse_rue}, {entreprise.adresse_numero}</Text>
                 <Text style={styles.NormalText}>{entreprise.code_postal.cp} {entreprise.code_postal.localite}</Text>
+                <Text style={styles.NormalText}>{entreprise.code_postal.pays.nom_pays}</Text>
             </View>
         </View>
         <View style={styles.TransversalLogo}>

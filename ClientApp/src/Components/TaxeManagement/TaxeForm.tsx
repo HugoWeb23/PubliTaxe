@@ -240,28 +240,6 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
         }
     }
 
-    const EntrepriseStatus = async (type: string) => {
-        try {
-            if (type === 'disable') {
-                await apiFetch(`/entreprises/disable/${tax?.id_entreprise}`, {
-                    method: 'PUT'
-                })
-                setTax((tax: Entreprise) => ({ ...tax, desactive: true }))
-                toast.success("L'entreprise a été désactivée")
-            } else if (type === 'enable') {
-                await apiFetch(`/entreprises/enable/${tax?.id_entreprise}`, {
-                    method: 'PUT'
-                })
-                setTax((tax: Entreprise) => ({ ...tax, desactive: false }))
-                toast.success("L'entreprise a été activée")
-            }
-        } catch (e: any) {
-            if (e instanceof ApiErrors) {
-                toast.error(e.singleError.error)
-            }
-        }
-    }
-
     return <>
         <ConfirmModal
             show={confirmModal}
@@ -319,9 +297,6 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                 </div>}
                 {tax?.desactive && <div className="bd-callout bd-callout-danger">
                     <h5>Cette entreprise est désactivée</h5>
-                    <div className="mt-3">
-                        <Button size="sm" variant="outline-success" onClick={() => EntrepriseStatus("enable")}>Activer l'entreprise</Button>
-                    </div>
                 </div>}
                 <Row className="mb-3">
                     <Col>
@@ -329,6 +304,13 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                             <Form.Label column="sm">Matricule</Form.Label>
                             <Form.Control type="text" placeholder="Matricule Ciger" isInvalid={errors.matricule_ciger} isValid={matriculeAvailable} size="sm" {...register('matricule_ciger')} onChange={(e) => CheckMatricule(e)} />
                             {errors.matricule_ciger && <Form.Control.Feedback type="invalid">{errors.matricule_ciger.message}</Form.Control.Feedback>}
+                        </Form.Group>
+                    </Col>
+                    <Col>
+                        <Form.Group controlId="desactive">
+                            <Form.Label column="sm" className="text-danger">Entreprise désactivée</Form.Label>
+                            <Form.Check type="checkbox" isInvalid={errors.desactive} {...register('desactive')} />
+                            {errors.desactive && <Form.Control.Feedback type="invalid">{errors.desactive.message}</Form.Control.Feedback>}
                         </Form.Group>
                     </Col>
                     <Col>
@@ -643,7 +625,6 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                 </Row>
             </Form>
             <ManageAdvertising pubs={publicites} matricule={defaultValues.matricule_ciger} tarifs={tarifs} currentFiscalYear={currentFiscalYear} onSubmit={UpdatePubs} />
-            {tax?.desactive === false && <div className="mt-3 mb-3"><Button size="sm" variant="outline-danger" onClick={() => EntrepriseStatus("disable")}>Désactiver l'entreprise</Button></div>}
         </Container>
     </>
 }

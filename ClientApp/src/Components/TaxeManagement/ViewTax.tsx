@@ -176,6 +176,7 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
                         </tr>
                     </thead>
                     <tbody>
+                        {entreprise.publicites.length === 0 && <tr><td colSpan={6}>Aucune publicité</td></tr>}
                         {entreprise.publicites.map((pub: IPublicite) => {
                             return <tr key={pub.matricule_ciger}>
                                 <td>{pub.exercice_courant}</td>
@@ -183,7 +184,7 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
                                 <td>{pub.rue.code_rue}</td>
                                 <td>{pub.rue.nom_rue}</td>
                                 <td>{pub.adresse_numero}</td>
-                                <td><Button size="sm" variant="info" onClick={() => setViewPubModal({ show: true, publicite: pub })}>Consulter</Button></td>
+                                <td><Button size="sm" variant="secondary" onClick={() => setViewPubModal({ show: true, publicite: pub })}>Consulter</Button></td>
                             </tr>
                         })}
                         <tr><td colSpan={6} className="text-end">Taxe totale (hors majoration) : <span className="fw-bold">{entreprise.publicites.reduce((acc: any, curr: any) => acc + parseFloat(curr.taxe_totale), 0).toFixed(2)} €</span></td></tr>

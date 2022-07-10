@@ -180,7 +180,7 @@ const Entreprise = ({ entreprise }: IEntreprise) => {
         <td>{entreprise.nom}</td>
         <td>{entreprise.nombre_panneaux}</td>
         <td><PaymentStatus status={entreprise.statut_paiement} /></td>
-        <td>{entreprise.taxe_totale} €</td>
+        <td>{entreprise.taxe_totale.toFixed(2)} €</td>
         <td><Link to={`payment_management/details/${entreprise.id_entreprise}`} className="btn btn-success btn-sm"><SearchIcon /> Consulter</Link></td>
     </tr>
 }
