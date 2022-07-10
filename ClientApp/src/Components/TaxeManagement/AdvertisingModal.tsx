@@ -260,7 +260,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
                     <Row>
                         <Col>
                             <Form.Group className="mb-3" controlId="situation">
-                                <Form.Label column="sm">Situation</Form.Label>
+                                <Form.Label column="sm">Situation <span className="fw-light">(optionnel)</span></Form.Label>
                                 <Form.Control type="text" as="textarea" placeholder="Situation" size="sm" isInvalid={errors.situation} {...register('situation')} />
                                 {errors.situation && <Form.Control.Feedback type="invalid">{errors.situation.message}</Form.Control.Feedback>}
                             </Form.Group>
@@ -325,7 +325,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
                     <Row>
                         <Col>
                             <Form.Group controlId="formFileSm" className="mb-3">
-                                <Form.Label column="sm">Photos du panneau</Form.Label>
+                                <Form.Label column="sm">Photos du panneau <span className="fw-light">(optionnel)</span></Form.Label>
                                 <Form.Control type="file" size="sm" accept="image/*" multiple onChange={onFileChange} />
                                 <Form.Text className="text-muted">
                                     Maintenez la touche CTRL pour sélectionner plusieurs photos.

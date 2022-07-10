@@ -179,7 +179,7 @@ export const AdvertisingModalSimulation = ({ type, show, publicite, handleClose,
                     <Row>
                         <Col>
                             <Form.Group className="mb-3" controlId="situation">
-                                <Form.Label column="sm">Situation</Form.Label>
+                                <Form.Label column="sm">Situation <span className="fw-light">(optionnel)</span></Form.Label>
                                 <Form.Control type="text" as="textarea" placeholder="Situation" size="sm" isInvalid={errors.situation} {...register('situation')} />
                                 {errors.situation && <Form.Control.Feedback type="invalid">{errors.situation.message}</Form.Control.Feedback>}
                             </Form.Group>

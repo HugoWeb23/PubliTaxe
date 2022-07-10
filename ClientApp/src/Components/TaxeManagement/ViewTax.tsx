@@ -102,64 +102,64 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
                     <div><h5>Paiement de la taxe <PaymentStatus status={entreprise.statut_paiement} /></h5></div>
                 </div>
                 <Row>
-                    <Col><div>Matricule<span className="fw-bold d-block">{entreprise.matricule_ciger}</span></div></Col>
-                    <Col><div>Procès-verbal<span className="fw-bold d-block">{entreprise.proces_verbal ? "Oui" : "Non"}</span></div></Col>
-                    <Col><div>Langue<span className="fw-bold d-block">{entreprise.role_linguistique === 1 ? "Français" : "Néerlandais"}</span></div></Col>
+                    <Col><div className="fw-bold">Matricule</div><span className="d-block">{entreprise.matricule_ciger}</span></Col>
+                    <Col><div className="fw-bold">Procès-verbal</div><span className="d-block">{entreprise.proces_verbal ? "Oui" : "Non"}</span></Col>
+                    <Col><div className="fw-bold">Langue</div><span className="d-block">{entreprise.role_linguistique === 1 ? "Français" : "Néerlandais"}</span></Col>
                 </Row>
                 <Row className="mt-3">
-                    <Col><div>Nom<span className="fw-bold d-block">{entreprise.nom}</span></div></Col>
+                    <Col><div className="fw-bold">Nom</div><span className="d-block">{entreprise.nom}</span></Col>
                 </Row>
                 <Row className="mt-3">
-                    <Col><div>Code rue<span className="fw-bold d-block">{entreprise.code_rue}</span></div></Col>
-                    <Col><div>Rue<span className="fw-bold d-block">{entreprise.adresse_rue}</span></div></Col>
-                    <Col><div>Numéro<span className="fw-bold d-block">{entreprise.adresse_numero}</span></div></Col>
-                    <Col><div>Index<span className="fw-bold d-block">{entreprise.adresse_index}</span></div></Col>
-                    <Col><div>Boite<span className="fw-bold d-block">{entreprise.adresse_boite}</span></div></Col>
-                    <Col><div>Numéro<span className="fw-bold d-block">{entreprise.adresse_numero}</span></div></Col>
+                    <Col><div className="fw-bold">Code rue</div><span className="d-block">{entreprise.code_rue}</span></Col>
+                    <Col><div className="fw-bold">Rue</div><span className="d-block">{entreprise.adresse_rue}</span></Col>
+                    <Col><div className="fw-bold">Numéro</div><span className="d-block">{entreprise.adresse_numero}</span></Col>
+                    <Col><div className="fw-bold">Index</div><span className="d-block">{entreprise.adresse_index}</span></Col>
+                    <Col><div className="fw-bold">Boite</div><span className="d-block">{entreprise.adresse_boite}</span></Col>
+                    <Col><div className="fw-bold">Numéro</div><span className="d-block">{entreprise.adresse_numero}</span></Col>
                 </Row>
                 <Row className="mt-3">
-                    <Col><div>Code postal<span className="fw-bold d-block">{entreprise.code_postal.cp}</span></div></Col>
-                    <Col><div>Localité<span className="fw-bold d-block">{entreprise.code_postal.localite}</span></div></Col>
+                    <Col><div className="fw-bold">Code postal</div><span className="d-block">{entreprise.code_postal.cp}</span></Col>
+                    <Col><div className="fw-bold">Localité</div><span className="d-block">{entreprise.code_postal.localite}</span></Col>
                 </Row>
                 <Row className="mt-3">
-                    <Col><div>Téléphone<span className="fw-bold d-block">{entreprise.numero_telephone}</span></div></Col>
-                    <Col><div>Fax<span className="fw-bold d-block">{entreprise.numero_fax}</span></div></Col>
-                    <Col><div>Personne de contact<span className="fw-bold d-block">{entreprise.personne_contact}</span></div></Col>
-                    <Col><div>Téléphone<span className="fw-bold d-block">{entreprise.telephone_contact}</span></div></Col>
-                    <Col><div>Adresse e-mail<span className="fw-bold d-block">{entreprise.mail_contact}</span></div></Col>
+                    <Col><div className="fw-bold">Téléphone</div><span className="d-block">{entreprise.numero_telephone}</span></Col>
+                    <Col><div className="fw-bold">Fax</div><span className="d-block">{entreprise.numero_fax}</span></Col>
+                    <Col><div className="fw-bold">Personne de contact</div><span className="d-block">{entreprise.personne_contact}</span></Col>
+                    <Col><div className="fw-bold">Téléphone</div><span className="d-block">{entreprise.telephone_contact}</span></Col>
+                    <Col><div className="fw-bold">Adresse e-mail</div><span className="d-block">{entreprise.mail_contact}</span></Col>
                 </Row>
                 <Row className="mt-3">
-                    <Col><div>Numéro de TVA<span className="fw-bold d-block">{entreprise.numero_tva}</span></div></Col>
-                    <Col><div>% majoration<span className="fw-bold d-block">{entreprise.pourcentage_majoration}</span></div></Col>
-                    <Col><div>Motif majoration<span className="fw-bold d-block">{motifs.find((motif: IMotif_majoration) => motif.id_motif == entreprise.motif_majorationId)?.libelle}</span></div></Col>
+                    <Col><div className="fw-bold">Numéro de TVA</div><span className="d-block">{entreprise.numero_tva}</span></Col>
+                    <Col><div className="fw-bold">% majoration</div><span className="d-block">{entreprise.pourcentage_majoration}</span></Col>
+                    <Col><div className="fw-bold">Motif majoration</div><span className="d-block">{motifs.find((motif: IMotif_majoration) => motif.id_motif == entreprise.motif_majorationId)?.libelle}</span></Col>
                 </Row >
-                <div className="mt-3">Commentaire<span className="fw-bold d-block">{entreprise.commentaire_taxation}</span></div>
+                <div className="mt-3">Commentaire</div><span className="d-block">{entreprise.commentaire_taxation}</span>
                 <Card className="mt-3">
                     <Card.Header as="h6">Adresse de taxation</Card.Header>
                     <Card.Body>
                         <Row className="mb-3">
                             <Col>
-                                <div>Code rue taxation<span className="fw-bold d-block">{entreprise.code_rue_taxation}</span></div>
+                                <div className="fw-bold">Code rue taxation</div><span className="d-block">{entreprise.code_rue_taxation}</span>
                             </Col>
                             <Col>
-                                <div>Adresse taxation<span className="fw-bold d-block">{entreprise.adresse_taxation}</span></div>
+                                <div className="fw-bold">Adresse taxation</div><span className="d-block">{entreprise.adresse_taxation}</span>
                             </Col>
                             <Col>
-                                <div>Numéro<span className="fw-bold d-block">{entreprise.adresse_numero_taxation}</span></div>
+                                <div className="fw-bold">Numéro</div><span className="d-block">{entreprise.adresse_numero_taxation}</span>
                             </Col>
                         </Row>
                         <Row>
                             <Col>
-                                <div>Index<span className="fw-bold d-block">{entreprise.adresse_index_taxation}</span></div>
+                                <div className="fw-bold">Index</div><span className="d-block">{entreprise.adresse_index_taxation}</span>
                             </Col>
                             <Col>
-                                <div>Boite<span className="fw-bold d-block">{entreprise.adresse_boite_taxation}</span></div>
+                                <div className="fw-bold">Boite</div><span className="d-block">{entreprise.adresse_boite_taxation}</span>
                             </Col>
                             <Col>
-                                <div>Code postal<span className="fw-bold d-block">{entreprise.adresse_code_postal_taxation}</span></div>
+                                <div className="fw-bold">Code postal</div><span className="d-block">{entreprise.adresse_code_postal_taxation}</span>
                             </Col>
                             <Col>
-                                <div>Localité<span className="fw-bold d-block">{entreprise.adresse_localite_taxation}</span></div>
+                                <div className="fw-bold">Localité</div><span className="d-block">{entreprise.adresse_localite_taxation}</span>
                             </Col>
                         </Row>
                     </Card.Body>
