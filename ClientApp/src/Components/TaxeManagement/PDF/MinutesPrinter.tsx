@@ -98,7 +98,7 @@ export const MinutesPrinter = ({ entreprise, printData, motifsMajoration }: IMin
             <Text style={[styles.NormalText]}>Je soussignée, {printData.personne_contact}, fonctionnaire assermentée et spécialement désignée le 30 novembre 2020
                 par le Collège Communal pour constater les infractions visées à l'article 6, Alinéa 1er de la Loi du 24 décembre 1996 relative à
                 l'établissement et au recouvrement des taxes provinciales et communales, avons constaté que : <Text style={[styles.NormalText, {fontWeight: 'bold'}]}>{entreprise.nom}</Text></Text>
-            <Text style={[styles.NormalText, {marginTop: '2mm'}]}>domicilié à <Text style={[styles.NormalText, {fontWeight: 'bold'}]}>{entreprise.adresse_rue}, {entreprise.adresse_numero} - {entreprise.code_postal.cp} {entreprise.code_postal.localite}</Text></Text>
+            <Text style={[styles.NormalText, {marginTop: '2mm'}]}>domicilié à <Text style={[styles.NormalText, {fontWeight: 'bold'}]}>{entreprise.adresse_rue}, {entreprise.adresse_numero} - {entreprise.code_postal.cp} {entreprise.code_postal.localite} - {entreprise.code_postal.pays.nom_pays}</Text></Text>
         <Text style={[styles.NormalText, { textDecoration: 'underline', fontWeight: 'bold', marginTop: '10mm', marginBottom: '6mm' }]}>Nature de l'infraction</Text>
         <Text style={[styles.NormalText]}>1. N'a pas rentré la formule de déclaration relative à la taxe communale sur les panneaux d'affichage et/ou enseignes, pour un ou des panneaux et/ou enseignes situés : </Text>
         <View style={{marginTop: '4mm'}}>
