@@ -29,7 +29,7 @@ export interface Entreprise {
         code_rue_taxation: number,
         adresse_taxation: string,
         adresse_numero_taxation: number,
-        adresse_boite_taxation: number,
+        adresse_boite_taxation: string,
         adresse_index_taxation: string,
         adresse_code_postal_taxation: number,
         adresse_localite_taxation: string,

@@ -161,7 +161,7 @@ export const RegisteredLetter = ({ entreprise, printData, currentFiscalYear, mot
                 <Text style={[styles.NormalText, { marginBottom: '5mm' }]}>Ville de Mouscron, le {printData.date_impression}</Text>
                 <Text style={[styles.NormalText, { fontWeight: 'bold', marginBottom: '1mm' }]}>{entreprise.matricule_ciger}</Text>
                 <Text style={[styles.NormalText, { fontWeight: 'bold', marginBottom: '1mm' }]}>{entreprise.nom}</Text>
-                <Text style={[styles.NormalText, { fontWeight: 'bold', marginBottom: '1mm' }]}>{entreprise.adresse_rue}, {entreprise.adresse_numero}</Text>
+                <Text style={[styles.NormalText, { fontWeight: 'bold', marginBottom: '1mm' }]}>{entreprise.adresse_rue}, {entreprise.adresse_numero} {entreprise.adresse_boite > 0 && `(boite ${entreprise.adresse_boite})`}</Text>
                 <Text style={[styles.NormalText, { fontWeight: 'bold', marginBottom: '1mm' }]}>{entreprise.code_postal.cp} {entreprise.code_postal.localite}</Text>
                 <Text style={[styles.NormalText, { fontWeight: 'bold' }]}>{entreprise.code_postal.pays.nom_pays}</Text>
             </View>

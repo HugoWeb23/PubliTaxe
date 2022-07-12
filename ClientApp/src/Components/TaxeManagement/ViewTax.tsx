@@ -113,8 +113,8 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
                     <Col><div className="fw-bold">Code rue</div><span className="d-block">{entreprise.code_rue}</span></Col>
                     <Col><div className="fw-bold">Rue</div><span className="d-block">{entreprise.adresse_rue}</span></Col>
                     <Col><div className="fw-bold">Numéro</div><span className="d-block">{entreprise.adresse_numero}</span></Col>
-                    <Col><div className="fw-bold">Index</div><span className="d-block">{entreprise.adresse_index}</span></Col>
-                    <Col><div className="fw-bold">Boite</div><span className="d-block">{entreprise.adresse_boite}</span></Col>
+                    <Col><div className="fw-bold">Index</div><span className={`d-block ${(entreprise.adresse_index.length == 0 || entreprise.adresse_index == '0') && 'fw-light'}`}>{(entreprise.adresse_index.length > 0 && entreprise.adresse_index != '0') ? entreprise.adresse_index : "(Pas d'index)"}</span></Col>
+                    <Col><div className="fw-bold">Boite</div><span className={`d-block ${entreprise.adresse_boite == 0 && 'fw-light'}`}>{entreprise.adresse_boite > 0 ? entreprise.adresse_boite : "(Pas de boite)"}</span></Col>
                     <Col><div className="fw-bold">Numéro</div><span className="d-block">{entreprise.adresse_numero}</span></Col>
                 </Row>
                 <Row className="mt-3">
@@ -123,17 +123,17 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
                 </Row>
                 <Row className="mt-3">
                     <Col><div className="fw-bold">Téléphone</div><span className="d-block">{entreprise.numero_telephone}</span></Col>
-                    <Col><div className="fw-bold">Fax</div><span className="d-block">{entreprise.numero_fax}</span></Col>
+                    <Col><div className="fw-bold">Fax</div><span className={`d-block ${entreprise.numero_fax.length === 0 && 'fw-light'}`}>{entreprise.numero_fax.length > 0 ? entreprise.numero_fax : "(Pas de fax)"}</span></Col>
                     <Col><div className="fw-bold">Personne de contact</div><span className="d-block">{entreprise.personne_contact}</span></Col>
                     <Col><div className="fw-bold">Téléphone</div><span className="d-block">{entreprise.telephone_contact}</span></Col>
                     <Col><div className="fw-bold">Adresse e-mail</div><span className="d-block">{entreprise.mail_contact}</span></Col>
                 </Row>
                 <Row className="mt-3">
                     <Col><div className="fw-bold">Numéro de TVA</div><span className="d-block">{entreprise.numero_tva}</span></Col>
-                    <Col><div className="fw-bold">% majoration</div><span className="d-block">{entreprise.pourcentage_majoration}</span></Col>
-                    <Col><div className="fw-bold">Motif majoration</div><span className="d-block">{motifs.find((motif: IMotif_majoration) => motif.id_motif == entreprise.motif_majorationId)?.libelle}</span></Col>
+                    <Col><div className="fw-bold">% majoration</div><span className="d-block">{entreprise.pourcentage_majoration + ' %'}</span></Col>
+                    <Col><div className="fw-bold">Motif majoration</div><span className={`d-block ${motifs.find((motif: IMotif_majoration) => motif.id_motif == entreprise.motif_majorationId) === undefined && 'fw-light'}`}>{motifs.find((motif: IMotif_majoration) => motif.id_motif == entreprise.motif_majorationId) !== undefined ? motifs.find((motif: IMotif_majoration) => motif.id_motif == entreprise.motif_majorationId)?.libelle : '(Aucun motif)'}</span></Col>
                 </Row >
-                <div className="mt-3">Commentaire</div><span className="d-block">{entreprise.commentaire_taxation}</span>
+                <div className="mt-3">Commentaire</div><span className={`d-block ${entreprise.commentaire_taxation.length === 0 && 'fw-light'}`}>{entreprise.commentaire_taxation.length > 0 ? entreprise.commentaire_taxation : '(Aucun commentaire)'}</span>
                 <Card className="mt-3">
                     <Card.Header as="h6">Adresse de taxation</Card.Header>
                     <Card.Body>
@@ -150,10 +150,10 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
                         </Row>
                         <Row>
                             <Col>
-                                <div className="fw-bold">Index</div><span className="d-block">{entreprise.adresse_index_taxation}</span>
+                                <div className="fw-bold">Index</div><span className={`d-block ${(entreprise.adresse_index_taxation.length == 0 || entreprise.adresse_index_taxation == '0') && 'fw-light'}`}>{(entreprise.adresse_index_taxation.length != 0 && entreprise.adresse_index_taxation != '0') ? entreprise.adresse_index_taxation : "(Pas d'index)"}</span>
                             </Col>
                             <Col>
-                                <div className="fw-bold">Boite</div><span className="d-block">{entreprise.adresse_boite_taxation}</span>
+                            <div className="fw-bold">Boite</div><span className={`d-block ${(entreprise.adresse_boite_taxation.length == 0 || entreprise.adresse_boite_taxation == "0") && 'fw-light'}`}>{entreprise.adresse_boite_taxation != "0" ? entreprise.adresse_boite_taxation : "(Pas de boite)"}</span>
                             </Col>
                             <Col>
                                 <div className="fw-bold">Code postal</div><span className="d-block">{entreprise.adresse_code_postal_taxation}</span>

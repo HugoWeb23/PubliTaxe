@@ -166,17 +166,17 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs, currentFisca
                 <View style={styles.BusinessInformations}>
                     <View>
                         <Text style={styles.NormalText}>Matricule Ciger : {entreprise.matricule_ciger}</Text>
-                        <Text style={styles.NormalText}>Adresse : {entreprise.adresse_rue}, n° {entreprise.adresse_numero}</Text>
+                        <Text style={styles.NormalText}>Adresse : {entreprise.adresse_rue}, n° {entreprise.adresse_numero} {entreprise.adresse_boite > 0 && `(boite ${entreprise.adresse_boite})`}</Text>
                         <Text style={styles.NormalText}>Code postal : {entreprise.code_postal.cp}</Text>
                         <Text style={styles.NormalText}>Localité : {entreprise.code_postal.localite}</Text>
                         <Text style={styles.NormalText}>Pays : {entreprise.code_postal.pays.nom_pays}</Text>
                     </View>
                     <View>
                         <Text style={styles.NormalText}>Nom : {entreprise.nom}</Text>
-                        <Text style={styles.NormalText}>TVA : {entreprise.numero_tva}</Text>
-                        <Text style={styles.NormalText}>Telephone : {entreprise.numero_telephone}</Text>
-                        <Text style={styles.NormalText}>Fax : {entreprise.numero_fax}</Text>
-                        <Text style={styles.NormalText}>Mail : {entreprise.mail_contact}</Text>
+                        <Text style={styles.NormalText}>N° TVA : {entreprise.numero_tva}</Text>
+                        <Text style={styles.NormalText}>N° téléphone : {entreprise.numero_telephone}</Text>
+                        {(entreprise.numero_fax.length > 0 && entreprise.numero_fax != "0") && <Text style={styles.NormalText}>Fax : {entreprise.numero_fax}</Text>}
+                        <Text style={styles.NormalText}>Adresse e-mail : {entreprise.mail_contact}</Text>
                     </View>
                 </View>
                 <View style={styles.PubsTable}>

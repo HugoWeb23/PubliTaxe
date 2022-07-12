@@ -172,7 +172,7 @@ interface IModalInfos {
 const ModalInfos = ({ show, handleClose }: IModalInfos) => {
     return <Modal show={show} onHide={handleClose} size="lg">
         <Modal.Header closeButton>
-            <Modal.Title>Permissions des rôles</Modal.Title>
+            <Modal.Title as="h5">Permissions des rôles</Modal.Title>
         </Modal.Header>
         <Modal.Body>
             <Table className="table-borderless">
@@ -243,7 +243,7 @@ const ModalInfos = ({ show, handleClose }: IModalInfos) => {
             </Table>
         </Modal.Body>
         <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
+            <Button variant="secondary" onClick={handleClose} size="sm">
                 Fermer
             </Button>
         </Modal.Footer>

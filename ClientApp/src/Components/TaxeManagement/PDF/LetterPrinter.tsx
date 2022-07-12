@@ -162,7 +162,7 @@ export const LetterPrinter = ({ entreprise, printData, tarifs, currentFiscalYear
             <View style={styles.EntrepriseInfo}>
                 <Text style={styles.NormalText}>Matricule : {entreprise.matricule_ciger}</Text>
                 <Text style={styles.NormalText}>{entreprise.nom}</Text>
-                <Text style={styles.NormalText}>{entreprise.adresse_rue}, {entreprise.adresse_numero}</Text>
+                <Text style={styles.NormalText}>{entreprise.adresse_rue}, {entreprise.adresse_numero} {entreprise.adresse_boite > 0 && `(boite ${entreprise.adresse_boite})`}</Text>
                 <Text style={styles.NormalText}>{entreprise.code_postal.cp} {entreprise.code_postal.localite}</Text>
                 <Text style={styles.NormalText}>{entreprise.code_postal.pays.nom_pays}</Text>
             </View>
