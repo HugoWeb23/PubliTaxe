@@ -144,6 +144,10 @@
     border-left-width: .25rem;
     border-radius: .25rem
     }
+
+  .bd-callout-mini {
+    padding: 1.1rem;
+  }
     
     .bd-callout h4 {
     margin-top: 0;

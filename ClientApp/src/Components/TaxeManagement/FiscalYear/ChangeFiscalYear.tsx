@@ -73,7 +73,7 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
                     setErrorModal({ show: true, message: e.singleError.error })
                 }
             }
-            setLoader(false)
+            setTimeout(() => setLoader(false), 300)
         })()
     }, [filterOptions])
 
@@ -137,7 +137,9 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
             {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
             <Card className="mb-3" body>
                 <div className="fw-bold mb-2">Ces entreprises vont être supprimées lors du changement d'exercice</div>
-                {(entreprises.length === 0 && loader === false) && <Alert variant="secondary">Aucune entreprise n'est en attente de suppression</Alert>}
+                {(entreprises.length === 0 && loader === false) && <div className="bd-callout bd-callout-mini bd-callout-danger">
+                    <span style={{fontSize: "1.1rem"}}>Aucune entreprise n'est en attente de suppression</span>
+                </div>}
                 {entreprises.length > 0 && <Table striped bordered hover size="sm">
                     <thead>
                         <th>ID</th>

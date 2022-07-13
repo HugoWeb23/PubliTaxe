@@ -86,7 +86,7 @@ export const ManageFiscalYears = ({ handleEdit }: IManageFiscalyears) => {
                             <td>{year.annee_exercice}</td>
                             <td>{new Date(year.date_echeance).toLocaleDateString('fr-FR')}</td>
                             <td>{new Date(year.date_reglement_taxe).toLocaleDateString('fr-FR')}</td>
-                            <td><Button size="sm" onClick={() => setSelectedFiscalYear(element => ({ fiscalYear: year, show: true, type: 'edit' }))}><Pencil /></Button></td>
+                            <td><Button size="sm" onClick={() => setSelectedFiscalYear(element => ({ fiscalYear: year, show: true, type: 'edit' }))}><Pencil /> Modifier</Button></td>
                         </tr>
                     })}
                 </tbody>

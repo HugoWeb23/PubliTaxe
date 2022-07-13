@@ -1,4 +1,4 @@
-import { useEffect, useState, memo } from 'react'
+import { useEffect, useState } from 'react'
 import {
     Table,
     Container,
@@ -7,15 +7,12 @@ import {
     Card,
     Badge,
     Col,
-    Row,
-    Button
+    Row
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { IApercu_entreprise } from '../../../Types/IApercu_entreprise'
 import { IExercice } from '../../../Types/IExercice'
 import { Loader } from '../../UI/Loader'
-import { toast } from 'react-toastify';
-import { ApiErrors } from '../../../Services/apiFetch'
 import { usePayments } from '../../Hooks/PaymentHook'
 import { IApercu_paiement } from '../../../Types/IApercu_paiement'
 import { SearchIcon } from '../../UI/SearchIcon'
@@ -24,6 +21,8 @@ import { ExclamationIcon } from '../../UI/ExclamationIcon'
 import { CheckIcon } from '../../UI/CheckIcon'
 import { Paginate } from '../../../Services/Paginate'
 import { ElementsPerPage } from '../../../Services/ElementsPerPage'
+import { ApiErrors } from '../../../Services/apiFetch'
+import { Loader as SmallLoader } from 'react-bootstrap-typeahead'
 
 interface IManagePayment {
     currentFiscalYear: IExercice
@@ -39,6 +38,7 @@ interface IFilterOptions {
 
 export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
     const [loader, setLoader] = useState<boolean>(true)
+    const [optionsLoader, setOptionsLoader] = useState<boolean>(false)
     const [filterOptions, setFilterOptions] = useState<IFilterOptions>({ exercice: currentFiscalYear.id, type: "all", matricule: "", elementsParPage: 15, pageCourante: 1 })
     const [selectedEntreprise, setSelectedEntreprise] = useState<{ entrepriseInfos: IApercu_entreprise, show: boolean }>({ entrepriseInfos: {} as IApercu_entreprise, show: false })
     const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
@@ -46,8 +46,16 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
 
     useEffect(() => {
         (async () => {
-            await getAll(filterOptions)
-            setLoader(false)
+            try {
+                setOptionsLoader(true)
+                await getAll(filterOptions)
+                setOptionsLoader(false)
+            } catch (e: any) {
+                if (e instanceof ApiErrors) {
+                    setErrorModal({ show: true, message: e.singleError.error })
+                }
+            }
+            setTimeout(() => setLoader(false), 300)
         })()
     }, [filterOptions])
 
@@ -153,6 +161,7 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
                 </Col>
             </Row>
             {paiements.length > 0 && <div className="d-flex justify-content-end align-items-center">
+            {optionsLoader && <div className="me-2"><SmallLoader /></div>}
                 <div className="me-2">
                     <ElementsPerPage
                         elementsPerPage={elementsParPage}

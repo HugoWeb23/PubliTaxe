@@ -7,7 +7,6 @@ import {
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { IApercu_entreprise } from '../../../Types/IApercu_entreprise'
-import { Entreprise } from '../../../Types/IEntreprise'
 import { IExercice } from '../../../Types/IExercice'
 import { IMotif_majoration } from '../../../Types/IMotif_majoration'
 import { INotReceived } from '../../../Types/INotReceived'
@@ -87,7 +86,7 @@ export const ManageNotReceived = ({ motifs, currentFiscalYear }: IManageNotRecei
             <hr className="my-3" />
             {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
             {(errorModal.show === false && currentDate < expirationDate) && <Alert variant="warning">Attention, la date d'échéance de l'exercice {currentFiscalYear.annee_exercice} n'a pas encore été dépassée (<span className="fw-bold">{new Date(currentFiscalYear.date_echeance).toLocaleDateString('fr-FR')}</span>).</Alert>}
-            {(errorModal.show === false && currentDate >= expirationDate) && <div className="mt-3 mb-3"><span className="fw-bold">Date limite pour la remise de la déclaration : </span>{new Date(currentFiscalYear.date_echeance).toLocaleDateString('fr-FR')}</div>}
+            {(errorModal.show === false && currentDate >= expirationDate) && <div className="mt-3 mb-3"><span className="fw-bold">Date limite pour la remise des déclarations : </span>{new Date(currentFiscalYear.date_echeance).toLocaleDateString('fr-FR')}</div>}
             <Table striped bordered size="sm">
                 <thead>
                     <tr>

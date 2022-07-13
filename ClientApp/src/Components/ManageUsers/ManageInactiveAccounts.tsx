@@ -88,12 +88,13 @@ export const ManageInactiveAccounts = () => {
                     </tr>
                 </thead>
                 <tbody>
+                    {(loader === true) && <tr><td colSpan={6}>Chargement...</td></tr>}
                     {(loader === false && accounts.length === 0) && <tr><td colSpan={6}>Aucun résultat</td></tr>}
-                    {loader === false ? accounts.map((user: IUser, index: number) => <UserRow
+                    {(loader === false && accounts.length !== 0) && accounts.map((user: IUser, index: number) => <UserRow
                         user={user}
                         onDelete={(user: IUser) => setDeleteModal({ show: true, user: user })}
                         onActivate={(user: IUser) => handleActivateAccount(user)}
-                    />) : <Loader />}
+                    />)}
                 </tbody>
             </Table>
         </Container>

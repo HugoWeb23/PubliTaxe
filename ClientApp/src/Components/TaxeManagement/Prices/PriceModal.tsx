@@ -47,11 +47,8 @@ export const PriceModal = ({ element, fiscalYears, fiscalYearsUsed, handleClose,
           <Form.Group controlId="Exercice" className="mb-1">
             <Form.Label column="sm">Exercice</Form.Label>
             <Form.Select size="sm" isInvalid={errors.exerciceId} {...register('exerciceId')}>
-              {fiscalYears.map((fiscalYear: IExercice) => <option value={fiscalYear.id} disabled={fiscalYearsUsed.includes(fiscalYear.id)}>{fiscalYear.annee_exercice}</option>)}
+              {fiscalYears.map((fiscalYear: IExercice) => <option value={fiscalYear.id}>{fiscalYear.annee_exercice}</option>)}
             </Form.Select>
-            <Form.Text className="text-muted">
-              Les exercices déjà utilisés appraissent grisés dans la liste.
-            </Form.Text>
             {errors.exerciceId && <Form.Control.Feedback type="invalid">{errors.exerciceId.message}</Form.Control.Feedback>}
           </Form.Group>
           <Row>

@@ -133,7 +133,7 @@ export const ManagePrices = ({ handleEdit, handleCreate }: IManagePrices) => {
                                     </div>
                                 </div>
                             </td>
-                            <td><Button size="sm" onClick={() => setSelectedPrice({ price: price, show: true, type: 'edit' })}><Pencil /></Button></td>
+                            <td><Button size="sm" onClick={() => setSelectedPrice({ price: price, show: true, type: 'edit' })}><Pencil /> Modifier</Button></td>
                         </tr>
                     })}
                 </tbody>

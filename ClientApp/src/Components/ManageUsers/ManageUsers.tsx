@@ -79,13 +79,13 @@ export const ManageUsers = () => {
             <hr className="my-3" />
             <Form onSubmit={handleSubmit(handleSearch)} className="mb-3">
                 <div className="d-flex align-items-center">
-                <Form.Control type="text" placeholder="Rechercher..." size="sm" className="me-1" style={{ display: 'inline-block', width: '250px' }} {...register('text')} />
-                <Form.Select className="me-2" size="sm" style={{ display: 'inline-block', width: '125px' }} {...register('type')}>
-                    <option value={2}>Prénom</option>
-                    <option value={1}>Nom</option>
-                    <option value={3}>E-mail</option>
-                </Form.Select>
-                <Button variant="secondary" size="sm" type="submit"><SearchIcon/></Button>
+                    <Form.Control type="text" placeholder="Rechercher..." size="sm" className="me-1" style={{ display: 'inline-block', width: '250px' }} {...register('text')} />
+                    <Form.Select className="me-2" size="sm" style={{ display: 'inline-block', width: '125px' }} {...register('type')}>
+                        <option value={2}>Prénom</option>
+                        <option value={1}>Nom</option>
+                        <option value={3}>E-mail</option>
+                    </Form.Select>
+                    <Button variant="secondary" size="sm" type="submit"><SearchIcon /></Button>
                 </div>
             </Form>
             {searchOptions.text.length > 0 && <div className="mt-3">Recherche par
@@ -106,8 +106,9 @@ export const ManageUsers = () => {
                     </tr>
                 </thead>
                 <tbody>
+                    {(loader === true) && <tr><td colSpan={6}>Chargement...</td></tr>}
                     {(loader === false && accounts.length === 0) && <tr><td colSpan={6}>Aucun résultat</td></tr>}
-                    {loader == false ? accounts.map((user: IUser, index: number) => <UserRow user={user} onDelete={(user: IUser) => setDeleteModal({ show: true, user: user })} />) : <Loader />}
+                    {(loader == false && accounts.length !== 0) && accounts.map((user: IUser, index: number) => <UserRow user={user} onDelete={(user: IUser) => setDeleteModal({ show: true, user: user })} />)}
                 </tbody>
             </Table>
         </Container>
