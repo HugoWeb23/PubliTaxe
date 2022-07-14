@@ -6,7 +6,6 @@ import {
     Alert
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import { Loader } from '../../../UI/Loader'
 import { toast } from 'react-toastify';
 import { ApiErrors } from '../../../../Services/apiFetch'
 import { ElementsPerPage } from '../../../../Services/ElementsPerPage'
@@ -15,6 +14,8 @@ import { Loader as SmallLoader } from 'react-bootstrap-typeahead'
 import { useNothingToPay } from '../../../Hooks/NothingToPayHook'
 import { NothingToPay } from '../../../../Types/NothingToPay'
 import { CheckIcon } from '../../../UI/CheckIcon'
+import { ConfirmModal } from '../../../UI/ConfirmModal';
+import { CustomLoader } from '../../../UI/CustomLoader';
 
 interface IFilterOptions {
     elementsParPage: number,
@@ -25,6 +26,7 @@ export const ManageNothingToPay = () => {
     const [loader, setLoader] = useState<boolean>(true)
     const [optionsLoader, setOptionsLoader] = useState<boolean>(false)
     const [filterOptions, setFilterOptions] = useState<IFilterOptions>({ elementsParPage: 15, pageCourante: 1 })
+    const [confirmModal, setConfirmModal] = useState<boolean>(false)
     const { entreprises, totalPages, pageCourante, elementsParPage, getAll, UpdateAll, UpdateOne } = useNothingToPay()
     const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
 
@@ -44,7 +46,7 @@ export const ManageNothingToPay = () => {
     }, [filterOptions])
 
     if (loader === true) {
-        return <Loader />
+        return <CustomLoader />
     }
 
     const HandleUpdateOne = async (id: number) => {
@@ -62,6 +64,7 @@ export const ManageNothingToPay = () => {
         try {
             await UpdateAll()
             toast.success("Tous les éléments ont été mis à jour")
+            setConfirmModal(false)
         } catch (e: any) {
             if (e instanceof ApiErrors) {
                 toast.error(e.singleError.error)
@@ -69,6 +72,15 @@ export const ManageNothingToPay = () => {
         }
     }
     return <>
+        <ConfirmModal
+            show={confirmModal}
+            onClose={() => setConfirmModal(false)}
+            onConfirm={() => HandleUpdateAll()}
+            bodyText="Voulez-vous vraiment valider toutes les entreprises ?"
+            confirmButtonText="Tout valider"
+            leaveButtonText="Annuler"
+            confirmButtonVariant="success"
+        />
         <Container fluid="sm">
             <nav aria-label="breadcrumb" className="mt-3">
                 <ol className="breadcrumb">
@@ -78,8 +90,8 @@ export const ManageNothingToPay = () => {
                 </ol>
             </nav>
             <div className="d-flex justify-content-between align-items-center">
-                <h2 className="mt-2 mb-3">Gestion des situations</h2>
-                <Button size="sm" variant="success" onClick={HandleUpdateAll}><CheckIcon /> Tout valider</Button>
+                <h2 className="mt-2 mb-3">Gestion des entreprises qui n'ont rien à payer</h2>
+                <Button size="sm" variant="success" onClick={() => setConfirmModal(true)} disabled={entreprises.length === 0}><CheckIcon /> Tout valider</Button>
             </div>
 
             <hr className="my-3" />

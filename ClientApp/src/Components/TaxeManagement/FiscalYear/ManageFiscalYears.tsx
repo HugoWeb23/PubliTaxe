@@ -55,7 +55,7 @@ export const ManageFiscalYears = ({ handleEdit }: IManageFiscalyears) => {
     }
 
     return <>
-        <FiscalYearModal fiscalYear={selectedFiscalYear} onSubmit={handleSubmit} handleClose={() => setSelectedFiscalYear(element => ({ ...element, show: false, type: 'create' }))} />
+        <FiscalYearModal fiscalYears={fiscalYears} fiscalYear={selectedFiscalYear} onSubmit={handleSubmit} handleClose={() => setSelectedFiscalYear(element => ({ ...element, show: false, type: 'create' }))} />
         <Container fluid="sm">
             <nav aria-label="breadcrumb" className="mt-3">
                 <ol className="breadcrumb">

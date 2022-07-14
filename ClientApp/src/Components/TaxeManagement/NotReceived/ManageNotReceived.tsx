@@ -12,13 +12,13 @@ import { IMotif_majoration } from '../../../Types/IMotif_majoration'
 import { INotReceived } from '../../../Types/INotReceived'
 import { useNotReceived } from '../../Hooks/NotReceivedHook'
 import { ExclamationIcon } from '../../UI/ExclamationIcon'
-import { Loader } from '../../UI/Loader'
 import { NotReceivedModal } from './NotReceivedModal'
 import { toast } from 'react-toastify';
 import { ApiErrors } from '../../../Services/apiFetch'
 import { ElementsPerPage } from '../../../Services/ElementsPerPage'
 import { Paginate } from '../../../Services/Paginate'
 import { Loader as SmallLoader } from 'react-bootstrap-typeahead'
+import { CustomLoader } from '../../UI/CustomLoader'
 
 interface IManageNotReceived {
     motifs: IMotif_majoration[],
@@ -71,7 +71,7 @@ export const ManageNotReceived = ({ motifs, currentFiscalYear }: IManageNotRecei
     }
 
     if (loader === true || motifs === null || currentFiscalYear === null) {
-        return <Loader />
+        return <CustomLoader />
     }
     return <>
         <NotReceivedModal element={selectedEntreprise} motifs={motifs} currentFiscalYear={currentFiscalYear} handleClose={() => setSelectedEntreprise({ entrepriseInfos: {} as IApercu_entreprise, show: false })} onSubmit={EncodeNotReceived} />

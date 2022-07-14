@@ -10,12 +10,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { FiscalYearFormSchema } from '../../../Validation/FiscalYear/FiscalYearFormSchema';
 
 interface FiscalYearModal {
+  fiscalYears: IExercice[],
   fiscalYear: { fiscalYear: IExercice, show: boolean, type: string },
   handleClose: () => void,
   onSubmit: (data: any) => void
 }
 
-export const FiscalYearModal = ({ fiscalYear, handleClose, onSubmit }: FiscalYearModal) => {
+export const FiscalYearModal = ({ fiscalYears, fiscalYear, handleClose, onSubmit }: FiscalYearModal) => {
   const { register, handleSubmit, setValue, reset, formState: {errors} } = useForm({resolver: yupResolver(FiscalYearFormSchema)})
 
   useEffect(() => {
@@ -37,8 +38,12 @@ export const FiscalYearModal = ({ fiscalYear, handleClose, onSubmit }: FiscalYea
 
   const generateDate = (): number[] => {
     const years: number[] = []
+    fiscalYears.forEach((fisc: IExercice) => years.push(fisc.annee_exercice))
     for (let i = 0; i <= 2; i++) {
-      years.push(new Date().getFullYear() + i)
+      const year = new Date().getFullYear() + i
+      if(years.includes(year) === false) {
+        years.push(year)
+      }
     }
     return years
   }

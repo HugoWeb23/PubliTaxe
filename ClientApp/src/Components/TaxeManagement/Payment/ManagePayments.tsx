@@ -12,7 +12,6 @@ import {
 import { Link } from 'react-router-dom'
 import { IApercu_entreprise } from '../../../Types/IApercu_entreprise'
 import { IExercice } from '../../../Types/IExercice'
-import { Loader } from '../../UI/Loader'
 import { usePayments } from '../../Hooks/PaymentHook'
 import { IApercu_paiement } from '../../../Types/IApercu_paiement'
 import { SearchIcon } from '../../UI/SearchIcon'
@@ -23,6 +22,7 @@ import { Paginate } from '../../../Services/Paginate'
 import { ElementsPerPage } from '../../../Services/ElementsPerPage'
 import { ApiErrors } from '../../../Services/apiFetch'
 import { Loader as SmallLoader } from 'react-bootstrap-typeahead'
+import { CustomLoader } from '../../UI/CustomLoader'
 
 interface IManagePayment {
     currentFiscalYear: IExercice
@@ -40,7 +40,6 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
     const [loader, setLoader] = useState<boolean>(true)
     const [optionsLoader, setOptionsLoader] = useState<boolean>(false)
     const [filterOptions, setFilterOptions] = useState<IFilterOptions>({ exercice: currentFiscalYear.id, type: "all", matricule: "", elementsParPage: 15, pageCourante: 1 })
-    const [selectedEntreprise, setSelectedEntreprise] = useState<{ entrepriseInfos: IApercu_entreprise, show: boolean }>({ entrepriseInfos: {} as IApercu_entreprise, show: false })
     const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
     const { paiements, total_non_payes, total_partiellement_payes, total_payes, total_a_valider, getAll, totalPages, pageCourante, elementsParPage } = usePayments()
 
@@ -66,7 +65,7 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
     }
 
     if (loader === true || currentFiscalYear === null) {
-        return <Loader />
+        return <CustomLoader />
     }
     return <>
         <Container fluid={true}>
@@ -110,7 +109,7 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
             {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
             <div className="mt-3 mb-3">
                 <Link className="btn btn-primary" to={"/payment_management/nothingtopay"}>
-                    Situations à valider <Badge bg="danger">{total_a_valider}</Badge>
+                    Entreprises n'ayant rien à payer <Badge bg="danger">{total_a_valider}</Badge>
                     <span className="visually-hidden">Situations à valider</span>
                 </Link>
             </div>

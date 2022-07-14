@@ -11,7 +11,6 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { IExercice } from '../../../Types/IExercice'
 import { ApiErrors, apiFetch } from '../../../Services/apiFetch'
-import { Loader } from '../../UI/Loader'
 import { Link } from "react-router-dom"
 import { PlusIcon } from '../../UI/PlusIcon'
 import { ConfirmModal } from '../../UI/ConfirmModal'
@@ -22,6 +21,7 @@ import { IApercu_entreprise } from '../../../Types/IApercu_entreprise'
 import { ElementsPerPage } from '../../../Services/ElementsPerPage'
 import { Paginate } from '../../../Services/Paginate'
 import { Loader as SmallLoader } from 'react-bootstrap-typeahead'
+import { CustomLoader } from '../../UI/CustomLoader'
 
 interface IChangeFiscalYear {
     currentFiscalYear: IExercice,
@@ -107,7 +107,7 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
     }
 
     if (loader || Object.keys(currentFiscalYear ? currentFiscalYear : []).length === 0) {
-        return <Loader />
+        return <CustomLoader />
     }
     return <>
         <ConfirmModal
