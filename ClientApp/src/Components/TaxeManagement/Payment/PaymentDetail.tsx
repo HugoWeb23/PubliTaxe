@@ -1,15 +1,12 @@
 import { defaultMaxListeners } from 'events'
 import { useState, useEffect } from 'react'
 import {
-    Form,
     Button,
     Row,
     Col,
     Card,
     Container,
     Table,
-    Modal,
-    Alert,
     Accordion,
     Badge,
     OverlayTrigger,
@@ -23,7 +20,7 @@ import { IPayment } from '../../../Types/IPayment'
 import { IPaymentDetails } from '../../../Types/IPaymentDetails'
 import { IPublicite } from '../../../Types/IPublicite'
 import { ConfirmModal } from '../../UI/ConfirmModal'
-import { Loader } from '../../UI/Loader'
+import { CustomLoader } from '../../UI/CustomLoader'
 import { Pencil } from '../../UI/Pencil'
 import { PlusIcon } from '../../UI/PlusIcon'
 import { Trash } from '../../UI/Trash'
@@ -47,13 +44,12 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
             try {
                 const paymentDetails: IPaymentDetails = await apiFetch(`/paiements/getpayments/${id}`)
                 setDetails(paymentDetails)
-                setLoader(false)
             } catch (e: any) {
                 if (e instanceof ApiErrors) {
                     setErrorModal({ show: true, message: e.singleError.error })
-                    setLoader(false)
                 }
             }
+            setTimeout(() => setLoader(false), 300)
         })()
     }, [])
 
@@ -119,7 +115,7 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
     }
 
     if (loader) {
-        return <Loader />
+        return <CustomLoader />
     }
 
     return <>
