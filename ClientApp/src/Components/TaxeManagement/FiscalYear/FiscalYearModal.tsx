@@ -17,7 +17,7 @@ interface FiscalYearModal {
 }
 
 export const FiscalYearModal = ({ fiscalYears, fiscalYear, handleClose, onSubmit }: FiscalYearModal) => {
-  const { register, handleSubmit, setValue, reset, formState: {errors} } = useForm({resolver: yupResolver(FiscalYearFormSchema)})
+  const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm({ resolver: yupResolver(FiscalYearFormSchema) })
 
   useEffect(() => {
     if (Object.keys(fiscalYear.fiscalYear).length > 0 && fiscalYear.type == 'edit') {
@@ -25,23 +25,25 @@ export const FiscalYearModal = ({ fiscalYears, fiscalYear, handleClose, onSubmit
       setValue('annee_exercice', fiscalYear.fiscalYear.annee_exercice)
       setValue('date_echeance', fiscalYear.fiscalYear.date_echeance)
       setValue('date_reglement_taxe', fiscalYear.fiscalYear.date_reglement_taxe)
-    } else if(fiscalYear.type == 'create') {
+    } else if (fiscalYear.type == 'create') {
       reset()
     }
   }, [fiscalYear])
 
   const formSubmit = (data: any) => {
     console.log(data)
-    onSubmit({type: fiscalYear.type, data: data})
+    onSubmit({ type: fiscalYear.type, data: data })
     handleClose()
   }
 
   const generateDate = (): number[] => {
     const years: number[] = []
-    fiscalYears.forEach((fisc: IExercice) => years.push(fisc.annee_exercice))
+    if (fiscalYear.type === 'edit') {
+      fiscalYears.forEach((fisc: IExercice) => years.push(fisc.annee_exercice))
+    }
     for (let i = 0; i <= 2; i++) {
       const year = new Date().getFullYear() + i
-      if(years.includes(year) === false) {
+      if (years.includes(year) === false) {
         years.push(year)
       }
     }
