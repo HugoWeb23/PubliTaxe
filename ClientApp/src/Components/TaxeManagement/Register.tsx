@@ -6,7 +6,7 @@ import {
     Row,
     Alert
 } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import MouscronLogo from '../../Images/MouscronLogo.png'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -15,7 +15,8 @@ import { ApiErrors, apiFetch } from '../../Services/apiFetch'
 import { useState } from 'react';
 
 export const Register = () => {
-    const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(RegisterFormSchema) })
+    const history = useHistory()
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(RegisterFormSchema) })
     const [alert, setAlert] = useState<{ type: string, message: string } | null>(null)
     const OnSubmit = async (data: any) => {
         try {
@@ -24,8 +25,7 @@ export const Register = () => {
                 method: 'POST',
                 body: JSON.stringify(data)
             })
-            reset()
-            setAlert({ type: 'success', message: "Votre compte a été créé, il est en attente d'activation." })
+            history.push({ pathname: '/login', state: { disabledMessage: true } })
         } catch (e: any) {
             if (e instanceof ApiErrors) {
                 setAlert({ type: 'danger', message: e.singleError.error })

@@ -4,7 +4,7 @@ import {
     Form,
     Alert
 } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import MouscronLogo from '../../Images/MouscronLogo.png'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -18,6 +18,7 @@ interface ILogin {
 }
 
 export const Login = ({ handleLogin }: ILogin) => {
+    const props: any = useLocation();
     const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(LoginFormSchema) })
     const [loginError, setLoginError] = useState<any>(null)
 
@@ -34,6 +35,9 @@ export const Login = ({ handleLogin }: ILogin) => {
             if (e instanceof ApiErrors) {
                 setLoginError(e.singleError)
                 reset({pass: ''})
+                if(props?.state?.disabledMessage === true) {
+                    props.state.disabledMessage = ''
+                }
             }
         }
     }
@@ -50,6 +54,7 @@ export const Login = ({ handleLogin }: ILogin) => {
                         <Card.Title>Connexion</Card.Title>
                         <Link to="/register" className="link">S'inscrire</Link>
                     </div>
+                    {(props?.state?.disabledMessage == true && !loginError) && <Alert className="mt-3" variant="success">Votre compte a bien été créé mais il doit être activé par un administrateur.</Alert>}
                     {loginError && <Alert className="mt-3" variant="danger">{loginError.error}</Alert>}
                     <Form onSubmit={handleSubmit(OnSubmit)}>
                         <Form.Group controlId="mail" className="mt-3">

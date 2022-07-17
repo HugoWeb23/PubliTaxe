@@ -22,7 +22,6 @@ interface IReceivedModal {
 export const ReceivedModal = ({ show, handleClose, onSubmit }: IReceivedModal) => {
 
     const [selectedEntreprises, setSelectedEntreprises] = useState<IApercu_entreprise[]>([])
-    const [searchEntrepriseById, setSearchEntrepriseById] = useState<IApercu_entreprise>({} as IApercu_entreprise)
     const [entpreview, setEntpreview] = useState<IApercu_entreprise[]>([])
     const { register, setValue, setError, clearErrors, formState: { errors } } = useForm()
     const SearchNameRef: any = useRef()
@@ -163,7 +162,7 @@ export const ReceivedModal = ({ show, handleClose, onSubmit }: IReceivedModal) =
                 <Button variant="secondary" size="sm" onClick={handleClose}>
                     Annuler
                 </Button>
-                <Button variant="success" size="sm" onClick={handleSubmit}>
+                <Button variant="success" size="sm" disabled={selectedEntreprises.length === 0} onClick={handleSubmit}>
                     Encoder les reçus
                 </Button>
             </Modal.Footer>

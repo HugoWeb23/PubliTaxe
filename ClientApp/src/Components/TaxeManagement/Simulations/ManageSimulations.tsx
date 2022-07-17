@@ -32,7 +32,7 @@ interface IManageSimulations {
 
 export const ManageSimulations = ({ currentFiscalYear, prices }: IManageSimulations) => {
 
-    const { simulations, totalPages, pageCourante, elementsParPage, totalSimulations, getAll, deleteOne } = useSimulations()
+    const { simulations, totalPages, pageCourante, elementsParPage, getAll, deleteOne } = useSimulations()
     const [filterOptions, setFilterOptions] = useState<any>({ pageCourante: 1, elementsParPage: 15 })
     const [loader, setLoader] = useState<boolean>(true)
     const [optionsLoader, setOptionsLoader] = useState<boolean>(false)

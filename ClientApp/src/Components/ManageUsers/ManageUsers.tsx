@@ -102,7 +102,7 @@ export const ManageUsers = () => {
                         <th>Nom</th>
                         <th>Adresse e-mail</th>
                         <th>Actif</th>
-                        <th>Action</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>

@@ -4,9 +4,7 @@ import {
   Route,
   Redirect
 } from "react-router-dom";
-import {
-  Alert
-} from 'react-bootstrap'
+import { Alert } from 'react-bootstrap'
 import { Navigation } from './Components/Navigation/Navigation';
 import { TaxManagement } from './Components/TaxeManagement/TaxManagement';
 import { ToastContainer } from 'react-toastify';
