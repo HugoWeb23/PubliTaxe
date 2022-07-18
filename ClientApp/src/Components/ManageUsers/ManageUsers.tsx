@@ -101,12 +101,13 @@ export const ManageUsers = () => {
                         <th>Prénom</th>
                         <th>Nom</th>
                         <th>Adresse e-mail</th>
+                        <th>Rôle</th>
                         <th>Actif</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {(loader === true) && <tr><td colSpan={6}>Chargement...</td></tr>}
+                    {(loader === true) && <tr><td colSpan={7}>Chargement...</td></tr>}
                     {(loader === false && accounts.length === 0) && <tr><td colSpan={6}>Aucun résultat</td></tr>}
                     {(loader == false && accounts.length !== 0) && accounts.map((user: IUser, index: number) => <UserRow user={user} onDelete={(user: IUser) => setDeleteModal({ show: true, user: user })} />)}
                 </tbody>
@@ -121,11 +122,24 @@ interface IUserRow {
 }
 
 const UserRow = ({ user, onDelete }: IUserRow) => {
+    let roleText: string = ""
+    switch(user.role) {
+        case 1:
+            roleText = "Lecture seule"
+            break;
+        case 2:
+            roleText = "Éditeur"
+            break;
+        case 3:
+            roleText = "Administrateur"
+            break;
+    }
     return <tr>
         <td>{user.id}</td>
         <td>{user.prenom}</td>
         <td>{user.nom}</td>
         <td>{user.mail}</td>
+        <td>{roleText}</td>
         <td>{user.actif ? "Oui" : "Non"} {user.changement_pass === 1 && <OverlayTrigger
             placement="top"
             overlay={

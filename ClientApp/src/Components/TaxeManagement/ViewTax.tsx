@@ -103,6 +103,7 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
                 </div>
                 <Row>
                     <Col><div className="fw-bold">Matricule</div><span className="d-block">{entreprise.matricule_ciger}</span></Col>
+                    <Col><div className="fw-bold">Désactivée</div><span className="d-block">{entreprise.desactive ? "Oui" : "Non"}</span></Col>
                     <Col><div className="fw-bold">Procès-verbal</div><span className="d-block">{entreprise.proces_verbal ? "Oui" : "Non"}</span></Col>
                     <Col><div className="fw-bold">Langue</div><span className="d-block">{entreprise.role_linguistique === 1 ? "Français" : "Néerlandais"}</span></Col>
                 </Row>
