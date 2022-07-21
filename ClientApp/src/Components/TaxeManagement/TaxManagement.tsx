@@ -104,8 +104,13 @@ export const TaxManagement = () => {
             handleSearch={(options) => setFilterOptions((filters: any) => ({ ...options, pageCourante: 1, elementsParPage: filters.elementsParPage, showDisable: showDisable, showDelete: showDelete }))}
         />
         <Container fluid={true}>
+            <nav aria-label="breadcrumb" className="mt-3">
+                <ol className="breadcrumb">
+                    <li className="breadcrumb-item active" aria-current="page">Accueil</li>
+                </ol>
+            </nav>
             <div className="d-flex justify-content-between align-items-center">
-                <h2 className="mt-2">Gestion des entreprises</h2>
+                <h2>Gestion des entreprises</h2>
                 <div>
                     {value.user && value.user.role > 1 && <><Button variant="success" className="me-2" size="sm" onClick={() => setReceivedModal(true)}><SheetIcon /> Encodage des reçus</Button>
                         <Link to="/notreceived" className="me-2 btn btn-danger btn-sm"><ExclamationIcon /> Encodage des non reçus</Link></>}

@@ -75,7 +75,10 @@ export const ManageUsers = () => {
                     <li className="breadcrumb-item active" aria-current="page">Gestion des utilisateurs</li>
                 </ol>
             </nav>
-            <h2 className="mt-2">Gestion des utilisateurs</h2>
+            <div className="d-flex justify-content-between align-items-end mt-2 mb-3">
+            <h2 className="mb-0">Gestion des utilisateurs</h2>
+            <Link to="/manageaccess/pendingaccounts" className="link">Comptes désactivés</Link>
+            </div>
             <hr className="my-3" />
             <Form onSubmit={handleSubmit(handleSearch)} className="mb-3">
                 <div className="d-flex align-items-center">

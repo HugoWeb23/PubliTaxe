@@ -73,7 +73,10 @@ export const ManageInactiveAccounts = () => {
                     <li className="breadcrumb-item active" aria-current="page">Utilisateurs en attente d'activation</li>
                 </ol>
             </nav>
-            <h2 className="mt-2">Utilisateurs en attente d'activation</h2>
+            <div className="d-flex justify-content-between align-items-end mt-2 mb-3">
+                <h2 className="mb-0">Utilisateurs en attente d'activation</h2>
+                <Link to="/manageaccess/all" className="link">Gestion des utilisateurs</Link>
+            </div>
             <hr className="my-3" />
             {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
             <Table striped bordered hover size="sm">
