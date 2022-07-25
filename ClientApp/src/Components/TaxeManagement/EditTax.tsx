@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { apiFetch } from '../../Services/apiFetch'
 import { Entreprise } from '../../Types/IEntreprise'
-import { Loader } from '../UI/Loader'
+import { CustomLoader } from '../UI/CustomLoader'
 import {TaxeForm} from './TaxeForm'
 
 interface EditTax {
@@ -33,6 +33,6 @@ export const EditTax = ({match, motifs, tarifs, currentFiscalYear, informations}
 return <>
 {(loader != true && motifs != null && tarifs != null && currentFiscalYear != null && informations != null) ? 
 <TaxeForm type="edit" data={entreprise} motifs={motifs} tarifs={tarifs} currentFiscalYear={currentFiscalYear} informations={informations} onFormSubmit={handleEditTax}/> : 
-<Loader/> }
+<CustomLoader/> }
 </>
 }

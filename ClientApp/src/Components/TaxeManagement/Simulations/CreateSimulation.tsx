@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { apiFetch } from "../../../Services/apiFetch"
 import { IExercice } from "../../../Types/IExercice"
-import { Loader } from "../../UI/Loader"
+import { CustomLoader } from "../../UI/CustomLoader"
 import { SimulationForm } from "./SimulationForm"
 
 export const CreateSimulation = ({ tarifs, currentFiscalYear }: any) => {
@@ -11,7 +11,7 @@ export const CreateSimulation = ({ tarifs, currentFiscalYear }: any) => {
     useEffect(() => {
         (async() => {
                 const allFiscalYears = await apiFetch('/fiscalyears/all')
-                setFiscalYears(allFiscalYears)
+                setTimeout(() => setFiscalYears(allFiscalYears), 300)
         })()
     }, [])
 
@@ -31,6 +31,6 @@ export const CreateSimulation = ({ tarifs, currentFiscalYear }: any) => {
             currentFiscalYear={currentFiscalYear}
             allFiscalYears={fiscalYears}
             onFormSubmit={handleCreate}
-        /> : <Loader />}
+        /> : <CustomLoader />}
     </>
 }

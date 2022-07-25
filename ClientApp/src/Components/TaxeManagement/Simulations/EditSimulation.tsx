@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { apiFetch } from "../../../Services/apiFetch";
 import { IExercice } from "../../../Types/IExercice";
 import { ISimulation } from "../../../Types/ISimulation";
-import { Loader } from "../../UI/Loader";
+import { CustomLoader } from "../../UI/CustomLoader";
 import { SimulationForm } from "./SimulationForm";
 
 export const EditSimulation = ({ match, tarifs, currentFiscalYear }: any) => {
@@ -45,6 +45,6 @@ export const EditSimulation = ({ match, tarifs, currentFiscalYear }: any) => {
                 currentFiscalYear={currentFiscalYear}
                 allFiscalYears={fiscalYears}
                 onFormSubmit={handleEdit}
-            /> : <Loader/>}
+            /> : <CustomLoader/>}
     </>
 }

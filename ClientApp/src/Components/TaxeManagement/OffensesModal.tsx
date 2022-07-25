@@ -18,12 +18,13 @@ interface IOffensesModal {
     id_entreprise: number,
     motifs: IMotif_majoration[],
     currentFiscalYear: IExercice,
-    isOpen: boolean
+    isOpen: boolean,
+    deletable: boolean,
     handleClose: () => void,
     onDelete: () => void
 }
 
-export const OffensesModal = ({ id_entreprise, motifs, currentFiscalYear, isOpen, handleClose, onDelete }: IOffensesModal) => {
+export const OffensesModal = ({ id_entreprise, motifs, currentFiscalYear, isOpen, deletable, handleClose, onDelete }: IOffensesModal) => {
 
     const [history, setHistory] = useState<INotReceivedHistory[]>([])
     const [confirmDelete, setConfirmDelete] = useState<{ show: boolean, notReceived: INotReceivedHistory }>({ show: false, notReceived: {} as INotReceivedHistory })
@@ -88,7 +89,7 @@ export const OffensesModal = ({ id_entreprise, motifs, currentFiscalYear, isOpen
                                 <th>% Major</th>
                                 <th>Remarque</th>
                                 <th>Date</th>
-                                <th>Action</th>
+                                {deletable && <th>Action</th>}
                             </tr>
                         </thead>
                         <tbody>
@@ -99,7 +100,7 @@ export const OffensesModal = ({ id_entreprise, motifs, currentFiscalYear, isOpen
                                     <td>{histo.pourcentage_majoration} %</td>
                                     <td>{histo.remarque}</td>
                                     <td>{histo.date}</td>
-                                    <td>{currentFiscalYear.annee_exercice - parseInt(histo.exercice) < 2 && <Button size="sm" variant="danger" onClick={() => setConfirmDelete({show: true, notReceived: histo})}>Supprimer</Button>}</td>
+                                    {deletable && <td>{currentFiscalYear.annee_exercice - parseInt(histo.exercice) < 1 && <Button size="sm" variant="danger" onClick={() => setConfirmDelete({show: true, notReceived: histo})}>Supprimer</Button>}</td>}
                                 </tr>
                             })}
                         </tbody>

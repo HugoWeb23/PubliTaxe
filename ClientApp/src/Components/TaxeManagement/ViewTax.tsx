@@ -19,6 +19,7 @@ import { IExercice } from "../../Types/IExercice"
 import { IInformation } from "../../Types/IInformations"
 import { IndividualPrint } from "./IndividualPrint"
 import { Printer } from "../UI/Printer"
+import { OffensesModal } from "./OffensesModal"
 
 interface IViewTax {
     match?: any,
@@ -37,6 +38,7 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
     const [entreprise, setEntreprise] = useState<Entreprise | null>(null)
     const [viewPubModal, setViewPubModal] = useState<{ show: boolean, publicite: IPublicite }>({ show: false, publicite: {} as IPublicite })
     const [individualPrint, setIndiviualPrint] = useState<boolean>(false)
+    const [offensesModal, setOffensesModal] = useState<boolean>(false)
     const [loader, setLoader] = useState<boolean>(true)
 
     useEffect(() => {
@@ -82,6 +84,14 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
             data={viewPubModal}
             handleClose={() => setViewPubModal(pub => ({ ...pub, show: false }))}
         />
+        {entreprise !== null && <OffensesModal 
+        id_entreprise={entreprise.id_entreprise} 
+        motifs={motifs} 
+        currentFiscalYear={currentFiscalYear} 
+        isOpen={offensesModal} 
+        deletable={false} 
+        handleClose={() => setOffensesModal(false)} 
+        onDelete={() => {}} />}
         <Container fluid="xl">
             <div className="mt-3">
                 <nav aria-label="breadcrumb" className="mt-3">
@@ -134,7 +144,10 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
                     <Col><div className="fw-bold">% majoration</div><span className="d-block">{entreprise.pourcentage_majoration + ' %'}</span></Col>
                     <Col><div className="fw-bold">Motif majoration</div><span className={`d-block ${motifs.find((motif: IMotif_majoration) => motif.id_motif == entreprise.motif_majorationId) === undefined && 'fw-light'}`}>{motifs.find((motif: IMotif_majoration) => motif.id_motif == entreprise.motif_majorationId) !== undefined ? motifs.find((motif: IMotif_majoration) => motif.id_motif == entreprise.motif_majorationId)?.libelle : '(Aucun motif)'}</span></Col>
                 </Row >
-                <div className="mt-3">Commentaire</div><span className={`d-block ${entreprise.commentaire_taxation.length === 0 && 'fw-light'}`}>{entreprise.commentaire_taxation.length > 0 ? entreprise.commentaire_taxation : '(Aucun commentaire)'}</span>
+                <Row className="mt-3">
+                <Col><div className="fw-bold">Commentaire</div><span className={`d-block ${entreprise.commentaire_taxation.length === 0 && 'fw-light'}`}>{entreprise.commentaire_taxation.length > 0 ? entreprise.commentaire_taxation : '(Aucun commentaire)'}</span></Col>
+                <Col><div className="fw-bold">Infractions</div><div className="link" onClick={() => setOffensesModal(true)}>Voir l'historique des infractions</div></Col>
+                </Row>
                 <Card className="mt-3">
                     <Card.Header as="h6">Adresse de taxation</Card.Header>
                     <Card.Body>

@@ -42,6 +42,7 @@ import { EditSimulation } from './Components/TaxeManagement/Simulations/EditSimu
 import { ManagePayment } from './Components/TaxeManagement/Payment/ManagePayments';
 import { PaymentDetail } from './Components/TaxeManagement/Payment/PaymentDetail';
 import { ManageNothingToPay } from './Components/TaxeManagement/Payment/NothingToPay/ManageNothingToPay';
+import { Footer } from './Components/Footer/Footer';
 
 export const App = () => {
   const [user, setUser] = useState<IUser | null>(null)
@@ -182,6 +183,7 @@ export const App = () => {
           <Route path="/passwordchange">
             {user?.changement_pass === 1 ? <PasswordChange /> : <Redirect to="/" />}
           </Route></>}
+          <Footer/>
         </UserContext.Provider>
       </Router>
     }
