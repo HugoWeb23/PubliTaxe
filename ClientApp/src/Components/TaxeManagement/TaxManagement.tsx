@@ -9,7 +9,8 @@ import {
     OverlayTrigger,
     Tooltip,
     Alert,
-    Form
+    Form,
+    Placeholder
 } from 'react-bootstrap'
 import { ApiErrors } from '../../Services/apiFetch'
 import { Link } from 'react-router-dom'
@@ -125,21 +126,30 @@ export const TaxManagement = () => {
                             {value.user && value.user.role > 1 && <div className="d-grid gap-2 mb-3">
                                 <Link className="btn btn-primary btn-sm" to={'/entreprise/create'}>Nouvel enregistrement</Link>
                             </div>}
-                            {entreprises.length > 0 && <div>
+                            <div>
                                 <div className="fs-5 mb-2">Statistiques</div>
-                                <div><span className="fw-bold">{totalEntreprises}</span> entreprises enregistrées {totalDesactives > 0 && `(dont ${totalDesactives} désactivée${totalDesactives > 1 ? "s" : ""})`}</div>
-                                <div><span className="fw-bold">{totalRecus}</span> entreprises en ordre de déclaration ({Math.round((totalRecus * 100) / (totalEntreprises - totalDesactives))} %)</div>
-                                <div><span className="fw-bold">{totalPaiementsRecus}</span> entreprises en ordre de paiement ({Math.round((totalPaiementsRecus * 100) / (totalEntreprises - totalDesactives))} %)</div>
-                                <div><span className="fw-bold">{totalInfractions}</span> entreprises en infraction ({Math.round((totalInfractions * 100) / (totalEntreprises - totalDesactives))} %)</div>
-                            </div>}
+                                {loader === true && <Placeholder as="p" animation="glow">
+                                    <Placeholder xs={9} size="sm" style={{display: "block"}} className="mb-1" />
+                                    <Placeholder xs={8} size="sm" style={{display: "block"}} className="mb-1" />
+                                    <Placeholder xs={7} size="sm" style={{display: "block"}} className="mb-1" />
+                                    <Placeholder xs={5} size="sm" style={{display: "block"}} className="mb-1" />
+                                </Placeholder>}
+                                {loader === false && <>
+                                    <div><span className="fw-bold">{totalEntreprises}</span> entreprises enregistrées {totalDesactives > 0 && `(dont ${totalDesactives} désactivée${totalDesactives > 1 ? "s" : ""})`}</div>
+                                    <div><span className="fw-bold">{totalRecus}</span> entreprises en ordre de déclaration ({Math.round((totalRecus * 100) / (totalEntreprises - totalDesactives))} %)</div>
+                                    <div><span className="fw-bold">{totalPaiementsRecus}</span> entreprises en ordre de paiement ({Math.round((totalPaiementsRecus * 100) / (totalEntreprises - totalDesactives))} %)</div>
+                                    <div><span className="fw-bold">{totalInfractions}</span> entreprises en infraction ({Math.round((totalInfractions * 100) / (totalEntreprises - totalDesactives))} %)</div>
+                                </>
+                                }
+                            </div>
                             {(filterOptions.matricule !== "" || filterOptions.nom !== "" || filterOptions.pubExoneration !== false || (filterOptions.rue !== null && filterOptions.rue !== undefined)) && <div className="mt-3">
                                 <Button size="sm" variant="danger" onClick={() => setFilterOptions((options: any) => ({ ...options, matricule: "", nom: "", pubExoneration: false, rue: null }))}>Supprimer les filtres</Button>
                             </div>}
                             <Form.Group controlId="show_delete" className="mt-3">
-                                <Form.Check type="checkbox" label="Afficher les entreprises en attente de suppression" onChange={ChangeShowDelete} defaultChecked={filterOptions.showDelete} />
+                                <Form.Check type="checkbox" label="Afficher les entreprises en attente de suppression" onChange={ChangeShowDelete} defaultChecked={filterOptions.showDelete} disabled={loader} />
                             </Form.Group>
                             <Form.Group controlId="show_disable" className="mt-2">
-                                <Form.Check type="checkbox" label="Afficher les entreprises désactivées" onChange={ChangeShowDisable} defaultChecked={filterOptions.showDisable} />
+                                <Form.Check type="checkbox" label="Afficher les entreprises désactivées" onChange={ChangeShowDisable} defaultChecked={filterOptions.showDisable} disabled={loader} />
                             </Form.Group>
                         </Card.Body>
                     </Card>
