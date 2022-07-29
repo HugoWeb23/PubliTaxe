@@ -60,7 +60,7 @@ export const StreetCodeModal = ({ isOpen, handleClose, onSelect }: StreetCodeMod
             {problem != null && <ErrorAlert erreur={problem.erreur} details={problem.details}/>}
             {rues == null && <Alert variant="warning">Aucun résultat</Alert>}
             {loading == false && (rues != null && rues.length > 0) &&
-                <Table striped bordered hover className="mt-3">
+                <Table striped bordered hover className="mt-3" size="sm">
                     <thead>
                         <tr>
                             <th>Nom rue</th>

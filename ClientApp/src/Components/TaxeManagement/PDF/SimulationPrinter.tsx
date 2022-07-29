@@ -53,7 +53,7 @@ export const SimulationPrinter = ({ simulation, allFiscalYears, tarifs }: ISimul
             fontFamily: 'Tahoma'
         },
         HeaderSubText: {
-            fontSize: '13px',
+            fontSize: '11px',
             fontFamily: 'Tahoma'
         },
         SubHeader: {
@@ -172,6 +172,13 @@ export const SimulationPrinter = ({ simulation, allFiscalYears, tarifs }: ISimul
                     <View><Image src={mouscron} style={styles.MouscronImage} /></View>
                     <View>
                         <Text style={styles.HeaderText}>Simulation de tarification</Text>
+                        <Text style={styles.HeaderSubText}>
+                            Exercice{simulation.exercices.length > 1 && 's'}
+                            {simulation.exercices.map((e: number, index: number) => {
+                                const exercice = allFiscalYears.find((fisc: IExercice) => fisc.id == e)?.annee_exercice
+                                return `${index === 0 ? ' ' : ''}${exercice}${index + 1 < simulation.exercices.length ? ', ' : ''}`
+                            })}
+                        </Text>
                     </View>
                     <View><Image src={wapi} style={styles.WapiImage} /></View>
                 </View>
@@ -183,7 +190,7 @@ export const SimulationPrinter = ({ simulation, allFiscalYears, tarifs }: ISimul
             </View>
             <View style={styles.BusinessInformations}>
                 <View>
-                    <Text style={styles.NormalText}>Adresse : {simulation.adresse_rue}, n° {simulation.adresse_numero}</Text>
+                    <Text style={styles.NormalText}>Adresse : {simulation.adresse_rue}, n° {simulation.adresse_numero} {simulation.adresse_boite > 0 && `(boite ${simulation.adresse_boite})`}</Text>
                     <Text style={styles.NormalText}>Code postal : {simulation.code_postal.cp}</Text>
                     <Text style={styles.NormalText}>Localité : {simulation.code_postal.localite}</Text>
                     <Text style={styles.NormalText}>Pays : {simulation.code_postal.pays.nom_pays}</Text>
@@ -191,7 +198,7 @@ export const SimulationPrinter = ({ simulation, allFiscalYears, tarifs }: ISimul
                 <View>
                     <Text style={styles.NormalText}>Nom : {simulation.nom}</Text>
                     <Text style={styles.NormalText}>TVA : {simulation.numero_tva}</Text>
-                    <Text style={styles.NormalText}>Telephone : {simulation.numero_telephone}</Text>
+                    <Text style={styles.NormalText}>Téléphone : {simulation.numero_telephone}</Text>
                     <Text style={styles.NormalText}>Mail : {simulation.mail_contact}</Text>
                 </View>
             </View>
@@ -286,15 +293,15 @@ export const SimulationPrinter = ({ simulation, allFiscalYears, tarifs }: ISimul
                                 <Text style={styles.ColPricesBody}>{pub.exoneration ? "Oui" : "Non"}</Text>
                             </View>
                         })}
-                        <View style={{marginTop: '5px', marginBottom: '7px'}}>
-                        <Text style={styles.ExerciceTotalTax}>Taxe totale {exercice} : {simulation.publicites.reduce((acc: any, curr: IPubliciteSimulation) => {
-                            if (curr.exoneration) {
-                                return acc
-                            } else {
-                                const tax: any = SumTax(e, curr.quantite, curr.surface, curr.face, curr.type_publicite, curr.exoneration, tarifs)
-                                return acc + parseFloat(tax)
-                            }
-                        }, 0)} €</Text>
+                        <View style={{ marginTop: '5px', marginBottom: '7px' }}>
+                            <Text style={styles.ExerciceTotalTax}>Taxe totale {exercice} : {simulation.publicites.reduce((acc: any, curr: IPubliciteSimulation) => {
+                                if (curr.exoneration) {
+                                    return acc
+                                } else {
+                                    const tax: any = SumTax(e, curr.quantite, curr.surface, curr.face, curr.type_publicite, curr.exoneration, tarifs)
+                                    return acc + parseFloat(tax)
+                                }
+                            }, 0)} €</Text>
                         </View>
                     </>
                 })}
