@@ -11,7 +11,7 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { IExercice } from '../../../Types/IExercice'
 import { ApiErrors, apiFetch } from '../../../Services/apiFetch'
-import { Link } from "react-router-dom"
+import { Link, useHistory } from "react-router-dom"
 import { PlusIcon } from '../../UI/PlusIcon'
 import { ConfirmModal } from '../../UI/ConfirmModal'
 import { toast } from 'react-toastify'
@@ -36,28 +36,9 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
     const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
     const [optionsLoader, setOptionsLoader] = useState<boolean>(false)
     const { entreprises, totalPages, elementsParPage, pageCourante, getAll, deleteOne, clearAll } = useChangeFiscalYear()
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm({ resolver: yupResolver(ChangeFiscalYearFormSchema) })
-
-    const defaultFiscalyearChecked = (allFiscalYears: IExercice[]): number => {
-        if (allFiscalYears.length > 0) {
-            const findNextYear: IExercice | undefined = allFiscalYears.find((fiscalYear: IExercice) => {
-                const currentYear = new Date().getFullYear()
-                // Sommes-nous au mois de janvier ?
-                const currentMonthIsBeforeFebruary = new Date().getMonth() < 1
-                // On retourne l'exercice de l'année actuelle si nous sommes au mois de janvier
-                // On retourne l'exercice de l'année suivante si le mois actuel est supérieur à janvier
-                return fiscalYear.annee_exercice == (currentMonthIsBeforeFebruary ? currentYear : currentYear + 1)
-            })
-            if (findNextYear !== undefined) {
-                return findNextYear.id
-            } else {
-                // On retourne l'exercice le plus récent (le dernier dans le tableau) si aucun exercice n'est trouvé
-                return allFiscalYears[allFiscalYears.length - 1].id
-            }
-        } else {
-            return 0
-        }
-    }
+    const { register, formState: { errors } } = useForm({ resolver: yupResolver(ChangeFiscalYearFormSchema) })
+    const nextYear: IExercice | undefined = allYears.find((year: IExercice) => currentFiscalYear.annee_exercice + 1 == year.annee_exercice)
+    const history = useHistory()
 
     useEffect(() => {
         (async () => {
@@ -65,8 +46,8 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
                 setOptionsLoader(true)
                 await getAll(filterOptions)
                 const years: IExercice[] = await apiFetch('/fiscalyears/all/')
-                setAllYears(years)
-                setValue('id', defaultFiscalyearChecked(years))
+                const currentYear = new Date().getFullYear()
+                setAllYears(years.filter((year: IExercice) => year.annee_exercice >= currentYear))
                 setOptionsLoader(false)
             } catch (e: any) {
                 if (e instanceof ApiErrors) {
@@ -77,12 +58,17 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
         })()
     }, [filterOptions])
 
-    const ChangeYear = async (data: any) => {
+    const ChangeYear = async () => {
         try {
-            const currentFiscalYear: IExercice = await apiFetch(`/fiscalyears/changecurrentfiscalyear/${data.id}`)
-            handleChange(currentFiscalYear)
-
-            toast.success(`Passage à l'exercice ${currentFiscalYear.annee_exercice} effectué avec succès`)
+            if (nextYear === undefined) {
+                toast.error(`L'exercice ${currentFiscalYear.annee_exercice + 1} n'existe pas`)
+                return;
+            }
+            const newFiscalYear: IExercice = await apiFetch(`/fiscalyears/changecurrentfiscalyear/${nextYear.id}`)
+            handleChange(newFiscalYear)
+            toast.success(`Passage à l'exercice ${newFiscalYear.annee_exercice} effectué avec succès`)
+            await clearAll()
+            history.push('/business_management')
         } catch (e) {
             if (e instanceof ApiErrors) {
                 toast.error(e.singleError.error)
@@ -97,7 +83,6 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
                 method: 'PUT'
             })
             await deleteOne(id_entreprise)
-            await clearAll()
             toast.success('La demande de suppression a été annulée')
         } catch (e: any) {
             if (e instanceof ApiErrors) {
@@ -112,7 +97,7 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
     return <>
         <ConfirmModal
             show={confirmModal}
-            onConfirm={handleSubmit(ChangeYear)}
+            onConfirm={ChangeYear}
             onClose={() => setConfirmModal(false)}
             size="lg"
             bodyText="Vous êtes sur le point de changer d'exercice courant et de supprimer les entreprises en attente de suppression, voulez-vous continuer ?"
@@ -138,7 +123,7 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
             <Card className="mb-3" body>
                 <div className="fw-bold mb-2">Ces entreprises vont être supprimées lors du changement d'exercice</div>
                 {(entreprises.length === 0 && loader === false) && <div className="bd-callout bd-callout-mini bd-callout-danger">
-                    <span style={{fontSize: "1.1rem"}}>Aucune entreprise n'est en attente de suppression</span>
+                    <span style={{ fontSize: "1.1rem" }}>Aucune entreprise n'est en attente de suppression</span>
                 </div>}
                 {entreprises.length > 0 && <Table striped bordered hover size="sm">
                     <thead>
@@ -179,15 +164,13 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
             </Card>
             <Card body>
                 <Form>
-                    <Form.Group controlId="exercice">
-                        <Form.Label column="sm">Exercice</Form.Label>
-                        <Form.Select size="sm" isInvalid={errors.id} {...register('id')}>
-                            {allYears.map((fiscalYear: IExercice) => {
-                                return <option value={fiscalYear.id} disabled={fiscalYear.id === currentFiscalYear.id}>{fiscalYear.annee_exercice}</option>
-                            })}
-                        </Form.Select>
-                        {errors.id && <Form.Control.Feedback type="invalid">{errors.id.message}</Form.Control.Feedback>}
-                    </Form.Group>
+                    <span className="d-block fs-5 mb-1">Détails de l'exercice suivant</span>
+                    {nextYear !== undefined && <>
+                        <div>Année d'exercice : <span className="fw-bold">{nextYear.annee_exercice}</span></div>
+                        <div>Remise des déclarations avant le : {new Date(nextYear.date_echeance).toLocaleDateString('fr-FR')}</div>
+                        <div>Paiement de la taxe avant le : {new Date(nextYear.date_reglement_taxe).toLocaleDateString('fr-FR')}</div>
+                    </>}
+                    {nextYear === undefined && <span className="d-block text-danger">L'exercice {currentFiscalYear.annee_exercice + 1} n'existe pas, veuillez le créer en <Link to="/tools/managefiscalyears">cliquant ici</Link></span>}
                     <Form.Group controlId="confirm_delete" className="mt-2">
                         <Form.Check
                             type="checkbox"
@@ -200,7 +183,7 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
                         {errors.confirm_delete && <Form.Control.Feedback type="invalid">{errors.confirm_delete.message}</Form.Control.Feedback>}
                     </Form.Group>
                     <div className="mt-3">
-                        <Button variant="danger" size="sm" onClick={() => setConfirmModal(true)}>
+                        <Button variant="danger" size="sm" disabled={nextYear === undefined} onClick={() => setConfirmModal(true)}>
                             Changer d'exercice
                         </Button>
                     </div>
