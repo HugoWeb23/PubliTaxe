@@ -39,7 +39,7 @@ interface IFilterOptions {
 export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
     const [loader, setLoader] = useState<boolean>(true)
     const [optionsLoader, setOptionsLoader] = useState<boolean>(false)
-    const [filterOptions, setFilterOptions] = useState<IFilterOptions>({ exercice: currentFiscalYear.id, type: "all", matricule: "", elementsParPage: 15, pageCourante: 1 })
+    const [filterOptions, setFilterOptions] = useState<IFilterOptions>({ exercice: currentFiscalYear.id, type: "unpaid", matricule: "", elementsParPage: 15, pageCourante: 1 })
     const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
     const { paiements, total_non_payes, total_partiellement_payes, total_payes, total_a_valider, getAll, totalPages, pageCourante, elementsParPage } = usePayments()
 
@@ -119,7 +119,7 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
                         <Card.Body>
                             <Form.Group controlId="status" className="mb-3 me-3">
                                 <Form.Label>Afficher</Form.Label>
-                                <Form.Select size="sm" onChange={(e: any) => setFilterOptions((filters: IFilterOptions) => ({ ...filters, type: e.target.value }))}>
+                                <Form.Select size="sm" defaultValue={"unpaid"} onChange={(e: any) => setFilterOptions((filters: IFilterOptions) => ({ ...filters, type: e.target.value }))}>
                                     <option value="all">Tout</option>
                                     <option value="unpaid">Paiements non reçus</option>
                                     <option value="partially_paid">Paiements partiellement reçus</option>

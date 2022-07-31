@@ -17,7 +17,6 @@ using Taxes.Services;
 namespace Taxes.Controllers
 {
     [Route("api/notreceived")]
-    [AuthorizeRole(MinRole: 2)]
     [ApiController]
     public class NotReceivedController : ControllerBase
     {
@@ -30,6 +29,7 @@ namespace Taxes.Controllers
             _environment = environment;
         }
 
+        [AuthorizeRole(MinRole: 2)]
         [HttpPost("new")]
         public async Task<IActionResult> New(NotReceived data)
         {
@@ -44,6 +44,7 @@ namespace Taxes.Controllers
             
         }
 
+        [AuthorizeRole(MinRole: 1)]
         [HttpGet("gethistory/{ID}")]
         public async Task<IActionResult> GetHistory(long ID)
         {
@@ -58,6 +59,7 @@ namespace Taxes.Controllers
             
         }
 
+        [AuthorizeRole(MinRole: 2)]
         [HttpDelete("delete/{Id}")]
         public async Task<IActionResult> DeleteNotReceived(long Id)
         {
