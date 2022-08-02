@@ -30,6 +30,7 @@ namespace Taxes.Handlers
             request.User.Pass = BCryptNet.HashPassword(request.User.Pass);
             request.User.Actif = 0;
             request.User.Role = 1;
+            request.User.Mail = request.User.Mail.ToLower();
 
             _context.utilisateurs.Add(request.User);
             _context.SaveChanges();
