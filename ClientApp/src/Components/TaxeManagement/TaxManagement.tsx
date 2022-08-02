@@ -252,7 +252,7 @@ const Tax = memo(({ apercu_entreprise, handleDelete }: ITax) => {
                             </Tooltip>
                         }
                     >
-                        <Link className="me-1 btn btn-secondary btn-sm" to={`/entreprise/edit/${apercu_entreprise.id_entreprise}`}><Pencil /></Link>
+                        <Link className={`me-1 btn btn-secondary btn-sm ${apercu_entreprise.statut_paiement === 2 ? 'disabled' : ''}`} to={`/entreprise/edit/${apercu_entreprise.id_entreprise}`}><Pencil /></Link>
                     </OverlayTrigger>}
                     <OverlayTrigger
                         placement="top"

@@ -24,7 +24,10 @@ namespace Taxes.Handlers
         public async Task<Entreprise> Handle(UpdateEntrepriseCommand request, CancellationToken cancellationToken)
         {
             Entreprise entreprise = _context.entreprises.AsNoTracking().FirstOrDefault(ent => ent.Id_entreprise == request.Entreprise.Id_entreprise);
+
             if (entreprise == null) throw new Exception("L'entreprise n'existe pas");
+            if (entreprise.Statut_paiement == 2) throw new Exception("L'entreprise est en ordre de paiement");
+
             if (request.Entreprise.Matricule_ciger != entreprise.Matricule_ciger)
             {
                 if (_context.entreprises.AsNoTracking().Any(ent => ent.Matricule_ciger == request.Entreprise.Matricule_ciger)) throw new Exception("Une entreprise possède déjà ce matricule");
