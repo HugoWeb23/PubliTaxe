@@ -21,7 +21,7 @@ namespace Taxes.Controllers
             _mediator = mediator;
         }
 
-        [AuthorizeRole(MinRole: 2)]
+        [AuthorizeRole(MinRole: 1)]
         [HttpPost("getall")]
         public async Task<IActionResult> GetAllSimulations(SimulationFilters Filters)
         {
@@ -51,7 +51,7 @@ namespace Taxes.Controllers
 
         }
 
-        [AuthorizeRole(MinRole: 2)]
+        [AuthorizeRole(MinRole: 1)]
         [HttpGet("id/{id}")]
         public async Task<IActionResult> GetById(long id)
         {

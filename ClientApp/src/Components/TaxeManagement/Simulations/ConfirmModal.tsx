@@ -25,7 +25,7 @@ export const ConfirmModal = ({ show, data, type, onClose, onConfirm }: IConfirmM
             </Modal.Header>
             <Modal.Body>
                 La simuation a bien été {type == 'create' ? 'créée' : 'modifiée'}.
-                <div className="mt-3"><Button size="sm" variant="success" onClick={handleConfirm}>Générer le reçu</Button></div>
+                <div className="mt-3"><div className="link" onClick={handleConfirm}>Générer la simulation</div></div>
                 </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" size="sm" onClick={onClose}>

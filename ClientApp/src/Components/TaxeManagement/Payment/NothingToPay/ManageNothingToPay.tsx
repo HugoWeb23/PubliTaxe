@@ -1,4 +1,4 @@
-import { useEffect, useState, memo } from 'react'
+import { useEffect, useState, memo, useContext } from 'react'
 import {
     Table,
     Container,
@@ -16,6 +16,7 @@ import { NothingToPay } from '../../../../Types/NothingToPay'
 import { CheckIcon } from '../../../UI/CheckIcon'
 import { ConfirmModal } from '../../../UI/ConfirmModal';
 import { CustomLoader } from '../../../UI/CustomLoader';
+import { UserContext } from '../../../Contexts/UserContext'
 
 interface IFilterOptions {
     elementsParPage: number,
@@ -29,6 +30,7 @@ export const ManageNothingToPay = () => {
     const [confirmModal, setConfirmModal] = useState<boolean>(false)
     const { entreprises, totalPages, pageCourante, elementsParPage, getAll, UpdateAll, UpdateOne } = useNothingToPay()
     const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
+    const value = useContext(UserContext)
 
     useEffect(() => {
         (async () => {
@@ -91,7 +93,7 @@ export const ManageNothingToPay = () => {
             </nav>
             <div className="d-flex justify-content-between align-items-center">
                 <h2 className="mt-2 mb-3">Gestion des entreprises qui n'ont rien à payer</h2>
-                <Button size="sm" variant="success" onClick={() => setConfirmModal(true)} disabled={entreprises.length === 0}><CheckIcon /> Tout valider</Button>
+                {value.user && value.user.role > 1 && <Button size="sm" variant="success" onClick={() => setConfirmModal(true)} disabled={entreprises.length === 0}><CheckIcon /> Tout valider</Button>}
             </div>
 
             <hr className="my-3" />
@@ -103,7 +105,7 @@ export const ManageNothingToPay = () => {
                         <th>Matricule</th>
                         <th>Nom entreprise</th>
                         <th>Panneaux</th>
-                        <th>Actions</th>
+                        {value.user && value.user.role > 1 && <th>Action</th>}
                     </tr>
                 </thead>
                 <tbody>
@@ -135,13 +137,14 @@ interface NotReceived {
 }
 
 const NotReceived = memo(({ element, handleUpdate }: NotReceived) => {
+    const value = useContext(UserContext)
     return <>
         <tr key={element.id_entreprise}>
             <td>{element.id_entreprise}</td>
             <td>{element.matricule_ciger}</td>
             <td>{element.nom}</td>
             <td>{element.nombre_panneaux}</td>
-            <td><Button size="sm" variant="success" onClick={() => handleUpdate(element.id_entreprise)}><CheckIcon /> Rien à payer</Button></td>
+            {value.user && value.user.role > 1 && <td><Button size="sm" variant="success" onClick={() => handleUpdate(element.id_entreprise)}><CheckIcon /> Rien à payer</Button></td>}
         </tr>
         <tr>
             <td colSpan={5} className="px-3">

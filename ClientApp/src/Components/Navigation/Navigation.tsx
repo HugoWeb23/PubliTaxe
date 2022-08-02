@@ -25,10 +25,10 @@ export const Navigation = () => {
           <NavDropdown title="Gestion" id="collasible-nav-dropdown">
             <LinkContainer to="/business_management"><NavDropdown.Item>Gestion des entreprises</NavDropdown.Item></LinkContainer>
             {value.user.role > 1 && <LinkContainer to="/notreceived"><NavDropdown.Item>Encodage des non reçus</NavDropdown.Item></LinkContainer>}
-            {value.user.role > 1 && <LinkContainer to="/payment_management"><NavDropdown.Item>Gestion des paiements</NavDropdown.Item></LinkContainer>}
+            <LinkContainer to="/payment_management"><NavDropdown.Item>Gestion des paiements</NavDropdown.Item></LinkContainer>
           </NavDropdown>
           <NavDropdown title="Outils" id="collasible-nav-dropdown">
-            {value.user.role > 1 && <LinkContainer to="/tools/pricingsimulation"><NavDropdown.Item>Simulation de tarification</NavDropdown.Item></LinkContainer>}
+            <LinkContainer to="/tools/pricingsimulation"><NavDropdown.Item>Simulation de tarification</NavDropdown.Item></LinkContainer>
             <LinkContainer to="/tools/printalldeclarations"><NavDropdown.Item>Imprimer toutes les déclarations</NavDropdown.Item></LinkContainer>
             <LinkContainer to="/tools/printallminutes"><NavDropdown.Item>Imprimer tous les procès verbaux</NavDropdown.Item></LinkContainer>
             {value.user.role >= 3 && <><LinkContainer to="/tools/manageprices"><NavDropdown.Item>Gestion des tarifs</NavDropdown.Item></LinkContainer>

@@ -1,5 +1,4 @@
-import { defaultMaxListeners } from 'events'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import {
     Button,
     Row,
@@ -25,6 +24,7 @@ import { Pencil } from '../../UI/Pencil'
 import { PlusIcon } from '../../UI/PlusIcon'
 import { Trash } from '../../UI/Trash'
 import { EncodePaymentModal } from './EncodePaymentModal'
+import { UserContext } from '../../Contexts/UserContext'
 
 interface IPaymentDetail {
     match: any
@@ -38,6 +38,7 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
     const [paymentModal, setPaymentModal] = useState<{ show: boolean, type: 'create' | 'edit', payment?: IPayment }>({ show: false, type: 'create' })
     const [loader, setLoader] = useState<boolean>(true)
     const [deleteModal, setDeleteModal] = useState<{ show: boolean, payment: IPayment }>({ show: false, payment: {} as IPayment })
+    const value = useContext(UserContext)
 
     useEffect(() => {
         (async () => {
@@ -99,16 +100,16 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
         }
     }
 
-    const DeletePayment = async(payment: IPayment) => {
+    const DeletePayment = async (payment: IPayment) => {
         try {
             await apiFetch(`/paiements/delete/${payment.id_paiement}`, {
                 method: 'DELETE'
             })
-            setDetails((details: IPaymentDetails) => ({...details, paiements: details.paiements.filter((p: IPayment) => p.id_paiement != payment.id_paiement)}))
-            setDeleteModal(modal => ({...modal, show: false}))
+            setDetails((details: IPaymentDetails) => ({ ...details, paiements: details.paiements.filter((p: IPayment) => p.id_paiement != payment.id_paiement) }))
+            setDeleteModal(modal => ({ ...modal, show: false }))
             toast.success("Le paiement a été supprimé")
-        } catch(e) {
-            if(e instanceof ApiErrors) {
+        } catch (e) {
+            if (e instanceof ApiErrors) {
                 toast.error(e.singleError.error)
             }
         }
@@ -206,9 +207,9 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
                     </Accordion.Body>
                 </Accordion.Item>
             </Accordion>
-            <div className="d-flex justify-content-end mt-4 mb-4">
+            {value.user && value.user.role > 1 && <div className="d-flex justify-content-end mt-4 mb-4">
                 <Button size="sm" variant="success" onClick={() => setPaymentModal({ show: true, type: 'create' })}><PlusIcon /> Nouveau paiement</Button>
-            </div>
+            </div>}
             <Table>
                 <thead>
                     <tr>
@@ -217,7 +218,7 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
                         <th>Mode de paiement</th>
                         <th>Remarque</th>
                         <th>Date</th>
-                        <th>Actions</th>
+                        {value.user && value.user.role > 1 && <th>Actions</th>}
                     </tr>
                 </thead>
                 <tbody>
@@ -257,6 +258,8 @@ interface Payment {
 
 const Payment = ({ payment, handleEdit, handleDelete }: Payment) => {
 
+    const value = useContext(UserContext)
+
     const Mode_paiement = (mode: number): string => {
         if (mode === 1) {
             return 'Virement bancaire'
@@ -276,7 +279,7 @@ const Payment = ({ payment, handleEdit, handleDelete }: Payment) => {
             <td>{Mode_paiement(payment.mode_paiement)}</td>
             <td>{payment.remarque}</td>
             <td>{payment.date}</td>
-            <td>
+            {value.user && value.user.role > 1 && <td>
                 <div className="d-flex">
                     <OverlayTrigger
                         placement="top"
@@ -299,7 +302,7 @@ const Payment = ({ payment, handleEdit, handleDelete }: Payment) => {
                         <Button size="sm" variant="danger" onClick={() => handleDelete(payment)}><Trash /></Button>
                     </OverlayTrigger>
                 </div>
-            </td>
+            </td>}
         </tr>
     </>
 }

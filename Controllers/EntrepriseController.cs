@@ -343,7 +343,7 @@ namespace Taxes.Controllers
             }
         }
 
-        [AuthorizeRole(MinRole: 2)]
+        [AuthorizeRole(MinRole: 1)]
         [HttpPost("nothingtopay")]
         public async Task<IActionResult> GetNothingToPayList(NothingToPayFilters Filters)
         {

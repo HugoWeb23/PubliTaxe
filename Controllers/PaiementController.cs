@@ -14,7 +14,6 @@ using Taxes.Filters;
 namespace Taxes.Controllers
 {
     [Route("api/paiements")]
-    [AuthorizeRole(MinRole: 2)]
     [ApiController]
     public class PaiementController : ControllerBase
     {
@@ -25,6 +24,7 @@ namespace Taxes.Controllers
             _mediator = mediator;
         }
 
+        [AuthorizeRole(MinRole: 1)]
         [HttpPost("getall")]
         public async Task<IActionResult> PrintAllByCity(ManagePaymentsViewModel Filters)
         {
@@ -40,6 +40,7 @@ namespace Taxes.Controllers
 
         }
 
+        [AuthorizeRole(MinRole: 1)]
         [HttpGet("getpayments/{ID}")]
         public async Task<IActionResult> GetPaymentsDetails(long ID)
         {
@@ -55,6 +56,7 @@ namespace Taxes.Controllers
 
         }
 
+        [AuthorizeRole(MinRole: 2)]
         [HttpPost("new")]
         public async Task<IActionResult> NewPayment(Paiement Paiement)
         {
@@ -70,6 +72,7 @@ namespace Taxes.Controllers
 
         }
 
+        [AuthorizeRole(MinRole: 2)]
         [HttpPut("edit")]
         public async Task<IActionResult> EditPayment(Paiement Paiement)
         {
@@ -85,6 +88,7 @@ namespace Taxes.Controllers
 
         }
 
+        [AuthorizeRole(MinRole: 2)]
         [HttpDelete("delete/{PaymentId}")]
         public async Task<IActionResult> DeletePayment(long PaymentId)
         {

@@ -1,10 +1,11 @@
-import { useState, useEffect, memo } from "react"
+import { useState, useEffect, memo, useContext } from "react"
 import {
     Container,
     Table,
     OverlayTrigger,
     Tooltip,
-    Button
+    Button,
+    Alert
 } from "react-bootstrap"
 import { Link, useHistory } from "react-router-dom"
 import { ApiErrors, apiFetch } from "../../../Services/apiFetch"
@@ -24,6 +25,11 @@ import { Loader } from "react-bootstrap-typeahead"
 import { toast } from "react-toastify"
 import { ElementsPerPage } from "../../../Services/ElementsPerPage"
 import { Paginate } from "../../../Services/Paginate"
+import { FileIcon } from "../../UI/FileIcon"
+import { saveAs } from 'file-saver';
+import { SimulationPrinter } from "../PDF/SimulationPrinter"
+import { pdf } from '@react-pdf/renderer';
+import { UserContext } from '../../Contexts/UserContext';
 
 interface IManageSimulations {
     currentFiscalYear: IExercice,
@@ -38,6 +44,7 @@ export const ManageSimulations = ({ currentFiscalYear, prices }: IManageSimulati
     const [optionsLoader, setOptionsLoader] = useState<boolean>(false)
     const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
     const [deleteModal, setDeleteModal] = useState<{ show: boolean, simulation: IApercuSimulation }>({ show: false, simulation: {} as IApercuSimulation })
+    const value = useContext(UserContext);
 
     useEffect(() => {
         (async () => {
@@ -45,12 +52,12 @@ export const ManageSimulations = ({ currentFiscalYear, prices }: IManageSimulati
                 setOptionsLoader(true)
                 await getAll(filterOptions)
                 setOptionsLoader(false)
-                setTimeout(() => setLoader(false), 300)
             } catch (e: any) {
                 if (e instanceof ApiErrors) {
                     setErrorModal({ show: true, message: e.singleError.error })
                 }
             }
+            setTimeout(() => setLoader(false), 300)
         })()
     }, [filterOptions])
 
@@ -63,6 +70,20 @@ export const ManageSimulations = ({ currentFiscalYear, prices }: IManageSimulati
             if (e instanceof ApiErrors) {
                 toast.error(e.singleError.error)
             }
+        }
+    }
+
+    const generatePdfDocument = async (id_simulation: number) => {
+        try {
+            const simulation = await apiFetch(`/simulations/id/${id_simulation}`)
+            const allFiscalYears = await apiFetch('/fiscalyears/all')
+            simulation.exercices = simulation.exercices.split(';').filter((id_exo: number) => allFiscalYears.some((fisc: IExercice) => id_exo == fisc.id && fisc.annee_exercice >= currentFiscalYear.annee_exercice))
+            const blob = await pdf((
+                <SimulationPrinter simulation={simulation} allFiscalYears={allFiscalYears} tarifs={prices} />
+            )).toBlob();
+            saveAs(blob, `${simulation.nom.split(' ').join('_')}.pdf`);
+        } catch (e) {
+            toast.error("Une erreur est survenue")
         }
     }
 
@@ -83,9 +104,10 @@ export const ManageSimulations = ({ currentFiscalYear, prices }: IManageSimulati
             </nav>
             <div className="d-flex justify-content-between align-items-center mt-2 mb-3">
                 <h2 className="mb-0">Gestion des simulations</h2>
-                <Link to="/pricingsimulation/create/" className="link"><PlusIcon /> Nouvelle simulation</Link>
+                {value.user && value.user.role > 1 && <Link to="/pricingsimulation/create/" className="link"><PlusIcon /> Nouvelle simulation</Link>}
             </div>
             <hr className="my-3" />
+            {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
             <Table striped bordered hover size="sm">
                 <thead>
                     <tr>
@@ -99,11 +121,11 @@ export const ManageSimulations = ({ currentFiscalYear, prices }: IManageSimulati
                 <tbody>
                     {loader && <div>Chargement...</div>}
                     {(simulations.length === 0 && loader === false) && <tr><td colSpan={5}>Aucun résultat</td></tr>}
-                    {(loader == false && simulations.length > 0) && simulations.map((simulation: IApercuSimulation) => <Simulation simulation={simulation} currentFiscalYear={currentFiscalYear} prices={prices} handleDelete={(simulation: IApercuSimulation) => setDeleteModal({ show: true, simulation: simulation })} />)}
+                    {(loader == false && simulations.length > 0) && simulations.map((simulation: IApercuSimulation) => <Simulation simulation={simulation} currentFiscalYear={currentFiscalYear} prices={prices} handleDelete={(simulation: IApercuSimulation) => setDeleteModal({ show: true, simulation: simulation })} handleGenerateSimulation={(sim: IApercuSimulation) => generatePdfDocument(sim.id_simulation)} />)}
                 </tbody>
             </Table>
             {simulations.length > 0 && <div className="d-flex justify-content-end align-items-center">
-            {optionsLoader && <div className="me-2"><Loader/></div>}
+                {optionsLoader && <div className="me-2"><Loader /></div>}
                 <div className="me-2">
                     <ElementsPerPage
                         elementsPerPage={elementsParPage}
@@ -125,18 +147,27 @@ interface Simulation {
     currentFiscalYear: IExercice,
     prices: IPrice[],
     handleDelete: (simulation: IApercuSimulation) => void
+    handleGenerateSimulation: (simulation: IApercuSimulation) => Promise<void>
 }
 
-const Simulation = memo(({ simulation, currentFiscalYear, prices, handleDelete }: Simulation) => {
+const Simulation = memo(({ simulation, currentFiscalYear, prices, handleDelete, handleGenerateSimulation }: Simulation) => {
 
     const history = useHistory()
     const [loader, setLoader] = useState<boolean>(false)
+    const [loaderSimulation, setLoaderSimulation] = useState<boolean>(false)
+    const value = useContext(UserContext);
 
     const handleCreateEntreprise = async () => {
         setLoader(true)
         let fetchSimulation: ISimulation = await apiFetch(`/simulations/id/${simulation.id_simulation}`)
         fetchSimulation.publicites = fetchSimulation.publicites.map(({ id, id_simulation, ...pub }: any) => pub).map((pub: any) => ({ ...pub, taxe_totale: SumTax(currentFiscalYear.id, pub.quantite, pub.surface, pub.face, pub.type_publicite, pub.exoneration, prices), exercice_courant: currentFiscalYear.id, uuid: uuidv1() }))
         history.push({ pathname: '/entreprise/create', state: { simulation: fetchSimulation } })
+    }
+
+    const generateSimulation = async () => {
+        setLoaderSimulation(true)
+        await handleGenerateSimulation(simulation)
+        setLoaderSimulation(false)
     }
 
     return <>
@@ -148,6 +179,16 @@ const Simulation = memo(({ simulation, currentFiscalYear, prices, handleDelete }
             <td>
                 <div className="d-flex">
                     <OverlayTrigger
+                        placement="top"
+                        overlay={
+                            <Tooltip id={`tooltip-1`}>
+                                Télécharger la simulation
+                            </Tooltip>
+                        }
+                    >
+                        <div className="me-1 btn btn-primary btn-sm" onClick={generateSimulation}>{loaderSimulation === false ? <FileIcon /> : <Loader />}</div>
+                    </OverlayTrigger>
+                    {value.user && value.user.role > 1 && <><OverlayTrigger
                         placement="top"
                         overlay={
                             <Tooltip id={`tooltip-1`}>
@@ -176,7 +217,7 @@ const Simulation = memo(({ simulation, currentFiscalYear, prices, handleDelete }
                         }
                     >
                         <Button size="sm" variant="danger" onClick={() => handleDelete(simulation)}><Trash /></Button>
-                    </OverlayTrigger>
+                    </OverlayTrigger></>}
                 </div>
             </td>
         </tr>

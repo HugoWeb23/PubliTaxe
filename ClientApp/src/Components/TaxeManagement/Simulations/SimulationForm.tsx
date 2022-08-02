@@ -126,8 +126,6 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
 
     const handleGeneratePDF = async () => {
         await generatePdfDocument(confirmationModal.simulation)
-        console.log(confirmationModal.simulation);
-        
     }
 
     return <>
