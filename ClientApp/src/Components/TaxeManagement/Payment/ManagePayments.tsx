@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import {
     Table,
     Container,
@@ -10,7 +10,6 @@ import {
     Row
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import { IApercu_entreprise } from '../../../Types/IApercu_entreprise'
 import { IExercice } from '../../../Types/IExercice'
 import { usePayments } from '../../Hooks/PaymentHook'
 import { IApercu_paiement } from '../../../Types/IApercu_paiement'
@@ -39,9 +38,11 @@ interface IFilterOptions {
 export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
     const [loader, setLoader] = useState<boolean>(true)
     const [optionsLoader, setOptionsLoader] = useState<boolean>(false)
+    const [oldType, setOldType] = useState<string>("")
     const [filterOptions, setFilterOptions] = useState<IFilterOptions>({ exercice: currentFiscalYear.id, type: "unpaid", matricule: "", elementsParPage: 15, pageCourante: 1 })
     const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
     const { paiements, total_non_payes, total_partiellement_payes, total_payes, total_a_valider, getAll, totalPages, pageCourante, elementsParPage } = usePayments()
+    const MatriculeRef: any = useRef(null)
 
     useEffect(() => {
         (async () => {
@@ -58,9 +59,18 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
         })()
     }, [filterOptions])
 
+    const ResetMatricule = () => {
+        MatriculeRef.current.value = ''
+        setFilterOptions((filters: IFilterOptions) => ({ ...filters, matricule: "", type: oldType }))
+    }
+
     const SearchById = (e: any) => {
         if (e.key === "Enter" && e.target.value.length >= 2) {
-            setFilterOptions((filters: IFilterOptions) => ({ ...filters, matricule: e.target.value }))
+            setOldType(filterOptions.type)
+            setFilterOptions((filters: IFilterOptions) => ({ ...filters, type: "all", matricule: e.target.value }))
+        }
+        if (e.key === "Enter" && e.target.value === "") {
+            ResetMatricule()
         }
     }
 
@@ -119,20 +129,21 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
                         <Card.Body>
                             <Form.Group controlId="status" className="mb-3 me-3">
                                 <Form.Label>Afficher</Form.Label>
-                                <Form.Select size="sm" defaultValue={"unpaid"} onChange={(e: any) => setFilterOptions((filters: IFilterOptions) => ({ ...filters, type: e.target.value }))}>
+                                <Form.Select size="sm" defaultValue={"unpaid"} value={filterOptions.type} onChange={(e: any) => setFilterOptions((filters: IFilterOptions) => ({ ...filters, type: e.target.value }))}>
                                     <option value="all">Tout</option>
                                     <option value="unpaid">Paiements non reçus</option>
                                     <option value="partially_paid">Paiements partiellement reçus</option>
                                     <option value="payed">Paiements reçus</option>
                                 </Form.Select>
                             </Form.Group>
+                            <hr className="mb-2" />
                             <Form.Group controlId="matricule" className="mb-3 me-3">
                                 <Form.Label>Recherche par matricule</Form.Label>
-                                <Form.Control type="text" size="sm" placeholder="Recherche par matricule" onKeyDown={(e) => SearchById(e)} />
+                                <Form.Control type="text" size="sm" ref={MatriculeRef} placeholder="Recherche par matricule" onKeyDown={(e) => SearchById(e)} />
                                 <Form.Text className="text-muted">
                                     Appuyez sur ENTER pour chercher.
                                 </Form.Text>
-                                {filterOptions.matricule.length > 0 && <div className="link" onClick={() => setFilterOptions((filters: IFilterOptions) => ({ ...filters, matricule: "" }))}>(réinitialiser)</div>}
+                                {filterOptions.matricule.length > 0 && <div className="link" onClick={ResetMatricule}>(réinitialiser)</div>}
                             </Form.Group>
                         </Card.Body>
                     </Card>
@@ -160,7 +171,7 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
                 </Col>
             </Row>
             {paiements.length > 0 && <div className="d-flex justify-content-end align-items-center">
-            {optionsLoader && <div className="me-2"><SmallLoader /></div>}
+                {optionsLoader && <div className="me-2"><SmallLoader /></div>}
                 <div className="me-2">
                     <ElementsPerPage
                         elementsPerPage={elementsParPage}

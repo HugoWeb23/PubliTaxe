@@ -26,7 +26,7 @@ namespace Taxes.Handlers
             Entreprise entreprise = _context.entreprises.AsNoTracking().FirstOrDefault(ent => ent.Id_entreprise == request.Entreprise.Id_entreprise);
 
             if (entreprise == null) throw new Exception("L'entreprise n'existe pas");
-            if (entreprise.Statut_paiement == 2) throw new Exception("L'entreprise est en ordre de paiement");
+            if (entreprise.Recu == true) throw new Exception("L'entreprise a déjà remis sa déclaration");
 
             if (request.Entreprise.Matricule_ciger != entreprise.Matricule_ciger)
             {
