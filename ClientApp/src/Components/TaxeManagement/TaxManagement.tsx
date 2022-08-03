@@ -174,7 +174,7 @@ export const TaxManagement = () => {
                         </tbody>
                     </Table>
                     {(loader == false && entreprises.length > 0) && <>
-                        <div className="d-flex justify-content-end align-items-center">
+                        <div className="d-flex justify-content-end align-items-center mb-3">
                             {optionsLoader && <div className="me-2"><Loader /></div>}
                             <div className="me-2">
                                 <ElementsPerPage

@@ -59,26 +59,26 @@ namespace Taxes.Handlers
             {
                 var entreprises = allEntreprises
                .Where(ent => ent.Statut_paiement == 0)
-               .Where(e => e.Publicites.Sum(p => p.Taxe_totale) > 0)
+               .Where(e => e.Publicites.Sum(p => p.Taxe_totale) > 0 || e.Pourcentage_majoration > 0)
                .ToList();
                 filtered.AddRange(entreprises);
             } else if (request.Filters.Type == "partially_paid")
             {
                 var entreprises = allEntreprises
                 .Where(ent => ent.Statut_paiement == 1)
-                .Where(e => e.Publicites.Sum(p => p.Taxe_totale) > 0)
+                .Where(e => e.Publicites.Sum(p => p.Taxe_totale) > 0 || e.Pourcentage_majoration > 0)
                .ToList();
                 filtered.AddRange(entreprises);
             } else if (request.Filters.Type == "payed")
             {
                 var entreprises = allEntreprises
                .Where(ent => ent.Statut_paiement == 2)
-               .Where(e => e.Publicites.Sum(p => p.Taxe_totale) > 0)
+               .Where(e => e.Publicites.Sum(p => p.Taxe_totale) > 0 || e.Pourcentage_majoration > 0)
                .ToList();
                 filtered.AddRange(entreprises);
             } else if (request.Filters.Type == "all")
             {
-                filtered.AddRange(allEntreprises.Where(e => e.Publicites.Sum(p => p.Taxe_totale) > 0));
+                filtered.AddRange(allEntreprises.Where(e => e.Publicites.Sum(p => p.Taxe_totale) > 0 || e.Pourcentage_majoration > 0));
             }
 
             if (request.Filters.Matricule != null)
@@ -87,7 +87,7 @@ namespace Taxes.Handlers
             }
 
             var totalOfPaymentsTypes = allEntreprises
-                .Where(e => e.Publicites.Sum(p => p.Taxe_totale) > 0)
+                .Where(e => e.Publicites.Sum(p => p.Taxe_totale) > 0 || e.Pourcentage_majoration > 0)
                 .GroupBy(p => p.Statut_paiement).Select(p => new
                 {
                     Type = p.Key,
@@ -127,6 +127,7 @@ namespace Taxes.Handlers
 
             int TotalAValider = allEntreprises
                 .Where(ent => ent.Publicites.Sum(p => p.Taxe_totale) == 0)
+                .Where(ent => ent.Pourcentage_majoration == 0)
                 .Where(ent => ent.Statut_paiement == 0)
                 .Count();
 
@@ -139,6 +140,20 @@ namespace Taxes.Handlers
             int Index = (request.Filters.PageCourante - 1) * request.Filters.ElementsParPage;
             filtered = filtered.Skip(Index).Take(request.Filters.ElementsParPage).ToList();
 
+            int MajorationIfTaxIsNull(int pourcentage) {
+                if(pourcentage == 10) {
+                    return 5;
+                } else if(pourcentage == 50) {
+                    return 10;
+                } else if(pourcentage == 100) {
+                    return 20;
+                } else if(pourcentage == 200) {
+                    return 40;
+                } else {
+                    return 5;
+                }
+            }
+
 
             return new PaymentViewModel
             {
@@ -149,7 +164,7 @@ namespace Taxes.Handlers
                     Nom = ent.Nom,
                     Nombre_panneaux = ent.Publicites.Count(),
                     Statut_paiement = DeterminePaiementType(ent, request.Filters.Exercice),
-                    Taxe_totale = (ent.Publicites.Sum(p => p.Taxe_totale) + ent.Publicites.Sum(p => p.Taxe_totale) * ent.Pourcentage_majoration / 100)
+                    Taxe_totale = (ent.Publicites.Sum(ent => ent.Taxe_totale) > 0 || ent.Pourcentage_majoration == 0) ? (ent.Publicites.Sum(p => p.Taxe_totale) + ent.Publicites.Sum(p => p.Taxe_totale) * ent.Pourcentage_majoration / 100) : MajorationIfTaxIsNull(ent.Pourcentage_majoration)
                 }).ToList(),
                 TotalPages = TotalPages,
                 PageCourante = request.Filters.PageCourante,

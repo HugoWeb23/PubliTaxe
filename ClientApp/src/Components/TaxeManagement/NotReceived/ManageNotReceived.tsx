@@ -102,7 +102,7 @@ export const ManageNotReceived = ({ motifs, currentFiscalYear }: IManageNotRecei
                     {notReceivedList.map((notreceived: any, index: number) => <NotReceived element={notreceived} handleSelect={(element: IApercu_entreprise) => setSelectedEntreprise({ entrepriseInfos: element, show: true })} />)}
                 </tbody>
             </Table>
-            {notReceivedList.length > 0 && <div className="d-flex justify-content-end align-items-center">
+            {notReceivedList.length > 0 && <div className="d-flex justify-content-end align-items-center mb-3">
                 {optionsLoader && <div className="me-2"><SmallLoader /></div>}
                 <div className="me-2">
                     <ElementsPerPage

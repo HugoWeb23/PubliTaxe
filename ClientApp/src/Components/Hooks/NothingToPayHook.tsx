@@ -2,6 +2,7 @@ import { useReducer } from "react"
 import { apiFetch } from "../../Services/apiFetch";
 import { INotReceived } from "../../Types/INotReceived";
 import { NothingToPay } from "../../Types/NothingToPay";
+import { useEntreprises } from "./TaxManagementHook";
 
 interface State {
     entreprises: any[],
@@ -28,7 +29,7 @@ export const useNothingToPay = () => {
                     elementsParPage: action.payLoad.elementsParPage,
                 }
             case 'UPDATEALL':
-                return { ...state, entreprises: [] }
+                return { ...state, entreprises: state.entreprises.filter((ent: NothingToPay) => ent.recu === false) }
             case 'UPDATEONE':
                 return { ...state, entreprises: state.entreprises.filter((ent: NothingToPay) => ent.id_entreprise != action.payLoad) }
             default:
@@ -67,7 +68,7 @@ export const useNothingToPay = () => {
         UpdateAll: async () => {
             const updateall: INotReceived = await apiFetch('/paiements/editnothingtopaystatus', {
                 method: 'POST',
-                body: JSON.stringify({ entreprises: state.entreprises.map((ent: NothingToPay) => ent.id_entreprise) })
+                body: JSON.stringify({ entreprises: state.entreprises.filter((ent: NothingToPay) => ent.recu === true).map((ent: NothingToPay) => ent.id_entreprise) })
             })
             dispatch({ type: 'UPDATEALL', payLoad: updateall })
             if (state.totalPages > 1) {

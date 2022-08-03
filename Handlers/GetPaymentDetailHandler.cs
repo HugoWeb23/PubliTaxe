@@ -41,8 +41,22 @@ namespace Taxes.Handlers
                 ent.Surface_totale = ent.Quantite * ent.Surface;
             }
 
+            int MajorationIfTaxIsNull(int pourcentage) {
+                if(pourcentage == 10) {
+                    return 5;
+                } else if(pourcentage == 50) {
+                    return 10;
+                } else if(pourcentage == 100) {
+                    return 20;
+                } else if(pourcentage == 200) {
+                    return 40;
+                } else {
+                    return 5;
+                }
+            }
+
             decimal Taxe = entreprise.Publicites.Sum(p => p.Taxe_totale);
-            decimal Montant_majoration = (entreprise.Publicites.Sum(p => p.Taxe_totale) * entreprise.Pourcentage_majoration / 100);
+            decimal Montant_majoration = (entreprise.Publicites.Sum(ent => ent.Taxe_totale) > 0 && entreprise.Pourcentage_majoration == 0) ? (entreprise.Publicites.Sum(p => p.Taxe_totale) * entreprise.Pourcentage_majoration / 100) : MajorationIfTaxIsNull(entreprise.Pourcentage_majoration);
 
             Information information = _context.informations.OrderBy(i => i.Id).FirstOrDefault();
 

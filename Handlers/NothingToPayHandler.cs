@@ -37,7 +37,7 @@ namespace Taxes.Handlers
                 }
             }
 
-            entreprises = entreprises.Where(ent => ent.Publicites.Sum(p => p.Taxe_totale) == 0).ToList();
+            entreprises = entreprises.Where(ent => ent.Publicites.Sum(p => p.Taxe_totale) == 0 && ent.Pourcentage_majoration == 0).ToList();
 
             int TotalElements = entreprises.Count();
             int TotalPages = (int)Math.Ceiling(TotalElements / (double)request.Filters.ElementsParPage);
@@ -55,6 +55,7 @@ namespace Taxes.Handlers
                     Id_entreprise = ent.Id_entreprise,
                     Matricule_ciger = ent.Matricule_ciger,
                     Nom = ent.Nom,
+                    Recu = ent.Recu,
                     Nombre_panneaux = ent.Publicites.Count(),
                     Publicites = ent.Publicites.Select(pub => new NothingToPayAdvertisingView
                     {

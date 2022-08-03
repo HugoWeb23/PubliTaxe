@@ -113,7 +113,7 @@ export const ManageNothingToPay = () => {
                     {entreprises.map((notreceived: any, index: number) => <NotReceived element={notreceived} handleUpdate={(id: number) => HandleUpdateOne(id)} />)}
                 </tbody>
             </Table>
-            {entreprises.length > 0 && <div className="d-flex justify-content-end align-items-center">
+            {entreprises.length > 0 && <div className="d-flex justify-content-end align-items-center mb-3">
                 {optionsLoader && <div className="me-2"><SmallLoader /></div>}
                 <div className="me-2">
                     <ElementsPerPage
@@ -144,10 +144,11 @@ const NotReceived = memo(({ element, handleUpdate }: NotReceived) => {
             <td>{element.matricule_ciger}</td>
             <td>{element.nom}</td>
             <td>{element.nombre_panneaux}</td>
-            {value.user && value.user.role > 1 && <td><Button size="sm" variant="success" onClick={() => handleUpdate(element.id_entreprise)}><CheckIcon /> Rien à payer</Button></td>}
+            {value.user && value.user.role > 1 && <td><Button size="sm" variant="success" disabled={element.recu === false} onClick={() => handleUpdate(element.id_entreprise)}><CheckIcon /> Rien à payer</Button></td>}
         </tr>
         <tr>
             <td colSpan={5} className="px-3">
+                {element.recu === false && <span className="text-danger">Impossible de modifier le statut du paiement car l'entreprise n'a pas encore rendu sa déclaration.</span>}
                 <Table striped bordered size="sm" className="mt-1 mb-3">
                     <tr>
                         <th>N° panneau</th>

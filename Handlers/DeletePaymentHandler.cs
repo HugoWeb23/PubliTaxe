@@ -40,9 +40,23 @@ namespace Taxes.Handlers
                 throw new Exception("Impossible de récupérer l'exercice courant");
             }
 
+            int MajorationIfTaxIsNull(int pourcentage) {
+                if(pourcentage == 10) {
+                    return 5;
+                } else if(pourcentage == 50) {
+                    return 10;
+                } else if(pourcentage == 100) {
+                    return 20;
+                } else if(pourcentage == 200) {
+                    return 40;
+                } else {
+                    return 5;
+                }
+            }
+
             Entreprise Entreprise = await _mediator.Send(new GetEntrepriseById(CheckPayment.Id_entreprise));
             decimal SumTax = Entreprise.Publicites.Sum(p => p.Taxe_totale);
-            decimal Montant_majoration = (SumTax * Entreprise.Pourcentage_majoration / 100);
+            decimal Montant_majoration = (Entreprise.Publicites.Sum(ent => ent.Taxe_totale) > 0 || Entreprise.Pourcentage_majoration == 0) ? (SumTax * Entreprise.Pourcentage_majoration / 100) : MajorationIfTaxIsNull(Entreprise.Pourcentage_majoration);
             decimal TotalTax = SumTax + Montant_majoration;
             decimal AlreadyPayed = _context.paiements_recus
                 .Where(p => p.Id_entreprise == CheckPayment.Id_entreprise)

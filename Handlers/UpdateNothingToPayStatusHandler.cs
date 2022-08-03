@@ -27,7 +27,9 @@ namespace Taxes.Handlers
             List<Entreprise> entreprises = await _mediator.Send(new GetEntreprisesByIdQuery(request.Entreprises));
             entreprises.ForEach(entreprise =>
             {
-                entreprise.Statut_paiement = 3;
+                if(entreprise.Recu == true) {
+                    entreprise.Statut_paiement = 3;
+                }
             });
 
             _context.entreprises.UpdateRange(entreprises);

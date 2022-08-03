@@ -8,6 +8,7 @@ namespace Taxes.ViewModels
         public long Id_entreprise { get; set; }
         public long Matricule_ciger { get; set; }
         public string Nom { get; set; }
+        public bool Recu { get; set; }
         public int Nombre_panneaux { get; set; }
         public List<NothingToPayAdvertisingView> Publicites { get; set; }
     }
