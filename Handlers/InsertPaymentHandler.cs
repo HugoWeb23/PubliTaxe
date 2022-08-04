@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Taxes.Commands;
 using Taxes.Entities;
 using Taxes.Queries;
+using Taxes.Services;
 
 namespace Taxes.Handlers
 {
@@ -23,6 +24,12 @@ namespace Taxes.Handlers
         public async Task<Paiement> Handle(InsertPaymentCommand request, CancellationToken cancellationToken)
         {
             Entreprise Entreprise = await _mediator.Send(new GetEntrepriseById(request.Payment.Id_entreprise));
+
+            if (Entreprise.Recu == false && Entreprise.Proces_verbal == false)
+            {
+                throw new Exception("L'entreprise n'a pas encore remis sa déclaration");
+            }
+
             decimal SumTax = Entreprise.Publicites.Sum(p => p.Taxe_totale);
 
             if(Entreprise.Statut_paiement == 2)
@@ -42,21 +49,7 @@ namespace Taxes.Handlers
                 .Where(p => p.ExerciceId == information.Exercice_courant)
                 .Sum(p => p.Montant);
 
-            int MajorationIfTaxIsNull(int pourcentage) {
-                if(pourcentage == 10) {
-                    return 5;
-                } else if(pourcentage == 50) {
-                    return 10;
-                } else if(pourcentage == 100) {
-                    return 20;
-                } else if(pourcentage == 200) {
-                    return 40;
-                } else {
-                    return 5;
-                }
-            }
-
-            decimal Montant_majoration = (Entreprise.Publicites.Sum(ent => ent.Taxe_totale) > 0 || Entreprise.Pourcentage_majoration == 0) ? (SumTax * Entreprise.Pourcentage_majoration / 100) : MajorationIfTaxIsNull(Entreprise.Pourcentage_majoration);
+            decimal Montant_majoration = (Entreprise.Publicites.Sum(ent => ent.Taxe_totale) > 0 || Entreprise.Pourcentage_majoration == 0) ? (SumTax * Entreprise.Pourcentage_majoration / 100) : MajorationIfTaxIsNull.Calculate(Entreprise.Pourcentage_majoration);
             decimal LeftToPay = (SumTax + Montant_majoration) - AlreadyPayed;
 
             request.Payment.ExerciceId = information.Exercice_courant;

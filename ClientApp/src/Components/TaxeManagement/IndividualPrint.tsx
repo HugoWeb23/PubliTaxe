@@ -121,11 +121,6 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalY
                 <Form.Check type="checkbox" label="Imprimer le procès verbal" isInvalid={errors.options} {...register('options.print_minutes')} />
               </Form.Group>
             </Col>
-            <Col>
-              <Form.Group controlId="form">
-                <Form.Check type="checkbox" label="Imprimer la fiche d'entreprise" isInvalid={errors.options} {...register('options.print_form')} />
-              </Form.Group>
-            </Col>
             {errors.options && <Form.Text className="text-danger">
               {errors.options.message}
             </Form.Text>}

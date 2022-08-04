@@ -8,6 +8,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System;
 using Taxes.ViewModels;
+using Taxes.Services;
 
 namespace Taxes.Handlers
 {
@@ -140,20 +141,6 @@ namespace Taxes.Handlers
             int Index = (request.Filters.PageCourante - 1) * request.Filters.ElementsParPage;
             filtered = filtered.Skip(Index).Take(request.Filters.ElementsParPage).ToList();
 
-            int MajorationIfTaxIsNull(int pourcentage) {
-                if(pourcentage == 10) {
-                    return 5;
-                } else if(pourcentage == 50) {
-                    return 10;
-                } else if(pourcentage == 100) {
-                    return 20;
-                } else if(pourcentage == 200) {
-                    return 40;
-                } else {
-                    return 5;
-                }
-            }
-
 
             return new PaymentViewModel
             {
@@ -164,7 +151,7 @@ namespace Taxes.Handlers
                     Nom = ent.Nom,
                     Nombre_panneaux = ent.Publicites.Count(),
                     Statut_paiement = DeterminePaiementType(ent, request.Filters.Exercice),
-                    Taxe_totale = (ent.Publicites.Sum(ent => ent.Taxe_totale) > 0 || ent.Pourcentage_majoration == 0) ? (ent.Publicites.Sum(p => p.Taxe_totale) + ent.Publicites.Sum(p => p.Taxe_totale) * ent.Pourcentage_majoration / 100) : MajorationIfTaxIsNull(ent.Pourcentage_majoration)
+                    Taxe_totale = (ent.Publicites.Sum(ent => ent.Taxe_totale) > 0 || ent.Pourcentage_majoration == 0) ? (ent.Publicites.Sum(p => p.Taxe_totale) + ent.Publicites.Sum(p => p.Taxe_totale) * ent.Pourcentage_majoration / 100) : MajorationIfTaxIsNull.Calculate(ent.Pourcentage_majoration)
                 }).ToList(),
                 TotalPages = TotalPages,
                 PageCourante = request.Filters.PageCourante,

@@ -9,7 +9,8 @@ import {
     Accordion,
     Badge,
     OverlayTrigger,
-    Tooltip
+    Tooltip,
+    Alert
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -148,6 +149,7 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
             <div className="d-flex justify-content-end">
                 <h2>{PaymentStatus()}</h2>
             </div>
+            {((details.entreprise.recu === false && details.entreprise.proces_verbal === false) && value.user && value.user.role > 1) && <Alert variant="danger">L'entreprise n'a pas encore rendu sa déclaration.</Alert> }
             <Card className="mb-3">
                 <Card.Header as="h6">Informations sur l'entreprise</Card.Header>
                 <Card.Body>

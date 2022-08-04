@@ -8,6 +8,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Taxes.Commands;
 using System;
+using Taxes.Services;
 
 namespace Taxes.Handlers
 {
@@ -42,23 +43,15 @@ namespace Taxes.Handlers
 
             request.Payment.ExerciceId = information.Exercice_courant;
 
-            int MajorationIfTaxIsNull(int pourcentage) {
-                if(pourcentage == 10) {
-                    return 5;
-                } else if(pourcentage == 50) {
-                    return 10;
-                } else if(pourcentage == 100) {
-                    return 20;
-                } else if(pourcentage == 200) {
-                    return 40;
-                } else {
-                    return 5;
-                }
+            Entreprise Entreprise = await _mediator.Send(new GetEntrepriseById(request.Payment.Id_entreprise));
+
+            if (Entreprise.Recu == false && Entreprise.Proces_verbal == false)
+            {
+                throw new Exception("L'entreprise n'a pas encore remis sa déclaration");
             }
 
-            Entreprise Entreprise = await _mediator.Send(new GetEntrepriseById(request.Payment.Id_entreprise));
             decimal SumTax = Entreprise.Publicites.Sum(p => p.Taxe_totale);
-            decimal Montant_majoration = (Entreprise.Publicites.Sum(ent => ent.Taxe_totale) > 0 || Entreprise.Pourcentage_majoration == 0) ? (SumTax * Entreprise.Pourcentage_majoration / 100) : MajorationIfTaxIsNull(Entreprise.Pourcentage_majoration);
+            decimal Montant_majoration = (Entreprise.Publicites.Sum(ent => ent.Taxe_totale) > 0 || Entreprise.Pourcentage_majoration == 0) ? (SumTax * Entreprise.Pourcentage_majoration / 100) : MajorationIfTaxIsNull.Calculate(Entreprise.Pourcentage_majoration);
             decimal TotalTax = SumTax + Montant_majoration;
             decimal AlreadyPayed = _context.paiements_recus
                 .Where(p => p.Id_entreprise == request.Payment.Id_entreprise)

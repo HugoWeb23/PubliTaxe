@@ -19,7 +19,7 @@ export const EditTax = ({ match, motifs, tarifs, currentFiscalYear, informations
     useEffect(() => {
         (async () => {
             const fetchEntreprise: Entreprise = await apiFetch(`/entreprises/id/${match.params.id}`)
-            if(fetchEntreprise.recu === true) {
+            if(fetchEntreprise.recu === true || fetchEntreprise.proces_verbal === true) {
                 history.push('/')
             }
             setEntreprise(fetchEntreprise)
