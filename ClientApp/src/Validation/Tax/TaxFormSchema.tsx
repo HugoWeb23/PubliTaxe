@@ -25,12 +25,12 @@ export const TaxeFormSchema = yup.object().shape({
         is: (value: string) => value != "0" && value != undefined,
         then: yup.string().nullable().required('Vous avez sélectionné un % de majoration, veuillez saisir un motif')
     }),
-    code_rue_taxation: yup.string().required("Veuillez saisir un code de rue").min(3, "Le code rue est trop court").max(5, "Le code rue est trop long"),
-    adresse_taxation: yup.string().required('Veuillez saisir une adresse de taxation').min(3, "La rue est trop courte").max(50, "La rue est trop longue"),
-    adresse_numero_taxation: yup.string().required("Veuillez saisir un numéro").max(10, "Le numéro est trop long"),
+    code_rue_taxation: yup.string().max(5, "Le code rue est trop long"),
+    adresse_taxation: yup.string().max(50, "La rue est trop longue"),
+    adresse_numero_taxation: yup.string().max(10, "Le numéro est trop long"),
     adresse_index_taxation: yup.string().max(9, "L'index est trop longue"),
     adresse_boite_taxation: yup.string().max(9, 'Le numéro de boite est trop long'),
-    adresse_code_postal_taxation: yup.string().required('Veuillez saisir un code postal').min(3, "Le code postal est trop court").max(15, "Le code postal est trop long"),
-    adresse_localite_taxation: yup.string().required('Veuillez saisir une localité').min(1, "La localité est trop courte").max(35, "La localité est trop longue"),
+    adresse_code_postal_taxation: yup.string().max(15, "Le code postal est trop long"),
+    adresse_localite_taxation: yup.string().max(35, "La localité est trop longue"),
     commentaire_taxation: yup.string().typeError("Le format du commentaire n'est pas valide")
 });

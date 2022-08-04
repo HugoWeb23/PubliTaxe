@@ -67,13 +67,6 @@ namespace Taxes.Entities
             RuleFor(entreprise => entreprise.Personne_contact).NotEmpty().WithMessage("Veuillez définir une personne de contact");
             RuleFor(entreprise => entreprise.Telephone_contact).NotEmpty().WithMessage("Veuillez saisir le numéro téléphone de la personne de contact");
             RuleFor(entreprise => entreprise.Mail_contact).NotEmpty().WithMessage("Veuillez saisir une adresse e-mail pour la personne de contact");
-            RuleFor(entreprise => entreprise.Code_rue_taxation).NotEmpty().WithMessage("Veuillez saisir un code de rue pour la taxation");
-            RuleFor(entreprise => entreprise.Adresse_taxation).NotEmpty().WithMessage("Veuillez saisir une adresse de taxation");
-            RuleFor(entreprise => entreprise.Adresse_numero_taxation).NotEmpty().WithMessage("Veuillez saisir un numéro de rue pour la taxation");
-            RuleFor(entreprise => entreprise.Adresse_index_taxation).NotNull().WithMessage("Veuillez saisir une index");
-            RuleFor(entreprise => entreprise.Adresse_boite_taxation).NotNull().WithMessage("Veuillez saisir une boite");
-            RuleFor(entreprise => entreprise.Adresse_code_postal_taxation).NotEmpty().WithMessage("Veuillez saisir un code postal pour la taxation");
-            RuleFor(entreprise => entreprise.Adresse_localite_taxation).NotEmpty().WithMessage("Veuillez saisir une localité pour la taxation");
             RuleFor(entreprise => entreprise.Role_linguistique).NotEmpty().WithMessage("Veuillez choisir une langue");
             RuleForEach(x => x.Publicites).SetValidator(new PubliciteValidator());
         }
