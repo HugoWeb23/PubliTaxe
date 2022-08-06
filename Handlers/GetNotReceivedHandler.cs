@@ -36,7 +36,7 @@ namespace Taxes.Handlers
                 request.Filters.PageCourante = TotalPages;
             }
             int Index = (request.Filters.PageCourante - 1) * request.Filters.ElementsParPage;
-            entreprises = entreprises.Skip(Index).Take(request.Filters.ElementsParPage).ToList();
+            entreprises = entreprises.Skip(Index).Take(request.Filters.ElementsParPage).OrderBy(e => e.Nom).ToList();
 
             return Task.FromResult(new NotReceivedViewModel
             {

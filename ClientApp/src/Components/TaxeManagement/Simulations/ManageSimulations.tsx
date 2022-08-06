@@ -124,7 +124,7 @@ export const ManageSimulations = ({ currentFiscalYear, prices }: IManageSimulati
                     {(loader == false && simulations.length > 0) && simulations.map((simulation: IApercuSimulation) => <Simulation simulation={simulation} currentFiscalYear={currentFiscalYear} prices={prices} handleDelete={(simulation: IApercuSimulation) => setDeleteModal({ show: true, simulation: simulation })} handleGenerateSimulation={(sim: IApercuSimulation) => generatePdfDocument(sim.id_simulation)} />)}
                 </tbody>
             </Table>
-            {simulations.length > 0 && <div className="d-flex justify-content-end align-items-center mb-3">
+            {(simulations.length > 0 && loader === false) && <div className="d-flex justify-content-end align-items-center mb-3">
                 {optionsLoader && <div className="me-2"><Loader /></div>}
                 <div className="me-2">
                     <ElementsPerPage

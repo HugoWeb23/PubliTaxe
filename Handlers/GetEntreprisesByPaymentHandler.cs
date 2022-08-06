@@ -139,7 +139,7 @@ namespace Taxes.Handlers
                 request.Filters.PageCourante = TotalPages;
             }
             int Index = (request.Filters.PageCourante - 1) * request.Filters.ElementsParPage;
-            filtered = filtered.Skip(Index).Take(request.Filters.ElementsParPage).ToList();
+            filtered = filtered.Skip(Index).Take(request.Filters.ElementsParPage).OrderBy(e => e.Nom).ToList();
 
 
             return new PaymentViewModel

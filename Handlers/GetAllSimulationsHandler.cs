@@ -38,7 +38,7 @@ namespace Taxes.Handlers
                 request.Filters.PageCourante = TotalPages;
             }
             int Index = (request.Filters.PageCourante - 1) * request.Filters.ElementsParPage;
-            Simulations = Simulations.Skip(Index).Take(request.Filters.ElementsParPage).ToList();
+            Simulations = Simulations.Skip(Index).Take(request.Filters.ElementsParPage).OrderBy(e => e.Nom).ToList();
 
             return Task.FromResult(new SimulationsViewModel
             {
