@@ -224,7 +224,6 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
                             feedback={errors.confirm_delete && errors.confirm_delete.message}
                             feedbackType="invalid"
                             {...register('confirm_delete')}
-                            onClick={() => console.log(checkConfirmRef.current)}
                             ref={checkConfirmRef}
                         />
                         {errors.confirm_delete && <Form.Control.Feedback type="invalid">{errors.confirm_delete.message}</Form.Control.Feedback>}
