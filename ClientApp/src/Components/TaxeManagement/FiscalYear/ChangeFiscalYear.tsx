@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
     Container,
     Card,
@@ -28,17 +28,32 @@ interface IChangeFiscalYear {
     handleChange: (daya: any) => void
 }
 
+interface IConfirmModal {
+    show: boolean,
+    onConfirm: any,
+    onClose: any,
+    size: 'lg' | 'sm' | 'xl',
+    bodyText?: string,
+    confirmButtonText?: string,
+    confirmButtonVariant?: string,
+    leaveButtonText?: string,
+    leaveButtonVariant?: string,
+    hiddenConfirmButton?: boolean
+
+}
+
 export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFiscalYear) => {
     const [allYears, setAllYears] = useState<IExercice[]>([])
     const [loader, setLoader] = useState<boolean>(true)
-    const [confirmModal, setConfirmModal] = useState<boolean>(false)
+    const [confirmModal, setConfirmModal] = useState<IConfirmModal>({ show: false, onConfirm: () => { }, onClose: () => { }, size: "lg" })
     const [filterOptions, setFilterOptions] = useState<any>({ elementsParPage: 15, pageCourante: 1 })
     const [errorModal, setErrorModal] = useState<{ show: boolean, message: string }>({ show: false, message: "" })
     const [optionsLoader, setOptionsLoader] = useState<boolean>(false)
     const { entreprises, totalPages, elementsParPage, pageCourante, getAll, deleteOne, clearAll } = useChangeFiscalYear()
-    const { register, formState: { errors } } = useForm({ resolver: yupResolver(ChangeFiscalYearFormSchema) })
+    const { register, setError, clearErrors, formState: { errors } } = useForm({ resolver: yupResolver(ChangeFiscalYearFormSchema) })
     const nextYear: IExercice | undefined = allYears.find((year: IExercice) => currentFiscalYear.annee_exercice + 1 == year.annee_exercice)
     const history = useHistory()
+    const checkConfirmRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
         (async () => {
@@ -74,16 +89,37 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
                 toast.error(e.singleError.error)
             }
         }
-        setConfirmModal(false)
+        setConfirmModal(modal => ({ ...modal, show: false }))
+    }
+
+    const handleChangeFiscalYear = () => {
+        if (checkConfirmRef.current?.checked === false) {
+            setError("confirm_delete", { type: "manual", message: "Veuillez cocher la case" })
+            return;
+        } else {
+            clearErrors('confirm_delete')
+        }
+        setConfirmModal({
+            show: true,
+            onConfirm: () => ChangeYear(),
+            onClose: () => CloseModal(),
+            size: "lg",
+            bodyText: "Vous êtes sur le point de changer d'exercice courant, voulez-vous continuer ?",
+            confirmButtonText: "Oui",
+            confirmButtonVariant: "success",
+            leaveButtonText: "Non"
+        })
+    }
+
+    const CloseModal = () => {
+        setConfirmModal(modal => ({ ...modal, show: false }))
     }
 
     const CancelDeletionRequest = async (id_entreprise: number) => {
         try {
-            await apiFetch(`/entreprises/canceldelete/${id_entreprise}`, {
-                method: 'PUT'
-            })
             await deleteOne(id_entreprise)
             toast.success('La demande de suppression a été annulée')
+            CloseModal()
         } catch (e: any) {
             if (e instanceof ApiErrors) {
                 toast.error(e.singleError.error)
@@ -96,15 +132,15 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
     }
     return <>
         <ConfirmModal
-            show={confirmModal}
-            onConfirm={ChangeYear}
-            onClose={() => setConfirmModal(false)}
-            size="lg"
-            bodyText="Vous êtes sur le point de changer d'exercice courant et de supprimer les entreprises en attente de suppression, voulez-vous continuer ?"
-            confirmButtonText="Oui"
-            confirmButtonVariant="success"
-            leaveButtonText="Non"
-            leaveButtonVariant="danger"
+            show={confirmModal.show}
+            onConfirm={confirmModal.onConfirm}
+            onClose={confirmModal.onClose}
+            size={confirmModal.size}
+            bodyText={confirmModal.bodyText}
+            confirmButtonText={confirmModal.confirmButtonText}
+            confirmButtonVariant={confirmModal.confirmButtonVariant}
+            leaveButtonText={confirmModal.leaveButtonText}
+            leaveButtonVariant={confirmModal.leaveButtonVariant}
         />
         <Container fluid="sm">
             <nav aria-label="breadcrumb" className="mt-3">
@@ -141,7 +177,16 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
                                     <td>{ent.matricule_ciger}</td>
                                     <td>{ent.nom}</td>
                                     <td>{ent.nombre_panneaux}</td>
-                                    <td><Button size="sm" variant="secondary" onClick={() => CancelDeletionRequest(ent.id_entreprise)}>Annuler la suppression</Button></td>
+                                    <td><Button size="sm" variant="secondary" onClick={() => setConfirmModal({
+                                        show: true,
+                                        onConfirm: () => CancelDeletionRequest(ent.id_entreprise),
+                                        onClose: () => CloseModal(),
+                                        size: "lg",
+                                        bodyText: `Vous êtes sur le point d'annuler la demande de suppression de l'entreprise ${ent.nom}.`,
+                                        confirmButtonText: "Valider",
+                                        confirmButtonVariant: "success"
+                                    })
+                                    }>Annuler la suppression</Button></td>
                                 </tr>
                             </>
                         })}
@@ -179,11 +224,13 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
                             feedback={errors.confirm_delete && errors.confirm_delete.message}
                             feedbackType="invalid"
                             {...register('confirm_delete')}
+                            onClick={() => console.log(checkConfirmRef.current)}
+                            ref={checkConfirmRef}
                         />
                         {errors.confirm_delete && <Form.Control.Feedback type="invalid">{errors.confirm_delete.message}</Form.Control.Feedback>}
                     </Form.Group>
                     <div className="mt-3">
-                        <Button variant="danger" size="sm" disabled={nextYear === undefined} onClick={() => setConfirmModal(true)}>
+                        <Button variant="danger" size="sm" disabled={nextYear === undefined} onClick={() => handleChangeFiscalYear()}>
                             Changer d'exercice
                         </Button>
                     </div>
