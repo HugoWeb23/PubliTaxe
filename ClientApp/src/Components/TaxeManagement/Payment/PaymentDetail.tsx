@@ -210,7 +210,7 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
                 </Accordion.Item>
             </Accordion>
             {value.user && value.user.role > 1 && <div className="d-flex justify-content-end mt-4 mb-4">
-                <Button size="sm" variant="success" onClick={() => setPaymentModal({ show: true, type: 'create' })}><PlusIcon /> Nouveau paiement</Button>
+                <Button size="sm" variant="success" disabled={details.entreprise.recu === false} onClick={() => setPaymentModal({ show: true, type: 'create' })}><PlusIcon /> Nouveau paiement</Button>
             </div>}
             <Table>
                 <thead>
