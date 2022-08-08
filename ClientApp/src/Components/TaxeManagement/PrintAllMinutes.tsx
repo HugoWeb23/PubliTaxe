@@ -38,7 +38,7 @@ export const PrintAllMinutes = ({ tarifs, motifsMajoration, currentFiscalYear, i
 
     }
     
-    const initialValues = ({ ...informations, date_echeance: currentFiscalYear.date_echeance, date_impression: Today() })
+    const initialValues = ({ ...informations, date_echeance: currentFiscalYear.date_echeance, date_impression: Today(), date_proces_verbal: Today() })
     const { register, handleSubmit, formState: { errors } } = useForm<any>({ resolver: yupResolver(PrintAllMinutesSchema), defaultValues: initialValues })
     const [error, setError] = useState<{show: boolean, message: string}>({show: false, message: ""})
 
@@ -51,7 +51,7 @@ export const PrintAllMinutes = ({ tarifs, motifsMajoration, currentFiscalYear, i
             )).toBlob();
             saveAs(blob, 'document.pdf');
         } else {
-            setError({show: true, message: "Il n'y a aucun document à générer pour le moment"})
+            setError({show: true, message: "Il n'y a aucun document à imprimer pour le moment"})
         }
     }
 

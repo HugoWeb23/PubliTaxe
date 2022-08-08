@@ -61,7 +61,7 @@ export const FiscalYearModal = ({ fiscalYears, fiscalYear, handleClose, onSubmit
           <Form.Group controlId="exercice">
             <Form.Label column="sm">Année de l'exercice</Form.Label>
             <Form.Select size="sm" isInvalid={errors.annee_exercice} {...register('annee_exercice')}>
-              {generateDate().map((value: number, index: number) => <option value={value}>{value}</option>)}
+              {generateDate().map((value: number) => <option value={value}>{value}</option>)}
               {errors.annee_exercice && <Form.Control.Feedback type="invalid">{errors.annee_exercice.message}</Form.Control.Feedback>}
             </Form.Select>
           </Form.Group>

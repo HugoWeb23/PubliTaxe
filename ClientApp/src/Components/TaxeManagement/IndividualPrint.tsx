@@ -32,7 +32,8 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalY
       print_letter: (tax?.code_postal?.cp != 7700 && tax?.code_postal?.cp != 7711 && tax?.code_postal?.cp != 7712) ? true : false,
       print_declaration: true,
       print_form: false,
-      print_minutes: tax.proces_verbal ? true : false
+      print_minutes: tax.proces_verbal ? true : false,
+      date_proces_verbal: Today()
     }
   })
 
@@ -102,7 +103,7 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalY
           </Row>
           {print_minutes && <Form.Group controlId="send_date_minutes" className="mb-3">
             <Form.Label column="sm">Date d'envoi procès-verbal</Form.Label>
-            <Form.Control type="date" placeholder="dd-mm-yyyy" isInvalid={errors.date_proces_verbal} size="sm" {...register('date_proces_verbal')} />
+            <Form.Control type="date" placeholder="dd-mm-yyyy" defaultValue={Today()} isInvalid={errors.date_proces_verbal} size="sm" {...register('date_proces_verbal')} />
             {errors.date_proces_verbal && <Form.Control.Feedback type="invalid">{errors.date_proces_verbal.message}</Form.Control.Feedback>}
           </Form.Group>}
           <Row>

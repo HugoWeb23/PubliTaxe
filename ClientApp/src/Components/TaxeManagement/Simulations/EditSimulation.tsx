@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { apiFetch } from "../../../Services/apiFetch";
 import { IExercice } from "../../../Types/IExercice";
+import { IPrice } from "../../../Types/IPrice";
 import { ISimulation } from "../../../Types/ISimulation";
 import { CustomLoader } from "../../UI/CustomLoader";
 import { SimulationForm } from "./SimulationForm";
@@ -14,10 +15,10 @@ export const EditSimulation = ({ match, tarifs, currentFiscalYear }: any) => {
     useEffect(() => {
         (async () => {
             let fetchSimulation = await apiFetch(`/simulations/id/${match.params.id}`)
-            const allFiscalYears = await apiFetch('/fiscalyears/all')
+            const allFiscalYears: IExercice[] = await apiFetch('/fiscalyears/all')
             if(fetchSimulation.exercices.length > 0) {
                 // Vérifie si les exercices stockés existent toujours
-                fetchSimulation.exercices = fetchSimulation.exercices.split(';').filter((id_exo: number) => allFiscalYears.some((fisc: IExercice) => id_exo == fisc.id))
+                fetchSimulation.exercices = fetchSimulation.exercices.split(';').filter((id_exo: number) => tarifs.filter((t: IPrice) => t.exerciceId == id_exo).length > 0)
             } else {
                 fetchSimulation.exercices = []
             }

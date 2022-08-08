@@ -173,7 +173,7 @@ export const RegisteredLetter = ({ entreprise, printData, currentFiscalYear, mot
             <Text style={styles.NormalText}>Madame, Monsieur,</Text>
         </View>
         <View style={{ marginTop: '5mm' }}>
-            <Text style={styles.NormalText}>Conformément au règlement du {new Date(currentFiscalYear.date_reglement_taxe).toLocaleDateString('fr-FR')} sur les panneaux publicitaires et enseignes, l'administration communale adresse au contribuable une fomule de déclaration que celui-ci est tenu de renvoyer, dument remplie et signée, avant l'échéance mentionnée sur celle-ci.</Text>
+            <Text style={styles.NormalText}>Conformément au règlement du 30 novembre 2020 sur les panneaux publicitaires et enseignes, l'administration communale adresse au contribuable une fomule de déclaration que celui-ci est tenu de renvoyer, dument remplie et signée, avant l'échéance mentionnée sur celle-ci.</Text>
         </View>
         <View style={{ marginTop: '5mm' }}>
             <Text style={styles.NormalText}>En outre, conformément à l'article L3321-6 du Code de la démocratie locale et de la décentralisation, lorsque le règlement de taxation prévoit une obligation de déclaration, la non-déclaration dans les délais prévus par ce même règlement ou la déclaration incorrecte, incomplète ou imprécise de la part du redevable entraîne l'enrôlement d'office de la taxe.</Text>

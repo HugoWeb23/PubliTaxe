@@ -6,7 +6,7 @@ import {
   Row,
   Col
 } from 'react-bootstrap'
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { IPrice } from '../../../Types/IPrice'
 import { IExercice } from '../../../Types/IExercice'
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -20,7 +20,7 @@ interface FiscalYearModal {
   onSubmit: (data: any) => Promise<void>
 }
 
-export const PriceModal = ({ element, fiscalYears, fiscalYearsUsed, handleClose, onSubmit }: FiscalYearModal) => {
+export const PriceModal = ({ element, fiscalYears, handleClose, onSubmit }: FiscalYearModal) => {
   const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm({ resolver: yupResolver(PriceSchema) })
 
   useEffect(() => {

@@ -198,6 +198,36 @@ const ModalInfos = ({ show, handleClose }: IModalInfos) => {
                         <td><CheckCircle /></td>
                     </tr>
                     <tr>
+                        <td>Gérer les non reçus</td>
+                        <td><ErrorCircle /></td>
+                        <td><CheckCircle /></td>
+                        <td><CheckCircle /></td>
+                    </tr>
+                    <tr>
+                        <td>Visionner les paiements</td>
+                        <td><CheckCircle /></td>
+                        <td><CheckCircle /></td>
+                        <td><CheckCircle /></td>
+                    </tr>
+                    <tr>
+                        <td>Gérer les paiements</td>
+                        <td><ErrorCircle /></td>
+                        <td><CheckCircle /></td>
+                        <td><CheckCircle /></td>
+                    </tr>
+                    <tr>
+                        <td>Voir et imprimer les déclarations</td>
+                        <td><CheckCircle /></td>
+                        <td><CheckCircle /></td>
+                        <td><CheckCircle /></td>
+                    </tr>
+                    <tr>
+                        <td>Gérer les déclarations</td>
+                        <td><ErrorCircle /></td>
+                        <td><CheckCircle /></td>
+                        <td><CheckCircle /></td>
+                    </tr>
+                    <tr>
                         <td>Impression individuelle</td>
                         <td><CheckCircle /></td>
                         <td><CheckCircle /></td>

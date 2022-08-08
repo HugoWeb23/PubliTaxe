@@ -4,8 +4,6 @@ import {
     Container,
     Table,
     Button,
-    Row,
-    Col,
     Badge,
     Alert
 } from 'react-bootstrap'
@@ -19,11 +17,12 @@ import { ApiErrors, apiFetch } from "../../../Services/apiFetch"
 import { Link } from "react-router-dom"
 
 interface IManagePrices {
+    currentFiscalYear: IExercice,
     handleEdit: (price: IPrice) => void,
     handleCreate: (price: IPrice) => void
 }
 
-export const ManagePrices = ({ handleEdit, handleCreate }: IManagePrices) => {
+export const ManagePrices = ({ currentFiscalYear, handleEdit, handleCreate }: IManagePrices) => {
     const { prices, getAll, editPrice, newPrice } = usePrices()
     const [selectedPrice, setSelectedPrice] = useState<{ price: IPrice, show: boolean, type: string }>({ price: {} as IPrice, show: false, type: 'create' })
     const [fiscalYears, setFiscalYears] = useState<IExercice[]>([])
@@ -98,7 +97,8 @@ export const ManagePrices = ({ handleEdit, handleCreate }: IManagePrices) => {
                 <tbody>
                     {loader && <tr><td align="left" colSpan={3}>Chargement...</td></tr>}
                     {(loader === false && prices.length === 0) && <tr><td colSpan={3}>Aucun résultat</td></tr>}
-                    {loader === false && prices.map((price: IPrice, index: number) => {
+                    {loader === false && prices.map((price: IPrice) => {
+                        const exercice: any = fiscalYears.find((y: IExercice) => price.exerciceId === y.id)
                         return <tr key={price.id}>
                             <td>{fiscalYears.find((fisc: IExercice) => fisc.id == price.exerciceId)?.annee_exercice}</td>
                             <td>
@@ -133,7 +133,7 @@ export const ManagePrices = ({ handleEdit, handleCreate }: IManagePrices) => {
                                     </div>
                                 </div>
                             </td>
-                            <td><Button size="sm" onClick={() => setSelectedPrice({ price: price, show: true, type: 'edit' })}><Pencil /> Modifier</Button></td>
+                            <td><Button size="sm" disabled={exercice?.annee_exercice < currentFiscalYear.annee_exercice} onClick={() => setSelectedPrice({ price: price, show: true, type: 'edit' })}><Pencil /> Modifier</Button></td>
                         </tr>
                     })}
                 </tbody>

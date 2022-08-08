@@ -23,6 +23,8 @@ import { ISimulation } from "../../../Types/ISimulation";
 import { SimulationPrinter } from "../PDF/SimulationPrinter";
 import { pdf } from '@react-pdf/renderer';
 import { saveAs } from 'file-saver';
+import { IPrice } from "../../../Types/IPrice";
+import { pricesByTypes } from "../../../Services/SumTax";
 
 
 export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFiscalYears, onFormSubmit }: any) => {
@@ -332,8 +334,8 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
                 <Form.Group controlId="exercices">
                     <Form.Label column="sm">Sélection des exercices</Form.Label>
                     <div className="d-flex mb-3">
-                        {allFiscalYears.filter((f: IExercice) => f.annee_exercice >= currentFiscalYear.annee_exercice).map((f: IExercice, index: number) => {
-                            return <div className="form-check me-3" key={f.annee_exercice}>
+                        {allFiscalYears.filter((f: IExercice) => f.annee_exercice >= currentFiscalYear.annee_exercice && tarifs.filter((t: IPrice) => t.exerciceId === f.id).length > 0).map((f: IExercice) => {
+                            return <div className="form-check me-3" key={f.id}>
                                 <input id={f.annee_exercice.toString()} className="form-check-input" type="checkbox" {...register('exercices')} value={f.id} />
                                 <label className="form-check-label" htmlFor={f.annee_exercice.toString()}>
                                     {f.annee_exercice}
