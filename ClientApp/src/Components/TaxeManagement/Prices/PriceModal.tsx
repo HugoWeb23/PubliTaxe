@@ -15,12 +15,12 @@ import { PriceSchema } from '../../../Validation/Price/PriceForm'
 interface FiscalYearModal {
   element: { price: IPrice, show: boolean, type: string },
   fiscalYears: IExercice[],
-  fiscalYearsUsed: number[],
+  currentFiscalYear: IExercice,
   handleClose: () => void,
   onSubmit: (data: any) => Promise<void>
 }
 
-export const PriceModal = ({ element, fiscalYears, handleClose, onSubmit }: FiscalYearModal) => {
+export const PriceModal = ({ element, fiscalYears, currentFiscalYear, handleClose, onSubmit }: FiscalYearModal) => {
   const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm({ resolver: yupResolver(PriceSchema) })
 
   useEffect(() => {
@@ -37,6 +37,15 @@ export const PriceModal = ({ element, fiscalYears, handleClose, onSubmit }: Fisc
     await onSubmit({ type: element.type, data })
   }
 
+  const ShowFiscalYears = (): IExercice[] => {
+    const years: IExercice[] = []
+    if(element.type === 'create') {
+     fiscalYears.forEach((y: IExercice) => y.annee_exercice >= currentFiscalYear.annee_exercice ? years.push(y) : null)
+    } else {
+      years.push(...fiscalYears)
+    }
+    return years;
+  }
   return <>
     <Modal show={element.show} onHide={handleClose} animation={false}>
       <Modal.Header closeButton>
@@ -47,7 +56,7 @@ export const PriceModal = ({ element, fiscalYears, handleClose, onSubmit }: Fisc
           <Form.Group controlId="Exercice" className="mb-1">
             <Form.Label column="sm">Exercice</Form.Label>
             <Form.Select size="sm" isInvalid={errors.exerciceId} {...register('exerciceId')}>
-              {fiscalYears.map((fiscalYear: IExercice) => <option value={fiscalYear.id}>{fiscalYear.annee_exercice}</option>)}
+              {ShowFiscalYears().map((fiscalYear: IExercice) => <option value={fiscalYear.id}>{fiscalYear.annee_exercice}</option>)}
             </Form.Select>
             {errors.exerciceId && <Form.Control.Feedback type="invalid">{errors.exerciceId.message}</Form.Control.Feedback>}
           </Form.Group>

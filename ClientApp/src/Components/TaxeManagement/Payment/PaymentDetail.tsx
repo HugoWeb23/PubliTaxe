@@ -173,7 +173,7 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
             </Card>
             <Accordion defaultActiveKey="1" className="mb-3">
                 <Accordion.Item eventKey="0">
-                    <Accordion.Header>Liste des enseignes publicitaires</Accordion.Header>
+                    <Accordion.Header>Liste des publicités</Accordion.Header>
                     <Accordion.Body>
                         <Table striped bordered hover size="sm">
                             <thead>

@@ -106,13 +106,13 @@ export const ManageAdvertising = memo(({ pubs = [], matricule, tarifs, currentFi
             handleClose={handleUnSelectPub}
             onValidate={handleSubmit}
         />}
-        <div className="d-flex justify-content-start align-items-center mb-2 link" onClick={setCreateMode}><PlusIcon /> Créer un panneau</div>
+        <div className="d-flex justify-content-start align-items-center mb-2 link" onClick={setCreateMode}><PlusIcon /> Créer une publicité</div>
         <ConfirmModal
             show={deleteModal.show}
             element={deleteModal.element}
             onClose={closeConfirmModal}
             onConfirm={deletePub}
-            bodyText="Voulez-vous vraiment supprimer ce panneau ?"
+            bodyText="Voulez-vous vraiment supprimer cette publicité ?"
         />
         <Table striped bordered hover size="sm">
             <thead>
@@ -126,7 +126,7 @@ export const ManageAdvertising = memo(({ pubs = [], matricule, tarifs, currentFi
                 </tr>
             </thead>
             <tbody>
-                {publicites.length == 0 && <tr><td colSpan={6}>Aucun panneau</td></tr>}
+                {publicites.length == 0 && <tr><td colSpan={6}>Aucune publicité</td></tr>}
                 {publicites.map((publicite: IPublicite, index: number) => {
                     return <tr key={index}>
                         <td>{currentFiscalYear.annee_exercice}</td>

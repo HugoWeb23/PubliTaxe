@@ -93,7 +93,7 @@ export const ManageNotReceived = ({ motifs, currentFiscalYear }: IManageNotRecei
                         <th>ID</th>
                         <th>Matricule</th>
                         <th>Nom entreprise</th>
-                        <th>Panneaux</th>
+                        <th>Publicités</th>
                         <th>Action</th>
                     </tr>
                 </thead>

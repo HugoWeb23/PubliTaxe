@@ -66,13 +66,8 @@ export const ManagePrices = ({ currentFiscalYear, handleEdit, handleCreate }: IM
         }
     }
 
-    const memoPricesIds: number[] = useMemo(() => {
-        const fiscalYearsUsed = prices.map((price: IPrice) => price.exerciceId)
-        return fiscalYearsUsed
-    }, [prices])
-
     return <>
-        <PriceModal element={selectedPrice} fiscalYears={fiscalYears} fiscalYearsUsed={memoPricesIds} handleClose={() => setSelectedPrice(price => ({ ...price, show: false, type: 'create' }))} onSubmit={handleSubmit} />
+        <PriceModal element={selectedPrice} fiscalYears={fiscalYears} currentFiscalYear={currentFiscalYear} handleClose={() => setSelectedPrice(price => ({ ...price, show: false, type: 'create' }))} onSubmit={handleSubmit} />
         <Container fluid="sm">
             <nav aria-label="breadcrumb" className="mt-3">
                 <ol className="breadcrumb">

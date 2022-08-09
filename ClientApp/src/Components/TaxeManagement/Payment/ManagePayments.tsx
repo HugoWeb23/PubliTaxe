@@ -155,7 +155,7 @@ export const ManagePayment = ({ currentFiscalYear }: IManagePayment) => {
                                 <th>ID</th>
                                 <th>Matricule</th>
                                 <th>Nom entreprise</th>
-                                <th>Panneaux</th>
+                                <th>Publicités</th>
                                 <th>Statut du paiement</th>
                                 <th>Taxe totale</th>
                                 <th>Actions</th>

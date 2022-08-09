@@ -106,7 +106,7 @@ export const ManageAdvertisingSimulation = memo(({ pubs = [], tarifs, allFiscalY
             handleClose={handleUnSelectPub}
             onValidate={handleSubmit}
         />}
-        <div className="d-flex justify-content-start align-items-center mb-2 link" onClick={setCreateMode}><PlusIcon /> Ajouter un panneau</div>
+        <div className="d-flex justify-content-start align-items-center mb-2 link" onClick={setCreateMode}><PlusIcon /> Ajouter une publicité</div>
         <ConfirmModal
             show={deleteModal.show}
             element={deleteModal.element}
@@ -125,7 +125,7 @@ export const ManageAdvertisingSimulation = memo(({ pubs = [], tarifs, allFiscalY
                 </tr>
             </thead>
             <tbody>
-                {publicites.length == 0 && <tr><td colSpan={6}>Aucun panneau</td></tr>}
+                {publicites.length == 0 && <tr><td colSpan={6}>Aucune publicité</td></tr>}
                 {publicites.map((publicite: IPubliciteSimulation, index: number) => {
                     return <tr key={index}>
                         <td>{publicite.rue.code_postal.cp}</td>

@@ -15,10 +15,9 @@ export const EditSimulation = ({ match, tarifs, currentFiscalYear }: any) => {
     useEffect(() => {
         (async () => {
             let fetchSimulation = await apiFetch(`/simulations/id/${match.params.id}`)
-            const allFiscalYears: IExercice[] = await apiFetch('/fiscalyears/all')
+            const allFiscalYears: any = await apiFetch('/fiscalyears/all')
             if(fetchSimulation.exercices.length > 0) {
-                // Vérifie si les exercices stockés existent toujours
-                fetchSimulation.exercices = fetchSimulation.exercices.split(';').filter((id_exo: number) => tarifs.filter((t: IPrice) => t.exerciceId == id_exo).length > 0)
+                fetchSimulation.exercices = fetchSimulation.exercices.split(';').filter((id_exo: number) => tarifs.filter((t: IPrice) => t.exerciceId == id_exo).length > 0 && allFiscalYears.find((y: IExercice) => y.id == id_exo)?.annee_exercice >= currentFiscalYear.annee_exercice)
             } else {
                 fetchSimulation.exercices = []
             }

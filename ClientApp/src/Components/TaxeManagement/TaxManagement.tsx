@@ -162,7 +162,7 @@ export const TaxManagement = () => {
                                 <th>ID</th>
                                 <th>Matricule</th>
                                 <th>Nom entreprise</th>
-                                <th>Panneaux</th>
+                                <th>Publicités</th>
                                 <th>Statut déclaration</th>
                                 <th>Statut paiement</th>
                                 <th>Actions</th>

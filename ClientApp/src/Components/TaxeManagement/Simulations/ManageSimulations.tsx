@@ -77,7 +77,7 @@ export const ManageSimulations = ({ currentFiscalYear, prices }: IManageSimulati
         try {
             const simulation = await apiFetch(`/simulations/id/${id_simulation}`)
             const allFiscalYears = await apiFetch('/fiscalyears/all')
-            simulation.exercices = simulation.exercices.split(';').filter((id_exo: number) => allFiscalYears.some((fisc: IExercice) => id_exo == fisc.id && fisc.annee_exercice >= currentFiscalYear.annee_exercice))
+            simulation.exercices = simulation.exercices.split(';').filter((id_exo: number) => prices.filter((t: IPrice) => t.exerciceId == id_exo).length > 0 && allFiscalYears.find((y: IExercice) => y.id == id_exo)?.annee_exercice >= currentFiscalYear.annee_exercice)
             const blob = await pdf((
                 <SimulationPrinter simulation={simulation} allFiscalYears={allFiscalYears} tarifs={prices} />
             )).toBlob();

@@ -84,7 +84,7 @@ export const AdvertisingModalSimulation = ({ type, show, publicite, handleClose,
     return <>
         <Modal show={show} onHide={handleClose} size="xl" animation={false}>
             <Modal.Header closeButton>
-                <Modal.Title as="h5">{type == 'edit' ? `Éditer un panneau` : 'Créer un panneau'}</Modal.Title>
+                <Modal.Title as="h5">{type == 'edit' ? `Éditer une publicité` : 'Créer une publicité'}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form onSubmit={handleSubmit(onSubmit)}>
@@ -163,7 +163,7 @@ export const AdvertisingModalSimulation = ({ type, show, publicite, handleClose,
                     <Row>
                         <Col>
                             <Form.Group className="mb-3" controlId="type_publicite">
-                                <Form.Label column="sm">Type panneau</Form.Label>
+                                <Form.Label column="sm">Type publicité</Form.Label>
                                 <Form.Select size="sm" isInvalid={errors.type_publicite} {...register('type_publicite')}>
                                     <option value={1}>Enseigne non lumineuse</option>
                                     <option value={2}>Enseigne lumineuse</option>
