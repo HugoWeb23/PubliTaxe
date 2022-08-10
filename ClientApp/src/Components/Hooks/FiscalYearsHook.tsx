@@ -18,7 +18,7 @@ export const useFiscalYears = () => {
             case 'FETCH_FISCAL_YEARS':
                 return { ...state, fiscalYears: action.payLoad }
             case 'INSERT':
-                return { ...state, fiscalYears: [...state.fiscalYears, action.payLoad] }
+                return { ...state, fiscalYears: [action.payLoad, ...state.fiscalYears] }
             case 'EDIT':
                 return { ...state, fiscalYears: state.fiscalYears.map((fiscalYear: IExercice) => fiscalYear.id == action.payLoad.id ? action.payLoad : fiscalYear) }
             default:

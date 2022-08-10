@@ -18,7 +18,7 @@ export const usePrices = () => {
             case 'FETCH_ALL_PRICES':
                 return { ...state, prices: action.payLoad }
             case 'INSERT':
-                return { ...state, prices: [...state.prices, action.payLoad] }
+                return { ...state, prices: [action.payLoad, ...state.prices] }
             case 'EDIT':
                 return { ...state, prices: state.prices.map((fiscalYear: IPrice) => fiscalYear.id == action.payLoad.id ? action.payLoad : fiscalYear) }
             default:
