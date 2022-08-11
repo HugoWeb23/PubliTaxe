@@ -43,7 +43,7 @@ namespace Taxes.Handlers
             }
 
             decimal Taxe = entreprise.Publicites.Sum(p => p.Taxe_totale);
-            decimal Montant_majoration = (entreprise.Publicites.Sum(ent => ent.Taxe_totale) > 0 && entreprise.Pourcentage_majoration == 0) ? (entreprise.Publicites.Sum(p => p.Taxe_totale) * entreprise.Pourcentage_majoration / 100) : MajorationIfTaxIsNull.Calculate(entreprise.Pourcentage_majoration);
+            decimal Montant_majoration = (entreprise.Publicites.Sum(ent => ent.Taxe_totale) > 0 || entreprise.Pourcentage_majoration == 0) ? (entreprise.Publicites.Sum(p => p.Taxe_totale) * entreprise.Pourcentage_majoration / 100) : MajorationIfTaxIsNull.Calculate(entreprise.Pourcentage_majoration);
 
             Information information = _context.informations.OrderBy(i => i.Id).FirstOrDefault();
 

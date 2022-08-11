@@ -153,13 +153,13 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
                     <Card.Body>
                         <Row className="mb-3">
                             <Col>
-                                <div className="fw-bold">Code rue taxation</div><span className="d-block">{entreprise.code_rue_taxation}</span>
+                                <div className="fw-bold">Code rue taxation</div><span className={`d-block ${(entreprise.code_rue_taxation.length == 0 || entreprise.code_rue_taxation == '0') && 'fw-light'}`}>{(entreprise.code_rue_taxation.length != 0 && entreprise.code_rue_taxation != '0') ? entreprise.code_rue_taxation : "(Pas de code rue)"}</span>
                             </Col>
                             <Col>
-                                <div className="fw-bold">Adresse taxation</div><span className="d-block">{entreprise.adresse_taxation}</span>
+                                <div className="fw-bold">Adresse taxation</div><span className={`d-block ${(entreprise.adresse_taxation.length == 0 || entreprise.adresse_taxation == '0') && 'fw-light'}`}>{(entreprise.adresse_taxation.length != 0 && entreprise.adresse_taxation != '0') ? entreprise.adresse_taxation : "(Pas d'adresse)"}</span>
                             </Col>
                             <Col>
-                                <div className="fw-bold">Numéro</div><span className="d-block">{entreprise.adresse_numero_taxation}</span>
+                                <div className="fw-bold">Numéro</div><span className={`d-block ${(entreprise.adresse_numero_taxation.length == 0 || entreprise.adresse_numero_taxation == '0') && 'fw-light'}`}>{(entreprise.adresse_numero_taxation.length != 0 && entreprise.adresse_numero_taxation != '0') ? entreprise.adresse_numero_taxation : "(Pas de numéro)"}</span>
                             </Col>
                         </Row>
                         <Row>
@@ -167,13 +167,13 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
                                 <div className="fw-bold">Index</div><span className={`d-block ${(entreprise.adresse_index_taxation.length == 0 || entreprise.adresse_index_taxation == '0') && 'fw-light'}`}>{(entreprise.adresse_index_taxation.length != 0 && entreprise.adresse_index_taxation != '0') ? entreprise.adresse_index_taxation : "(Pas d'index)"}</span>
                             </Col>
                             <Col>
-                            <div className="fw-bold">Boite</div><span className={`d-block ${(entreprise.adresse_boite_taxation.length == 0 || entreprise.adresse_boite_taxation == "0") && 'fw-light'}`}>{entreprise.adresse_boite_taxation != "0" ? entreprise.adresse_boite_taxation : "(Pas de boite)"}</span>
+                            <div className="fw-bold">Boite</div><span className={`d-block ${(entreprise.adresse_boite_taxation.length == 0 || entreprise.adresse_boite_taxation == '0') && 'fw-light'}`}>{(entreprise.adresse_boite_taxation.length != 0 && entreprise.adresse_boite_taxation != '0') ? entreprise.adresse_boite_taxation : "(Pas de boite)"}</span>
                             </Col>
                             <Col>
-                                <div className="fw-bold">Code postal</div><span className="d-block">{entreprise.adresse_code_postal_taxation}</span>
+                                <div className="fw-bold">Code postal</div><span className={`d-block ${(entreprise.adresse_code_postal_taxation.length == 0 || entreprise.adresse_code_postal_taxation == '0') && 'fw-light'}`}>{(entreprise.adresse_code_postal_taxation.length != 0 && entreprise.adresse_code_postal_taxation != '0') ? entreprise.adresse_code_postal_taxation : "(Pas de code postal)"}</span>
                             </Col>
                             <Col>
-                                <div className="fw-bold">Localité</div><span className="d-block">{entreprise.adresse_localite_taxation}</span>
+                                <div className="fw-bold">Localité</div><span className={`d-block ${(entreprise.adresse_localite_taxation.length == 0 || entreprise.adresse_localite_taxation == '0') && 'fw-light'}`}>{(entreprise.adresse_localite_taxation.length != 0 && entreprise.adresse_localite_taxation != '0') ? entreprise.adresse_localite_taxation : "(Pas de localité)"}</span>
                             </Col>
                         </Row>
                     </Card.Body>
