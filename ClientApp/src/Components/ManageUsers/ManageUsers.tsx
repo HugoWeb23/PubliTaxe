@@ -111,8 +111,8 @@ export const ManageUsers = () => {
                 </thead>
                 <tbody>
                     {(loader === true) && <tr><td colSpan={7}>Chargement...</td></tr>}
-                    {(loader === false && accounts.length === 0) && <tr><td colSpan={6}>Aucun résultat</td></tr>}
-                    {(loader == false && accounts.length !== 0) && accounts.map((user: IUser, index: number) => <UserRow user={user} onDelete={(user: IUser) => setDeleteModal({ show: true, user: user })} />)}
+                    {(loader === false && accounts.length === 0) && <tr><td colSpan={7}>Aucun résultat</td></tr>}
+                    {(loader == false && accounts.length !== 0) && accounts.map((user: IUser) => <UserRow user={user} onDelete={(user: IUser) => setDeleteModal({ show: true, user: user })} />)}
                 </tbody>
             </Table>
         </Container>

@@ -166,7 +166,7 @@ export const ChangeFiscalYear = ({ currentFiscalYear, handleChange }: IChangeFis
                         <th>ID</th>
                         <th>Matricule</th>
                         <th>Nom</th>
-                        <th>Panneaux</th>
+                        <th>Publicités</th>
                         <th>Action</th>
                     </thead>
                     <tbody>

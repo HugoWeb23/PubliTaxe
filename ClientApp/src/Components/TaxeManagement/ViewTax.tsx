@@ -193,7 +193,7 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
                         {entreprise.publicites.length === 0 && <tr><td colSpan={6}>Aucune publicité</td></tr>}
                         {entreprise.publicites.map((pub: IPublicite) => {
                             return <tr key={pub.matricule_ciger}>
-                                <td>{pub.exercice_courant}</td>
+                                <td>{currentFiscalYear.annee_exercice}</td>
                                 <td>{pub.rue.code_postal.cp}</td>
                                 <td>{pub.rue.code_rue}</td>
                                 <td>{pub.rue.nom_rue}</td>

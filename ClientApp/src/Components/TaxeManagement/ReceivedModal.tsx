@@ -148,7 +148,7 @@ export const ReceivedModal = ({ show, handleClose, onSubmit }: IReceivedModal) =
                             <th>ID</th>
                             <th>Matricule</th>
                             <th>Nom</th>
-                            <th>Nombre de panneaux</th>
+                            <th>Publicités</th>
                             <th>Action</th>
                         </tr>
                     </thead>

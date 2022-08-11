@@ -104,7 +104,7 @@ export const ManageNothingToPay = () => {
                         <th>ID</th>
                         <th>Matricule</th>
                         <th>Nom entreprise</th>
-                        <th>Panneaux</th>
+                        <th>Publicités</th>
                         {value.user && value.user.role > 1 && <th>Action</th>}
                     </tr>
                 </thead>
