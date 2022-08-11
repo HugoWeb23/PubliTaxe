@@ -39,6 +39,12 @@ namespace Taxes.Handlers
             {
                 throw new Exception("Vous devez cocher la case procès-verbal pour appliquer un pourcentage de majoration");
             }
+            if((request.Entreprise.Proces_verbal && request.Entreprise.Desactive) && entreprise.Desactive) {
+                throw new Exception("Une entreprise désactivée ne peut pas être en infraction");
+            }
+            if(request.Entreprise.Desactive && entreprise.Proces_verbal) {
+                throw new Exception("L'entreprise ne peut pas être désactivée car elle est en infraction");
+            }
             var Informations = await _mediator.Send(new GetInformationsQuery());
             long ExerciceId = (long)Informations.GetType().GetProperty("Exercice_courant").GetValue(Informations, null);
             NotReceived NonRecu = _context.non_recus.AsNoTracking().Where(n => n.ExerciceId == ExerciceId && n.Id_entreprise == entreprise.Id_entreprise).OrderBy(n => n.Id).FirstOrDefault();
