@@ -204,14 +204,14 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
                     </Col>
                     <Col>
                         <Form.Group controlId="index">
-                            <Form.Label column="sm">Index</Form.Label>
+                            <Form.Label column="sm">Index <span className="fw-light">(optionnel)</span></Form.Label>
                             <Form.Control type="text" placeholder="Index" isInvalid={errors.adresse_index} {...register('adresse_index')} size="sm" />
                             {errors.adresse_index && <Form.Control.Feedback type="invalid">{errors.adresse_index.message}</Form.Control.Feedback>}
                         </Form.Group>
                     </Col>
                     <Col>
                         <Form.Group controlId="boite">
-                            <Form.Label column="sm">Boite</Form.Label>
+                            <Form.Label column="sm">Boite <span className="fw-light">(optionnel)</span></Form.Label>
                             <Form.Control type="text" placeholder="Boite" isInvalid={errors.adresse_boite} {...register('adresse_boite')} size="sm" />
                             {errors.adresse_boite && <Form.Control.Feedback type="invalid">{errors.adresse_boite.message}</Form.Control.Feedback>}
                         </Form.Group>

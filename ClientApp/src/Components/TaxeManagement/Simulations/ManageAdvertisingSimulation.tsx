@@ -117,6 +117,7 @@ export const ManageAdvertisingSimulation = memo(({ pubs = [], tarifs, allFiscalY
         <Table>
             <thead>
                 <tr>
+                    <th>N° simulation</th>
                     <th>Code postal</th>
                     <th>Code rue</th>
                     <th>Rue</th>
@@ -125,9 +126,10 @@ export const ManageAdvertisingSimulation = memo(({ pubs = [], tarifs, allFiscalY
                 </tr>
             </thead>
             <tbody>
-                {publicites.length == 0 && <tr><td colSpan={6}>Aucune publicité</td></tr>}
+                {publicites.length == 0 && <tr><td colSpan={7}>Aucune publicité</td></tr>}
                 {publicites.map((publicite: IPubliciteSimulation, index: number) => {
                     return <tr key={index}>
+                        <td>{index + 1}</td>
                         <td>{publicite.rue.code_postal.cp}</td>
                         <td>{publicite.rue.code_rue}</td>
                         <td>{publicite.rue.nom_rue}</td>
