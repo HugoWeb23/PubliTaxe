@@ -157,7 +157,7 @@ export const LetterPrinter = ({ entreprise, printData, tarifs, currentFiscalYear
                 <Text style={styles.NormalText}>Service de la Recette</Text>
                 <Text style={styles.NormalText}>Rue de Courtrai, 63</Text>
                 <Text style={styles.NormalText}>B-7700 Mouscron</Text>
-                <Text style={styles.NormalText}>Tel.: +32(0)56/ 860.280</Text>
+                <Text style={styles.NormalText}>Tél. : +32(0)56/ 860.280</Text>
             </View>
             <View style={styles.EntrepriseInfo}>
                 <Text style={styles.NormalText}>Matricule : {entreprise.matricule_ciger}</Text>
@@ -213,8 +213,8 @@ export const LetterPrinter = ({ entreprise, printData, tarifs, currentFiscalYear
             <Text style={{ marginTop: '5mm' }}>Il est établi une taxe communale sur les enseignes, les panneaux publicitaires et publicités assimilées directement ou indirectement lumineuses ou non lumineuses de quelque nature qu'elles soient.</Text>
             <Text style={{ marginTop: '5mm' }}>
                 Sont visées toutes enseignes existantes au 1er janvier de l'exercice d'imposition sur lesquelles figurent des indications visibles
-                de la voie publique et qui ont pour but de faire connaître la dénomination du commerce ou de l'industrie ou du service, les
-                produits ou services offerts ou susceptible de l'être et l'activité ou la profession exercée, ainsi que les supports visibles d'une
+                de la voie publique et qui ont pour but de faire connaître la dénomination du commerce, de l'industrie ou du service, les
+                produits ou services offerts ou susceptibles de l'être et l'activité ou la profession exercée, ainsi que les supports visibles d'une
                 voie de communication ou d'un endroit fréquenté en permanence ou occasionnellement par le public et destinés à l'apposition
                 d'affiches à caractère publicitaire.
                 Sont également visées les affiches publicitaires en métal léger ou en PVC ne nécessitant aucun support.
@@ -229,8 +229,8 @@ export const LetterPrinter = ({ entreprise, printData, tarifs, currentFiscalYear
             </Text>
             <Text style={{ marginTop: '5mm' }}>
                 Sont exonérés : l'enseigne la plus chère indiquant la raison sociale ou la dénomination de l'établissement et à raison d'une
-                seule enseigne par établissement - les autocollants de moins d'un métre carré - les enseignes l'année qui suit leur installation/
-                mise en conformité après introduction d'un dossier au service de l'Urbanisme.
+                seule enseigne par établissement - les autocollants de moins d'un mètre carré - les enseignes l'année qui suit leur installation/
+                mise en conformité après introduction d'un dossier au service de l'urbanisme.
             </Text>
             <View style={[styles.TaxPricesContainer, { marginTop: '5mm' }]}>
                 <View style={{ flex: 0.2 }}>
@@ -251,11 +251,15 @@ export const LetterPrinter = ({ entreprise, printData, tarifs, currentFiscalYear
                     </View>
                     <View style={styles.TaxPrice}>
                         <Text style={{ flex: 0.120 }}>{prices[4].toFixed(2)} EUR.</Text>
-                        <Text style={{ flex: 1 }}>par décimètre carré de surface du panneau publicitaire.</Text>
+                        <Text style={{ flex: 1 }}>par décimètre carré pour les panneaux non lumineux.</Text>
                     </View>
                     <View style={styles.TaxPrice}>
                         <Text style={{ flex: 0.120 }}>{prices[5].toFixed(2)} EUR.</Text>
-                        <Text style={{ flex: 1 }}>lorsque le panneau est équipé d'un système de défilement électronique ou mécanique ou lorsque le panneau est lumineux ou éclairé.</Text>
+                        <Text style={{ flex: 1 }}>par décimètre carré pour les panneaux lumineux ou éclairés.</Text>
+                    </View>
+                    <View style={styles.TaxPrice}>
+                        <Text style={{ flex: 0.120 }}>{prices[6].toFixed(2)} EUR.</Text>
+                        <Text style={{ flex: 1 }}>par décimètre carré pour les panneaux à défilement mécanique.</Text>
                     </View>
                 </View>
             </View>
@@ -270,7 +274,7 @@ export const LetterPrinter = ({ entreprise, printData, tarifs, currentFiscalYear
             </View>
             <Text style={{ marginTop: '5mm' }}>Il y a 2ème violation ou violation subséquente si, au moment où une nouvelle violation est commise, le contribuable s'est vu précédemment adressé une ou plusieurs notification(s) de taxation d'office en application de l'article L3321-6 alinéa 2 du code de la Démocratie Locale et de la Décentralisation.</Text>
             <Text style={{ marginTop: '5mm' }}>Pour la détermination du pourcentage d'accroissement à appliquer, les violations antérieures ne sont pas prises en
-                considération si aucune violation n'est constatée pour les 4 derniers exercices d'imposition qui précédent celui pour lequel la
+                considération si aucune violation n'est constatée pour les 4 derniers exercices d'imposition qui précèdent celui pour lequel la
                 nouvelle violation est constatée.</Text>
         </View>
     </Page>

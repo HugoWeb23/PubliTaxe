@@ -82,6 +82,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                     })
                 }
                 setFormSimulationMode(false)
+                clearErrors('matricule_ciger')
                 toast.success("Entreprise créée avec succès")
             } else {
                 setPublicites(test.publicites)
