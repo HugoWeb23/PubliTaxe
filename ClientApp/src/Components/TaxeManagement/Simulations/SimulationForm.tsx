@@ -35,6 +35,7 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
     const [codePostal, setCodePostal] = useState<any>(null)
     const [publicites, setPublicites] = useState(data?.publicites ? data.publicites : [])
     const { register, reset, control, handleSubmit, setValue, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(SimulationFormSchema), defaultValues: defaultValues })
+    const [simulationID, setSimulationID] = useState<number>(0)
 
     const OnSubmit = async (data: any) => {
         try {
@@ -44,7 +45,7 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
             if (codePostal != null) {
                 form2.code_postalId = codePostal
             }
-            form2.exercices = data.exercices.join(';')
+            form2.exercices = [data.exercices].join(';')
             const submit = await onFormSubmit(form2)
             if (type == 'edit') {
                 setPublicites(submit.publicites)
@@ -53,7 +54,7 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
                 setPublicites([])
             }
             setConfirmationModal({ show: true, simulation: data })
-            console.log(data)
+            setSimulationID(submit.id_simulation)
         } catch (e) {
             if (e instanceof ApiErrors) {
                 toast.error(e.singleError.error)
@@ -119,15 +120,17 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
         defaultValue: defaultValues.exercices !== undefined ? defaultValues.exercices : []
     })
 
-    const generatePdfDocument = async (simulation: ISimulation) => {
+    const generatePdfDocument = async () => {
+        const sim = await apiFetch(`/simulations/id/${simulationID}`)
+        sim.exercices = sim.exercices.split(';').filter((id_exo: number) => tarifs.filter((t: IPrice) => t.exerciceId == id_exo).length > 0 && allFiscalYears.find((y: IExercice) => y.id == id_exo)?.annee_exercice >= currentFiscalYear.annee_exercice)
         const blob = await pdf((
-            <SimulationPrinter simulation={simulation} allFiscalYears={allFiscalYears} tarifs={tarifs} />
+            <SimulationPrinter simulation={sim} allFiscalYears={allFiscalYears} tarifs={tarifs} />
         )).toBlob();
-        saveAs(blob, `${simulation.nom.split(' ').join('_')}.pdf`);
+        saveAs(blob, `${sim.nom.split(' ').join('_')}.pdf`);
     }
 
     const handleGeneratePDF = async () => {
-        await generatePdfDocument(confirmationModal.simulation)
+        await generatePdfDocument()
     }
 
     return <>
@@ -350,7 +353,7 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
                 tarifs={tarifs}
                 currentFiscalYear={currentFiscalYear}
                 allFiscalYears={allFiscalYears}
-                exos={exercices}
+                exos={Array.isArray(exercices) ? exercices : exercices == false ? [] : [exercices]}
                 onSubmit={(pubs: any) => setValue('publicites', pubs)}
             />
         </Container>
