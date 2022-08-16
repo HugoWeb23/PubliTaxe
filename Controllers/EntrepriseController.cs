@@ -358,5 +358,21 @@ namespace Taxes.Controllers
             }
 
         }
+
+        [AuthorizeRole(MinRole: 3)]
+        [HttpGet("resetapp")]
+        public async Task<IActionResult> ResetApp()
+        {
+            try
+            {
+                bool reset = await _mediator.Send(new ResetAppCommand());
+                return Ok(reset);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
+        }
     }
 }

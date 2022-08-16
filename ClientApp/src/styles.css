@@ -16,6 +16,10 @@
   padding-top: 10px;
   padding-bottom: 10px;
   padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .new-bg-light {
