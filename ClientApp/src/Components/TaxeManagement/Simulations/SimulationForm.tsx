@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useForm, Controller, useWatch } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form"
 import {
     Form,
     Button,
@@ -24,16 +24,16 @@ import { SimulationPrinter } from "../PDF/SimulationPrinter";
 import { pdf } from '@react-pdf/renderer';
 import { saveAs } from 'file-saver';
 import { IPrice } from "../../../Types/IPrice";
-import { pricesByTypes } from "../../../Services/SumTax";
 
 
 export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFiscalYears, onFormSubmit }: any) => {
-    const defaultValues = data ? data : {}
+    const defaultValues = data ? data : {exercices: []}
     const [streetCodeModal, setStreetCodeModal] = useState<boolean>(false)
     const [confirmationModal, setConfirmationModal] = useState<{ show: boolean, simulation: ISimulation }>({ show: false, simulation: {} as ISimulation })
     const [postCodes, setPostCodes] = useState<any>(data?.code_postal ? [data.code_postal] : [])
     const [codePostal, setCodePostal] = useState<any>(null)
     const [publicites, setPublicites] = useState(data?.publicites ? data.publicites : [])
+    const [fiscalYearsSelected, setFiscalYearsSelected] = useState<number[]>(defaultValues.exercices)
     const { register, reset, control, handleSubmit, setValue, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(SimulationFormSchema), defaultValues: defaultValues })
     const [simulationID, setSimulationID] = useState<number>(0)
 
@@ -45,13 +45,14 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
             if (codePostal != null) {
                 form2.code_postalId = codePostal
             }
-            form2.exercices = [data.exercices].join(';')
+            form2.exercices = fiscalYearsSelected.join(';')
             const submit = await onFormSubmit(form2)
             if (type == 'edit') {
                 setPublicites(submit.publicites)
             } else {
                 reset()
                 setPublicites([])
+                setFiscalYearsSelected([])
             }
             setConfirmationModal({ show: true, simulation: data })
             setSimulationID(submit.id_simulation)
@@ -114,11 +115,13 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
         }
     }
 
-    const exercices = useWatch({
-        control,
-        name: "exercices",
-        defaultValue: defaultValues.exercices !== undefined ? defaultValues.exercices : []
-    })
+    const FiscalYearChange = (e: HTMLInputElement) => {
+        if(e.checked) {
+            setFiscalYearsSelected((fisc: any[]) => ([...fisc, e.value]))
+        } else {
+            setFiscalYearsSelected(fiscalYearsSelected.filter((fisc: any) => fisc != e.value))
+        }
+    }
 
     const generatePdfDocument = async () => {
         const sim = await apiFetch(`/simulations/id/${simulationID}`)
@@ -339,7 +342,7 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
                     <div className="d-flex mb-3">
                         {allFiscalYears.filter((f: IExercice) => f.annee_exercice >= currentFiscalYear.annee_exercice && tarifs.filter((t: IPrice) => t.exerciceId === f.id).length > 0).map((f: IExercice) => {
                             return <div className="form-check me-3" key={f.id}>
-                                <input id={f.annee_exercice.toString()} className="form-check-input" type="checkbox" {...register('exercices')} value={f.id} />
+                                <input id={f.annee_exercice.toString()} className="form-check-input" type="checkbox" onChange={(e) => FiscalYearChange(e.target)} defaultChecked={fiscalYearsSelected.some((n: number) => n == f.id)} value={f.id} />
                                 <label className="form-check-label" htmlFor={f.annee_exercice.toString()}>
                                     {f.annee_exercice}
                                 </label>
@@ -353,7 +356,7 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
                 tarifs={tarifs}
                 currentFiscalYear={currentFiscalYear}
                 allFiscalYears={allFiscalYears}
-                exos={Array.isArray(exercices) ? exercices : exercices == false ? [] : [exercices]}
+                exos={fiscalYearsSelected}
                 onSubmit={(pubs: any) => setValue('publicites', pubs)}
             />
         </Container>

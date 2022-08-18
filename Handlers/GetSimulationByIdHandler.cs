@@ -29,6 +29,10 @@ namespace Taxes.Handlers
                 .Include(s => s.Code_postal)
                 .ThenInclude(s => s.Pays)
                 .FirstOrDefault();
+
+            foreach(var pub in Simulation.Publicites) {
+                pub.Surface_totale = pub.Surface * pub.Quantite;
+            }
        
             return Task.FromResult(Simulation);
         }
