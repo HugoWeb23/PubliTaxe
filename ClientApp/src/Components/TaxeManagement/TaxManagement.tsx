@@ -137,8 +137,8 @@ export const TaxManagement = () => {
                                 {loader === false && <>
                                     <div><span className="fw-bold">{totalEntreprises}</span> entreprises enregistrées {totalDesactives > 0 && `(dont ${totalDesactives} désactivée${totalDesactives > 1 ? "s" : ""})`}</div>
                                     <div><span className="fw-bold">{totalRecus}</span> entreprises en ordre de déclaration ({Math.round((totalRecus * 100) / (totalEntreprises - totalDesactives))} %)</div>
-                                    <div><span className="fw-bold">{totalPaiementsRecus}</span> entreprises en ordre de paiement ({Math.round((totalPaiementsRecus * 100) / (totalEntreprises - totalDesactives))} %)</div>
                                     <div><span className="fw-bold">{totalInfractions}</span> entreprises en infraction ({Math.round((totalInfractions * 100) / (totalEntreprises - totalDesactives))} %)</div>
+                                    <div><span className="fw-bold">{totalPaiementsRecus}</span> entreprises en ordre de paiement ({Math.round((totalPaiementsRecus * 100) / (totalEntreprises - totalDesactives))} %)</div>
                                 </>
                                 }
                             </div>
