@@ -165,7 +165,7 @@ export const SimulationForm = ({ data, type, tarifs, currentFiscalYear, allFisca
                     <Col>
                         <Form.Group controlId="nom">
                             <Form.Label column="sm">Nom entreprise</Form.Label>
-                            <Form.Control type="text" placeholder="Nom entreprise" isInvalid={errors.nom} {...register('nom')} size="sm" />
+                            <Form.Control type="text" placeholder="Nom entreprise" isInvalid={errors.nom} {...register('nom')} size="sm" autoFocus={type === 'create'} />
                             {errors.nom && <Form.Control.Feedback type="invalid">{errors.nom.message}</Form.Control.Feedback>}
                         </Form.Group>
                     </Col>

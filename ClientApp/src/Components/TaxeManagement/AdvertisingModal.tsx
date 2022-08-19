@@ -188,12 +188,12 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
                     <Row>
                         <Col>
                             <Form.Group className="mb-3" controlId="adresse_rue">
-                                <Form.Label column="sm">Adresse</Form.Label>
+                                <Form.Label column="sm">Rue</Form.Label>
                                 <Controller
                                     control={control}
                                     name="rue.nom_rue"
                                     render={({
-                                        field: { onChange, onBlur, value, name, ref }
+                                        field: { value }
                                     }) => (
                                         <AsyncTypeahead
                                             filterBy={() => true}
@@ -209,6 +209,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
                                             defaultInputValue={value}
                                             size="sm"
                                             className="is-invalid"
+                                            autoFocus={type === 'create'}
                                             renderMenu={(results, menuProps) => (
                                                 <Menu {...menuProps}>
                                                     {results.map((result, index) => (

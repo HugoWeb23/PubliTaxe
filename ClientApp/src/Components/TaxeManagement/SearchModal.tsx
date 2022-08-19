@@ -1,4 +1,4 @@
-import { useEffect, useState, memo, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import {
     Modal,
     Col,
@@ -83,7 +83,7 @@ export const SearchModal = ({ options, show, handleClose, handleSearch }: ISearc
                         <Col>
                             <Form.Group controlId="matricule">
                                 <Form.Label column="sm">Recherche par matricule</Form.Label>
-                                <Form.Control type="text" size="sm" placeholder="Matricule" isInvalid={errors.matricule} {...register('matricule')} />
+                                <Form.Control type="text" size="sm" placeholder="Matricule" isInvalid={errors.matricule} {...register('matricule')} autoFocus />
                                 {errors.matricule && <Form.Control.Feedback type="invalid">{errors.matricule.message}</Form.Control.Feedback>}
                             </Form.Group>
                         </Col>

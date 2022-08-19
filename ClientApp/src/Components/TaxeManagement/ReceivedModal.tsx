@@ -97,7 +97,7 @@ export const ReceivedModal = ({ show, handleClose, onSubmit }: IReceivedModal) =
                         <Col>
                             <Form.Group controlId="matricule">
                                 <Form.Label column="sm">Recherche par matricule</Form.Label>
-                                <Form.Control type="text" size="sm" placeholder="Matricule" isInvalid={errors.matricule} onKeyDown={(e) => SearchById(e)} {...register('matricule')} />
+                                <Form.Control type="text" size="sm" placeholder="Matricule" isInvalid={errors.matricule} onKeyDown={(e) => SearchById(e)} {...register('matricule')} autoFocus />
                                 {errors.matricule && <Form.Control.Feedback type="invalid">{errors.matricule.message}</Form.Control.Feedback>}
                                 <p className="text-muted" style={{ fontSize: '0.875rem' }}>
                                     Appuyez sur ENTER pour lancer la recherche.
@@ -154,7 +154,7 @@ export const ReceivedModal = ({ show, handleClose, onSubmit }: IReceivedModal) =
                     </thead>
                     <tbody>
                         {selectedEntreprises.length === 0 && <tr><td colSpan={5}>Aucun élément</td></tr>}
-                        {selectedEntreprises.map((ent: IApercu_entreprise, index: number) => <Entreprise entreprise={ent} handleDelete={UnSelectEntreprise} />)}
+                        {selectedEntreprises.map((ent: IApercu_entreprise) => <Entreprise entreprise={ent} handleDelete={UnSelectEntreprise} />)}
                     </tbody>
                 </Table>
             </Modal.Body>

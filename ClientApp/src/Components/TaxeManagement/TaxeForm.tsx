@@ -303,7 +303,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                     <Col>
                         <Form.Group controlId="matricule_ciger">
                             <Form.Label column="sm">Matricule</Form.Label>
-                            <Form.Control type="text" placeholder="Matricule Ciger" isInvalid={errors.matricule_ciger} isValid={matriculeAvailable} size="sm" {...register('matricule_ciger')} onChange={(e) => CheckMatricule(e)} />
+                            <Form.Control type="text" placeholder="Matricule Ciger" isInvalid={errors.matricule_ciger} isValid={matriculeAvailable} size="sm" {...register('matricule_ciger')} onChange={(e) => CheckMatricule(e)} autoFocus={type === 'create'} />
                             {errors.matricule_ciger && <Form.Control.Feedback type="invalid">{errors.matricule_ciger.message}</Form.Control.Feedback>}
                         </Form.Group>
                     </Col>

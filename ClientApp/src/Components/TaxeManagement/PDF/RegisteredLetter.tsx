@@ -104,7 +104,7 @@ export const RegisteredLetter = ({ entreprise, printData, currentFiscalYear, mot
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'flex-start',
-            marginTop: '15mm',
+            marginTop: '10mm',
             paddingRight: '25mm',
             paddingLeft: '25mm'
 
@@ -196,6 +196,9 @@ export const RegisteredLetter = ({ entreprise, printData, currentFiscalYear, mot
         </View>
         <View style={{ marginTop: '5mm' }}>
             <Text style={styles.NormalText}>Soit <Text style={{ fontWeight: 'bold' }}>{(taxe_totale * entreprise.pourcentage_majoration / 100).toFixed(2)} €</Text></Text>
+        </View>
+        <View style={{ marginTop: '5mm' }}>
+            <Text style={styles.NormalText}>Le montant total de la taxe après la majoration de {entreprise.pourcentage_majoration} % s'élève à <Text style={{ fontWeight: 'bold' }}>{(taxe_totale + (taxe_totale * entreprise.pourcentage_majoration / 100)).toFixed(2)} €</Text></Text>
         </View>
         <View style={{ marginTop: '5mm' }}>
             <Text style={styles.NormalText}>Vous disposez d'un délai de trente jours à compter de la date d'envoi de la présente notification pour faire valoir vos

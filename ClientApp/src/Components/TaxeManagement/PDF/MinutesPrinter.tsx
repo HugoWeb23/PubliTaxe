@@ -100,16 +100,16 @@ export const MinutesPrinter = ({ entreprise, printData, motifsMajoration }: IMin
                 l'établissement et au recouvrement des taxes provinciales et communales, a constaté que : <Text style={[styles.NormalText, {fontWeight: 'bold'}]}>{entreprise.nom}</Text></Text>
             <Text style={[styles.NormalText, {marginTop: '2mm'}]}>domicilié à <Text style={[styles.NormalText, {fontWeight: 'bold'}]}>{entreprise.adresse_rue}, {entreprise.adresse_numero} {entreprise.adresse_boite > 0 && `(boite ${entreprise.adresse_boite}) `}- {entreprise.code_postal.cp} {entreprise.code_postal.localite} - {entreprise.code_postal.pays.nom_pays}</Text></Text>
         <Text style={[styles.NormalText, { textDecoration: 'underline', fontWeight: 'bold', marginTop: '10mm', marginBottom: '6mm' }]}>Nature de l'infraction</Text>
-        <Text style={[styles.NormalText]}>1. N'a pas rentré la formule de déclaration relative à la taxe communale sur les panneaux d'affichage et/ou enseignes, pour un ou des panneaux et/ou enseignes situés : </Text>
+        {entreprise.motif_majorationId == 1 && <View><Text style={[styles.NormalText]}>1. N'a pas rentré la formule de déclaration relative à la taxe communale sur les panneaux d'affichage et/ou enseignes, pour un ou des panneaux et/ou enseignes situés : </Text>
         <View style={{marginTop: '4mm'}}>
         <Text style={[styles.NormalText, {fontWeight: 'bold', marginLeft: '9mm'}]}>VOIR DETAIL EN ANNEXE</Text>
-        </View>
-        <Text style={[styles.NormalText, {marginTop: '6mm'}]}>2. a rentré à l'Administration Communale de Mouscron une formule de déclaration relative à la taxe communale sur les panneaux d'affichage et/ou enseignes, pour un ou des panneaux et/ou enseignes situés :</Text>
+        </View></View>}
+        {entreprise.motif_majorationId > 1 && <View><Text style={[styles.NormalText, {marginTop: entreprise.motif_majorationId == 1 ? '6mm' : '0mm'}]}>2. A rentré à l'Administration Communale de Mouscron une formule de déclaration relative à la taxe communale sur les panneaux d'affichage et/ou enseignes, pour un ou des panneaux et/ou enseignes situés :</Text>
         <View style={{marginTop: '4mm'}}>
         <Text style={[styles.NormalText, {textDecoration: 'underline'}]}>{entreprise.adresse_taxation === "Dans l'arondissement de Mouscron" ? entreprise.adresse_taxation : `${entreprise.adresse_taxation}, ${entreprise.adresse_numero_taxation} ${(entreprise.adresse_boite_taxation.length > 0 && entreprise.adresse_boite_taxation != "0") ? `(boite ${entreprise.adresse_boite_taxation}) ` : ''}- ${entreprise.adresse_code_postal_taxation} ${entreprise.adresse_localite_taxation}`}</Text>
         </View>
-        <Text style={[styles.NormalText, {marginTop: '6mm'}]}>Ladite formule de déclaration est incomplète , incorrecte ou imprécise pour les motifs suivants :</Text>
-        {MotifMajoration()}
+        <Text style={[styles.NormalText, {marginTop: '6mm'}]}>Ladite formule de déclaration est incomplète, incorrecte ou imprécise pour les motifs suivants :</Text>
+        {MotifMajoration()}</View>}
         <Text style={[styles.NormalText, { textDecoration: 'underline', fontWeight: 'bold', marginTop: '10mm', marginBottom: '6mm' }]}>Éléments de taxation</Text>
         <Text style={[styles.NormalText, {fontWeight: 'bold', marginLeft: '9mm'}]}>VOIR DETAIL EN ANNEXE</Text>
         <Text style={[styles.NormalText, { textDecoration: 'underline', fontWeight: 'bold', marginTop: '10mm', marginBottom: '6mm' }]}>Calcul et montant de la taxe</Text>
