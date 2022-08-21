@@ -76,6 +76,7 @@ namespace Taxes.Controllers
                 List<Entreprise> entreprises = await _mediator.Send(new GetEntreprisesByNameQuery(Entreprise.Name));
                 return Ok(entreprises.Select(ent => new
                 {
+                    Id_entreprise = ent.Id_entreprise,
                     Matricule_ciger = ent.Matricule_ciger,
                     Nom = ent.Nom,
                     Nombre_panneaux = ent.Publicites.Count,

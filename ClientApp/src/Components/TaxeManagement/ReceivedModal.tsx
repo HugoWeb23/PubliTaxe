@@ -30,8 +30,8 @@ export const ReceivedModal = ({ show, handleClose, onSubmit }: IReceivedModal) =
         setSelectedEntreprises(entreprises => entreprises.filter((entreprise: IApercu_entreprise) => entreprise.id_entreprise != ent.id_entreprise))
     }
 
-    const CheckEntIsNotSelected = (matricule: number): boolean => {
-        return selectedEntreprises.filter((ent: IApercu_entreprise) => ent.matricule_ciger == matricule).length === 0
+    const CheckEntIsNotSelected = (id: number): boolean => {
+        return selectedEntreprises.filter((ent: IApercu_entreprise) => ent.id_entreprise == id).length === 0
     }
 
     const SearchById = async (e: any) => {
@@ -177,7 +177,7 @@ interface IEntreprise {
 
 const Entreprise = memo(({ entreprise, handleDelete }: IEntreprise) => {
     return <tr key={entreprise.id_entreprise}>
-         <td>{entreprise.id_entreprise}</td>
+        <td>{entreprise.id_entreprise}</td>
         <td>{entreprise.matricule_ciger}</td>
         <td>{entreprise.nom}</td>
         <td>{entreprise.nombre_panneaux}</td>
