@@ -112,7 +112,7 @@ export const AdvertisingModalSimulation = ({ type, show, publicite, handleClose,
                                     control={control}
                                     name="rue.nom_rue"
                                     render={({
-                                        field: { onChange, onBlur, value, name, ref }
+                                        field: { value }
                                     }) => (
                                         <AsyncTypeahead
                                             filterBy={() => true}
@@ -128,6 +128,7 @@ export const AdvertisingModalSimulation = ({ type, show, publicite, handleClose,
                                             defaultInputValue={value}
                                             size="sm"
                                             className="is-invalid"
+                                            autoFocus={type === 'create'}
                                             renderMenu={(results, menuProps) => (
                                                 <Menu {...menuProps}>
                                                     {results.map((result, index) => (
