@@ -88,7 +88,7 @@ export const ManageNothingToPay = () => {
                 <ol className="breadcrumb">
                     <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
                     <li className="breadcrumb-item"><Link to="/payment_management">Gestion des paiements</Link></li>
-                    <li className="breadcrumb-item active" aria-current="page">Gestion des situations</li>
+                    <li className="breadcrumb-item active" aria-current="page">Rien à payer</li>
                 </ol>
             </nav>
             <div className="d-flex justify-content-between align-items-center">

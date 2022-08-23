@@ -10,6 +10,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead'
 import { IRue } from '../../Types/IRue'
 import { apiFetch } from '../../Services/apiFetch'
+import { NOMEM } from 'dns'
 
 interface ISearchModal {
     options: { matricule: string, nom: string, pubExoneration: boolean, rue: number }
@@ -83,7 +84,7 @@ export const SearchModal = ({ options, show, handleClose, handleSearch }: ISearc
                         <Col>
                             <Form.Group controlId="matricule">
                                 <Form.Label column="sm">Recherche par matricule</Form.Label>
-                                <Form.Control type="text" size="sm" placeholder="Matricule" isInvalid={errors.matricule} {...register('matricule')} autoFocus />
+                                <Form.Control type="text" size="sm" placeholder="Matricule" isInvalid={errors.matricule} {...register('matricule')} autoFocus={options.nom.length === 0 && options.matricule.length === 0} />
                                 {errors.matricule && <Form.Control.Feedback type="invalid">{errors.matricule.message}</Form.Control.Feedback>}
                             </Form.Group>
                         </Col>

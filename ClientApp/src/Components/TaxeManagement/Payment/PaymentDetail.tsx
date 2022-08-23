@@ -141,7 +141,7 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
                 <ol className="breadcrumb">
                     <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
                     <li className="breadcrumb-item"><Link to="/payment_management">Gestion des paiements</Link></li>
-                    <li className="breadcrumb-item active" aria-current="page">Détails #{id}</li>
+                    <li className="breadcrumb-item active" aria-current="page">{details.entreprise.nom}</li>
                 </ol>
             </nav>
             <h2 className="mt-2">Détails des paiements de {details.entreprise.nom}</h2>

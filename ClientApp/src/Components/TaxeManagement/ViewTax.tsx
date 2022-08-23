@@ -101,7 +101,7 @@ export const ViewTax = ({ match, motifs, tarifs, currentFiscalYear, informations
                     </ol>
                 </nav>
                 <div className="d-flex mt-2 justify-content-between align-items-center">
-                    <div className="mt-0"><span className="fs-4">Consulter les informations d'une entreprise {entreprise !== null && <>(<span className="fw-bold">{entreprise.nom}</span>) {entreprise.suppression && <>- <span className="fw-bold text-danger fs-6">Suppression programmée</span></>}</>}</span></div>
+                    <div className="mt-0"><span className="fs-4">{entreprise !== null && <><span className="fw-bold">{entreprise.nom}</span> {entreprise.suppression && <>- <span className="fw-bold text-danger fs-6">Suppression programmée</span></>}</>}</span></div>
                     {(loader === false && entreprise !== null) && <Button variant="outline-primary" size="sm" onClick={() => setIndiviualPrint(true)}><Printer /> Impression individuelle</Button>}
                 </div>
                 <hr className="my-3" />

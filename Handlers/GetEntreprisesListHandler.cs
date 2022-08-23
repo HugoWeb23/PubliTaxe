@@ -58,6 +58,7 @@ namespace Taxes.Handlers
             List<Entreprise> entreprises = _context.entreprises
                 .Include(ent => ent.Publicites)
                 .Where(predicate)
+                .OrderBy(e => e.Nom)
                 .ToList();
 
             if (request.Filters.PageCourante == 0) request.Filters.PageCourante = 1;
@@ -78,7 +79,7 @@ namespace Taxes.Handlers
             }
             int Index = (request.Filters.PageCourante - 1) * request.Filters.ElementsParPage;
 
-            entreprises = entreprises.Skip(Index).Take(request.Filters.ElementsParPage).OrderBy(e => e.Nom).ToList();
+            entreprises = entreprises.Skip(Index).Take(request.Filters.ElementsParPage).ToList();
 
             return Task.FromResult(new EntreprisesViewModel
             {
