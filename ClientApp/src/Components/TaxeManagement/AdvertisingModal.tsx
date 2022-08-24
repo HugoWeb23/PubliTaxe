@@ -40,7 +40,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
     const [streetId, setStreetId] = useState<number>()
     const [loadingStreets, setLoadingStreets] = useState<boolean>(false)
     const [imagesLinks, setImagesLinks] = useState<IPubliciteImage[]>(publicite?.photos && publicite.photos.length > 0 ? publicite.photos : [])
-    const { register, control, reset, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(AdvertisingFormSchema), defaultValues: publicite ? publicite : { type_publicite: 1, face: 1, exoneration: false } });
+    const { register, control, reset, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(AdvertisingFormSchema), defaultValues: publicite ? publicite : { type_publicite: 1, face: 1, exoneration: false, quantite: "1" } });
 
     const quantite = useWatch({
         control,

@@ -103,7 +103,7 @@ export const EncodePaymentModal = ({ show, type, total_tax, payment, onSubmit, h
                         </Form.Select>
                     </Form.Group>}
                     <Form.Group controlId="remarque" className="mt-3">
-                        <Form.Label column="sm">Remarque</Form.Label>
+                        <Form.Label column="sm">Remarque <span className="fw-light">(optionnel)</span></Form.Label>
                         <Form.Control type="text" as="textarea" isInvalid={errors.remarque} {...register('remarque')} />
                         {errors.remarque && <Form.Control.Feedback type="invalid">{errors.remarque.message}</Form.Control.Feedback>}
                     </Form.Group>
