@@ -236,7 +236,7 @@ export const PaymentDetail = ({ match }: IPaymentDetail) => {
                                 <div>
                                     <div><span className="fw-bold">Total sans majoration</span> : {details.taxe.toFixed(2)} €</div>
                                     <div><span className="fw-bold">Montant majoration</span> : {details.montant_majoration.toFixed(2)} €</div>
-                                    <div><span className="fw-bold">Total avec majoration</span> : {details.taxe_totale.toFixed(2)} €</div>
+                                    <div style={{border: '1px solid #000', padding: '0 5px 0 5px'}}><span className="fw-bold">Total avec majoration</span> : {details.taxe_totale.toFixed(2)} €</div>
                                     <hr style={{ marginTop: "8px", marginBottom: "8px" }} />
                                     <div><span className="fw-bold">Déjà payé</span> : {details.paiements.reduce((acc: number, curr: IPayment) => {
                                         return curr.montant + acc
