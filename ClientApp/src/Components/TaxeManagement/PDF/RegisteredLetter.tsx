@@ -186,7 +186,7 @@ export const RegisteredLetter = ({ entreprise, printData, currentFiscalYear, mot
         </View>
         <View style={{ marginTop: '5mm' }}>
             <Text style={styles.NormalText}>Le collège communal se voit dès lors dans l'obligation de vous enrôler d'office à la taxe sur les panneaux publicitaires
-                et enseignes pour un montant calculé sur la base des éléments suivants: <Text style={{ textDecoration: 'underline' }}>VOIR DETAIL EN ANNEXE</Text>.</Text>
+                et enseignes pour un montant calculé sur la base des éléments suivants: <Text style={{ textDecoration: 'underline' }}>VOIR DETAIL CI-DESSOUS</Text>.</Text>
         </View>
         <View style={{ marginTop: '5mm' }}>
             <Text style={styles.NormalText}>Montant de la taxe <Text style={{ fontWeight: 'bold' }}>{(taxe_totale).toFixed(2)} €</Text></Text>

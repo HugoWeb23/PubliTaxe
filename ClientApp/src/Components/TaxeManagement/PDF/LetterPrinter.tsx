@@ -229,7 +229,7 @@ export const LetterPrinter = ({ entreprise, printData, tarifs, currentFiscalYear
             </Text>
             <Text style={{ marginTop: '5mm' }}>
                 Sont exonérés : l'enseigne la plus chère indiquant la raison sociale ou la dénomination de l'établissement et à raison d'une
-                seule enseigne par établissement - les autocollants de moins d'un mètre carré - les enseignes l'année qui suit leur installation/
+                seule enseigne par établissement - les enseignes affectées exclusivement à une œuvre ou un organisme sans but lucratif - les autocollants de moins d'un mètre carré - les enseignes l'année qui suit leur installation/
                 mise en conformité après introduction d'un dossier au service de l'urbanisme.
             </Text>
             <View style={[styles.TaxPricesContainer, { marginTop: '5mm' }]}>
