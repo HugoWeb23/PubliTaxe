@@ -89,7 +89,7 @@ export const ReceivedModal = ({ show, handleClose, onSubmit }: IReceivedModal) =
     return <>
         <Modal show={show} onHide={handleClose} size="lg" animation={false}>
             <Modal.Header closeButton>
-                <Modal.Title as="h5">Encoder des reçus</Modal.Title>
+                <Modal.Title as="h5">Encoder des déclarations reçues</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>

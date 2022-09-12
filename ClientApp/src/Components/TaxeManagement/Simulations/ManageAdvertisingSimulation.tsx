@@ -112,7 +112,7 @@ export const ManageAdvertisingSimulation = memo(({ pubs = [], tarifs, allFiscalY
             element={deleteModal.element}
             onClose={closeConfirmModal}
             onConfirm={deletePub}
-            bodyText="Voulez-vous vraiment supprimer ce panneau ?"
+            bodyText="Voulez-vous vraiment supprimer cette publicité ?"
         />
         <Table>
             <thead>
