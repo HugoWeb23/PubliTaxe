@@ -98,7 +98,7 @@ export const ManageGeneralInformations = ({ generalInformations, handleChange }:
                         </Col>
                     </Row>
                     <Form.Group controlId="submit" className="mt-4">
-                        <Button variant="success" className="mb-1" type="submit">Modifier les informations</Button>
+                        <Button variant="success" className="mb-1" size="sm" type="submit">Modifier les informations</Button>
                     </Form.Group>
                 </Form>
             </Card>

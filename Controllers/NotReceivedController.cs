@@ -17,7 +17,6 @@ using Taxes.Services;
 namespace Taxes.Controllers
 {
     [Route("api/notreceived")]
-    [AuthorizeRole(MinRole: 2)]
     [ApiController]
     public class NotReceivedController : ControllerBase
     {
@@ -30,6 +29,7 @@ namespace Taxes.Controllers
             _environment = environment;
         }
 
+        [AuthorizeRole(MinRole: 2)]
         [HttpPost("new")]
         public async Task<IActionResult> New(NotReceived data)
         {
@@ -44,18 +44,35 @@ namespace Taxes.Controllers
             
         }
 
-        [HttpGet("gethistory/{Matricule}")]
-        public async Task<IActionResult> GetHistory(long Matricule)
+        [AuthorizeRole(MinRole: 1)]
+        [HttpGet("gethistory/{ID}")]
+        public async Task<IActionResult> GetHistory(long ID)
         {
             try
             {
-                var NotReceivedHistory = await _mediator.Send(new GetNotReceivedHistoryQuery(Matricule));
+                var NotReceivedHistory = await _mediator.Send(new GetNotReceivedHistoryQuery(ID));
                 return Ok(NotReceivedHistory);
             } catch(Exception ex)
             {
                 return BadRequest(new { error = ex.Message});
             }
             
+        }
+
+        [AuthorizeRole(MinRole: 2)]
+        [HttpDelete("delete/{Id}")]
+        public async Task<IActionResult> DeleteNotReceived(long Id)
+        {
+            try
+            {
+                var DeleteNotReceived = await _mediator.Send(new DeleteNotReceivedCommand(Id, true));
+                return Ok(DeleteNotReceived);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
         }
     }
 }

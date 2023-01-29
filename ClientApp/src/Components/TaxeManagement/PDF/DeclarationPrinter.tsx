@@ -166,17 +166,17 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs, currentFisca
                 <View style={styles.BusinessInformations}>
                     <View>
                         <Text style={styles.NormalText}>Matricule Ciger : {entreprise.matricule_ciger}</Text>
-                        <Text style={styles.NormalText}>Adresse : {entreprise.adresse_rue}, n° {entreprise.adresse_numero}</Text>
+                        <Text style={styles.NormalText}>Adresse : {entreprise.adresse_rue}, n° {entreprise.adresse_numero} {entreprise.adresse_boite > 0 && `(boite ${entreprise.adresse_boite})`}</Text>
                         <Text style={styles.NormalText}>Code postal : {entreprise.code_postal.cp}</Text>
                         <Text style={styles.NormalText}>Localité : {entreprise.code_postal.localite}</Text>
                         <Text style={styles.NormalText}>Pays : {entreprise.code_postal.pays.nom_pays}</Text>
                     </View>
                     <View>
                         <Text style={styles.NormalText}>Nom : {entreprise.nom}</Text>
-                        <Text style={styles.NormalText}>TVA : {entreprise.numero_tva}</Text>
-                        <Text style={styles.NormalText}>Telephone : {entreprise.numero_telephone}</Text>
-                        <Text style={styles.NormalText}>Fax : {entreprise.numero_fax}</Text>
-                        <Text style={styles.NormalText}>Mail : {entreprise.mail_contact}</Text>
+                        <Text style={styles.NormalText}>N° TVA : {entreprise.numero_tva}</Text>
+                        <Text style={styles.NormalText}>N° téléphone : {entreprise.numero_telephone}</Text>
+                        {(entreprise.numero_fax.length > 0 && entreprise.numero_fax != "0") && <Text style={styles.NormalText}>Fax : {entreprise.numero_fax}</Text>}
+                        <Text style={styles.NormalText}>Adresse e-mail : {entreprise.mail_contact}</Text>
                     </View>
                 </View>
                 <View style={styles.PubsTable}>
@@ -250,8 +250,8 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs, currentFisca
                             <Text style={styles.Col}>{pub.surface}</Text>
                             <Text style={styles.Col}>{pub.surface_totale}</Text>
                             <Text style={styles.Col}>{pub.exoneration ? 'Oui' : 'Non'}</Text>
-                            <Text style={styles.Col}>{prices[pub.type_publicite]}</Text>
-                            <Text style={styles.Col}>{pub.exoneration ? '0.00' : pub.taxe_totale}</Text>
+                            <Text style={styles.Col}>{prices[pub.type_publicite].toFixed(2)}</Text>
+                            <Text style={styles.Col}>{pub.exoneration ? '0.00' : pub.taxe_totale.toFixed(2)}</Text>
                         </View>
                     })}
                 </View>
@@ -261,7 +261,7 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs, currentFisca
                         return acc
                     }
                     return acc + value.taxe_totale
-                }, 0)} €</Text>
+                }, 0).toFixed(2)} €</Text>
                 </View>
                 <View wrap={false}>
                 <View style={styles.Remark}>
@@ -284,27 +284,27 @@ export const DeclarationPrinter = ({ entreprise, printData, tarifs, currentFisca
                     <View style={styles.Prices}>
                         <View style={styles.PriceDetail}>
                             <Text style={styles.NormalText}>Enseignes non lumineuses (ENL) :</Text>
-                            <Text style={styles.NormalText}>{prices[1]} €</Text>
+                            <Text style={styles.NormalText}>{prices[1].toFixed(2)} €</Text>
                         </View>
                         <View style={[styles.PriceDetail, { marginTop: '0.5mm' }]}>
                             <Text style={styles.NormalText}>Enseignes lumineuses (EL) :</Text>
-                            <Text style={styles.NormalText}>{prices[2]} €</Text>
+                            <Text style={styles.NormalText}>{prices[2].toFixed(2)} €</Text>
                         </View>
                         <View style={[styles.PriceDetail, { marginTop: '0.5mm' }]}>
                             <Text style={styles.NormalText}>Enseignes clignotantes (EC) :</Text>
-                            <Text style={styles.NormalText}>{prices[3]} €</Text>
+                            <Text style={styles.NormalText}>{prices[3].toFixed(2)} €</Text>
                         </View>
                         <View style={[styles.PriceDetail, { marginTop: '0.5mm' }]}>
                             <Text style={styles.NormalText}>Panneaux non lumineux (PNL) :</Text>
-                            <Text style={styles.NormalText}>{prices[4]} €</Text>
+                            <Text style={styles.NormalText}>{prices[4].toFixed(2)} €</Text>
                         </View>
                         <View style={[styles.PriceDetail, { marginTop: '0.5mm' }]}>
                             <Text style={styles.NormalText}>Panneaux lumineux (PL) :</Text>
-                            <Text style={styles.NormalText}>{prices[5]} €</Text>
+                            <Text style={styles.NormalText}>{prices[5].toFixed(2)} €</Text>
                         </View>
                         <View style={[styles.PriceDetail, { marginTop: '0.5mm' }]}>
                             <Text style={styles.NormalText}>Panneaux à défilement (PD) : </Text>
-                            <Text style={styles.NormalText}>{prices[6]} €</Text>
+                            <Text style={styles.NormalText}>{prices[6].toFixed(2)} €</Text>
                         </View>
                         <View style={[styles.TypeDetail, { marginTop: '1mm' }]}>
                             <Text style={[styles.NormalText, { marginRight: '2mm' }]}>(S) Simple face</Text>

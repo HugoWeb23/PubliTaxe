@@ -3,7 +3,9 @@ import {
     Container,
     Table,
     Button,
-    Alert
+    Alert,
+    OverlayTrigger,
+    Tooltip
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { ApiErrors } from "../../Services/apiFetch"
@@ -12,6 +14,7 @@ import { IUser } from "../../Types/IUser"
 import { useInactiveAccounts } from "../Hooks/InactiveAccountsHook"
 import { ConfirmModal } from "../UI/ConfirmModal"
 import { Loader } from "../UI/Loader"
+import { ExclamationIcon } from "../UI/ExclamationIcon"
 
 export const ManageInactiveAccounts = () => {
     const { accounts, getAllAccounts, deleteAccount, activateAccount } = useInactiveAccounts()
@@ -70,10 +73,13 @@ export const ManageInactiveAccounts = () => {
                     <li className="breadcrumb-item active" aria-current="page">Utilisateurs en attente d'activation</li>
                 </ol>
             </nav>
-            <h2 className="mt-2">Utilisateurs en attente d'activation</h2>
+            <div className="d-flex justify-content-between align-items-end mt-2 mb-3">
+                <h2 className="mb-0">Utilisateurs en attente d'activation</h2>
+                <Link to="/manageaccess/all" className="link">Gestion des utilisateurs</Link>
+            </div>
             <hr className="my-3" />
             {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
-            <Table striped bordered hover>
+            <Table striped bordered hover size="sm">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -81,16 +87,17 @@ export const ManageInactiveAccounts = () => {
                         <th>Nom</th>
                         <th>Adresse e-mail</th>
                         <th>Actif</th>
-                        <th>Action</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {(loader === true) && <tr><td colSpan={6}>Chargement...</td></tr>}
                     {(loader === false && accounts.length === 0) && <tr><td colSpan={6}>Aucun résultat</td></tr>}
-                    {loader === false ? accounts.map((user: IUser, index: number) => <UserRow
+                    {(loader === false && accounts.length !== 0) && accounts.map((user: IUser, index: number) => <UserRow
                         user={user}
                         onDelete={(user: IUser) => setDeleteModal({ show: true, user: user })}
                         onActivate={(user: IUser) => handleActivateAccount(user)}
-                    />) : <Loader />}
+                    />)}
                 </tbody>
             </Table>
         </Container>
@@ -108,7 +115,16 @@ const UserRow = ({ user, onDelete, onActivate }: IUserRow) => {
         <td>{user.id}</td>
         <td>{user.prenom}</td>
         <td>{user.nom}</td>
-        <td>{user.mail} {user.changement_pass === 1 && <span className="fs-6 text-danger fw-bold">(Changement de mot de passe en attente)</span>}</td>
+        <td>{user.mail} {user.changement_pass === 1 && <OverlayTrigger
+            placement="top"
+            overlay={
+                <Tooltip id={`tooltip-2`}>
+                    Changement de mot de passe en attente
+                </Tooltip>
+            }
+        >
+            <span className="ms-1"><ExclamationIcon width="20" height="20" fill="red" /></span>
+        </OverlayTrigger>}</td>
         <td>{user.actif ? "Oui" : "Non"}</td>
         <td><div className="d-flex">
             <Button variant="success" size="sm" className="me-2" onClick={() => onActivate({ ...user, actif: 1 })}>Activer</Button>

@@ -8,6 +8,8 @@ namespace Taxes.ViewModels
         public string Nom { get; set; }
         public bool PubExoneration { get; set; }
         public int? Rue { get; set; }
+        public bool ShowDelete { get; set; }
+         public bool ShowDisable { get; set; }
         public int PageCourante { get; set; }
         public int ElementsParPage { get; set; }
     }

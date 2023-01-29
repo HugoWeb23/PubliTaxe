@@ -7,6 +7,7 @@ using Taxes.Entities;
 using System.Collections.Generic;
 using Taxes.Queries;
 using System.Linq;
+using System;
 
 namespace Taxes.Handlers
 {
@@ -22,23 +23,58 @@ namespace Taxes.Handlers
 
         public async Task<Entreprise> Handle(UpdateEntrepriseCommand request, CancellationToken cancellationToken)
         {
-            // Enregistrement d'un non reçu pour la taxation d'office
-            if(request.Entreprise.Pourcentage_majoration > 0)
+            Entreprise entreprise = _context.entreprises.AsNoTracking().FirstOrDefault(ent => ent.Id_entreprise == request.Entreprise.Id_entreprise);
+
+            if (entreprise == null) throw new Exception("L'entreprise n'existe pas");
+
+            if (request.Entreprise.Matricule_ciger != entreprise.Matricule_ciger)
             {
-                var ExerciceId = await _mediator.Send(new GetInformationsQuery());
+                if (_context.entreprises.AsNoTracking().Any(ent => ent.Matricule_ciger == request.Entreprise.Matricule_ciger)) throw new Exception("Une entreprise possède déjà ce matricule");
+            }
+            if (request.Entreprise.Proces_verbal && request.Entreprise.Pourcentage_majoration == 0)
+            {
+                throw new Exception("Vous devez sélectionner un poucentage de majoration pour activer le procès-verbal");
+            }
+            if (request.Entreprise.Pourcentage_majoration > 0 && request.Entreprise.Proces_verbal == false)
+            {
+                throw new Exception("Vous devez cocher la case procès-verbal pour appliquer un pourcentage de majoration");
+            }
+            if((request.Entreprise.Proces_verbal && request.Entreprise.Desactive) && entreprise.Desactive) {
+                throw new Exception("Une entreprise désactivée ne peut pas être en infraction");
+            }
+            if(request.Entreprise.Desactive && entreprise.Proces_verbal) {
+                throw new Exception("L'entreprise ne peut pas être désactivée car elle est en infraction");
+            }
+            var Informations = await _mediator.Send(new GetInformationsQuery());
+            long ExerciceId = (long)Informations.GetType().GetProperty("Exercice_courant").GetValue(Informations, null);
+            NotReceived NonRecu = _context.non_recus.AsNoTracking().Where(n => n.ExerciceId == ExerciceId && n.Id_entreprise == entreprise.Id_entreprise).OrderBy(n => n.Id).FirstOrDefault();
+            // Suppression de l'infraction de l'exercice actuel si procès-verbal n'est pas coché
+            if (NonRecu != null && request.Entreprise.Proces_verbal == false)
+            {
+                await _mediator.Send(new DeleteNotReceivedCommand(NonRecu.Id, false));
+            }
+            // Enregistrement d'un non reçu pour la taxation d'office
+            if(request.Entreprise.Pourcentage_majoration > 0 && request.Entreprise.Proces_verbal)
+            {
+               
                 NotReceived NotReceived = new NotReceived
                 {
-                    Matricule_ciger = request.Entreprise.Matricule_ciger,
+                    Id_entreprise = request.Entreprise.Id_entreprise,
                     Pourcentage_majoration = request.Entreprise.Pourcentage_majoration,
                     Motif_majorationId = (int)(request.Entreprise.Motif_majorationId != null ? request.Entreprise.Motif_majorationId : 1),
-                    ExerciceId = (long)ExerciceId.GetType().GetProperty("Exercice_courant").GetValue(ExerciceId, null),
+                    ExerciceId = ExerciceId,
                     Remarque = ""
                 };
 
                 await _mediator.Send(new InsertNotReceivedCommand(NotReceived, false));
             }
 
-            IEnumerable<Publicite> pubs = await _mediator.Send(new GetAdvertisingListByMatriculeQuery(request.Entreprise.Matricule_ciger));
+            if(request.Entreprise.Publicites.Sum(p => p.Taxe_totale) > 0 && entreprise.Statut_paiement == 3)
+            {
+                request.Entreprise.Statut_paiement = 0;
+            }
+
+            IEnumerable<Publicite> pubs = await _mediator.Send(new GetAdvertisingListByMatriculeQuery(request.Entreprise.Id_entreprise));
             IEnumerable<Publicite> test = pubs.Except(request.Entreprise.Publicites).ToList();
             _context.enseignes_publicitaires.RemoveRange(test);
             _context.entreprises.Update(request.Entreprise);

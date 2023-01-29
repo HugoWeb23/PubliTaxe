@@ -172,7 +172,7 @@ interface IModalInfos {
 const ModalInfos = ({ show, handleClose }: IModalInfos) => {
     return <Modal show={show} onHide={handleClose} size="lg">
         <Modal.Header closeButton>
-            <Modal.Title>Permissions des rôles</Modal.Title>
+            <Modal.Title as="h5">Permissions des rôles</Modal.Title>
         </Modal.Header>
         <Modal.Body>
             <Table className="table-borderless">
@@ -193,6 +193,36 @@ const ModalInfos = ({ show, handleClose }: IModalInfos) => {
                     </tr>
                     <tr>
                         <td>Éditer les entreprises</td>
+                        <td><ErrorCircle /></td>
+                        <td><CheckCircle /></td>
+                        <td><CheckCircle /></td>
+                    </tr>
+                    <tr>
+                        <td>Gérer les non reçus</td>
+                        <td><ErrorCircle /></td>
+                        <td><CheckCircle /></td>
+                        <td><CheckCircle /></td>
+                    </tr>
+                    <tr>
+                        <td>Visionner les paiements</td>
+                        <td><CheckCircle /></td>
+                        <td><CheckCircle /></td>
+                        <td><CheckCircle /></td>
+                    </tr>
+                    <tr>
+                        <td>Gérer les paiements</td>
+                        <td><ErrorCircle /></td>
+                        <td><CheckCircle /></td>
+                        <td><CheckCircle /></td>
+                    </tr>
+                    <tr>
+                        <td>Voir et imprimer les déclarations</td>
+                        <td><CheckCircle /></td>
+                        <td><CheckCircle /></td>
+                        <td><CheckCircle /></td>
+                    </tr>
+                    <tr>
+                        <td>Gérer les déclarations</td>
                         <td><ErrorCircle /></td>
                         <td><CheckCircle /></td>
                         <td><CheckCircle /></td>
@@ -243,7 +273,7 @@ const ModalInfos = ({ show, handleClose }: IModalInfos) => {
             </Table>
         </Modal.Body>
         <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
+            <Button variant="secondary" onClick={handleClose} size="sm">
                 Fermer
             </Button>
         </Modal.Footer>

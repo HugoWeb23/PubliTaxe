@@ -86,7 +86,7 @@ export const ManageAccount = () => {
                         </Col>
                     </Row>
                     <Form.Group controlId="submit" className="mt-3">
-                        <Button variant="success" type="submit">Valider</Button>
+                        <Button variant="success" size="sm" type="submit">Enregistrer</Button>
                     </Form.Group>
                 </Form>
             </Card>

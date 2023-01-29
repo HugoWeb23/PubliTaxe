@@ -20,14 +20,18 @@ namespace Taxes.Handlers
         }
         public Task<bool> Handle(DeleteEntrepriseCommand request, CancellationToken cancellationToken)
         {
-            Entreprise entreprise = _context.entreprises.FirstOrDefault(ent => ent.Matricule_ciger == request.Matricule);
+            Entreprise entreprise = _context.entreprises.FirstOrDefault(ent => ent.Id_entreprise == request.ID);
             if(entreprise == null)
             {
                 throw new Exception("L'entreprise est introuvable");
             }
-                _context.entreprises.Remove(entreprise);
-                _context.SaveChanges();
-                return Task.FromResult(true);
+
+            if (entreprise.Suppression) throw new Exception("La suppression de cette entreprise est déjà programmée");
+
+            entreprise.Suppression = true;
+
+            _context.SaveChanges();
+            return Task.FromResult(true);
            
         }
     }

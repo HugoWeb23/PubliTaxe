@@ -3,5 +3,5 @@ using Taxes.Entities;
 
 namespace Taxes.Commands
 {
-    public record DeleteEntrepriseCommand(long Matricule) : IRequest<bool>;
+    public record DeleteEntrepriseCommand(long ID) : IRequest<bool>;
 }

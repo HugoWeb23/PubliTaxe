@@ -4,6 +4,7 @@ import { IRue } from "./IRue";
 export interface IPublicite {
     numero_panneau : number,
     matricule_ciger : number,
+    id_entreprise: number,
     id_rue?: number,
     rue: IRue
     exercice_courant: number,
@@ -19,7 +20,8 @@ export interface IPublicite {
     code_recu: number
     exoneration: boolean,
     pv: number,
-    photos: IPhoto[]
+    photos: IPhoto[],
+    uuid: string
 
 }
 

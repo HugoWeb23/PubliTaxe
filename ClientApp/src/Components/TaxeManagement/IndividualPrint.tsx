@@ -32,7 +32,8 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalY
       print_letter: (tax?.code_postal?.cp != 7700 && tax?.code_postal?.cp != 7711 && tax?.code_postal?.cp != 7712) ? true : false,
       print_declaration: true,
       print_form: false,
-      print_minutes: tax.proces_verbal ? true : false
+      print_minutes: tax.proces_verbal ? true : false,
+      date_proces_verbal: Today()
     }
   })
 
@@ -58,12 +59,12 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalY
   return <>
     <Modal show={show} onHide={onClose} size="xl" animation={false}>
       <Modal.Header closeButton>
-        <Modal.Title>Impression individuelle</Modal.Title>
+        <Modal.Title as="h5">Impression individuelle</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {notice && <Alert variant="secondary" >Veillez à bien sauvegarder les changements avant de générer un document.</Alert>}
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <Row className="mb-3">
+          <Row>
             <Col>
               <Form.Group controlId="echeance" className="mb-3">
                 <Form.Label column="sm">Date d'échéance</Form.Label>
@@ -102,7 +103,7 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalY
           </Row>
           {print_minutes && <Form.Group controlId="send_date_minutes" className="mb-3">
             <Form.Label column="sm">Date d'envoi procès-verbal</Form.Label>
-            <Form.Control type="date" placeholder="dd-mm-yyyy" isInvalid={errors.date_proces_verbal} size="sm" {...register('date_proces_verbal')} />
+            <Form.Control type="date" placeholder="dd-mm-yyyy" defaultValue={Today()} isInvalid={errors.date_proces_verbal} size="sm" {...register('date_proces_verbal')} />
             {errors.date_proces_verbal && <Form.Control.Feedback type="invalid">{errors.date_proces_verbal.message}</Form.Control.Feedback>}
           </Form.Group>}
           <Row>
@@ -121,15 +122,10 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalY
                 <Form.Check type="checkbox" label="Imprimer le procès verbal" isInvalid={errors.options} {...register('options.print_minutes')} />
               </Form.Group>
             </Col>
-            <Col>
-              <Form.Group controlId="form">
-                <Form.Check type="checkbox" label="Imprimer la fiche d'entreprise" isInvalid={errors.options} {...register('options.print_form')} />
-              </Form.Group>
-            </Col>
             {errors.options && <Form.Text className="text-danger">
               {errors.options.message}
             </Form.Text>}
-            <Form.Group controlId="submit" className="mt-5">
+            <Form.Group controlId="submit" className="mt-3">
               <div className="d-grid gap-2">
                 <Button variant="outline-dark" className="mb-1" type="submit">Générer les documents</Button>
               </div>
@@ -141,7 +137,7 @@ export const IndividualPrint = ({ show, handleClose, tax, tarifs, currentFiscalY
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onClose}>
+        <Button variant="secondary" size="sm" onClick={onClose}>
           Fermer
         </Button>
       </Modal.Footer>

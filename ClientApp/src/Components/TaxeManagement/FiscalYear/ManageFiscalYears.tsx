@@ -15,10 +15,11 @@ import { toast } from 'react-toastify';
 import { Link } from "react-router-dom"
 
 interface IManageFiscalyears {
+    currentFiscalYear: IExercice,
     handleEdit: (fiscalYear: any) => void
 }
 
-export const ManageFiscalYears = ({ handleEdit }: IManageFiscalyears) => {
+export const ManageFiscalYears = ({ currentFiscalYear, handleEdit }: IManageFiscalyears) => {
     const { fiscalYears, getAll, newFiscalYear, editFiscalYear } = useFiscalYears()
     const [selectedFiscalYear, setSelectedFiscalYear] = useState({ fiscalYear: {} as IExercice, show: false, type: 'create' })
     const [loader, setLoader] = useState<boolean>(true)
@@ -33,7 +34,7 @@ export const ManageFiscalYears = ({ handleEdit }: IManageFiscalyears) => {
                     setErrorModal({ show: true, message: e.singleError.error })
                 }
             }
-            setLoader(false)
+            setTimeout(() => setLoader(false), 300)
         })()
     }, [])
 
@@ -55,7 +56,7 @@ export const ManageFiscalYears = ({ handleEdit }: IManageFiscalyears) => {
     }
 
     return <>
-        <FiscalYearModal fiscalYear={selectedFiscalYear} onSubmit={handleSubmit} handleClose={() => setSelectedFiscalYear(element => ({ ...element, show: false, type: 'create' }))} />
+        <FiscalYearModal fiscalYears={fiscalYears} fiscalYear={selectedFiscalYear} onSubmit={handleSubmit} handleClose={() => setSelectedFiscalYear(element => ({ ...element, show: false, type: 'create' }))} />
         <Container fluid="sm">
             <nav aria-label="breadcrumb" className="mt-3">
                 <ol className="breadcrumb">
@@ -69,7 +70,7 @@ export const ManageFiscalYears = ({ handleEdit }: IManageFiscalyears) => {
             </div>
             <hr className="my-3" />
             {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
-            <Table striped bordered hover>
+            <Table striped bordered hover size="sm">
                 <thead>
                     <tr>
                         <th>Exercice</th>
@@ -79,13 +80,14 @@ export const ManageFiscalYears = ({ handleEdit }: IManageFiscalyears) => {
                     </tr>
                 </thead>
                 <tbody>
+                {loader && <tr><td colSpan={4}>Chargement...</td></tr>}
                 {(loader === false && fiscalYears.length === 0) && <tr><td colSpan={4}>Aucun résultat</td></tr>}
-                    {loader == false && fiscalYears.map((year: IExercice, index: number) => {
+                    {loader == false && fiscalYears.map((year: IExercice) => {
                         return <tr>
                             <td>{year.annee_exercice}</td>
                             <td>{new Date(year.date_echeance).toLocaleDateString('fr-FR')}</td>
                             <td>{new Date(year.date_reglement_taxe).toLocaleDateString('fr-FR')}</td>
-                            <td><Button size="sm" onClick={() => setSelectedFiscalYear(element => ({ fiscalYear: year, show: true, type: 'edit' }))}><Pencil /></Button></td>
+                            <td><Button size="sm" disabled={year.annee_exercice < currentFiscalYear.annee_exercice} onClick={() => setSelectedFiscalYear(element => ({ fiscalYear: year, show: true, type: 'edit' }))}><Pencil /> Modifier</Button></td>
                         </tr>
                     })}
                 </tbody>

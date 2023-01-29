@@ -46,7 +46,7 @@ export const StreetCodeModal = ({ isOpen, handleClose, onSelect }: StreetCodeMod
 
     return <Modal show={isOpen} onHide={handleClose} size="xl" animation={false}>
         <Modal.Header closeButton>
-            <Modal.Title>Recherche par code de rue</Modal.Title>
+            <Modal.Title as="h5">Recherche par code de rue</Modal.Title>
         </Modal.Header>
         <Modal.Body>
             <Form onSubmit={handleSubmit(OnSearch)} className="mb-3">
@@ -60,7 +60,7 @@ export const StreetCodeModal = ({ isOpen, handleClose, onSelect }: StreetCodeMod
             {problem != null && <ErrorAlert erreur={problem.erreur} details={problem.details}/>}
             {rues == null && <Alert variant="warning">Aucun résultat</Alert>}
             {loading == false && (rues != null && rues.length > 0) &&
-                <Table striped bordered hover className="mt-3">
+                <Table striped bordered hover className="mt-3" size="sm">
                     <thead>
                         <tr>
                             <th>Nom rue</th>
@@ -87,7 +87,7 @@ export const StreetCodeModal = ({ isOpen, handleClose, onSelect }: StreetCodeMod
             }
         </Modal.Body>
         <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
+            <Button variant="secondary" size="sm" onClick={handleClose}>
                 Fermer
             </Button>
         </Modal.Footer>

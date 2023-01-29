@@ -1,5 +1,4 @@
 import { IExercice } from "../Types/IExercice";
-import { INotReceived } from "../Types/INotReceived";
 import { INotReceivedHistory } from "../Types/INotReceivedHistory";
 
 export const SumIncrease = (NotReceivedList: INotReceivedHistory[], currentFiscalYear: IExercice): Promise<number> => {

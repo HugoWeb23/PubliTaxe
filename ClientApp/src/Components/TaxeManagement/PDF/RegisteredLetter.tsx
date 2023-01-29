@@ -104,7 +104,7 @@ export const RegisteredLetter = ({ entreprise, printData, currentFiscalYear, mot
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'flex-start',
-            marginTop: '15mm',
+            marginTop: '10mm',
             paddingRight: '25mm',
             paddingLeft: '25mm'
 
@@ -161,18 +161,19 @@ export const RegisteredLetter = ({ entreprise, printData, currentFiscalYear, mot
                 <Text style={[styles.NormalText, { marginBottom: '5mm' }]}>Ville de Mouscron, le {printData.date_impression}</Text>
                 <Text style={[styles.NormalText, { fontWeight: 'bold', marginBottom: '1mm' }]}>{entreprise.matricule_ciger}</Text>
                 <Text style={[styles.NormalText, { fontWeight: 'bold', marginBottom: '1mm' }]}>{entreprise.nom}</Text>
-                <Text style={[styles.NormalText, { fontWeight: 'bold', marginBottom: '1mm' }]}>{entreprise.adresse_rue}, {entreprise.adresse_numero}</Text>
-                <Text style={[styles.NormalText, { fontWeight: 'bold' }]}>{entreprise.code_postal.cp} {entreprise.code_postal.localite}</Text>
+                <Text style={[styles.NormalText, { fontWeight: 'bold', marginBottom: '1mm' }]}>{entreprise.adresse_rue}, {entreprise.adresse_numero} {entreprise.adresse_boite > 0 && `(boite ${entreprise.adresse_boite})`}</Text>
+                <Text style={[styles.NormalText, { fontWeight: 'bold', marginBottom: '1mm' }]}>{entreprise.code_postal.cp} {entreprise.code_postal.localite}</Text>
+                <Text style={[styles.NormalText, { fontWeight: 'bold' }]}>{entreprise.code_postal.pays.nom_pays}</Text>
             </View>
         </View>
-        <View style={{ marginTop: '10mm' }}>
-            <Text style={styles.NormalText}>Madame, Monsieur,</Text>
-        </View>
-        <View style={{ marginTop: '10mm' }}>
+        <View style={{ marginTop: '5mm' }}>
             <Text style={[styles.NormalText, {textDecoration: 'underline'}]}>Concerne : Taxe sur les panneaux publicitaires et enseignes / {currentFiscalYear.annee_exercice} / Notification de taxation d'office</Text>
         </View>
         <View style={{ marginTop: '5mm' }}>
-            <Text style={styles.NormalText}>Conformément au règlement du {new Date(currentFiscalYear.date_reglement_taxe).toLocaleDateString('fr-FR')} sur les panneaux publicitaires et enseignes, l'administration communale adresse au contribuable une fomule de déclaration que celui-ci est tenu de renvoyer, dument remplie et signée, avant l'échéance mentionnée sur celle-ci.</Text>
+            <Text style={styles.NormalText}>Madame, Monsieur,</Text>
+        </View>
+        <View style={{ marginTop: '5mm' }}>
+            <Text style={styles.NormalText}>Conformément au règlement du 30 novembre 2020 sur les panneaux publicitaires et enseignes, l'administration communale adresse au contribuable une fomule de déclaration que celui-ci est tenu de renvoyer, dument remplie et signée, avant l'échéance mentionnée sur celle-ci.</Text>
         </View>
         <View style={{ marginTop: '5mm' }}>
             <Text style={styles.NormalText}>En outre, conformément à l'article L3321-6 du Code de la démocratie locale et de la décentralisation, lorsque le règlement de taxation prévoit une obligation de déclaration, la non-déclaration dans les délais prévus par ce même règlement ou la déclaration incorrecte, incomplète ou imprécise de la part du redevable entraîne l'enrôlement d'office de la taxe.</Text>
@@ -185,16 +186,19 @@ export const RegisteredLetter = ({ entreprise, printData, currentFiscalYear, mot
         </View>
         <View style={{ marginTop: '5mm' }}>
             <Text style={styles.NormalText}>Le collège communal se voit dès lors dans l'obligation de vous enrôler d'office à la taxe sur les panneaux publicitaires
-                et enseignes pour un montant calculé sur la base des éléments suivants: <Text style={{ textDecoration: 'underline' }}>VOIR DETAIL EN ANNEXE</Text>.</Text>
+                et enseignes pour un montant calculé sur la base des éléments suivants: <Text style={{ textDecoration: 'underline' }}>VOIR DETAIL CI-DESSOUS</Text>.</Text>
         </View>
         <View style={{ marginTop: '5mm' }}>
             <Text style={styles.NormalText}>Montant de la taxe <Text style={{ fontWeight: 'bold' }}>{(taxe_totale).toFixed(2)} €</Text></Text>
         </View>
         <View style={{ marginTop: '5mm' }}>
-            <Text style={styles.NormalText}>Le montant dû est majoré de <Text style={{ fontWeight: 'bold' }}>{entreprise.pourcentage_majoration} %</Text>, conformément à la délibération du Conseil communal du 24 octobre 2016.</Text>
+            <Text style={styles.NormalText}>Le montant dû est majoré de <Text style={{ fontWeight: 'bold' }}>{entreprise.pourcentage_majoration} %</Text>, conformément à la délibération du Conseil communal du 09 octobre 2019.</Text>
         </View>
         <View style={{ marginTop: '5mm' }}>
             <Text style={styles.NormalText}>Soit <Text style={{ fontWeight: 'bold' }}>{(taxe_totale * entreprise.pourcentage_majoration / 100).toFixed(2)} €</Text></Text>
+        </View>
+        <View style={{ marginTop: '5mm' }}>
+            <Text style={styles.NormalText}>Le montant total de la taxe après la majoration de {entreprise.pourcentage_majoration} % s'élève à <Text style={{ fontWeight: 'bold' }}>{(taxe_totale + (taxe_totale * entreprise.pourcentage_majoration / 100)).toFixed(2)} €</Text></Text>
         </View>
         <View style={{ marginTop: '5mm' }}>
             <Text style={styles.NormalText}>Vous disposez d'un délai de trente jours à compter de la date d'envoi de la présente notification pour faire valoir vos

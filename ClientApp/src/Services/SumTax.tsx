@@ -9,7 +9,10 @@ export const pricesByTypes: IPricesByTypes[] = [
     { type: 6, value: "prix_unitaire_panneau_a_defilement" }
 ]
 
-export const SumTax = (exercice: number, quantite: number, surface: number, face: number, typePub: number, tarifs: any) => {
+export const SumTax = (exercice: number, quantite: number, surface: number, face: number, typePub: number, exoneration: boolean, tarifs: any) => {
+    if(exoneration) {
+        return 0.00
+    }
     const data = pricesByTypes.find((element: IPricesByTypes) => element.type == typePub)?.value
     if (data != undefined) {
         if (exercice == null) return 0.00

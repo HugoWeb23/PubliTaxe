@@ -6,6 +6,7 @@ import { ITaxManagement } from "../../Types/ITaxManagement";
 
 interface Action {
     type: 'FETCH_ALL' | 'DELETE' | 'RECEIVED',
+    hidden?: any,
     payLoad: any
 }
 
@@ -21,14 +22,29 @@ export const useEntreprises = () => {
                     pageCourante: action.payLoad.pageCourante,
                     elementsParPage: action.payLoad.elementsParPage,
                     totalRecus: action.payLoad.totalRecus,
-                    totalEntreprises: action.payLoad.totalEntreprises
+                    totalPaiementsRecus: action.payLoad.totalPaiementsRecus,
+                    totalInfractions: action.payLoad.totalInfractions,
+                    totalEntreprises: action.payLoad.totalEntreprises,
+                    totalDesactives: action.payLoad.totalDesactives
                 }
             case 'DELETE':
-                return { ...state, entreprises: state.entreprises.filter((elem: IApercu_entreprise) => elem.matricule_ciger != action.payLoad.matricule_ciger) }
+                if (action.hidden === true) {
+                    return { ...state, entreprises: state.entreprises.filter((elem: IApercu_entreprise) => elem.id_entreprise != action.payLoad.id_entreprise) }
+                } else {
+                    return {
+                        ...state, entreprises: state.entreprises.map((elem: IApercu_entreprise) => {
+                            if (elem.id_entreprise == action.payLoad.id_entreprise) {
+                                return { ...elem, suppression: true }
+                            } else {
+                                return elem
+                            }
+                        })
+                    }
+                }
             case 'RECEIVED':
                 return {
                     ...state, entreprises: state.entreprises.map((ent: IApercu_entreprise) => {
-                        if (action.payLoad.map((ent: IApercu_entreprise) => ent.matricule_ciger).includes(ent.matricule_ciger)) {
+                        if (action.payLoad.map((ent: IApercu_entreprise) => ent.id_entreprise).includes(ent.id_entreprise)) {
                             return { ...ent, recu: true }
                         }
                         return ent
@@ -41,7 +57,7 @@ export const useEntreprises = () => {
 
     const [state, dispatch] = useReducer(reducer, { entreprises: [], totalPages: 1, pageCourante: 1, elementsParPage: 15 });
 
-    const GetTaxes = async(options: any) => {
+    const GetTaxes = async (options: any) => {
         const fetch: ITaxManagement = await apiFetch(`/entreprises/names`, {
             method: 'POST',
             body: JSON.stringify(options)
@@ -55,25 +71,25 @@ export const useEntreprises = () => {
         pageCourante: state.pageCourante,
         elementsParPage: state.elementsParPage,
         totalRecus: state.totalRecus,
+        totalPaiementsRecus: state.totalPaiementsRecus,
+        totalInfractions: state.totalInfractions,
         totalEntreprises: state.totalEntreprises,
+        totalDesactives: state.totalDesactives,
         getAll: async (options: any) => {
-           await GetTaxes(options)
+            await GetTaxes(options)
         },
-        deleteOne: async (entreprise: IApercu_entreprise) => {
-            await apiFetch(`/entreprises/delete/${entreprise.matricule_ciger}`, {
+        deleteOne: async (showDelete: boolean, entreprise: IApercu_entreprise) => {
+            await apiFetch(`/entreprises/delete/${entreprise.id_entreprise}`, {
                 method: 'DELETE'
             })
-            if(state.entreprises.length <= 1 && state.totalPages > 1 ) {
-                await GetTaxes({pageCourante: 1})
-            }
-            dispatch({ type: 'DELETE', payLoad: entreprise })
+            dispatch({ type: 'DELETE', hidden: !showDelete, payLoad: entreprise })
         },
         setReceived: async (selected: IApercu_entreprise[]) => {
-            const matricules: number[] = []
-            selected.forEach((ent: IApercu_entreprise) => matricules.push(ent.matricule_ciger))
+            const IDs: number[] = []
+            selected.forEach((ent: IApercu_entreprise) => IDs.push(ent.id_entreprise))
             const encode = await apiFetch('/entreprises/encodereceived', {
                 method: 'POST',
-                body: JSON.stringify({ matricules: matricules })
+                body: JSON.stringify({ entreprises: IDs })
             })
             dispatch({ type: 'RECEIVED', payLoad: encode })
         }

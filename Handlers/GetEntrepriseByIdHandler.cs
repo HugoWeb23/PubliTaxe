@@ -32,7 +32,7 @@ namespace Taxes.Handlers
                 .ThenInclude(cp => cp.Pays)
                 .Include(ent => ent.Publicites)
                 .ThenInclude(pub => pub.Photos)
-                .FirstOrDefault(ent => ent.Matricule_ciger == request.matricule);
+                .FirstOrDefault(ent => ent.Id_entreprise == request.ID);
 
             if(entreprise == null)
             {

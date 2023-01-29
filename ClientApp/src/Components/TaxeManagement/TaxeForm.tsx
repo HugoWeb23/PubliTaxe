@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form"
 import {
     Form,
@@ -19,12 +19,13 @@ import { toast } from 'react-toastify';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { TaxeFormSchema } from "../../Validation/Tax/TaxFormSchema";
 import { Link } from "react-router-dom";
-import { LeftArrow } from '../UI/LeftArroy'
 import { ManageAdvertising } from './ManageAdvertising'
 import { Printer } from "../UI/Printer";
 import { IndividualPrint } from './IndividualPrint';
 import { IExercice } from "../../Types/IExercice";
 import { IPrintData } from "../../Types/IPrintData";
+import { OffensesModal } from "./OffensesModal";
+import { ConfirmModal } from "../UI/ConfirmModal";
 
 interface TaxeForm {
     data?: any,
@@ -33,19 +34,34 @@ interface TaxeForm {
     tarifs: any,
     currentFiscalYear: IExercice,
     informations?: IPrintData,
+    formSimulation?: boolean,
+    simulationData?: any,
     onFormSubmit: (data: any) => Promise<void>
 }
 
-export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, informations, onFormSubmit }: TaxeForm) => {
+export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, informations, formSimulation = false, simulationData = {}, onFormSubmit }: TaxeForm) => {
     const defaultValues = data ? data : {}
+    const [formSimulationMode, setFormSimulationMode] = useState<boolean>(formSimulation)
+    const [deleteSimulation, setDeleteSimulation] = useState<boolean>(true)
     const [tax, setTax] = useState<Entreprise>(data as Entreprise)
-    const [publicites, setPublicites] = useState(data.publicites ? data.publicites : [])
+    const [publicites, setPublicites] = useState(data.publicites ? data.publicites : simulationData.publicites ? simulationData.publicites : [])
     const [streetCodeModal, setStreetCodeModal] = useState<boolean>(false)
     const [postCodes, setPostCodes] = useState<any>(data.code_postal ? [data.code_postal] : [])
     const [codePostal, setCodePostal] = useState<any>(null)
     const [autoTaxAdress, setAutoTaxAdress] = useState<boolean>(true)
     const [individualPrint, setIndiviualPrint] = useState<boolean>(false)
+    const [offensesModal, setOffensesModal] = useState<boolean>(false)
+    const [matriculeAvailable, setMatriculeAvailable] = useState<boolean>(false)
+    const [confirmModal, setConfirmModal] = useState<boolean>(false)
     const { register, reset, control, handleSubmit, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(TaxeFormSchema), defaultValues: defaultValues });
+
+    useEffect(() => {
+        if (formSimulation) {
+            for (const [key, value] of Object.entries(simulationData)) {
+                setValue(key, value)
+            }
+        }
+    }, [])
 
     const OnSubmit = async (form: any) => {
         try {
@@ -60,9 +76,21 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
             if (type == 'create') {
                 reset()
                 setPublicites([])
+                if (formSimulationMode === true && deleteSimulation === true) {
+                    await apiFetch(`/simulations/delete/${simulationData.id_simulation}`, {
+                        method: 'DELETE'
+                    })
+                }
+                setFormSimulationMode(false)
+                clearErrors('matricule_ciger')
                 toast.success("Entreprise créée avec succès")
             } else {
                 setPublicites(test.publicites)
+                if (test.publicites.reduce((acc: number, p: any) => {
+                    return acc + p.taxe_totale
+                }, 0) > 0 && form2.statut_paiement === 3) {
+                    setConfirmModal(true)
+                }
                 toast.success('Modifications sauvegardées')
             }
         } catch (e: any) {
@@ -78,6 +106,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
         setValue('adresse_rue', street.nom_rue)
         setValue('code_postal.cp', street.code_postal.cp)
         setValue('code_postal.localite', street.code_postal.localite)
+        setValue('code_postal.pays.nom_pays', street.code_postal.pays.nom_pays)
         setPostCodes([street.code_postal])
         clearErrors(['code_postal.cp', 'code_postal.localite', 'adresse_rue'])
     }
@@ -111,6 +140,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
             setCodePostal(code_postal.code_postalId)
             setValue('code_postal.cp', code_postal.cp)
             setValue('code_postal.localite', code_postal.localite)
+            setValue('code_postal.pays.nom_pays', code_postal.pays.nom_pays)
             clearErrors(['code_postal.cp', 'code_postal.localite'])
         } else {
             if (type == 'cp') {
@@ -160,8 +190,70 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
         }
     }
 
+    const handleCancelSimulationMode = () => {
+        reset();
+        setPublicites([]);
+        setFormSimulationMode(false);
+    }
+
+    const UpdateMajoration = () => {
+        setValue('proces_verbal', false)
+        setValue('pourcentage_majoration', "0")
+        setValue('motif_majorationId', null)
+    }
+
+    const CheckMatricule = async (e: any) => {
+        clearErrors('matricule_ciger')
+        setMatriculeAvailable(false)
+        if (e.target.value.length > 0) {
+            const isAvailable = await apiFetch(`/entreprises/checkmatricule/${e.target.value}`)
+            if (isAvailable === false) {
+                setError('matricule_ciger', { type: "manual", message: "Ce matricule est déjà utilisé" })
+            } else {
+                setMatriculeAvailable(true)
+            }
+        }
+    }
+
+    const ProcesVerbalChange = (e: any) => {
+        const value: boolean = e.target.checked
+        console.log(data.pourcentage_majoration, data.motif_majorationId)
+        if (value && data.pourcentage_majoration !== 0 && data.motif_majorationId !== null) {
+            setValue('pourcentage_majoration', data.pourcentage_majoration)
+            setValue('motif_majorationId', data.motif_majorationId)
+        } else if (!value) {
+            setValue('pourcentage_majoration', "0")
+            setValue('motif_majorationId', null)
+        }
+    }
+
+    const CancelDeletionRequest = async () => {
+        try {
+            await apiFetch(`/entreprises/canceldelete/${tax.id_entreprise}`, {
+                method: 'PUT'
+            })
+            setTax((tax: Entreprise) => ({ ...tax, suppression: false }))
+            toast.success('La demande de suppression a été annulée')
+        } catch (e: any) {
+            if (e instanceof ApiErrors) {
+                toast.error(e.singleError.error)
+            }
+        }
+    }
+
     return <>
+        <ConfirmModal
+            show={confirmModal}
+            titleText="Avertissement"
+            bodyText={`Le statut du paiement est passé de "rien à payer" à impayé étant donné que la taxe totale n'est plus égale à 0.`}
+            hiddenConfirmButton={true}
+            leaveButtonText="Fermer"
+            leaveButtonVariant="secondary"
+            onClose={() => setConfirmModal(false)}
+            onConfirm={() => { }}
+        />
         <StreetCodeModal isOpen={streetCodeModal} handleClose={() => setStreetCodeModal(false)} onSelect={handleSelectStreet} />
+        {type === 'edit' && <OffensesModal id_entreprise={tax.id_entreprise} motifs={motifs} currentFiscalYear={currentFiscalYear} isOpen={offensesModal} deletable={true} handleClose={() => setOffensesModal(false)} onDelete={UpdateMajoration} />}
         {type === 'edit' && <IndividualPrint
             show={individualPrint}
             handleClose={() => setIndiviualPrint(false)}
@@ -182,32 +274,51 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                         </ol>
                     </nav>
                 </div>
-                <div className="d-flex justify-content-end align-items-center mb-3">
+                <div className={`d-flex justify-content-${(type === 'edit' && tax?.suppression === true) ? 'between' : 'end'} align-items-center mb-3`}>
+                    {type === 'edit' && tax?.suppression === true && <><div><Button size="sm" variant="outline-danger" onClick={CancelDeletionRequest}>Annuler la demande de suppression</Button></div></>}
                     <div>
                         {type == 'edit' && <Button variant="outline-primary" className="me-4" size="sm" onClick={() => setIndiviualPrint(true)}><Printer /> Impression individuelle</Button>}
                         <Button variant="success" type="submit" disabled={isSubmitting}>{type == "create" ? "Créer l'entreprise" : "Modifier l'entreprise"}</Button>
                     </div>
                 </div>
+                {formSimulationMode && <div className="bd-callout bd-callout-default">
+                    <h5>Création d'une entreprise à partir d'une simulation</h5>
+                    Les informations générées automatiquement proviennent de la simulation n°{simulationData.id_simulation}. Si vous souhaitez effectuer des modifications, il est conseillé de les appliquer dans la simulation, et non dans ce formulaire.
+                    <div className="mt-2">
+                        <Link className="link" to={`/pricingsimulation/edit/${simulationData.id_simulation}`}>Modifier la simulation</Link> - <div className="link" onClick={handleCancelSimulationMode}>Annuler la création de l'entreprise</div>
+                    </div>
+                    <Form.Group controlId="delete_after_create" className="mt-2">
+                        <Form.Check
+                            type="checkbox"
+                            label="Supprimer la simulation après la création de l'entreprise"
+                            checked={deleteSimulation}
+                            onChange={() => setDeleteSimulation(!deleteSimulation)}
+                        />
+                    </Form.Group>
+                </div>}
+                {tax?.desactive && <div className="bd-callout bd-callout-danger">
+                    <h5>Cette entreprise est désactivée</h5>
+                </div>}
                 <Row className="mb-3">
                     <Col>
                         <Form.Group controlId="matricule_ciger">
-                            <Form.Label column="sm">Matricule Ciger</Form.Label>
-                            <Form.Control type="text" placeholder="Matricule Ciger" isInvalid={errors.matricule_ciger} disabled={type == 'edit'} size="sm" {...register('matricule_ciger')} />
+                            <Form.Label column="sm">Matricule</Form.Label>
+                            <Form.Control type="text" placeholder="Matricule Ciger" isInvalid={errors.matricule_ciger} isValid={matriculeAvailable} size="sm" {...register('matricule_ciger')} onChange={(e) => CheckMatricule(e)} autoFocus={type === 'create'} />
                             {errors.matricule_ciger && <Form.Control.Feedback type="invalid">{errors.matricule_ciger.message}</Form.Control.Feedback>}
+                        </Form.Group>
+                    </Col>
+                    <Col>
+                        <Form.Group controlId="desactive">
+                            <Form.Label column="sm" className="text-danger">Entreprise désactivée</Form.Label>
+                            <Form.Check type="checkbox" isInvalid={errors.desactive} {...register('desactive')} />
+                            {errors.desactive && <Form.Control.Feedback type="invalid">{errors.desactive.message}</Form.Control.Feedback>}
                         </Form.Group>
                     </Col>
                     <Col>
                         <Form.Group controlId="proces_verbal">
                             <Form.Label column="sm">Procès-verbal</Form.Label>
-                            <Form.Check type="checkbox" isInvalid={errors.proces_verbal} {...register('proces_verbal')} />
+                            <Form.Check type="checkbox" disabled={type == 'create'} isInvalid={errors.proces_verbal} {...register('proces_verbal')} onChange={(e) => ProcesVerbalChange(e)} />
                             {errors.proces_verbal && <Form.Control.Feedback type="invalid">{errors.proces_verbal.message}</Form.Control.Feedback>}
-                        </Form.Group>
-                    </Col>
-                    <Col>
-                        <Form.Group controlId="province">
-                            <Form.Label column="sm">Province</Form.Label>
-                            <Form.Check type="checkbox" isInvalid={errors.province} {...register('province')} />
-                            {errors.province && <Form.Control.Feedback type="invalid">{errors.province.message}</Form.Control.Feedback>}
                         </Form.Group>
                     </Col>
                     <Col>
@@ -260,14 +371,14 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                     </Col>
                     <Col>
                         <Form.Group controlId="index">
-                            <Form.Label column="sm">Index</Form.Label>
+                            <Form.Label column="sm">Index <span className="fw-light">(optionnel)</span></Form.Label>
                             <Form.Control type="text" placeholder="Index" isInvalid={errors.adresse_index} {...register('adresse_index')} size="sm" />
                             {errors.adresse_index && <Form.Control.Feedback type="invalid">{errors.adresse_index.message}</Form.Control.Feedback>}
                         </Form.Group>
                     </Col>
                     <Col>
                         <Form.Group controlId="boite">
-                            <Form.Label column="sm">Boite</Form.Label>
+                            <Form.Label column="sm">Boite <span className="fw-light">(optionnel)</span></Form.Label>
                             <Form.Control type="text" placeholder="Boite" isInvalid={errors.adresse_boite} {...register('adresse_boite')} size="sm" />
                             {errors.adresse_boite && <Form.Control.Feedback type="invalid">{errors.adresse_boite.message}</Form.Control.Feedback>}
                         </Form.Group>
@@ -372,7 +483,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                     </Col>
                     <Col>
                         <Form.Group controlId="fax">
-                            <Form.Label column="sm">Fax</Form.Label>
+                            <Form.Label column="sm">Fax <span className="fw-light">(optionnel)</span></Form.Label>
                             <Form.Control type="text" placeholder="Fax" isInvalid={errors.numero_fax} {...register('numero_fax')} size="sm" />
                             {errors.numero_fax && <Form.Control.Feedback type="invalid">{errors.numero_fax.message}</Form.Control.Feedback>}
                         </Form.Group>
@@ -410,11 +521,11 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                         </Form.Group>
                     </Col>
                 </Row>
-                <Row className="mb-3">
+                <Row className={`${type === 'create' ? 'mb-3' : ""}`}>
                     <Col>
                         <Form.Group controlId="pourcentage_majoration">
                             <Form.Label column="sm">% majoration</Form.Label>
-                            <Form.Select {...register('pourcentage_majoration')} isInvalid={errors.pourcentage_majoration} size="sm">
+                            <Form.Select {...register('pourcentage_majoration')} isInvalid={errors.pourcentage_majoration} disabled={type == 'create'} size="sm">
                                 <option value="0">Aucun</option>
                                 <option value="10">10 %</option>
                                 <option value="50">50 %</option>
@@ -427,7 +538,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                     <Col>
                         <Form.Group controlId="motif_majorationId">
                             <Form.Label column="sm">Motif de la majoration</Form.Label>
-                            <Form.Select {...register('motif_majorationId')} isInvalid={errors.motif_majorationId} size="sm">
+                            <Form.Select {...register('motif_majorationId')} isInvalid={errors.motif_majorationId} disabled={type == 'create'} size="sm">
                                 <option value="">Aucun motif</option>
                                 {motifs.map((reason: IMotif_majoration, index: number) => {
                                     return <option key={index} value={reason.id_motif}>{reason.libelle}</option>
@@ -437,6 +548,9 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                         </Form.Group>
                     </Col>
                 </Row>
+                {type === 'edit' && <Row className="mb-3">
+                    <Col><div className="link" onClick={() => setOffensesModal(true)}>Historique des infractions</div></Col>
+                </Row>}
                 <Card>
                     <Card.Header as="h6">Adresse de taxation</Card.Header>
                     <Card.Body>
@@ -464,14 +578,14 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                             </Col>
                             <Col>
                                 <Form.Group controlId="adresse_index_taxation">
-                                    <Form.Label column="sm">Index</Form.Label>
+                                    <Form.Label column="sm">Index <span className="fw-light">(optionnel)</span></Form.Label>
                                     <Form.Control type="text" placeholder="Index" isInvalid={errors.adresse_index_taxation} disabled={autoTaxAdress} {...register('adresse_index_taxation')} size="sm" />
                                     {errors.adresse_index_taxation && <Form.Control.Feedback type="invalid">{errors.adresse_index_taxation.message}</Form.Control.Feedback>}
                                 </Form.Group>
                             </Col>
                             <Col>
                                 <Form.Group controlId="adresse_boite_taxation">
-                                    <Form.Label column="sm">Boite</Form.Label>
+                                    <Form.Label column="sm">Boite <span className="fw-light">(optionnel)</span></Form.Label>
                                     <Form.Control type="text" placeholder="Boite" isInvalid={errors.adresse_boite_taxation} disabled={autoTaxAdress} {...register('adresse_boite_taxation')} size="sm" />
                                     {errors.adresse_boite_taxation && <Form.Control.Feedback type="invalid">{errors.adresse_boite_taxation.message}</Form.Control.Feedback>}
                                 </Form.Group>
@@ -504,7 +618,7 @@ export const TaxeForm = ({ data = {}, type, motifs, tarifs, currentFiscalYear, i
                 <Row>
                     <Col>
                         <Form.Group controlId="commentaire">
-                            <Form.Label column="sm">Commentaire</Form.Label>
+                            <Form.Label column="sm">Commentaire <span className="fw-light">(optionnel)</span></Form.Label>
                             <Form.Control as="textarea" placeholder="Commentaire" isInvalid={errors.commentaire_taxation} {...register('commentaire_taxation')} size="sm" />
                             {errors.commentaire_taxation && <Form.Control.Feedback type="invalid">{errors.commentaire_taxation.message}</Form.Control.Feedback>}
                         </Form.Group>

@@ -45,17 +45,17 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
             if (element.entrepriseInfos.matricule_ciger !== undefined) {
                 try {
                     setError(false)
-                    const history = await apiFetch(`/notreceived/gethistory/${element.entrepriseInfos.matricule_ciger}`)
+                    const history = await apiFetch(`/notreceived/gethistory/${element.entrepriseInfos.id_entreprise}`)
                     setHistory(history)
                     const sum = await SumIncrease(history, currentFiscalYear)
                     setSumIncrease(sum)
                     setValue('pourcentage_majoration', sum)
-                    if (element.entrepriseInfos.matricule_ciger !== entreprise.matricule_ciger) {
+                    if (element.entrepriseInfos.id_entreprise !== entreprise.id_entreprise) {
                         setLoader(true)
-                        const fetch = await apiFetch(`/entreprises/id/${element.entrepriseInfos.matricule_ciger}`)
+                        const fetch = await apiFetch(`/entreprises/id/${element.entrepriseInfos.id_entreprise}`)
                         setEntreprise(fetch)
-                        setValue('matricule_ciger', fetch.matricule_ciger)
-                        setTimeout(() => setLoader(false), 300)
+                        setValue('id_entreprise', fetch.id_entreprise)
+                        setTimeout(() => setLoader(false), 100)
                     }
                 } catch (e: any) {
                     if (e instanceof ApiErrors) {
@@ -72,19 +72,25 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
         onSubmit(data)
     }
 
+    const onModalClose = () => {
+        setEntreprise({} as Entreprise)
+        handleClose()
+    }
+
     return <>
-        <Modal show={element.show} onHide={handleClose} size="xl" animation={false}>
+        <Modal show={element.show} onHide={() => onModalClose()} size="xl" animation={false}>
             <Modal.Header closeButton>
-                <Modal.Title>Encoder un non reçu</Modal.Title>
+                <Modal.Title as="h5">Encoder un non reçu</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 {loader || Object.keys(entreprise).length == 0 || error ? <Loader /> :
                     <>
                         <Card>
                             <Card.Header as="h6">Informations sur l'entreprise</Card.Header>
-                            <Card.Body>
+                            <Card.Body style={{padding: "0.5rem 0.5rem"}}>
                                 <Row>
                                     <Col>
+                                        <div>ID : {entreprise.id_entreprise}</div>
                                         <div>Matricule : {entreprise.matricule_ciger}</div>
                                         <div>Nom : {entreprise.nom}</div>
                                         <div>Tél. : {entreprise.numero_telephone}</div>
@@ -128,7 +134,7 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
                             <Col>
                                 <Form.Group controlId="pv">
                                     <Form.Label column="sm">Procès-verbal</Form.Label>
-                                    <Form.Check type="checkbox" {...register('pv')} />
+                                    <Form.Check type="checkbox" disabled {...register('pv')} />
                                 </Form.Group>
                             </Col>
                         </Row>
@@ -164,10 +170,10 @@ export const NotReceivedModal = ({ element, motifs, currentFiscalYear, handleClo
                 }
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+                <Button variant="secondary" size="sm" onClick={() => onModalClose()}>
                     Annuler
                 </Button>
-                <Button variant="danger" onClick={handleSubmit(OnFormSubmit)} disabled={loader}>
+                <Button variant="danger" size="sm" onClick={handleSubmit(OnFormSubmit)} disabled={loader}>
                     Valider
                 </Button>
             </Modal.Footer>

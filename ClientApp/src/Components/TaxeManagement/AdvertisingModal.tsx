@@ -21,6 +21,7 @@ import { SumTax } from '../../Services/SumTax'
 import { IPrice } from '../../Types/IPrice';
 import { IExercice } from '../../Types/IExercice';
 import settings from '../../settings.json'
+import { v1 as uuidv1 } from 'uuid'
 
 
 interface IAdvertisingModal {
@@ -39,7 +40,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
     const [streetId, setStreetId] = useState<number>()
     const [loadingStreets, setLoadingStreets] = useState<boolean>(false)
     const [imagesLinks, setImagesLinks] = useState<IPubliciteImage[]>(publicite?.photos && publicite.photos.length > 0 ? publicite.photos : [])
-    const { register, control, reset, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(AdvertisingFormSchema), defaultValues: publicite ? publicite : { type_publicite: 1, face: 1, exoneration: false } });
+    const { register, control, reset, handleSubmit, watch, getValues, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: yupResolver(AdvertisingFormSchema), defaultValues: publicite ? publicite : { type_publicite: 1, face: 1, exoneration: false, quantite: "1" } });
 
     const quantite = useWatch({
         control,
@@ -67,12 +68,8 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
     })
 
     useEffect(() => {
-        if (exoneration == false) {
-            const TaxValue = SumTax(currentFiscalYear.id, quantite, surface, face, typePub, tarifs)
+            const TaxValue = SumTax(currentFiscalYear.id, quantite, surface, face, typePub, exoneration, tarifs)
             setValue('taxe_totale', TaxValue)
-        } else {
-            setValue('taxe_totale', '0.00')
-        }
     }, [quantite, surface, face, typePub, exoneration])
 
     const StreetSearch = async (query: string) => {
@@ -110,6 +107,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
         if (type == 'create') {
             data.matricule_ciger = matricule
             data.exercice_courant = currentFiscalYear.id
+            data.uuid = uuidv1()
         }
         onValidate(data, type)
         handleClose()
@@ -167,7 +165,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
     return <>
         <Modal show={show} onHide={handleClose} size="xl" animation={false}>
             <Modal.Header closeButton>
-                <Modal.Title>{type == 'edit' ? `Éditer un panneau` : 'Créer un panneau'}</Modal.Title>
+                <Modal.Title as="h5">{type == 'edit' ? `Éditer une publicité` : 'Créer une publicité'}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form onSubmit={handleSubmit(onSubmit)}>
@@ -190,12 +188,12 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
                     <Row>
                         <Col>
                             <Form.Group className="mb-3" controlId="adresse_rue">
-                                <Form.Label column="sm">Adresse</Form.Label>
+                                <Form.Label column="sm">Rue</Form.Label>
                                 <Controller
                                     control={control}
                                     name="rue.nom_rue"
                                     render={({
-                                        field: { onChange, onBlur, value, name, ref }
+                                        field: { value }
                                     }) => (
                                         <AsyncTypeahead
                                             filterBy={() => true}
@@ -211,6 +209,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
                                             defaultInputValue={value}
                                             size="sm"
                                             className="is-invalid"
+                                            autoFocus={type === 'create'}
                                             renderMenu={(results, menuProps) => (
                                                 <Menu {...menuProps}>
                                                     {results.map((result, index) => (
@@ -246,7 +245,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
                     <Row>
                         <Col>
                             <Form.Group className="mb-3" controlId="type_publicite">
-                                <Form.Label column="sm">Type panneau</Form.Label>
+                                <Form.Label column="sm">Type publicité</Form.Label>
                                 <Form.Select size="sm" isInvalid={errors.type_publicite} {...register('type_publicite')}>
                                     <option value={1}>Enseigne non lumineuse</option>
                                     <option value={2}>Enseigne lumineuse</option>
@@ -262,7 +261,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
                     <Row>
                         <Col>
                             <Form.Group className="mb-3" controlId="situation">
-                                <Form.Label column="sm">Situation</Form.Label>
+                                <Form.Label column="sm">Situation <span className="fw-light">(optionnel)</span></Form.Label>
                                 <Form.Control type="text" as="textarea" placeholder="Situation" size="sm" isInvalid={errors.situation} {...register('situation')} />
                                 {errors.situation && <Form.Control.Feedback type="invalid">{errors.situation.message}</Form.Control.Feedback>}
                             </Form.Group>
@@ -327,7 +326,7 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
                     <Row>
                         <Col>
                             <Form.Group controlId="formFileSm" className="mb-3">
-                                <Form.Label>Photos du panneau</Form.Label>
+                                <Form.Label column="sm">Photo(s) de la publicité <span className="fw-light">(optionnel)</span></Form.Label>
                                 <Form.Control type="file" size="sm" accept="image/*" multiple onChange={onFileChange} />
                                 <Form.Text className="text-muted">
                                     Maintenez la touche CTRL pour sélectionner plusieurs photos.
@@ -365,10 +364,10 @@ export const AdvertisingModal = ({ type, show, publicite, matricule, tarifs, cur
                 }
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+                <Button variant="secondary" size="sm" onClick={handleClose}>
                     Annuler
                 </Button>
-                <Button variant="success" onClick={handleSubmit(onSubmit)}>
+                <Button variant="success" size="sm" onClick={handleSubmit(onSubmit)}>
                     {type == 'create' ? 'Créer' : 'Modifier'}
                 </Button>
             </Modal.Footer>

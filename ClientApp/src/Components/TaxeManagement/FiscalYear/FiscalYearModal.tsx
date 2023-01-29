@@ -10,13 +10,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { FiscalYearFormSchema } from '../../../Validation/FiscalYear/FiscalYearFormSchema';
 
 interface FiscalYearModal {
+  fiscalYears: IExercice[],
   fiscalYear: { fiscalYear: IExercice, show: boolean, type: string },
   handleClose: () => void,
   onSubmit: (data: any) => void
 }
 
-export const FiscalYearModal = ({ fiscalYear, handleClose, onSubmit }: FiscalYearModal) => {
-  const { register, handleSubmit, setValue, reset, formState: {errors} } = useForm({resolver: yupResolver(FiscalYearFormSchema)})
+export const FiscalYearModal = ({ fiscalYears, fiscalYear, handleClose, onSubmit }: FiscalYearModal) => {
+  const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm({ resolver: yupResolver(FiscalYearFormSchema) })
 
   useEffect(() => {
     if (Object.keys(fiscalYear.fiscalYear).length > 0 && fiscalYear.type == 'edit') {
@@ -24,21 +25,27 @@ export const FiscalYearModal = ({ fiscalYear, handleClose, onSubmit }: FiscalYea
       setValue('annee_exercice', fiscalYear.fiscalYear.annee_exercice)
       setValue('date_echeance', fiscalYear.fiscalYear.date_echeance)
       setValue('date_reglement_taxe', fiscalYear.fiscalYear.date_reglement_taxe)
-    } else if(fiscalYear.type == 'create') {
+    } else if (fiscalYear.type == 'create') {
       reset()
     }
   }, [fiscalYear])
 
   const formSubmit = (data: any) => {
     console.log(data)
-    onSubmit({type: fiscalYear.type, data: data})
+    onSubmit({ type: fiscalYear.type, data: data })
     handleClose()
   }
 
   const generateDate = (): number[] => {
     const years: number[] = []
+    if (fiscalYear.type === 'edit') {
+      fiscalYears.forEach((fisc: IExercice) => years.push(fisc.annee_exercice))
+    }
     for (let i = 0; i <= 2; i++) {
-      years.push(new Date().getFullYear() + i)
+      const year = new Date().getFullYear() + i
+      if (years.includes(year) === false) {
+        years.push(year)
+      }
     }
     return years
   }
@@ -47,14 +54,14 @@ export const FiscalYearModal = ({ fiscalYear, handleClose, onSubmit }: FiscalYea
   return <>
     <Modal show={fiscalYear.show} onHide={handleClose} animation={false}>
       <Modal.Header closeButton>
-        <Modal.Title>{fiscalYear.type == "create" ? "Créer" : "Éditer"} un exercice</Modal.Title>
+        <Modal.Title as="h5">{fiscalYear.type == "create" ? "Créer" : "Éditer"} un exercice</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit(formSubmit)}>
           <Form.Group controlId="exercice">
             <Form.Label column="sm">Année de l'exercice</Form.Label>
             <Form.Select size="sm" isInvalid={errors.annee_exercice} {...register('annee_exercice')}>
-              {generateDate().map((value: number, index: number) => <option value={value}>{value}</option>)}
+              {generateDate().map((value: number) => <option value={value}>{value}</option>)}
               {errors.annee_exercice && <Form.Control.Feedback type="invalid">{errors.annee_exercice.message}</Form.Control.Feedback>}
             </Form.Select>
           </Form.Group>
@@ -71,10 +78,10 @@ export const FiscalYearModal = ({ fiscalYear, handleClose, onSubmit }: FiscalYea
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
+        <Button variant="secondary" size="sm" onClick={handleClose}>
           Annuler
         </Button>
-        <Button variant="success" onClick={handleSubmit(formSubmit)}>
+        <Button variant="success" size="sm" onClick={handleSubmit(formSubmit)}>
           {fiscalYear.type == "create" ? "Créer l'exercice" : "Modifier l'exercice"}
         </Button>
       </Modal.Footer>

@@ -51,9 +51,10 @@ namespace Taxes.Controllers
         {
             try
             {
-                Entreprise entreprise = await _mediator.Send(new GetEntrepriseById(Matricule));
+                Entreprise entreprise = await _mediator.Send(new GetEntrepriseByMatricule(Matricule));
                 var filtered = new
                 {
+                    Id_entreprise = entreprise.Id_entreprise,
                     Matricule_ciger = entreprise.Matricule_ciger,
                     Nom = entreprise.Nom,
                     Nombre_panneaux = entreprise.Publicites.Count,
@@ -75,6 +76,7 @@ namespace Taxes.Controllers
                 List<Entreprise> entreprises = await _mediator.Send(new GetEntreprisesByNameQuery(Entreprise.Name));
                 return Ok(entreprises.Select(ent => new
                 {
+                    Id_entreprise = ent.Id_entreprise,
                     Matricule_ciger = ent.Matricule_ciger,
                     Nom = ent.Nom,
                     Nombre_panneaux = ent.Publicites.Count,
@@ -88,12 +90,12 @@ namespace Taxes.Controllers
 
         }
 
-        [HttpGet("id/{matricule}")]
-        public async Task<IActionResult> GetById(long matricule)
+        [HttpGet("id/{ID}")]
+        public async Task<IActionResult> GetById(long ID)
         {
             try
             {
-                Entreprise entreprise = await _mediator.Send(new GetEntrepriseById(matricule));
+                Entreprise entreprise = await _mediator.Send(new GetEntrepriseById(ID));
                 if (entreprise == null)
                 {
                     return BadRequest(new { error = "Aucun enregistrement ne correspond à ce matricule" });
@@ -123,7 +125,7 @@ namespace Taxes.Controllers
         }
 
         [AuthorizeRole(MinRole: 2)]
-        [HttpPut("edit/{matricule_ciger}")]
+        [HttpPut("edit/{ID}")]
         public async Task<IActionResult> EditEntreprise(Entreprise entreprise)
         {
             try
@@ -219,14 +221,13 @@ namespace Taxes.Controllers
         }
 
         [AuthorizeRole(MinRole: 2)]
-        [HttpGet("notreceived/{FiscalYear}")]
-        public async Task<IActionResult> GetNotReceived(long FiscalYear)
+        [HttpPost("notreceived")]
+        public async Task<IActionResult> GetNotReceived(NotReceivedFilters Filters)
         {
             try
             {
-                List<Entreprise> entreprises = await _mediator.Send(new GetNotReceivedQuery(FiscalYear));
-                var filtered = entreprises.Select(x => new { x.Matricule_ciger, x.Nom, nombre_panneaux = x.Publicites.Count }).ToList();
-                return Ok(filtered);
+                NotReceivedViewModel entreprises = await _mediator.Send(new GetNotReceivedQuery(Filters));
+                return Ok(entreprises);
             } catch(Exception ex)
             {
                 return BadRequest(new { error = ex.Message});
@@ -235,17 +236,17 @@ namespace Taxes.Controllers
         }
 
         [AuthorizeRole(MinRole: 2)]
-        [HttpDelete("delete/{Matricule}")]
-        public async Task<IActionResult> Delete(long Matricule)
+        [HttpDelete("delete/{ID}")]
+        public async Task<IActionResult> Delete(long ID)
         {
             try
             {
-                bool isDeleted = await _mediator.Send(new DeleteEntrepriseCommand(Matricule));
+                bool isDeleted = await _mediator.Send(new DeleteEntrepriseCommand(ID));
                 if(isDeleted == false)
                 {
-                    return BadRequest(new { error = "Une erreur est survenue lors de la suppression de l'entreprise" });
+                    return BadRequest(new { error = "Une erreur est survenue lors de la demande de suppression de l'entreprise" });
                 }
-                return Ok(new { success = "L'entreprise a été supprimée"});
+                return Ok(new { success = "La suppression a été programmée"});
             } catch(Exception ex)
             {
                 return BadRequest(new { error = ex.Message });
@@ -253,13 +254,28 @@ namespace Taxes.Controllers
         }
 
         [AuthorizeRole(MinRole: 2)]
-        [HttpPost("encodereceived")]
-        public async Task<IActionResult> EncodeReceived(EncodeReceivedViewModel Matricules)
+        [HttpPut("canceldelete/{ID}")]
+        public async Task<IActionResult> CancelDelete(long ID)
         {
             try
             {
-                List<Entreprise> entreprises = await _mediator.Send(new EncodeReceivedCommand(Matricules.Matricules));
-                return Ok(entreprises.Select(ent => new { Matricule_ciger = ent.Matricule_ciger, Recu = ent.Recu}));
+                long Id_entreprise = await _mediator.Send(new CancelDeleteCommand(ID));
+                return Ok(new { success = "La demande de suppression a été annulée", Id_entreprise = Id_entreprise });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [AuthorizeRole(MinRole: 2)]
+        [HttpPost("encodereceived")]
+        public async Task<IActionResult> EncodeReceived(EncodeReceivedViewModel Entreprises)
+        {
+            try
+            {
+                List<Entreprise> entreprises = await _mediator.Send(new EncodeReceivedCommand(Entreprises.Entreprises));
+                return Ok(entreprises.Select(ent => new { Id_entreprise = ent.Id_entreprise, Recu = ent.Recu}));
             } catch(Exception ex)
             {
                 return BadRequest(new { erreur = ex.Message });
@@ -267,5 +283,97 @@ namespace Taxes.Controllers
             
         }
 
+        [AuthorizeRole(MinRole: 1)]
+        [HttpGet("checkmatricule/{Matricule}")]
+        public async Task<IActionResult> CheckMatricule(long Matricule)
+        {
+            try
+            {
+                return Ok(await _mediator.Send(new MatriculAavailabilityCheckQuery(Matricule)));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { erreur = ex.Message });
+            }
+
+        }
+
+        [AuthorizeRole(MinRole: 2)]
+        [HttpPost("getallbydeletionrequest")]
+        public async Task<IActionResult> GetByDeletionRequest(EntreprisesDeletionViewModel Filters)
+        {
+            try
+            {
+                NotReceivedViewModel entreprises = await _mediator.Send(new GetAllEntreprisesByDeletionRequestQuery(Filters));
+                return Ok(entreprises);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { erreur = ex });
+            }
+
+        }
+
+        [AuthorizeRole(MinRole: 2)]
+        [HttpPut("disable/{ID}")]
+        public async Task<IActionResult> DisableEntreprise(long ID)
+        {
+            try
+            {
+                bool Update = await _mediator.Send(new EntrepriseStatusCommand(ID, 1));
+                return Ok(new { success = "L'entreprise a été désactivée" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [AuthorizeRole(MinRole: 2)]
+        [HttpPut("enable/{ID}")]
+        public async Task<IActionResult> EnableEntreprise(long ID)
+        {
+            try
+            {
+                bool Update = await _mediator.Send(new EntrepriseStatusCommand(ID, 2));
+                return Ok(new { success = "L'entreprise a été activée" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [AuthorizeRole(MinRole: 1)]
+        [HttpPost("nothingtopay")]
+        public async Task<IActionResult> GetNothingToPayList(NothingToPayFilters Filters)
+        {
+            try
+            {
+                NothingToPayViewModel entreprises = await _mediator.Send(new NothingToPayListQuery(Filters));
+                return Ok(entreprises);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
+        }
+
+        [AuthorizeRole(MinRole: 3)]
+        [HttpGet("resetapp")]
+        public async Task<IActionResult> ResetApp()
+        {
+            try
+            {
+                bool reset = await _mediator.Send(new ResetAppCommand());
+                return Ok(reset);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
+        }
     }
 }

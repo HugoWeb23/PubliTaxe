@@ -24,7 +24,7 @@ namespace Taxes.Handlers
         {
             Entreprise entreprise = new Entreprise
             {
-                Matricule_ciger = request.NotReceived.Matricule_ciger,
+                Id_entreprise = request.NotReceived.Id_entreprise,
                 Pourcentage_majoration = request.NotReceived.Pourcentage_majoration,
                 Motif_majorationId = request.NotReceived.Motif_majorationId,
                 Proces_verbal = request.NotReceived.Pv

@@ -2,7 +2,9 @@ import { ICode_postal } from "./ICode_postal";
 import { IPublicite } from "./IPublicite";
 
 export interface Entreprise {
+        id_simulation?: number,
         matricule_ciger: number,
+        id_entreprise: number,
         numero_localite: number,
         nom: string,
         code_rue: number,
@@ -16,21 +18,24 @@ export interface Entreprise {
         proces_verbal: boolean,
         motif_majorationId: number,
         recu: boolean,
+        statut_paiement: number,
         province: boolean,
+        suppression: boolean,
         personne_contact: string,
         telephone_contact: string,
         mail_contact: string,
         pourcentage_majoration: number,
         motif_majoration: number,
-        code_rue_taxation: number,
+        code_rue_taxation: string,
         adresse_taxation: string,
-        adresse_numero_taxation: number,
-        adresse_boite_taxation: number,
+        adresse_numero_taxation: string,
+        adresse_boite_taxation: string,
         adresse_index_taxation: string,
-        adresse_code_postal_taxation: number,
+        adresse_code_postal_taxation: string,
         adresse_localite_taxation: string,
         commentaire_taxation: string,
         role_linguistique: number
         code_postal: ICode_postal,
-        publicites: IPublicite[]
+        publicites: IPublicite[],
+        desactive: boolean
 }

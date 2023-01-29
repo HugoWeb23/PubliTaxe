@@ -3,11 +3,7 @@ import {
     Button,
     Row,
     Col,
-    Card,
-    Container,
-    Table,
     Modal,
-    Alert,
     Image
 } from 'react-bootstrap'
 import { IPublicite, IPubliciteImage } from '../../Types/IPublicite';
@@ -63,35 +59,35 @@ export const ViewAdvertisingModal = ({ data, handleClose }: IViewAdvertisingModa
     }
     return <Modal show={data.show} onHide={handleClose} size="xl" animation={false}>
         <Modal.Header closeButton>
-            <Modal.Title>Visionner une publicité</Modal.Title>
+            <Modal.Title as="h5">Visionner une publicité</Modal.Title>
         </Modal.Header>
         <Modal.Body>
            <Row>
-               <Col>Code postal : <span className="fw-bold">{data.publicite?.rue?.code_postal?.cp}</span></Col>
-               <Col>Code rue : <span className="fw-bold">{data.publicite?.rue?.code_rue}</span></Col>
+               <Col><div className="fw-bold">Code postal</div><span className="d-block">{data.publicite?.rue?.code_postal?.cp}</span></Col>
+               <Col><div className="fw-bold">Code rue</div><span className="d-block">{data.publicite?.rue?.code_rue}</span></Col>
            </Row>
            <Row className="mt-3">
-               <Col>Adresse : <span className="fw-bold">{data.publicite?.rue?.nom_rue}</span></Col>
-               <Col>Numéro : <span className="fw-bold">{data.publicite.adresse_numero}</span></Col>
+               <Col><div className="fw-bold">Adresse</div><span className="d-block">{data.publicite?.rue?.nom_rue}</span></Col>
+               <Col><div className="fw-bold">Numéro</div><span className="d-block">{data.publicite.adresse_numero}</span></Col>
            </Row>
            <Row className="mt-3">
-               <Col>Type de panneau : <span className="fw-bold">{type_publicite_text}</span></Col>
+               <Col><div className="fw-bold">Type de panneau</div><span className="d-block">{type_publicite_text}</span></Col>
            </Row>
            <Row className="mt-3">
-               <Col>Situation : <span className="fw-bold">{data.publicite.situation}</span></Col>
+               <Col><div className="fw-bold">Situation</div>{data.publicite?.situation?.length > 0 ? <span className="d-block">{data.publicite.situation}</span> : <span className="d-block fw-light">(aucune situation)</span>}</Col>
            </Row>
            <Row className="mt-3">
-               <Col>Quantité : <span className="fw-bold">{data.publicite.quantite}</span></Col>
-               <Col>Face : <span className="fw-bold">{face_text}</span></Col>
-               <Col>Surface unitaire : <span className="fw-bold">{data.publicite.surface + "dm²"}</span></Col>
+               <Col><div className="fw-bold">Quantité</div><span className="d-block">{data.publicite.quantite}</span></Col>
+               <Col><div className="fw-bold">Face</div><span className="d-block">{face_text}</span></Col>
+               <Col><div className="fw-bold">Surface unitaire</div><span className="d-block">{data.publicite.surface + " dm²"}</span></Col>
            </Row>
            <Row className="mt-3">
-               <Col>Mesure : <span className="fw-bold">{data.publicite.mesure}</span></Col>
-               <Col>Surface totale : <span className="fw-bold">{data.publicite.surface_totale}</span></Col>
-               <Col>Exonération : <span className="fw-bold">{data.publicite.exoneration ? "Oui" : "Non"}</span></Col>
+               <Col><div className="fw-bold">Mesure</div><span className="d-block">{data.publicite.mesure}</span></Col>
+               <Col><div className="fw-bold">Surface totale</div><span className="d-block">{data.publicite.surface_totale + " dm²"}</span></Col>
+               <Col><div className="fw-bold">Exonération</div><span className="d-block">{data.publicite.exoneration ? "Oui" : "Non"}</span></Col>
            </Row>
            <Row className="mt-3">
-               <Col>Taxe : <span className="fw-bold">{data.publicite.taxe_totale} €</span></Col>
+               <Col><div className="fw-bold">Taxe : </div><span className="d-block">{data.publicite.taxe_totale ? data.publicite.taxe_totale.toFixed(2) : 0.00} €</span></Col>
            </Row>
            <div className="d-flex justify-content-start mt-3">
                     {data.publicite.photos && data.publicite.photos.map((image: IPubliciteImage, index: number) => {
@@ -109,7 +105,7 @@ export const ViewAdvertisingModal = ({ data, handleClose }: IViewAdvertisingModa
                 }
         </Modal.Body>
         <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
+            <Button variant="secondary" size="sm" onClick={handleClose}>
                 Fermer
             </Button>
         </Modal.Footer>

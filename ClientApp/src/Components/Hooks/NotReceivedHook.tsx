@@ -4,7 +4,10 @@ import { IPrice } from "../../Types/IPrice";
 import { INotReceived } from "../../Types/INotReceived";
 
 interface State {
-    notReceivedList: any[]
+    entreprises: any[],
+    pageCourante: number,
+    elementsParPage: number,
+    totalPages: number
 }
 
 interface Action {
@@ -17,20 +20,32 @@ export const useNotReceived = () => {
     const reducer = (state: State, action: Action) => {
         switch (action.type) {
             case 'FETCH_ALL':
-                return { ...state, notReceivedList: action.payLoad }
+                return {
+                    ...state,
+                    entreprises: action.payLoad.entreprises,
+                    totalPages: action.payLoad.totalPages,
+                    pageCourante: action.payLoad.pageCourante,
+                    elementsParPage: action.payLoad.elementsParPage,
+                }
             case 'INSERT':
-                return { ...state, notReceivedList: state.notReceivedList.filter((elem: INotReceived) => elem.matricule_ciger != action.payLoad.matricule_ciger) }
+                return { ...state, entreprises: state.entreprises.filter((elem: INotReceived) => elem.id_entreprise != action.payLoad.id_entreprise) }
             default:
                 return state
         }
     }
 
-    const [state, dispatch] = useReducer(reducer, { notReceivedList: [] });
+    const [state, dispatch] = useReducer(reducer, { entreprises: [], totalPages: 1, pageCourante: 1, elementsParPage: 15 });
 
     return {
-        notReceivedList: state.notReceivedList,
-        getAll: async (FiscalYear: number) => {
-            const fetch: IPrice[] = await apiFetch(`/entreprises/notreceived/${FiscalYear}`)
+        totalPages: state.totalPages,
+        pageCourante: state.pageCourante,
+        elementsParPage: state.elementsParPage,
+        notReceivedList: state.entreprises,
+        getAll: async (options: any) => {
+            const fetch: IPrice[] = await apiFetch(`/entreprises/notreceived`, {
+                method: 'POST',
+                body: JSON.stringify(options)
+            })
             dispatch({ type: 'FETCH_ALL', payLoad: fetch })
         },
         Insert: async (data: INotReceived) => {

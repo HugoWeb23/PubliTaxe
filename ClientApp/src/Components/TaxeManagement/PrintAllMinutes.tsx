@@ -4,7 +4,8 @@ import {
     Row,
     Col,
     Form,
-    Button
+    Button,
+    Alert
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
@@ -18,6 +19,7 @@ import { IInformation } from "../../Types/IInformations"
 import { IMotif_majoration } from "../../Types/IMotif_majoration"
 import { IPrice } from '../../Types/IPrice'
 import { PrintAllMinutesSchema } from '../../Validation/Tax/PrintAllMinutesSchema'
+import { useState } from 'react'
 
 interface IPrintAllMinutes {
     tarifs: IPrice[],
@@ -36,18 +38,21 @@ export const PrintAllMinutes = ({ tarifs, motifsMajoration, currentFiscalYear, i
 
     }
     
-    const initialValues = ({ ...informations, date_echeance: currentFiscalYear.date_echeance, date_impression: Today() })
-
+    const initialValues = ({ ...informations, date_echeance: currentFiscalYear.date_echeance, date_impression: Today(), date_proces_verbal: Today() })
     const { register, handleSubmit, formState: { errors } } = useForm<any>({ resolver: yupResolver(PrintAllMinutesSchema), defaultValues: initialValues })
+    const [error, setError] = useState<{show: boolean, message: string}>({show: false, message: ""})
 
     const launchPrint = async (data: any) => {
         const entreprises = await apiFetch(`/entreprises/printallminutes`)
         data.options = { print_declaration: true, print_minutes: true }
-        console.log(currentFiscalYear, data, tarifs, motifsMajoration)
-        const blob = await pdf((
-            <Printer entreprises={entreprises} printData={data} tarifs={tarifs} motifsMajoration={motifsMajoration} currentFiscalYear={currentFiscalYear} />
-        )).toBlob();
-        saveAs(blob, 'document.pdf');
+        if(entreprises.length > 0) {
+            const blob = await pdf((
+                <Printer entreprises={entreprises} printData={data} tarifs={tarifs} motifsMajoration={motifsMajoration} currentFiscalYear={currentFiscalYear} />
+            )).toBlob();
+            saveAs(blob, 'document.pdf');
+        } else {
+            setError({show: true, message: "Il n'y a aucun document à imprimer pour le moment"})
+        }
     }
 
     return <>
@@ -60,6 +65,7 @@ export const PrintAllMinutes = ({ tarifs, motifsMajoration, currentFiscalYear, i
             </nav>
             <h2 className="mt-2 mb-3">Imprimer tous les procès-verbaux et recommandés</h2>
             <hr className="my-3" />
+            {error.show && <Alert variant="danger">{error.message}</Alert>}
             <Card body>
                 <Form onSubmit={handleSubmit(launchPrint)}>
                     <Row>

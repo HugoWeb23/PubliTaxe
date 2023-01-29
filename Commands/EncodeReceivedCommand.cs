@@ -4,5 +4,5 @@ using Taxes.Entities;
 
 namespace Taxes.Commands
 {
-    public record EncodeReceivedCommand(List<long> Matricules) : IRequest<List<Entreprise>>;
+    public record EncodeReceivedCommand(List<long> Entreprises) : IRequest<List<Entreprise>>;
 }

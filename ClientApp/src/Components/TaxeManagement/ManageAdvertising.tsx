@@ -72,7 +72,15 @@ export const ManageAdvertising = memo(({ pubs = [], matricule, tarifs, currentFi
 
     const handleSubmit = async (data: any, type: 'create' | 'edit') => {
         if (type == 'edit') {
-            setPublicites(publicites => publicites.map((pub: IPublicite) => publicite?.numero_panneau == pub.numero_panneau ? data : pub))
+            setPublicites(publicites => publicites.map((pub: IPublicite) => {
+                if(pub.numero_panneau != undefined && pub.numero_panneau == publicite?.numero_panneau) {
+                   return data
+                } else if(pub.uuid != undefined && pub.uuid == publicite?.uuid) {
+                    return data
+                } else {
+                    return pub
+                }
+            }))
         } else {
             setPublicites(publicites => [...publicites, data])
         }
@@ -98,15 +106,15 @@ export const ManageAdvertising = memo(({ pubs = [], matricule, tarifs, currentFi
             handleClose={handleUnSelectPub}
             onValidate={handleSubmit}
         />}
-        <div className="d-flex justify-content-start align-items-center mb-2 link" onClick={setCreateMode}><PlusIcon /> Créer un panneau</div>
+        <div className="d-flex justify-content-start align-items-center mb-2 link" onClick={setCreateMode}><PlusIcon /> Créer une publicité</div>
         <ConfirmModal
             show={deleteModal.show}
             element={deleteModal.element}
             onClose={closeConfirmModal}
             onConfirm={deletePub}
-            bodyText="Voulez-vous vraiment supprimer ce panneau ?"
+            bodyText="Voulez-vous vraiment supprimer cette publicité ?"
         />
-        <Table striped bordered hover>
+        <Table striped bordered hover size="sm">
             <thead>
                 <tr>
                     <th>Exercice</th>
@@ -118,7 +126,7 @@ export const ManageAdvertising = memo(({ pubs = [], matricule, tarifs, currentFi
                 </tr>
             </thead>
             <tbody>
-                {publicites.length == 0 && <tr><td colSpan={6}>Aucun panneau</td></tr>}
+                {publicites.length == 0 && <tr><td colSpan={6}>Aucune publicité</td></tr>}
                 {publicites.map((publicite: IPublicite, index: number) => {
                     return <tr key={index}>
                         <td>{currentFiscalYear.annee_exercice}</td>
@@ -149,7 +157,7 @@ export const ManageAdvertising = memo(({ pubs = [], matricule, tarifs, currentFi
                             </OverlayTrigger></td>
                     </tr>
                 })}
-                <tr><td colSpan={6} className="text-end">Taxe totale (hors majoration) : <span className="fw-bold">{publicites.reduce((acc: any, curr: any) => acc + parseFloat(curr.taxe_totale), 0)} €</span></td></tr>
+                <tr><td colSpan={6} className="text-end">Taxe totale (hors majoration) : <span className="fw-bold">{publicites.reduce((acc: any, curr: any) => acc + parseFloat(curr.taxe_totale), 0).toFixed(2)} €</span></td></tr>
             </tbody>
         </Table>
     </>

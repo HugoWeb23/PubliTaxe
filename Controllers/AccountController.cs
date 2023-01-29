@@ -37,12 +37,12 @@ namespace Taxes.Controllers
 
         }
 
-        [HttpGet("getallusers")]
-        public async Task<IActionResult> GetAll()
+        [HttpPost("getallusers")]
+        public async Task<IActionResult> GetAll(SearchUserViewModel Filters)
         {
             try
             {
-                List<UserWithoutPassViewModel> Users = await _mediator.Send(new GetAllUsersQuery());
+                List<UserWithoutPassViewModel> Users = await _mediator.Send(new GetAllUsersQuery(Filters));
                 return Ok(Users);
             } catch (Exception ex)
             {

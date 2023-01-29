@@ -23,11 +23,12 @@ namespace Taxes.Handlers
 
         public async Task<Exercice> Handle(ChangeFiscalYearCommand request, CancellationToken cancellationToken)
         {
-            List<Entreprise> entreprises = _context.entreprises.ToList();
+            List<Entreprise> entreprises = _context.entreprises.Where(ent => ent.Suppression == false).ToList();
             List<Publicite> pubs = await _mediator.Send(new GetAllAdvertisingByFiscalYearQuery());
             Exercice Fiscalyear = await _mediator.Send(new GetFiscalYearByIdQuery(request.FiscalYearId), cancellationToken);
             List<Tarif> prices = await _mediator.Send(new GetAllPricesQuery());
             Information Informations = await _mediator.Send(new GetInformationsQuery());
+            List<Entreprise> entreprisesDeletionRequest = _context.entreprises.Where(ent => ent.Suppression == true).ToList();
 
             if (Fiscalyear == null)
             {
@@ -43,6 +44,9 @@ namespace Taxes.Handlers
             {
                 e.Proces_verbal = false;
                 e.Recu = false;
+                e.Statut_paiement = 0;
+                e.Pourcentage_majoration = 0;
+                e.Motif_majorationId = null;
             });
 
             pubs.ForEach(pub =>
@@ -55,6 +59,7 @@ namespace Taxes.Handlers
             _context.entreprises.UpdateRange(entreprises);
             _context.enseignes_publicitaires.UpdateRange(pubs);
             _context.informations.Update(Informations);
+            _context.entreprises.RemoveRange(entreprisesDeletionRequest);
             _context.SaveChanges();
             return Fiscalyear;
         }

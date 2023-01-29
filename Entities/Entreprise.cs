@@ -12,6 +12,7 @@ namespace Taxes.Entities
     public class Entreprise
     {
         [Key]
+        public long Id_entreprise { get; set; }
         public long Matricule_ciger { get; set; }
         public int Code_postalId { get; set; }
         public string Nom { get; set; }
@@ -26,6 +27,8 @@ namespace Taxes.Entities
         public bool Proces_verbal { get; set; }
         public bool Recu { get; set; }
         public bool Province { get; set; }
+        public bool Suppression { get; set; }
+        public short Statut_paiement { get; set; }
         public string Personne_contact { get; set; }
         public string Telephone_contact { get; set; }
         public string Mail_contact { get; set; }
@@ -40,6 +43,7 @@ namespace Taxes.Entities
         public string Adresse_localite_taxation { get; set; }
         public string Commentaire_taxation { get; set; }
         public int Role_linguistique { get; set; }
+        public bool Desactive { get; set; }
         public Code_postal Code_postal { get; set; }
         [ForeignKey("Motif_majorationId")]
         public MotifMajoration MotifMajoration { get; set; }
@@ -51,7 +55,6 @@ namespace Taxes.Entities
     {
         public EntrepriseValidator()
         {
-            RuleFor(entreprise => entreprise.Matricule_ciger).NotEmpty().WithMessage("Veuillez saisir un matricule Ciger");
             RuleFor(entreprise => entreprise.Nom).NotEmpty().WithMessage("Veuillez saisir un nom");
             RuleFor(entreprise => entreprise.Adresse_rue).NotEmpty().WithMessage("Veuillez saisir une adresse");
             RuleFor(entreprise => entreprise.Adresse_numero).NotEmpty().WithMessage("Veuillez saisir un numéro");
@@ -64,13 +67,6 @@ namespace Taxes.Entities
             RuleFor(entreprise => entreprise.Personne_contact).NotEmpty().WithMessage("Veuillez définir une personne de contact");
             RuleFor(entreprise => entreprise.Telephone_contact).NotEmpty().WithMessage("Veuillez saisir le numéro téléphone de la personne de contact");
             RuleFor(entreprise => entreprise.Mail_contact).NotEmpty().WithMessage("Veuillez saisir une adresse e-mail pour la personne de contact");
-            RuleFor(entreprise => entreprise.Code_rue_taxation).NotEmpty().WithMessage("Veuillez saisir un code de rue pour la taxation");
-            RuleFor(entreprise => entreprise.Adresse_taxation).NotEmpty().WithMessage("Veuillez saisir une adresse de taxation");
-            RuleFor(entreprise => entreprise.Adresse_numero_taxation).NotEmpty().WithMessage("Veuillez saisir un numéro de rue pour la taxation");
-            RuleFor(entreprise => entreprise.Adresse_index_taxation).NotNull().WithMessage("Veuillez saisir une index");
-            RuleFor(entreprise => entreprise.Adresse_boite_taxation).NotNull().WithMessage("Veuillez saisir une boite");
-            RuleFor(entreprise => entreprise.Adresse_code_postal_taxation).NotEmpty().WithMessage("Veuillez saisir un code postal pour la taxation");
-            RuleFor(entreprise => entreprise.Adresse_localite_taxation).NotEmpty().WithMessage("Veuillez saisir une localité pour la taxation");
             RuleFor(entreprise => entreprise.Role_linguistique).NotEmpty().WithMessage("Veuillez choisir une langue");
             RuleForEach(x => x.Publicites).SetValidator(new PubliciteValidator());
         }

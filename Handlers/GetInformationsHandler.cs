@@ -20,6 +20,7 @@ namespace Taxes.Handlers
         public Task<Information> Handle(GetInformationsQuery request, CancellationToken cancellationToken)
         {
             Information Informations = _context.informations
+                .AsNoTracking()
                 .Join(_context.exercices, info => info.Exercice_courant, ex => ex.Id, (info, ex) => new Information 
                 { 
                     Id = info.Id, 

@@ -22,17 +22,16 @@ interface IReceivedModal {
 export const ReceivedModal = ({ show, handleClose, onSubmit }: IReceivedModal) => {
 
     const [selectedEntreprises, setSelectedEntreprises] = useState<IApercu_entreprise[]>([])
-    const [searchEntrepriseById, setSearchEntrepriseById] = useState<IApercu_entreprise>({} as IApercu_entreprise)
     const [entpreview, setEntpreview] = useState<IApercu_entreprise[]>([])
     const { register, setValue, setError, clearErrors, formState: { errors } } = useForm()
     const SearchNameRef: any = useRef()
 
     const UnSelectEntreprise = (ent: IApercu_entreprise) => {
-        setSelectedEntreprises(entreprises => entreprises.filter((entreprise: IApercu_entreprise) => entreprise.matricule_ciger != ent.matricule_ciger))
+        setSelectedEntreprises(entreprises => entreprises.filter((entreprise: IApercu_entreprise) => entreprise.id_entreprise != ent.id_entreprise))
     }
 
-    const CheckEntIsNotSelected = (matricule: number): boolean => {
-        return selectedEntreprises.filter((ent: IApercu_entreprise) => ent.matricule_ciger == matricule).length === 0
+    const CheckEntIsNotSelected = (id: number): boolean => {
+        return selectedEntreprises.filter((ent: IApercu_entreprise) => ent.id_entreprise == id).length === 0
     }
 
     const SearchById = async (e: any) => {
@@ -69,7 +68,7 @@ export const ReceivedModal = ({ show, handleClose, onSubmit }: IReceivedModal) =
 
     const SelectEntName = (value: any) => {
         value = { ...value[0] }
-        if (CheckEntIsNotSelected(value.matricule_ciger)) {
+        if (CheckEntIsNotSelected(value.id_entreprise)) {
             setSelectedEntreprises(ent => ([...ent, value]))
         }
         SearchNameRef.current.clear()
@@ -90,7 +89,7 @@ export const ReceivedModal = ({ show, handleClose, onSubmit }: IReceivedModal) =
     return <>
         <Modal show={show} onHide={handleClose} size="lg" animation={false}>
             <Modal.Header closeButton>
-                <Modal.Title>Encoder des reçus</Modal.Title>
+                <Modal.Title as="h5">Encoder des déclarations reçues</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>
@@ -98,7 +97,7 @@ export const ReceivedModal = ({ show, handleClose, onSubmit }: IReceivedModal) =
                         <Col>
                             <Form.Group controlId="matricule">
                                 <Form.Label column="sm">Recherche par matricule</Form.Label>
-                                <Form.Control type="text" size="sm" placeholder="Matricule" isInvalid={errors.matricule} onKeyDown={(e) => SearchById(e)} {...register('matricule')} />
+                                <Form.Control type="text" size="sm" placeholder="Matricule" isInvalid={errors.matricule} onKeyDown={(e) => SearchById(e)} {...register('matricule')} autoFocus />
                                 {errors.matricule && <Form.Control.Feedback type="invalid">{errors.matricule.message}</Form.Control.Feedback>}
                                 <p className="text-muted" style={{ fontSize: '0.875rem' }}>
                                     Appuyez sur ENTER pour lancer la recherche.
@@ -146,23 +145,24 @@ export const ReceivedModal = ({ show, handleClose, onSubmit }: IReceivedModal) =
                 <Table striped bordered hover size="sm">
                     <thead>
                         <tr>
+                            <th>ID</th>
                             <th>Matricule</th>
                             <th>Nom</th>
-                            <th>Nombre de panneaux</th>
+                            <th>Publicités</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {selectedEntreprises.length === 0 && <tr><td colSpan={4}>Aucun élément</td></tr>}
-                        {selectedEntreprises.map((ent: IApercu_entreprise, index: number) => <Entreprise entreprise={ent} index={index} handleDelete={UnSelectEntreprise} />)}
+                        {selectedEntreprises.length === 0 && <tr><td colSpan={5}>Aucun élément</td></tr>}
+                        {selectedEntreprises.map((ent: IApercu_entreprise) => <Entreprise entreprise={ent} handleDelete={UnSelectEntreprise} />)}
                     </tbody>
                 </Table>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+                <Button variant="secondary" size="sm" onClick={handleClose}>
                     Annuler
                 </Button>
-                <Button variant="success" onClick={handleSubmit}>
+                <Button variant="success" size="sm" disabled={selectedEntreprises.length === 0} onClick={handleSubmit}>
                     Encoder les reçus
                 </Button>
             </Modal.Footer>
@@ -172,12 +172,12 @@ export const ReceivedModal = ({ show, handleClose, onSubmit }: IReceivedModal) =
 
 interface IEntreprise {
     entreprise: IApercu_entreprise,
-    index: number,
     handleDelete: (entreprise: IApercu_entreprise) => void
 }
 
-const Entreprise = memo(({ entreprise, index, handleDelete }: IEntreprise) => {
-    return <tr>
+const Entreprise = memo(({ entreprise, handleDelete }: IEntreprise) => {
+    return <tr key={entreprise.id_entreprise}>
+        <td>{entreprise.id_entreprise}</td>
         <td>{entreprise.matricule_ciger}</td>
         <td>{entreprise.nom}</td>
         <td>{entreprise.nombre_panneaux}</td>

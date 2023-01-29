@@ -24,6 +24,11 @@ namespace Taxes.Handlers
             {
                 throw new Exception("Une entreprise possède déjà ce matricule");
             }
+
+            request.Entreprise.Proces_verbal = false;
+            request.Entreprise.Pourcentage_majoration = 0;
+            request.Entreprise.Motif_majorationId = null;
+
             _context.entreprises.Add(request.Entreprise);
             _context.Entry(request.Entreprise).State = EntityState.Added;
             _context.SaveChanges();

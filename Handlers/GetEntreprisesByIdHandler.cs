@@ -23,7 +23,7 @@ namespace Taxes.Handlers
         {
             List<Entreprise> entreprises = _context.entreprises
                 .AsNoTracking()
-                .Where(ent => request.Matricules.Contains(ent.Matricule_ciger))
+                .Where(ent => request.ID.Contains(ent.Id_entreprise))
                 .ToList();
 
             if (entreprises == null)

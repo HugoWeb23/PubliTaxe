@@ -45,9 +45,20 @@ namespace Taxes.Handlers
                 predicate = predicate.And(ent => ent.Publicites.Any(p => p.Id_rue == request.Filters.Rue));
             }
 
+            if (request.Filters.ShowDelete == false)
+            {
+                predicate = predicate.And(ent => ent.Suppression == false);
+            }
+
+            if (request.Filters.ShowDisable == false)
+            {
+                predicate = predicate.And(ent => ent.Desactive == false);
+            }
+
             List<Entreprise> entreprises = _context.entreprises
                 .Include(ent => ent.Publicites)
                 .Where(predicate)
+                .OrderBy(e => e.Nom)
                 .ToList();
 
             if (request.Filters.PageCourante == 0) request.Filters.PageCourante = 1;
@@ -55,8 +66,11 @@ namespace Taxes.Handlers
 
 
             int TotalEntreprises = _context.entreprises.Count();
+            int TotalDesactives = _context.entreprises.Where(ent => ent.Desactive == true).Count();
             int TotalElements = entreprises.Count();
-            int TotalRecus = _context.entreprises.Where(e => e.Recu == true).Count();
+            int TotalRecus = _context.entreprises.Where(e => e.Recu == true && e.Desactive == false).Count();
+            int TotalPaiementsRecus = _context.entreprises.Where(e =>e.Desactive == false && (e.Statut_paiement == 2 || e.Statut_paiement == 3)).Count();
+            int TotalInfractions = _context.entreprises.Where(e => e.Proces_verbal == true && e.Desactive == false).Count();
 
             int TotalPages = (int)Math.Ceiling(TotalElements / (double)request.Filters.ElementsParPage);
             if(request.Filters.PageCourante > TotalPages)
@@ -69,10 +83,23 @@ namespace Taxes.Handlers
 
             return Task.FromResult(new EntreprisesViewModel
             {
-                Entreprises = entreprises.Select(e => new EntrepriseInfos {  Matricule_ciger = e.Matricule_ciger, Nom = e.Nom, Nombre_panneaux = e.Publicites.Count, Recu = e.Recu}).ToList(),
+                Entreprises = entreprises.Select(e => new EntrepriseInfos {  
+                    Matricule_ciger = e.Matricule_ciger, 
+                    Id_entreprise = e.Id_entreprise, 
+                    Nom = e.Nom, 
+                    Nombre_panneaux = e.Publicites.Count, 
+                    Recu = e.Recu, 
+                    Proces_verbal = e.Proces_verbal, 
+                    Statut_paiement = e.Statut_paiement,
+                    Suppression = e.Suppression,
+                    Desactive = e.Desactive
+                }).ToList(),
                 TotalPages = TotalPages,
                 TotalRecus = TotalRecus,
+                TotalPaiementsRecus = TotalPaiementsRecus,
                 TotalEntreprises = TotalEntreprises,
+                TotalDesactives = TotalDesactives,
+                TotalInfractions = TotalInfractions,
                 TotalElements = TotalElements,
                 PageCourante = request.Filters.PageCourante,
                 ElementsParPage = request.Filters.ElementsParPage

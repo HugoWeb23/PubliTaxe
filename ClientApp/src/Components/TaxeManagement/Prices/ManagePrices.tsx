@@ -4,8 +4,6 @@ import {
     Container,
     Table,
     Button,
-    Row,
-    Col,
     Badge,
     Alert
 } from 'react-bootstrap'
@@ -19,11 +17,12 @@ import { ApiErrors, apiFetch } from "../../../Services/apiFetch"
 import { Link } from "react-router-dom"
 
 interface IManagePrices {
+    currentFiscalYear: IExercice,
     handleEdit: (price: IPrice) => void,
     handleCreate: (price: IPrice) => void
 }
 
-export const ManagePrices = ({ handleEdit, handleCreate }: IManagePrices) => {
+export const ManagePrices = ({ currentFiscalYear, handleEdit, handleCreate }: IManagePrices) => {
     const { prices, getAll, editPrice, newPrice } = usePrices()
     const [selectedPrice, setSelectedPrice] = useState<{ price: IPrice, show: boolean, type: string }>({ price: {} as IPrice, show: false, type: 'create' })
     const [fiscalYears, setFiscalYears] = useState<IExercice[]>([])
@@ -43,7 +42,7 @@ export const ManagePrices = ({ handleEdit, handleCreate }: IManagePrices) => {
                     setErrorModal({ show: true, message: e.singleError.error })
                 }
             }
-            setLoader(false)
+            setTimeout(() => setLoader(false), 300)
         })()
     }, [])
 
@@ -67,13 +66,8 @@ export const ManagePrices = ({ handleEdit, handleCreate }: IManagePrices) => {
         }
     }
 
-    const memoPricesIds: number[] = useMemo(() => {
-        const fiscalYearsUsed = prices.map((price: IPrice) => price.exerciceId)
-        return fiscalYearsUsed
-    }, [prices])
-
     return <>
-        <PriceModal element={selectedPrice} fiscalYears={fiscalYears} fiscalYearsUsed={memoPricesIds} handleClose={() => setSelectedPrice(price => ({ ...price, show: false, type: 'create' }))} onSubmit={handleSubmit} />
+        <PriceModal element={selectedPrice} fiscalYears={fiscalYears} currentFiscalYear={currentFiscalYear} handleClose={() => setSelectedPrice(price => ({ ...price, show: false, type: 'create' }))} onSubmit={handleSubmit} />
         <Container fluid="sm">
             <nav aria-label="breadcrumb" className="mt-3">
                 <ol className="breadcrumb">
@@ -87,7 +81,7 @@ export const ManagePrices = ({ handleEdit, handleCreate }: IManagePrices) => {
             </div>
             <hr className="my-3" />
             {errorModal.show && <Alert variant="danger">{errorModal.message}</Alert>}
-            <Table striped bordered hover style={{ verticalAlign: "middle", textAlign: "center" }}>
+            <Table striped bordered hover size="sm" style={{ verticalAlign: "middle", textAlign: "center" }}>
                 <thead>
                     <tr>
                         <th>Exercice</th>
@@ -96,8 +90,10 @@ export const ManagePrices = ({ handleEdit, handleCreate }: IManagePrices) => {
                     </tr>
                 </thead>
                 <tbody>
+                    {loader && <tr><td align="left" colSpan={3}>Chargement...</td></tr>}
                     {(loader === false && prices.length === 0) && <tr><td colSpan={3}>Aucun résultat</td></tr>}
-                    {loader === false && prices.map((price: IPrice, index: number) => {
+                    {loader === false && prices.map((price: IPrice) => {
+                        const exercice: any = fiscalYears.find((y: IExercice) => price.exerciceId === y.id)
                         return <tr key={price.id}>
                             <td>{fiscalYears.find((fisc: IExercice) => fisc.id == price.exerciceId)?.annee_exercice}</td>
                             <td>
@@ -132,7 +128,7 @@ export const ManagePrices = ({ handleEdit, handleCreate }: IManagePrices) => {
                                     </div>
                                 </div>
                             </td>
-                            <td><Button size="sm" onClick={() => setSelectedPrice({ price: price, show: true, type: 'edit' })}><Pencil /></Button></td>
+                            <td><Button size="sm" disabled={exercice?.annee_exercice < currentFiscalYear.annee_exercice} onClick={() => setSelectedPrice({ price: price, show: true, type: 'edit' })}><Pencil /> Modifier</Button></td>
                         </tr>
                     })}
                 </tbody>

@@ -18,50 +18,15 @@ namespace Taxes.Entities
             if (other is null)
                 return false;
 
-            return this.Numero_panneau == other.Numero_panneau &&
-                   this.Matricule_ciger == other.Matricule_ciger &&
-                   this.Id_rue == other.Id_rue &&
-                   this.Exercice_courant == other.Exercice_courant &&
-                   this.Type_publicite == other.Type_publicite &&
-                   this.Adresse_numero == other.Adresse_numero &&
-                   this.Situation == other.Situation &&
-                   this.Quantite == other.Quantite &&
-                   this.Face == other.Face &&
-                   this.Mesure == other.Mesure &&
-                   this.Surface == other.Surface &&
-                   this.Surface_totale == other.Surface_totale &&
-                   this.Taxe_totale == other.Taxe_totale &&
-                   this.Code_recu == other.Code_recu &&
-                   this.Exoneration == other.Exoneration &&
-                   this.Pv == other.Pv &&
-                   this.Entreprise == other.Entreprise &&
-                   this.Rue == other.Rue;
+            return this.Numero_panneau == other.Numero_panneau;    
         }
 
         public override bool Equals(object obj) => Equals(obj as Publicite);
-        public override int GetHashCode() => (Numero_panneau,
-                                              Matricule_ciger,
-                                              Id_rue,
-                                              Exercice_courant,
-                                              Type_publicite,
-                                              Adresse_numero,
-                                              Situation,
-                                              Quantite,
-                                              Face,
-                                              Mesure,
-                                              Surface,
-                                              Surface_totale,
-                                              Taxe_totale,
-                                              Code_recu,
-                                              Exoneration,
-                                              Pv,
-                                              Entreprise,
-                                              Rue)
-                                              .GetHashCode();
+        public override int GetHashCode() => (Numero_panneau).GetHashCode();
 
         [Key]
         public long Numero_panneau { get; set; }
-        public long Matricule_ciger { get; set; }
+        public long Id_entreprise { get; set; }
         [ForeignKey("Rue")]
         public int Id_rue { get; set; }
         public long Exercice_courant { get; set; }
@@ -80,7 +45,7 @@ namespace Taxes.Entities
         public short Code_recu { get; set; }
         public bool Exoneration { get; set; }
         public short Pv { get; set; }
-        [ForeignKey("Matricule_ciger")]
+        [ForeignKey("Id_entreprise")]
         public Entreprise Entreprise { get; set; }
         public Rue Rue { get; set; }
         public ICollection<PublicitesPhotos> Photos { get; set; }

@@ -34,7 +34,7 @@ namespace Taxes.Handlers
             request.NotReceived.Date = DateTime.Now.ToString("dd/MM/yyyy");
             NotReceived notReceived = _context.non_recus
                 .AsNoTracking()
-                .Where(nr => nr.Matricule_ciger == request.NotReceived.Matricule_ciger && nr.ExerciceId == request.NotReceived.ExerciceId)
+                .Where(nr => nr.Id_entreprise == request.NotReceived.Id_entreprise && nr.ExerciceId == request.NotReceived.ExerciceId)
                 .FirstOrDefault();
 
             if (notReceived != null)
@@ -42,7 +42,7 @@ namespace Taxes.Handlers
                 NotReceived editNotReceived = new NotReceived
                 {
                     Id = notReceived.Id,
-                    Matricule_ciger = notReceived.Matricule_ciger,
+                    Id_entreprise = request.NotReceived.Id_entreprise,
                     ExerciceId = notReceived.ExerciceId,
                     Pourcentage_majoration = request.NotReceived.Pourcentage_majoration,
                     Motif_majorationId = request.NotReceived.Motif_majorationId,
