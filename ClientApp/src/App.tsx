@@ -36,8 +36,6 @@ import { IPrice } from './Types/IPrice';
 import { ManageInactiveAccounts } from './Components/ManageUsers/ManageInactiveAccounts';
 import { ManageAccount } from './Components/UserAccount/ManageAccount';
 import { AppLoader } from './Components/UI/AppLoader';
-<<<<<<< HEAD
-=======
 import { ManageSimulations } from './Components/TaxeManagement/Simulations/ManageSimulations';
 import { CreateSimulation } from './Components/TaxeManagement/Simulations/CreateSimulation';
 import { EditSimulation } from './Components/TaxeManagement/Simulations/EditSimulation';
@@ -45,7 +43,6 @@ import { ManagePayment } from './Components/TaxeManagement/Payment/ManagePayment
 import { PaymentDetail } from './Components/TaxeManagement/Payment/PaymentDetail';
 import { ManageNothingToPay } from './Components/TaxeManagement/Payment/NothingToPay/ManageNothingToPay';
 import { Footer } from './Components/Footer/Footer';
->>>>>>> Simulations
 
 export const App = () => {
   const [user, setUser] = useState<IUser | null>(null)
@@ -120,55 +117,6 @@ export const App = () => {
         <UserContext.Provider value={value}>
           <ToastContainer autoClose={2500} />
           <Navigation />
-<<<<<<< HEAD
-          {error ? <Alert variant="danger" className="mt-3">Une erreur est survenue lors du chargement des données. Veuillez actualiser la page et contacter le service informatique si le problème persiste.</Alert> : <><PrivateRoute path="/" exact component={TaxManagement} />
-          <PrivateRoute path="/entreprise/edit/:id" exact>
-            <EditTax motifs={motifsMajoration} tarifs={tarifs} currentFiscalYear={exerciceCourant} informations={informations} />
-          </PrivateRoute>
-          <PrivateRoute path="/entreprise/create/" exact>
-            <CreateTax motifs={motifsMajoration} tarifs={tarifs} currentFiscalYear={exerciceCourant} />
-          </PrivateRoute>
-          <PrivateRoute path="/entreprise/view/:id" exact>
-            {(tarifs != null && motifsMajoration != null && exerciceCourant != null && informations != null) ? <ViewTax motifs={motifsMajoration} tarifs={tarifs} currentFiscalYear={exerciceCourant} informations={informations} /> : <Loader />}
-          </PrivateRoute>
-          <PrivateRoute path="/notreceived" exact>
-            {exerciceCourant != null ? <ManageNotReceived motifs={motifsMajoration} currentFiscalYear={exerciceCourant} /> : <Loader />}
-          </PrivateRoute>
-          <PrivateRoute path="/tools/printalldeclarations" exact>
-            {(tarifs != null && exerciceCourant != null && informations != null) ? <PrintAllTaxes tarifs={tarifs} currentFiscalYear={exerciceCourant} informations={informations} /> : <Loader />}
-          </PrivateRoute>
-          <PrivateRoute path="/tools/printallminutes" exact>
-            {(tarifs != null && motifsMajoration != null && exerciceCourant != null && informations != null) ? <PrintAllMinutes tarifs={tarifs} motifsMajoration={motifsMajoration} currentFiscalYear={exerciceCourant} informations={informations} /> : <Loader />}
-          </PrivateRoute>
-          <PrivateRoute path="/tools/managefiscalyears">
-            <ManageFiscalYears handleEdit={editFiscalYear} />
-          </PrivateRoute>
-          <PrivateRoute path="/tools/manageprices">
-            <ManagePrices
-              handleEdit={(price: IPrice) => setTarifs((prices: IPrice[]) => prices.map((p: IPrice) => p.id === price.id ? price : p))}
-              handleCreate={(price: IPrice) => setTarifs((prices: IPrice[]) => ([...prices, price]))}
-            />
-          </PrivateRoute>
-          <PrivateRoute path="/tools/managegeneralinformations">
-            {informations !== null ? <ManageGeneralInformations generalInformations={informations} handleChange={(data: IInformation) => setInformations(data)} /> : <Loader />}
-          </PrivateRoute>
-          <PrivateRoute path="/tools/changefiscalyear">
-            <ChangeFiscalYear currentFiscalYear={exerciceCourant} handleChange={(data: IExercice) => setExerciceCourant(data)} />
-          </PrivateRoute>
-          <Route path="/login">
-            {user ? <Redirect to="/" /> : <Login handleLogin={toggleUser} />}
-          </Route>
-          <Route path="/register" component={Register} />
-          <PrivateRoute path="/manageaccess/all" component={ManageUsers} />
-          <PrivateRoute path="/manageaccess/edit/:id" exact component={EditUser} />
-          <PrivateRoute path="/manageaccess/pendingaccounts" component={ManageInactiveAccounts} />
-          <PrivateRoute path="/account/manageaccount">
-            <ManageAccount />
-          </PrivateRoute>
-          <Route path="/passwordchange">
-            {user?.changement_pass === 1 ? <PasswordChange /> : <Redirect to="/" />}
-          </Route></>}
-=======
           {error ? <Alert variant="danger" className="mt-3">Une erreur est survenue lors du chargement des données. Veuillez actualiser la page et contacter le service informatique si le problème persiste.</Alert> : <><PrivateRoute path="/business_management" exact component={TaxManagement} />
             <Route path="/" exact>
               <Redirect to={{ pathname: '/business_management' }} />
@@ -237,7 +185,6 @@ export const App = () => {
               {user?.changement_pass === 1 ? <PasswordChange /> : <Redirect to="/" />}
             </Route></>}
           <Footer />
->>>>>>> Simulations
         </UserContext.Provider>
       </Router>
     }

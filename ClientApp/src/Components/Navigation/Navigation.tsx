@@ -28,10 +28,7 @@ export const Navigation = () => {
             <LinkContainer to="/payment_management"><NavDropdown.Item>Gestion des paiements</NavDropdown.Item></LinkContainer>
           </NavDropdown>
           <NavDropdown title="Outils" id="collasible-nav-dropdown">
-<<<<<<< HEAD
-=======
             <LinkContainer to="/tools/pricingsimulation"><NavDropdown.Item>Simulation de tarification</NavDropdown.Item></LinkContainer>
->>>>>>> Simulations
             <LinkContainer to="/tools/printalldeclarations"><NavDropdown.Item>Imprimer toutes les déclarations</NavDropdown.Item></LinkContainer>
             <LinkContainer to="/tools/printallminutes"><NavDropdown.Item>Imprimer tous les procès verbaux</NavDropdown.Item></LinkContainer>
             {value.user.role >= 3 && <><LinkContainer to="/tools/manageprices"><NavDropdown.Item>Gestion des tarifs</NavDropdown.Item></LinkContainer>
