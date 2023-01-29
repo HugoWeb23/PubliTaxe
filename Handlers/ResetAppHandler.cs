@@ -23,7 +23,7 @@ namespace Taxes.Handlers
             _context.Database.ExecuteSqlRaw("UPDATE dbo.enseignes_publicitaires SET exercice_courant = 7");
             _context.Database.ExecuteSqlRaw("UPDATE dbo.informations SET exercice_courant = 7");
             _context.Database.ExecuteSqlRaw("UPDATE dbo.entreprises SET recu = 0, suppression = 0, statut_paiement = 0, proces_verbal = 0, pourcentage_majoration = 0, motif_majorationId = null");
-            _context.Database.ExecuteSqlRaw("DELETE FROM dbo.paiements_recus WHERE exerciceId = 7");
+            _context.Database.ExecuteSqlRaw("DELETE FROM dbo.paiements_recus");
             _context.Database.ExecuteSqlRaw("DELETE FROM dbo.tarifs WHERE exerciceId > 7");
             _context.Database.ExecuteSqlRaw("DELETE FROM dbo.exercices WHERE id > 7");
             _context.Database.ExecuteSqlRaw("DELETE FROM dbo.utilisateurs WHERE id > 30004");
